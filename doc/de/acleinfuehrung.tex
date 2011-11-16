@@ -1,0 +1,320 @@
+\chapter{Einleitung}
+Bei der  Ada Crypto Library (ACL) handelt es sich um eine freie 
+kryptographische Bibliothek für Ada. Eines der beiden Hauptziele bei der
+Entwicklung dieser Bibliothek war das Design einer
+\textbf{selbst sprechenden und sauberen API}. Das andere Hauptziel war es,
+einen möglichst sauberen Programmierstil zu verwenden, der die formale 
+Verifikation des Codes erleichtert.
+Aus diesem Grund wurde bei der ACL komplett auf folgende ``Features''
+verzichtet:
+\begin{itemize}
+\item access types (Zeiger)
+\item inline Assembler
+\item tagged types (Objekte)
+\item goto statements
+\end{itemize}
+Auf goto statements und access-types wurde verzichtet, da diese den 
+Quelltext unübersichtlicher machen und Probleme bei der Verifikation des 
+Codes auftreten können. Auf tagged types wurde verzichtet, da hier
+Prozeduren und Methoden überschrieben werden können, und erst zur Laufzeit 
+dynamisch ermittelt wird welche Methode verwendet wird (dynamisches 
+dispatching). Hierdurch treten massive Probleme bei Verifikation des
+Codes auf. Auf inline Assembler wurde verzichtet, da dies ein sehr unsauberer
+Programmierstil ist und dies die starke Typisierung von ADA umgehen kann.
+Was nicht gerade den wahren Ada-Weg entspricht.
+Durch diese Einschränkungen erhöht sie zwar die Qualität des Quelltextes
+im Bezug auf Verifizierbarkeit und Sicherheit, führt aber zu einer
+schlechteren Performance. 
+Wenn Sie also mehr Wert auf Performance als auf ein sauberes Design
+legen, dann sollten Sie sich vielleicht nach einer anderen kryptographischen
+Bibliothek umsehen. Leider sind mir keine weiteren freie kryptographische
+Bibliothek für Ada bekannt auf die ich sie jetzt verweisen könnte.\\
+Dies ACL hat mehr den Status eines \glqq Proof of Concept''.
+Es fand weder ein ``Code-Review'' noch ein ``Code-Audit'' statt. 
+Bis jetzt ist der Autor der ACL der Einzige,
+der sich mit dem Code etwas näher befasst hat. Es besteht z.B.
+durchaus die Möglichkeit, daß sich sicherheitskritisches Material wie der 
+Schlüssel sich nach der Ausführung eines Programms das die ACL verwendet im
+RAM ``überlebt''. Ein Storage-Pool der genau diese Aufgabe übernimmt ist in 
+Planung. Die meisten kryptographische Bibliotheken die auch dieses 
+Sicherheitsproblem haben weisen nicht darauf hin. Von solchen Bibliotheken sollte 
+man Abstand nehmen, da diese nicht mit offenen Karten spielen.\\
+Im folgendem habe ich noch einmal alle  mir bekannten Nachteile der ACL
+aufgelistet.  
+\begin{itemize}
+\item fehlende Säuberung des Stacks und Heaps 
+\item kein ``big endian'' Support
+\item schlechte Performance
+\end{itemize}
+In dieser Dokumentation wird kurz auf die Installation und den topologischen 
+Aufbau eingegangen. Danach widmet sich diese Dokumentation ausschließlich der 
+API. Jedes Paket und dessen API wird in einem separaten Kapitel vorgestellt.
+Am Ende jedes Kapitels finden Sie ein Anwendungsbeispiel.\\
+Falls sie noch Fragen zur ACL haben, einen Fehler finden oder die ACL um
+ein bzw. mehrere Pakete erweitern wollen, dann können  sie
+mich per E-Mail unter folgender Adresse kontaktieren: crypto@shortie.inka.de.\\
+
+\subsubsection{TODO-Liste}
+\begin{itemize}
+\item Optimierung
+\item Eigener Storage Pool
+\item Erweiterung (Tiger2, RSA-PSS, Poly1305-AES usw.)   
+\item Fallunterscheidung für die Anwendung des RNG (Windows/Linux)
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Installation HOWTO}
+\subsection{libadacrpyt-dev}
+\subsubsection{Abhängigkeiten}
+Unter Linux benötigen Sie folgende Pakete um die ACL zu installieren:
+\begin{itemize}
+\item tar 
+\item gnat 
+\item make
+\item bunzip2 
+\item binutils
+\end{itemize}
+
+\subsubsection{Kompilieren}
+Mit der folgenden Befehlssequenzen entpacken und kompilieren sie die ACL sowie 
+den beiliegenden Regressionstest.
+\begin{itemize}
+\item \texttt{tar cjf acl.tar.bz2}
+\item \texttt{cd crypto}
+\item \texttt{make}
+\item \texttt{make acltest}
+\end{itemize}
+
+\subsubsection{Testen}
+Bevor Sie die ACL installieren sollten Sie unbedingt den Regressionstest
+durchführen um sicherzustellen, das die ACL auf ihrem System einwandfrei 
+arbeitet. Der Regressionstest dauert auf einem PII 450 ungefähr 30 Sekunden.
+Mit dem folgender Befehlssequenz führen Sie den Regressiontest aus.\\
+\begin{itemize}
+\item \texttt{cd test}
+\item \texttt{./acltest}
+\item \texttt{cd ..}
+\end{itemize}
+
+\subsubsection{Installieren}
+Wenn bei dem Test kein Fehler auftrat können sie die ACL mit folgendem
+Befehl installieren:\\
+\hspace*{1cm} \texttt{su -c ``make install''}\ \\
+
+\subsubsection{Deinstallieren}
+Mit dem folgenden Befehl können sie ACL wieder deinstallieren:\\
+\hspace*{1cm} \texttt{su -c ``make uninstall''}\ \\
+
+\subsubsection{Rekompilieren}
+Mit der folgenden Befehlssequenzen können sie ACL neu kompilieren:\\
+\begin{itemize}
+\item \texttt{make clean}
+\item \texttt{make clean-acltest}
+\item \texttt{make}
+\item \texttt{make acltest}
+\end{itemize}
+
+\subsection{libadacrypt}
+\subsubsection{Installieren}
+Sie können die ACL auch mit den folgenden Befehlen als shared library 
+(libacl.so) installieren:
+\begin{itemize}
+\item \texttt{make shared}
+\item \texttt{make install-shared}
+\end{itemize}
+
+\subsubsection{deinstallieren}
+Mit dem folgenden Befehl können sie ACL wieder deinstallieren:\\
+\hspace*{1cm} \texttt{su -c ``make uninstall-shared''}\ \\
+
+\subsection{Dokumentation}
+Um diese Dokumentation zu erstellen wird das Paket tetex-bin (latex) und
+tetex-extra benötigt. Wenn nötig sollte sie diese beiden Pakete installieren.
+Mit dem folgenden beiden Befehlen wird die komplette Dokumentation (de+en) 
+erstellt und nach \texttt{/usr/local/share/doc/libadacrypt-dev} kopiert.
+\begin{itemize}
+\item \texttt{make doc}
+\item \texttt{su -c ``make install-doc''}
+\end{itemize}\ \\
+Mit den folgenden beiden Befehlen können sie die Dokumentationen unter 
+ \texttt{/usr/local/share/doc/libadacrypt-dev} deinstallieren und die 
+Dokumentation \glqq löschen''.
+\begin{itemize}
+\item \texttt{make clean-doc}
+\item \texttt{su -c ``make uninstall-doc''}
+\end{itemize}
+
+
+\subsection{Anpassungen}
+Im Unterverzeichnis \texttt{src} befindet sich eine Datei \texttt{Makefile}. 
+In dieser können Sie bei den folgende Variablen Anpassungen vornehmen:
+\begin{itemize}
+\item LIBDIR :  Installationspfad der shared library.
+\item INSTDIR : Installationspfad der ACL.
+\end{itemize}\ \\
+Ausserdem können sie noch bei den Makefiles in den Unterverzeichnissen von 
+\texttt{doc} durch Anpassung der Variablen \texttt{DOCPATH} vornemen.
+Diese Variable enthält den Installationspfad der entsprechenden Dokumentation.
+ 
+
+\subsection{Benchmark}
+In dem Unterverzeichnis \texttt{bench} befindet sich ein Benchmark, der in einer
+späteren Version Aussagen über die Performance der ACL auf dem eigenen System 
+ermöglichen soll. Der Aufbau orientiert sich an dem des Regressionstests. Bisher
+wurde eine Möglichkeit zum Messen der Multiplikationsalgorithmen aus dem Package
+\texttt{acl.crypto.types.big-numbers} umgesetzt. Der Benchmark generiert dazu
+Zufallszahlen, aus denen die Faktoren bestimmt werden. Das Produkt wird durch die
+jeweils durch alle implementierten Algorithmen bestimmt und die zur Berechnung
+benötigte Zeit ausgegeben.\\
+Kompilieren und Ausführen lässt sich der Benchmark durch
+
+\begin{itemize}
+\item \texttt{cd bench}
+\item \texttt{make}
+\item \texttt{./aclbench}
+\end{itemize}
+
+Durch einen Aufruf des Benchmarks mit Kommandzeilenparameter \texttt{-CSV} lassen
+sich die Messungen kommasepariert ausgeben. Dadurch kann man die Ergebnisse 
+einfacher in ein Tabellenkalkulationsprogramm importieren und auswerten.\\
+Unter Linux:
+
+\begin{itemize}
+\item \texttt{./aclbench -CSV > Dateiname.txt}
+\end{itemize}
+
+Im Unterverzeichnis \texttt{bench} befindet sich eine Datei \texttt{Makefile}. 
+In dieser können Sie bei den folgende Variablen Anpassungen vornehmen:\\
+
+Kompilieren des Benchmarks ohne Optimierung:
+\begin{lstlisting}{}
+aclbench.o :
+   $(CC) $(CFLAGS) aclbench
+   $(BB) $(BFLAGS) aclbench.ali
+   $(LL) $(LFLAGS) aclbench.ali
+\end{lstlisting}
+
+Kompilieren des Benchmarks mit O3 Optimierung:
+\begin{lstlisting}{}
+aclbench.o :
+   $(CC) $(CFLAGS_O3) aclbench
+   $(BB) $(BFLAGS_O3) aclbench.ali
+   $(LL) $(LFLAGS_O3) aclbench.ali
+\end{lstlisting}
+
+Kompilieren des Benchmarks mit Symbolen für \texttt{gdb} oder \texttt{gnatgdb} :
+\begin{lstlisting}{}
+aclbench.o :
+   $(CC) $(CFLAGS_DBUG) aclbench
+   $(BB) $(BFLAGS_DBUG) aclbench.ali
+   $(LL) $(LFLAGS_DBUG) aclbench.ali
+\end{lstlisting}
+
+Kompilieren des Benchmarks mit Symbolen für \texttt{gprof} oder \texttt{kprof}:
+\begin{lstlisting}{}
+aclbench.o :
+   $(CC) $(CFLAGS_GPROF) aclbench
+   $(BB) $(BFLAGS_GPROF) aclbench.ali
+   $(LL) $(LFLAGS_GPROF) aclbench.ali
+\end{lstlisting}
+
+Kompilieren des Benchmarks mit Symbolen für \texttt{gcov} oder \texttt{ggcov}:
+\begin{lstlisting}{}
+aclbench.o :
+   $(CC) $(CFLAGS_GCOV) aclbench
+   $(BB) $(BFLAGS_GCOV) aclbench.ali
+   $(LL) $(LFLAGS_GCOV) aclbench.ali
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Verzeichnis- und Paket-Struktur}
+\subsection{Verzeichnis-Struktur}
+\begin{itemize}
+\item doc : Dokumentation
+\item ref : Referenzen und Spezifikationen
+\item src : Quellcode 
+\item test : Regressionstest
+\item bench : Benchmark
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Paket-Struktur}
+Die Ada Crypto Library (ACL) besteht aus den folgenden Paketen (Komponenten).
+\begin{description}
+\item[Crypto:]\ \\ 
+  Dies ist das Wurzelpaket der ACL.
+  Alle anderen Pakete der ACL beginnen mit dem 
+Präfix \textit{Crypto.}
+\item[Crypto.Types:] \ \\
+  In diesem Paket befinden sich grundlegende Typen der ACL (z.B. Byte)
+  und deren  Basisfunktionen.
+  Ein Einsatz der ACL ohne Einbindung dieses Paketes ist nur sehr begrenzt 
+  möglich.
+\item[Crypto.Types.Big\_Numbers:] \ \\
+  Dieses generische Packet unterstützt die Arithmetik in $Z_p$ oder 
+  $GF(2^m)$. Der Basistyp hierführ ist eine modulare n-Bit Zahl.
+  Dieses Packet wird für die asymetrische Kryptrographie benötigt.
+\item[Crypto.Types.Elliptic\_Curves:] \ \\
+  Dieses generischen Pakete ist das Wurzelpacket für elliptische Kurven.
+\item[Crypto.Random:] \ \\
+  Dieses Paket ist eine Schnittstelle zwischen einem externen
+  Pseudozufallsbitgenerator  und der ACL.
+\item[Crypto.Symmetric:]\ \\
+  Die ist das Wurzelpaket für den symmetrische Zweig.
+\item[Crypto.Symmetric.Algorithm:]\ \\
+  In diesem Zweig des ACL-Baums befinden sich die symmetrische Algorithmen
+  für symmetrische Blockchiffren und Hashfunktionen.
+\item[Crypto.Symmetric.Algorithm.Oneway:]\ \\
+  Jeder Algorithmus verfügt über einen Oneway-Algorithmus.
+  Symmetrisch Oneway-Algorithmen sind einfach symmetrische Algorithmen die nur 
+  in eine Richtung, entweder Ver- oder Entschlüsseln arbeiten.
+\item[Crypto.Symmetric.Blockcipher:]\ \\
+  Mit Hilfe dieses generische Paketes können Sie aus einem symmetrischen
+  Algorithmus eine Blockchiffre generieren.
+\item[Crypto.Symmetric.Oneway\_Blockcipher:]\ \\
+  Mit Hilfe dieses generische Paketes können Sie aus einem symmetrischen
+  Oneway-Algorithmus eine Einweg-Blockchiffre generieren.
+\item[Crypto.Symmetric.MAC:]
+  Dies ist das Wurzelpacket für MACs.
+\item[Crypto.Symmetric.Mode:]\ \\
+  In diesem Zweig befinden sich verschiedene Betriebsmodi für Blockchiffren.
+\item[Crypto.Symmetric.Mode.Oneway:]\ \\
+  In diesem Zweig befinden sich verschiedene Betriebsmodi für 
+  Einweg-Blockchiffren.
+\item[Crypto.Asymmetric:]\ \\
+  Dies ist das Wurzelpaket des asymmetrischen Zweigs.
+\item[Crypto.Asymmetric.DSA:]\ \\
+  Mit Hilfe dieses Pakets können digitale Unterschriften erstellt und 
+  verifiziert werden.
+\item[Crypto.Asymmetric.RSA:]\ \\
+  Mit Hilfe dieses Paketes lassen sich Daten  asymmetrisch ver- bzw.
+  entschlüsseln
+\item[Crypto.Hashfunction:]
+  Mit Hilfe dieses generische Paketes können Sie aus einem entsprechenden
+  symmetrischen Algorithmus eine Hashfunktion generieren.\\
+\end{description}
+
+\begin{figure}
+  \scalebox{0.75}{
+  \pstree[nodesep=2pt]{\TR{Crypto}}{%
+    \pstree{\TR{Types}}{%
+      \TR{Big\_Numbers} \TR{Elliptic\_Curves}}
+    \TR{Hashfunction}
+    \pstree{\TR{Symmetric}}{%
+      \pstree{\TR{Algorithm}}{%
+	\Tr{Oneway}}
+      \TR{Blockcipher} 
+      \TR{MAC}
+      \TR{Oneway\_Blockcipher}
+      \pstree{\TR{Mode}}{%
+	\TR{Oneway}}} % end symmetric
+    \TR{Random} 
+    \pstree{\TR{Asymmetric}}{%
+      \TR{DSA} \TR{RSA}}
+}
+}
+\end{figure}
+    

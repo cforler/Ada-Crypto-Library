@@ -1,0 +1,111 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnvvnnnnnnnnnnnnnnn
+
+U crypto.random%b	crypto-random.adb	5facaeb2 OO PK
+W ada.exceptions%s	a-except.adb		a-except.ali
+W crypto%s		crypto.ads		crypto.ali
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c_streams%s  i-cstrea.adb		i-cstrea.ali
+W system%s		system.ads		system.ali
+
+U crypto.random%s	crypto-random.ads	46bc2763 BN EE OO PK
+W crypto%s		crypto.ads		crypto.ali
+W crypto.types%s	crypto-types.adb	crypto-types.ali
+W system%s		system.ads		system.ali
+W system.exception_table%s  s-exctab.adb	s-exctab.ali
+W system.standard_library%s  s-stalib.adb	s-stalib.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-unccon.ads		20070406091342 f9eb8f06
+D crypto.ads		20110824150609 b0d04738
+D crypto-random.ads	20111105142025 dbeacf54
+D crypto-random.adb	20111105142002 9f914dd4
+D crypto-types.ads	20111110185132 2d86af0f
+D interfac.ads		20090409150019 f77d8799
+D i-cstrea.ads		20100622165701 1bd72c32
+D i-cstrea.adb		20090409150019 98747b85
+D system.ads		20110928073203 23e1f70b
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-exctab.adb		20090417131547 ba1a43ac
+D s-htable.ads		20101011104304 efdfacdf
+D s-parame.ads		20091130110856 9c5d83fa
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-traent.ads		20090417130712 5221ee41
+X 4 crypto.ads
+24K9*Crypto 25e11 5|23r6 23r24 27r9 85r5 6|30r14 235r5
+X 5 crypto-random.ads
+27K16*Random 4|24k9 5|85l12 85e18 6|30b21 235l12 235t18
+29U14*Read 29<19 6|36b14 44l8 44t12
+29m19 B{7|34M9} 6|36b19 43m7
+30U14*Read 30<19 6|68b14 78l8 78t12 83s7
+30a19 Byte_Array{7|57A9} 6|68b19 71m29 72r35 75r25
+31U14*Read 31<19 6|81b14 84l8 84t12
+31a19 B{7|73A9} 6|81b19 83m18
+33U14*Read 33<19 6|88b14 96l8 96t12
+33m19 W{7|40M9} 6|88b19 91m29
+34U14*Read 34<19 6|100b14 108l8 108t12
+34a19 Word_Array{7|58A9} 6|100b19 103m28 104r27 105r16
+36U14*Read 36<19 6|113b14 121l8 121t12
+36m19 D{7|43M9} 6|113b19 116m29
+37U14*Read 37<19 6|126b14 134l8 134t12
+37a19 DWord_Array{7|59A9} 6|126b19 129m28 130r27 131r16
+69X4*Random_Source_Does_Not_Exists_Error 6|229r13
+70X4*Random_Source_Read_Error 6|41r17 76r17 94r17 106r17 119r17 132r17
+80a4 Path{string} 6|223r31
+X 6 crypto-random.adb
+32m4 Random_File{9|41M12} 39r18 73r30 92r42 104r57 117r42 130r58 227m4 228r15
+37i7 I{9|42I12} 39m7 40r11 43r17
+69m7 C{9|44M12} 71m7 75r19
+89m7 C{9|44M12} 91m7 93r10
+101m5 C{9|44M12} 103m7 105r10
+114m7 C{9|44M12} 116m7 118r10
+127m7 C{9|44M12} 129m7 131r10
+223a4 Cpath{string} 227r25
+224a4 Mode{string} 227r40
+X 7 crypto-types.ads
+23K16*Types 5|23w13 23r31 7|334e17
+34M9*Byte 5|29r27 6|36r27 43r12
+40M9*Word 5|33r27 6|88r27 93r15 105r36
+43M9*DWord 5|36r27 6|113r27 118r15 131r37
+57A9*Bytes(34M9)<integer> 5|30r36 6|68r36 83r12
+58A9*Words(40M9)<integer> 5|34r36 6|100r36
+59A9*DWords(43M9)<integer> 5|37r37 6|126r37
+73A9*B_Block128<57A9><integer> 5|31r27 6|81r27
+X 8 interfac.ads
+36K9*Interfaces 6|24r6 25r6 27r10 8|171e15
+X 9 i-cstrea.ads
+37K20*C_Streams 6|24w17 25r17 27r21 9|274e25
+41M12*FILEs{12|50M12} 6|32r18
+42I12*int{12|53I12} 6|37r11
+44M12*size_t{12|60M9} 6|27r31 69r11 72r28 89r11 101r9 114r11 127r11
+45M12*voids{11|64M9}
+95V13*ferror{42I12} 6|228s7
+99V13*fgetc=99:67{12|53I12} 6|39s12
+106V13*fopen=111:26{12|50M12} 6|227s19
+124V13*fread{44M12} 6|71s12 91s12 103s12 116s12 129s12
+125m7 buffer{45M12} 6|71r19 91r19 103r18 116r19 129r18
+126m7 size{44M12} 6|71r49 91r40 103r48 116r40 129r49
+127m7 count{44M12} 6|72r19 92r19 104r18 117r19 130r18
+128m7 stream{41M12} 6|73r19 92r31 104r46 117r31 130r47
+X 11 system.ads
+64M9*Address
+X 12 s-crtl.ads
+50M12*FILEs{11|64M9}
+53I12*int{integer}
+60M9*size_t
+

@@ -1,0 +1,74 @@
+\chapter{Crypto.Symmetric}
+\section{Funktion}
+Dies ist das Wurzelpaket für die symmetrische Kryptographie.
+Dieses Paket ermöglicht dem symmetrischen Teil den direkten Zugriff auf 
+\texttt{Crypto.Types}  und \texttt{Crypto.Random}. Diesen beiden Pakete
+stellen grundlegende Typen und  Basisfunktionen für den symmetrischen Teil der
+ACL zur Verfügung.\\
+ Das Herzstück der symmetrischen Krypographie bilden in der 
+ACL Blockchiffren. In dem folgenden Abschnitt wird der Aufbau einer solchen
+innerhalb der ACL erläutert.
+ 
+\section{Blockchiffren}
+\subsubsection{Logischer Aufbau}
+Eine Blockchiffre ist ein drei logische Schichten unterteilt. Wobei man
+als Anwendungsprogrammierer nur die API der höchsten Schicht verwenden sollte. 
+Denn nur mit dieser API ist eine sicher Nutzung einer Blockchiffre garantiert.
+
+\subsubsection{1. Schicht: Algorithmus}
+Auf dieser Ebene befindet sich der nackte Algorithmus einer symmetrischen 
+Chiffre. Die API der einzelnen Algorithmen ist identisch und dient als 
+Schnittstelle für die Blockchiffen-Schicht.
+Bei jedem  Algorithmus wird die Quelle auf der er beruht genannt.
+Damit ist es möglich sich mit Hilfe der Quelle von der Korrektheit der 
+Implementierung zu überzeugen. 
+Es ist auf keinen Fall eine schlechte Idee dies auch zu tun. Mehrere 
+Informationen zu den einzelnen Algorithmen und Chiffren erfahren Sie im 
+nächsten Kapitel.\\ \ \\
+\textbf{Bemerkung:}\\
+Verwenden sie die API dieser Schicht nur um eine Blockchiffre zu 
+generieren. Verwenden Sie sie auf keinen Fall für einen anderen Zweck.
+Es gibt kein Szenario in dem dies einen Sinn ergibt. 
+Diese API dient wirklich nur als Schnittstelle für die 2. Schicht.
+
+
+\subsubsection{2. Schicht: Blockchiffre}
+Auf dieser Ebene wird aus einem Algorithmus eine Blockchiffre im unsicheren
+ECB-Modus (Electronic Code Book) generiert.
+Verwenden sie diese API nur, wenn Sie sich auch mit symmetrischen 
+Blockchiffren auskennen.
+Diese API dient eigentlich nur als Schnittstelle für die 3. Schicht.
+In Kapitel \ref{block} wird beschrieben wie man aus einem Algorithmus 
+eine Blockchiffre generiert.
+
+
+\subsubsection{3. Schicht: Modus}
+Diese Schicht versetzt eine Blockchiffre in einen vernünftigen Modus. Es gibt 
+verschiedene Modi für verschiedene Szenarien die alle ihre Vor- und Nachteile 
+haben. Alle unterstützen Modi und deren Vor- und Nachteil werden in dem
+Kapitel \ref{modus} ausführlich beschrieben.
+
+\begin{figure}
+  \begin{center}
+    \huge
+    \begin{tabular}{|c @{\ } c|}\hline
+      III. & Modus\\
+      \hline
+      II. & Blockchiffre\\
+      \hline
+      I. & Algorithmus\\
+    \hline
+    \end{tabular}
+  \end{center}
+\caption{Die 3-Schichten-Architektur einer symmetrischen (Block-)chiffre}
+\end{figure}
+
+\subsubsection{Bemerkung}
+Mit dieser 3. Schichten Architektur ist es auch möglich Strom-Chiffren zu
+implementieren. Man muss dazu aus er 1. Ebene eine Prozedur zur Verfügung
+stellen die die nächsten n-Bit des Keystreams liefert. Damit kann man
+eine Oneway-Blockchiffre (Kapitel \ref{oneblock}) konstruieren und diese in
+den Oneway-OFB oder den Oneway-Counter-Modus versetzen. 
+Im Moment beinhaltet die ACL  noch keinen Strom-Chiffre.
+Es ist aber geplant die Strom-Chiffre Helix \cite{helix} zu implementieren.
+

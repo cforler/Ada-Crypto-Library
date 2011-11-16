@@ -1,0 +1,142 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnvnnnnvnnvnnnnnnnnnnnvnnvnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnn
+
+U crypto.symmetric.algorithm.sha384%b  crypto-symmetric-algorithm-sha384.adb  b87d67ff NE OO PK
+W ada.exceptions%s	a-except.adb		a-except.ali
+W crypto%s		crypto.ads		crypto.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.algorithm%s  crypto-symmetric-algorithm.ads  crypto-symmetric-algorithm.ali
+W crypto.symmetric.algorithm.sha_utils%s  crypto-symmetric-algorithm-sha_utils.adb  crypto-symmetric-algorithm-sha_utils.ali
+W gnat%s		gnat.ads		gnat.ali
+W gnat.os_lib%s		g-os_lib.ads		g-os_lib.ali
+W system%s		system.ads		system.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+
+U crypto.symmetric.algorithm.sha384%s  crypto-symmetric-algorithm-sha384.ads  096a2ac1 BN EE NE OO PK
+W crypto.symmetric.algorithm%s  crypto-symmetric-algorithm.ads  crypto-symmetric-algorithm.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-unccon.ads		20070406091342 f9eb8f06
+D a-uncdea.ads		20070406091342 f15a5ed1
+D crypto.ads		20110824150609 b0d04738
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-algorithm.ads  20110824150609 46346c43
+D crypto-symmetric-algorithm-sha384.ads  20110824150609 4f5e4682
+D crypto-symmetric-algorithm-sha384.adb  20111105085856 a6aa9f34
+D crypto-symmetric-algorithm-sha_utils.ads  20110824150609 5c3efb6a
+D crypto-symmetric-algorithm-sha_utils.adb  20111104161709 3e129394
+D crypto-types.ads	20111110185132 2d86af0f
+D crypto-types.adb	20111110185221 8112d1d6
+D gnat.ads		20050905075125 fd2ad2f1
+D g-os_lib.ads		20090409150019 0db74523
+D interfac.ads		20090409150019 f77d8799
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-fatflt.ads		20090409150019 11beb392
+D s-fatgen.ads		20090409150019 9267ca45
+D s-fatgen.adb		20100909085708 9ba81cee
+D s-os_lib.ads		20100910151410 e0681e2d
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-string.ads		20090417130712 46b01415
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+X 5 crypto.ads
+24K9*Crypto 25e11 8|25r9 57r5 9|23r6 24r6 27r15 157r6
+X 6 crypto-symmetric.ads
+23K16*Symmetric 5|24k9 6|25e21 8|25r16 57r12 9|23r13 24r13 27r22 157r13
+X 7 crypto-symmetric-algorithm.ads
+27K26*Algorithm 6|23k16 7|65e31 8|25r26 57r22 9|23r23 24r23 27r32 157r23
+37X4*File_Open_Error 9|117r16
+38X4*File_Read_Error 9|131r36
+59M9 Message_Counter_Type 9|106r18
+61M9 To_DWord_Counter_Type 9|107r18
+X 8 crypto-symmetric-algorithm-sha384.ads
+25K36*SHA384 7|27k26 8|57l32 57e38 9|27b42 157l33 157t39
+29U14*Init 29<19 54r19 9|29b14 40l8 40t12 73s7 120s7
+29a19 Hash_Value{12|89A9} 9|29b19 32m7 33m7 34m7 35m7 36m7 37m7 38m7 39m7
+31U14*Round 31>20 32=27 54r25 9|44b14 48l8 48t13
+31a20 Message_Block{12|90A9} 9|44b20 47r18
+32a27 Hash_Value{12|89A9} 9|45b20 47m33
+34V13*Final_Round{12|88A9} 34>25 35>25 36>25 54r32 9|52b13 61l8 61t19 92s21
+. 152s21
+34a25 Last_Message_Block{12|90A9} 9|52b25 56r73
+35i25 Last_Message_Length{12|99I12} 9|53b25 57r73
+36a25 Hash_Value{12|89A9} 9|54b25 58r73
+41U14*Hash 41>19 41<40 9|65b14 93l8 93t12 99s7
+41a19 Message{12|57A9} 9|65b19 66r32 67r32 77r46 90r22 90r30 90r50
+41a40 Hash_Value{12|88A9} 9|65b39 92m7
+43U14*Hash 43>19 43<40 9|97b14 100l8 100t12
+43s19 Message{string} 9|97b19 99r21
+43a40 Hash_Value{12|88A9} 9|97b40 99m31
+45U14*F_Hash 45>21 45<43 9|103b14 154l8 154t14
+45s21 Filename{string} 9|103b21 112r37
+45a43 Hash_Value{12|88A9} 9|103b43 152m7
+X 9 crypto-symmetric-algorithm-sha384.adb
+56a7 H{12|59A9} 60r26
+66i7 K{natural} 75r19
+67i7 L{natural} 83r10 84r28 85r13 90r44 92r50
+68i7 LM{natural} 84m10 86m13 86r19 89r21
+69a7 H{12|89A9} 73m12 79m43 92r53
+70a7 M{12|59A9} 89m10 89r12 92r46
+75i11 I{integer} 77r67 77r86
+77a13 T{12|59A9} 79r40
+104i7 Size{integer} 123m10 125r13 131r16 133r25 152r61
+105a7 H{12|89A9} 120m12 129m43 152r68
+106m7 Mcounter{7|59M9} 137r29 139m19 139r30 149r20
+107m7 Bcounter{7|61M9} 134r26 135m16 135r26 136r19 148r10
+108a7 M{12|90A9} 137m19 149m10 152r33
+109a7 B{12|64A12} 134m16 137r51 138r19 149r42
+110a7 Buf{12|57A9} 123m27 123r41 125r20 127r49 134r39
+111i7 Fd{22|168I9} 115m7 116r10 123r23 146r13
+112a7 FilePath=112:46{string} 115r25
+127a16 T{12|59A9} 129r40
+133i17 I{integer} 134r43
+X 10 crypto-symmetric-algorithm-sha_utils.ads
+24K37*Sha_Utils 9|23w33 24r33 10|77e42
+48U14*Round_SHA2 9|47s7 79s16 129s16
+52V13*Final_Round_SHA2{12|89A9} 9|56s56
+58U14*Init_SHA2 9|31s7
+X 12 crypto-types.ads
+34M9*Byte
+43M9*DWord
+57A9*Bytes(34M9)<integer> 8|41r32 9|65r32 110r18
+59A9*DWords(43M9)<integer> 9|56r20 56r49 70r11 77r26 127r29
+64A12*Byte_DWord{57A9}<integer> 9|109r18
+88A9*DW_Block384<59A9><integer> 8|37r31 41r58 43r58 45r61 9|55r31 56r27 60r14
+. 65r56 97r57 103r60
+89A9*DW_Block512<59A9><integer> 8|29r36 32r47 36r47 9|29r36 45r40 54r48 69r11
+. 105r18
+90A9*DW_Block1024<59A9><integer> 8|31r39 34r47 9|44r39 52r48 70r18 79r27
+. 92r33 108r18 129r27
+99I12*Message_Block_Length1024{natural} 8|35r47 9|53r47 152r36
+105V13*Shift_Left{natural} 9|77s56 77s75
+106V13*Shift_Right{natural} 9|84s16
+173V13*To_DWord{43M9} 9|137s42 149s33
+175V13*To_DWords{59A9} 9|77s36 90s12 127s39
+198V13*To_Bytes{57A9} 9|99s12
+X 14 gnat.ads
+36K9*GNAT 9|25r6 25r23 14|39e9
+X 15 g-os_lib.ads
+51K14*OS_Lib=51:36 9|25w11 25r28
+X 22 s-os_lib.ads
+168I9*File_Descriptor<integer> 9|111r18
+176i4*Invalid_FD{168I9} 9|116r15
+179n18*Binary{179E9} 9|115r43
+281U14*Close 9|146s7
+377V13*Read{integer} 9|123s18
+603V13*Open_Read{168I9} 9|115s14
+

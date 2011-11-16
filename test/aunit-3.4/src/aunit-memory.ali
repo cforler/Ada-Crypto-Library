@@ -1,0 +1,41 @@
+V "GNAT Lib v4.6"
+A -O3
+A -fno-strict-aliasing
+A -gnat05
+A -gnatn
+A -gnatwr
+A -gnatwc
+A -gnatwl
+A -gnatwp
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnn
+
+U aunit.memory%b	aunit-memory.adb	b6c145a2 NE OO PK
+W aunit%s		aunit.adb		aunit.ali
+
+U aunit.memory%s	aunit-memory.ads	f51d518b BN EE NE OO PK
+W aunit%s		aunit.adb		aunit.ali
+W system%s		system.ads		system.ali
+
+D aunit.ads		20111107163336 76cdf7c6
+D aunit-memory.ads	20111107163336 a0315146
+D aunit-memory.adb	20111107163336 16f014e4
+D system.ads		20110928073203 23e1f70b
+X 1 aunit.ads
+29K9*AUnit 43e10 2|28r9 41r5 3|29r14 53r5
+X 2 aunit-memory.ads
+28K15*Memory 1|29k9 2|41l11 41e17 3|29b20 53l11 53t17
+30M9*size_t 32r33 3|35r33 36r34
+32V13*AUnit_Alloc{4|64M9} 32>26 38r19 3|35b13 40l8 40t19
+32m26 Size{30M9} 3|35b26 39r25
+34U14*AUnit_Free 34>26 39r19 3|46b14 51l8 51t18
+34m26 Obj{4|64M9} 3|46b26 50r16
+X 3 aunit-memory.adb
+36V16*RT_Malloc{4|64M9} 36>27 37b<c,__gnat_malloc>25 39s14
+36m27 Size{2|30M9}
+47U17*RT_Free 47>26 48b<c,__gnat_free>25 50s7
+47m26 Obj{4|64M9}
+X 4 system.ads
+37K9*System 2|26w6 32r48 34r32 3|35r48 36r49 46r32 47r32 4|153e11
+64M9*Address 2|32r55 34r39 3|35r55 36r56 46r39 47r39
+

@@ -1,0 +1,80 @@
+V "GNAT Lib v4.6"
+A -O3
+A -fno-strict-aliasing
+A -gnat05
+A -gnatn
+A -gnatwr
+A -gnatwc
+A -gnatwl
+A -gnatwp
+P ZX
+R nnnnnnnvnvnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnn
+
+U aunit.time_measure%b	aunit-time_measure.adb	c4150d4d NE OO PK
+W aunit%s		aunit.adb		aunit.ali
+
+U aunit.time_measure%s	aunit-time_measure.ads	1ac42b03 BN EE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.calendar%s	a-calend.adb		a-calend.ali
+W aunit%s		aunit.adb		aunit.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-calend.ads		20090409150019 343c83dd
+D a-calend.adb		20091130135235 7222c9e0
+D a-except.ads		20090727140100 0c711ac9
+D a-unccon.ads		20070406091342 f9eb8f06
+D aunit.ads		20111107163336 76cdf7c6
+D aunit-time_measure.ads  20111107163336 58355f18
+D aunit-time_measure.adb  20111107163336 9c205255
+D interfac.ads		20090409150019 f77d8799
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-osprim.ads		20090409150019 b0d18c29
+D s-osprim.adb		20091121120111 9201ba69
+D s-parame.ads		20091130110856 9c5d83fa
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-traent.ads		20090417130712 5221ee41
+X 1 ada.ads
+16K9*Ada 19e8 7|27r6 32r15 33r15 38r43 39r43 8|35r18 44r17 52r16
+X 2 a-calend.ads
+36K13*Calendar 358e17 7|27w10 32r19 33r19 38r47 39r47 8|35r22 44r21 52r20
+38I9*Time 7|32r28 33r28 8|52r29
+52V13*Clock{38I9} 8|35s31 44s30
+74V13*Time_Of{38I9} 7|38s56 39s56
+97V13*"-"{duration} 8|54s37
+X 6 aunit.ads
+29K9*AUnit 43e10 7|29r9 60r5 8|27r14 132r5
+X 7 aunit-time_measure.ads
+29K15*Time_Measure 6|29k9 7|60l11 60e23 8|27b20 132l11 132t23
+31R9*Time 34e14 38r25 41r40 44r39 47r30 8|33r40 42r39 51r30
+32i7*Start{2|38I9} 38m34 8|35m9 54r41
+33i7*Stop{2|38I9} 39m34 8|44m9 54r32
+36O9*AUnit_Duration 47r43 53r41 58c9 8|51r43 54r14 61r41
+38r4*Null_Time{31R9}
+41U14*Start_Measure 41=29 8|33b14 36l8 36t21
+41r29 T{31R9} 8|33b29 35m7
+44U14*Stop_Measure 44=28 8|42b14 45l8 45t20
+44r28 T{31R9} 8|42b28 44m7
+47V13*Get_Measure{36O9} 47>26 8|51b13 55l8 55t19
+47r26 T{31R9} 8|51b26 54r30 54r39
+51U22 Put 51>27 8|79s10 103s10 110s13 122s10
+51i27 I{integer}
+52U22 Put 52>27 8|73s16 104s10 117s10 127s7 129s7
+52s27 S{string}
+53u14*Gen_Put_Measure 53>31 8|61b14 130l8 130t23
+53o31 Measure{36O9} 8|61b31 63r40
+X 8 aunit-time_measure.adb
+62i7 H{integer} 85m10 85r15 102r10 103r15
+62i10 M{integer} 90m10 90r15 108r10 110r18 114r18
+62i13 S{integer} 95m10 95r15 122r15 124r15
+63o7 T{duration} 84r13 86m10 86r15 89r13 91m10 91r15 94r13 96m10 96r15 128r21
+64b7 Force{boolean} 100m7 105m10 108r24 109r17 118m10 121r14
+66U17 Put 66>22 66>35 69b17 80l11 80t14 114s13 124s10 128s7
+66i22 N{integer} 69b22 72r16 79r15
+66i35 Length{integer} 69b35 71r34
+71i14 Dig{integer} 72r24
+

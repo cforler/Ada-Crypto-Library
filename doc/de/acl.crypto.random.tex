@@ -1,0 +1,77 @@
+\chapter{Crypto.Random}
+\section{Einführung}
+Dieses Paket greift defaultmäßig auf ``dev/random/'' zu.
+Unter Linux ist \\``/dev/random'' ein Pseudodevice das kryptographisch sichere
+Pseudozufallsbits liefert. Wenn sie ein Betriebsystem verwenden das kein 
+solches Pseudodevice besitzt, dann können sie dies mit Hilfe von mit 
+Brian Warners ``Entropy Gathering Daemon''(EGD), der unter
+\textit{http://www.lothar.com/tech/crypto/} zu finden 
+ist,  nachinstallieren. Der EGD ist ein Userspace-Implementierung des 
+Linux-Kernel-Devices ``dev/random/'', das kryptograpisch sichere
+Zuallsbits generiert.\\
+Im privaten Teil befindet sich die Variable ``Path''. Diese Variable gibt den
+Pfad zu einer Datei, Named Pipe oder Gerät das krytograpisch sichere
+Zufallsbits enthält an.  Dadurch sind Sie in der Lage die ACL auch an eine
+kryptograpisch sichere (Pseudo-)Zufallsbitquelle eines nicht POSIX kompatiblen
+Betriebsystems wie Windows XP anbinden.\\
+Weiterhin besteht die Möglichkeit unter Windows den Marsaglia- RNG zu benutzen.
+Er ist ein lagged- Fibonacci Sequenz Generator und erzeugt 24-Bit real numbers
+im Intervall [0,1].\\
+Eigenschaften: Kombination zweier unterschiedlicher Generatoren, welche fort-
+laufende Bits erzeugen. Diese werden durch zwei weitere Generatoren zu einer 
+Tabelle Kombiniert.
+Die Prozedur ''Start'' initialisiert diese Tabelle, welche von der Funktion 
+''Next'' genutzt wird um die nächste Zufallszahl zu generieren.
+
+\section{API}
+\subsection{Prozeduren}
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    procedure Read(B : out Byte);
+    procedure Read(W : out Word);
+    procedure Read(D : out DWord);
+  \end{lstlisting}
+  Bei diesen drei Prozeduren wird B, W oder D mit Bits aus der
+  verwendeten Pseudozufallsbit-Quelle gefüllt.\\ \ \\
+  \hline\\
+\end{tabular}
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    procedure Read(Byte_Array  : out Bytes);
+    procedure Read(Word_Array  : out Words);
+    procedure Read(DWord_Array : out DWords);
+  \end{lstlisting}\\
+  Diese drei Prozeduren wirden die übergebenen Arrays mit Bits aus der 
+  verwendeten Pseudozufallsbit-Quelle gefüllt. \\ \ \\
+\end{tabular}
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    procedure Start(
+    New_I : Seed_Range_1 := Default_I;
+    New_J : Seed_Range_1 := Default_J;
+    New_K : Seed_Range_1 := Default_K;
+    New_L : Seed_Range_2 := Default_L);
+  \end{lstlisting}\\
+  \\ \ \\
+\end{tabular}
+
+\subsection{Exceptions}
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    Random_Source_Does_Not_Exist_Error : exception;
+  \end{lstlisting}\\
+  Diese Ausnahme wird aufgerufen, wenn kein (kryptograpisch sicherer) 
+  Pseudozufallsbit-Quelle gefunden wurde.\\ \ \\
+  \hline\\
+  \begin{lstlisting}{}
+    Random_Source_Read_Error : exception;
+  \end{lstlisting}\\
+  Wenn ein Lesefehler bei einem Zugriff auf die Pseudozufallsbit-Quelle 
+  auftritt, wird die folgende Aufnahme ausgeworfen. \\ \ \\
+  \hline\\
+\end{tabular}
+
+\begin{lstlisting}{}
+\end{lstlisting}

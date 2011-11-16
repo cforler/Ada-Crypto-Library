@@ -1,0 +1,656 @@
+\chapter{Crypto.Types}
+Dieses Paket stellt die elementaren Typen der ACL und dessen  Basisfunktionen 
+zur Verfügung.\\ \ \\
+{\large \textbf{WICHTIG:} \\
+  Bei der Verwendung der ACL sollten Sie unbedingt dieses Paket mittels
+  \begin{lstlisting}{}
+    with Crypto.Types;
+  \end{lstlisting}
+  importieren}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Elementare Typen}
+Bei den elementaren bzw. primären Typen handelt es sich ausschließlich um
+modulare Typen. D.h. ein Variablenüberlauf bzw -unterlauf führt nicht zu 
+einer Exception. Wenn das Ergebnis einer Operation nicht im Wertebereich des
+modularen Types liegt, dann wird $n:=2**Type'Size=Type'Last+1$ solange 
+addiert bzw. subtrahiert, bis das Ergebnis wieder im Wertebereich des 
+modularen Types liegt.\\
+
+\begin{lstlisting}{}
+type Bit is mod 2 ** 1;
+for Bit'Size use 1;
+
+type Byte is mod 2 ** 8;
+for Byte'Size use  8;
+
+type Word is mod 2 ** 32;
+for Word'Size use 32;
+
+type DWord is mod 2 ** 64;
+for DWord'Size use 64;
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Beispiel}
+\begin{lstlisting}[frame=brtl]{Modulare Typen}
+with Crypto.Types;
+with Ada.Text_IO;
+use Crypto.Types;
+
+procedure Example is
+   -- Byte hat einen Wertebereich von 0..255
+   A, B : Byte;
+begin
+   A := 100;
+   B := A + 250; -- Ueberlauf bei B
+   A := A - 250; -- Unterlauf bei A
+   Ada.Text_IO.Put_Line("A: " &  A'IMG);
+   Ada.Text_IO.Put_Line("B: " &  B'IMG);
+end example;
+\end{lstlisting}\ \\
+\textit{Ausgabe des Programmes:\\}
+\texttt{A:  106\\B:  94}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Abgeleitete Typen}
+Abgeleitete Typen sind Typen die von elementaren Typen abgeleitet werden.
+In der Regel handelt es sich dabei um Felder die aus Elementaren Typen
+bestehen. \textbf{Alle nicht privaten Felder, die aus elementaren Typen
+  bestehen, werden in der ACL als n-Bit Zahlen interpretiert}, wobei das 
+erste Element (First) als das höchstwertigste und das letzte Element (Last)
+als der niederwertigster Teil dieser Zahl interpretiert wird.
+D.h. Die Wertigkeit eines Elements sinkt mit der Höhe des Index.
+
+\begin{tabular}{p{\textwidth}}
+\subsubsection{Bit}
+\begin{lstlisting}{Bits}
+  type Bits is array (Integer range <>) of Bit;
+\end{lstlisting}\ \\ \ \\
+\hline 
+\end{tabular}
+
+
+\begin{tabular}{p{\textwidth}}
+\subsubsection{Bytes} 
+\begin{lstlisting}{Bytes}
+  type Bytes is array (Integer range <>) of Byte;
+  
+  subtype Byte_Word  is Bytes (0 .. 3);
+  subtype Byte_DWord is Bytes (0 .. 7);
+
+  subtype B_Block32  is Bytes (0 ..  3);
+  subtype B_Block48  is Bytes (0 ..  5);
+  subtype B_Block56  is Bytes (0 ..  6);
+  subtype B_Block64  is Bytes (0 ..  7);
+  subtype B_Block128 is Bytes (0 .. 15);
+  subtype B_Block160 is Bytes (0 .. 19); 
+  subtype B_Block192 is Bytes (0 .. 23);
+  subtype B_Block256 is Bytes (0 .. 31);
+\end{lstlisting}
+Ein B\_BlockN besteht immer aus einem N Bit-Array das in N/8 Bytes
+unterteilt ist.
+Der subtype B\_Block256 ist z.B. ein 256-Bitstring der in 32 (256/8) Bytes
+unterteilt ist. In Ada lässt sich dies durch ein  32-elementiges
+Byte-Array abbilden.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \subsubsection{Words} 
+  \begin{lstlisting}{Words}
+  type Words   is array (Integer range <>) of Word;
+  
+  subtype W_Block128  is Words(0 .. 3);
+  subtype W_Block160  is Words(0 .. 4);
+  subtype W_Block192  is Words(0 .. 5);
+  subtype W_Block256  is Words(0 .. 7);
+  subtype W_Block512  is Words(0 .. 15);
+  \end{lstlisting}
+  Ein W\_BlockN besteht immer aus einem N Bit-Array das in N/32 Words
+  unterteilt ist.
+  Der subtype W\_Block256 ist z.B. ein 256-Bitstring der in 8 (256/32) Word
+  Elementen unterteilt ist. In Ada lässt sich dies durch ein  8-elementiges
+  Word-Array abbilden.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+\begin{tabular}{p{\textwidth}}
+  \subsubsection{DWords} 
+  \begin{lstlisting}{DWords}
+  type DWords   is array (Integer range <>) of DWord  
+    
+  subtype DW_Block256   is DWords(0 ..  3);
+  subtype DW_Block384   is DWords(0 ..  5);
+  subtype DW_Block512   is DWords(0 ..  7);
+  subtype DW_Block1024  is DWords(0 .. 15);
+  \end{lstlisting}
+  Ein DW\_BlockN besteht immer aus einem N Bit-Array das in N/64 Words
+  unterteilt ist.
+  Der subtype DW\_Block256 ist z.B. ein 256-Bitstring der in 4 (256/64) DWord
+  Elementen unterteilt ist. In Ada lässt sich dies durch ein 4-elementiges
+  DWord-Array abbilden.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \subsubsection{Strings} 
+  \begin{lstlisting}{Strings}
+    subtype Hex_Byte  is String (1.. 2);
+    subtype Hex_Word  is String (1.. 8);
+    subtype Hex_DWord is String( 1..16);
+  \end{lstlisting}\ \\
+  \hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+\begin{tabular}{p{\textwidth}}
+\subsubsection{Nachrichtenblöcke} 
+\begin{lstlisting}{Nachrichtenbloecke}
+subtype Message_Block_Length512  is Natural range 0 ..  64;
+subtype Message_Block_Length1024 is Natural range 0 .. 128;
+
+\end{lstlisting}
+Die Message\_Block\_Length Typen gibt die Länge in Zeichen (Bytes) einer 
+Nachricht innerhalb eines 512- bzw. 1024-Bit Nachrichtenblockes M an.
+Wenn man z.B. eine 1152-Bit lange Nachricht in 512-Bit Blöcke unterteilt, dann
+erhält man drei 512-Bit Blöcke. Wobei die Nachrichtenlänge im letzten Block 16
+($1280 - 2 \cdot 512 = 128 / 8 = 16$) ist.
+Die restlichen 384-Bit des letzten Nachrichtenblockes sind \glqq leer \grqq, 
+d.h. sie enthalten keine Teile der ursprünglichen Nachricht.
+Eine Variable des Types M\_Length512 würde man in diesem
+Fall auf 32 setzen. Diese Variablen-Typen werden also für das Auffüllen von
+Nachrichtenblöcken (padding) benötigt. Mehr Informationen zum Thema ``Padding''
+gibt es im Kapitel über Hashfunktionen (\ref{hash}).\\ \ \\
+\end{tabular}\ \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Funktionen und Prozeduren}
+\subsection{Bitverschiebungs Funktionen}
+\begin{lstlisting}{Types-functions}
+   function Shift_Left   (Value  : Byte;
+                          Amount : Natural) 
+			  return Byte;
+
+   function Shift_Right  (Value  : Byte;
+                          Amount : Natural) 
+			  return Byte;
+
+   function Rotate_Left  (Value  : Byte;
+                          Amount : Natural)
+			  return Byte;
+
+   function Rotate_Right (Value  : Byte;
+                          Amount : Natural)
+			  return Byte;
+
+
+   function Shift_Left   (Value : Word;
+                          Amount : Natural) 
+                          return Word;
+
+   function Shift_Right  (Value  : Word; 
+                          Amount : Natural) 
+			  return Word;
+
+   function Rotate_Left  (Value  : Word; 
+                          Amount : Natural) 
+			  return Word;
+
+   function Rotate_Right (Value  : Word; 
+                          Amount : Natural) 
+			  return Word;
+
+
+   function Shift_Left   (Value  : DWord; 
+                          Amount : Natural) 
+			  return DWord;
+
+   function Shift_Right  (Value  : DWord;
+                          Amount : Natural)
+			  return DWord;
+
+   function Rotate_Left  (Value  : DWord; 
+                          Amount : Natural)
+                           return DWord;
+
+   function Rotate_Right (Value  : DWord;
+                          Amount : Natural) 
+			  return DWord;
+\end{lstlisting}\ \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Basis Funktionen}\ 
+\begin{tabular}{p{\textwidth}}
+  \textbf{\grqq XOR''}\ \\
+  \begin{lstlisting}{}
+    function "xor" (Left, Right : Bytes)   return Bytes;
+    function "xor" (Left, Right : Words)   return Words;
+    function "xor" (Left, Right : DWords) return DWords;
+  \end{lstlisting}
+  \underline{Vorbedingung:}\\ Left'Length = Right'Length\\
+  \underline{Exception:}\\
+  Verletzung der Vorbedingung :  Constraint\_Byte/Word/DWord\_Error\\ \ \\
+  Diese Funktionen verknüpfen die beiden Eingabefelder feldweise mit
+  der XOR-Operation. D.h. Left(Left'First) wird z.B. mit
+  Right(Right'First) XOR-verknüpft und Left(Left'Last) wird mit
+  Right(Right'Last) XOR-verknüpft.\\ \ \\
+  \hline\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \textbf{``+''}
+ \begin{lstlisting}{}
+     function "+" (Left : Bytes;  Right : Byte)   return Bytes;
+     function "+" (Left : Byte;   Right : Bytes)  return Bytes;
+     function "+" (Left : Words;  Right : Word)   return Words;
+     function "+" (Left : Word;   Right : Words)  return Words;
+     function "+" (Left : Words;  Right : Byte)   return Words;
+     function "+" (Left : DWords; Right : DWord)  return DWords;
+     function "+" (Left : DWord;  Right : DWords) return DWords;
+     function "+" (Left : DWords; Right : Byte)   return DWords;
+ \end{lstlisting}
+
+
+\begin{tabular}{p{\textwidth}}
+  Bei diesen Funktionen werden Left und Right als Zahlen interpretiert wobei
+  Left(Left'First) bzw. Right(Right'First) das niederwertigste 
+  Byte/Word/ DWord und Left(Left'Last) bzw. Right(Right'Last) das
+  höchstwertigste Byte /Word/DWord einer Zahl repräsentiert.
+  Das Ergebnis dieser Funktion ist die Summe der beiden Zahlen.\\ \ \\
+  \textbf{Beispiel:}
+\begin{lstlisting}{}
+procedure plus is 
+  A : Byte := 200;
+  B : Bytes(0..1) := (0 => 100, 1 => 16); 
+  begin
+  B := A+B; -- B := 2#11001000#+2#10000_01100100# 
+  -- B(0) = 2#101100# = 44
+  -- B(1) = 2#010001# = 17
+end plus;
+\end{lstlisting}
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Umwandlungs-Funktionen}\ \\
+Im folgenden gilt:\\ \ \\
+$\mathtt{W : Word  \equiv B0||B1||B2||B3}$\\
+$\mathtt{D : DWord \equiv B0||B1||B2||B3||B4||B5||B6||B7}$\\ \ \\
+wobei B0 hier jeweils dem höchstwertigsten Byte und B3 bzw. B7 dem 
+niederwertigsten Byte von W bzw. D entspricht.
+
+\subsubsection{ByteN}
+\begin{lstlisting}{}
+  function Byte0 (W : Word)  return Byte;
+  function Byte1 (W : Word)  return Byte;
+  function Byte2 (W : Word)  return Byte;
+  function Byte3 (W : Word)  return Byte; 
+
+  function Byte0 (D : DWord) return Byte;
+  function Byte1 (D : DWord) return Byte;
+  function Byte2 (D : DWord) return Byte;
+  function Byte3 (D : DWord) return Byte;
+  function Byte4 (D : DWord) return Byte;
+  function Byte5 (D : DWord) return Byte;
+  function Byte6 (D : DWord) return Byte;
+  function Byte7 (D : DWord) return Byte;
+\end{lstlisting}
+\begin{tabular}{p{\textwidth}}
+  Diese Funktionen geben das entprechende N-te Byte von W bzw. D zurück.
+  Man beachte, das hier $\mathtt{B0 \equiv Byte0}$ usw. entspricht.\\ \ \\
+  \hline\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}   
+  \textbf{To\_Bytes}\ \\
+  \begin{lstlisting}{}
+    function To_Bytes(X : Word)  return Byte_Word;
+    function To_Bytes(X : DWord) return Byte_DWord; 
+    
+    function To_Bytes(Word_Array  : Words)  return Bytes;
+    function To_Bytes(DWord_Array : DWords) return Bytes;
+    
+    function To_Bytes(Message : String) return Bytes;
+  \end{lstlisting}\\
+  Die ersten beiden Funktion wandelt ein Word bzw. DWord in ein Byte\_Word bzw.
+  Byte\_DWord um.
+  Dabei wird das höchstwertigste Byte von X zum ersten Element des
+  Rückgabewertes (First) und das niederwertigste Byte von X zum letzten 
+  Element des Rückgabewertes.\\ \ \\ 
+  \textbf{Beispiel:}
+  \begin{lstlisting}{}
+    D : DWord := 16#AA_BB_CC_DD_EE_FF_11_22#;
+    B : Byte_DWord := To_Bytes(D);
+    -- B(0) := 16#AA#; B(1) := 16#BB#; B(2) := 16#CC#;
+    -- B(3) := 16#DD#; B(4) := 16#EE#; B(5) := 16#FF#; 
+    -- B(6) := 16#11#; B(7) := 16#22#;
+  \end{lstlisting}\\
+  Die nächsten beiden Funktion wandelt ein Word-Array, bzw. DWord-Array in ein
+  Byte-Array um.  Dabei wird das höchstwertigste Byte des ersten
+  Arrrayelemntes zum ersten Element des Byte-Arrays und das niederwertigste
+  Byte vom letzten  Arrrayelement zum letzten Element des Byte-Arrays.\\ \ \\
+  
+  Die letzte Funktion wandelt einen (ASCII-) String in ein Byte-Array B um.
+  Für alle $I \in$ Message'Range gilt dabei :
+  B(I) =  Character'Pos(Message(I)).\\  \ \\
+\hline\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \textbf{R\_To\_Bytes}\ \\
+  \begin{lstlisting}{}
+    function R_To_Bytes (X :  Word) return Byte_Word; 
+    function R_To_Bytes (X : DWord) return Byte_DWord;
+  \end{lstlisting}
+  Diese Funktionen wandeln ein Word bzw. DWord X in ein Byte-Array 
+  Byte\_Word bzw. Byte\_DWord B um.
+  Dabei wird das höchstwertigste Byte von X zu B(B'Last)
+  und das niederwertigste Byte von X zu B(B'First).\\ \ \\
+  \hline\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \textbf{To\_Word}\ \\
+  \begin{lstlisting}{}
+    function To_Word (X : Byte_Word)  return Word;
+
+    function To_Word (A,B,C,D : Byte) return Word;
+
+    function To_Word (A,B,C,D : Character) return Word;  
+\end{lstlisting}\\ 
+  Die erste Funktion wandelt ein Byte\_Word in ein Word um.
+  Dabei wird X(Byte\_Word'First) zum höchstwertigesten Byte des Wortes und 
+  X(Byte\_Word'Last) zum niederwertigsten Byte des Wortes.\\ \ \\
+  Die zweite Funktion wandelt vier Bytes (A, B, C, D) zu einem Wort um.
+  Dabei wird das erste Byte (A) zum höchstwertigsten Byte des Wortes und das
+  letzte Byte (D) zum niederwertigsten Byte des Wortes.\\  \ \\
+  Die letzte Funktion wandelt vier Character (A, B, C, D) zu einem Wort um.
+  Dabei wird die Position des erste Character (A'Pos) zum höchstwertigsten
+  Byte des Wortes und die Position das letzte Characters (D'Pos) zum 
+  niederwertigsten Byte des Wortes.\\ \ \\
+  \hline\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}   
+  \textbf{R\_To\_Word}\ \\
+  \begin{lstlisting}{}
+    function R_To_Word (X : Byte_Word) return Word;   
+  \end{lstlisting}
+  Diese Funktion wandelt ein Byte\_Word in ein Word um.
+  Dabei wird X(Byte\_Word'First) zum niederwertigsten Byte und 
+  X(Byte\_Word'Last) zum höchstwertigsten Byte des Resultats.\\ \ \\
+  \hline\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{tabular}{p{\textwidth}}
+  \textbf{To\_Words}\ \\
+  \begin{lstlisting}{}
+    function To_Words(Byte_Array : Bytes)  return Words;
+  \end{lstlisting}
+  Diese Funktion wandelt ein Byte-Array B in ein Word-Array W um.
+  Dabei wird B als Zahl interpretiert bei der B(B'First) das niederwertigste
+  Byte und  B(B'Last) das höchstwertigste  Byte dieser Zahl darstellt. 
+  Diese Zahl wird in ein Word-Array konvertiert, das ebenfalls
+  als Zahl interpretiert wird, bei der das erste Element (First) den 
+  höchstwertigsten und das letzte Element (Last) den niederwertigsten Teil der
+  Zahl darstellt.\\ \ \\
+  \textbf{Beispiele:}\\
+  \textbf{(i)}
+\begin{lstlisting}{}
+      B : Bytes(1..6) := (16#0A#, 16#14#, 16#1E#, 
+                          16#28#, 16#32#, 16#3C#);
+      W : Words := Byte_to_Dwords(B);
+      -- W(D'First) = 16#0A_14_1E_28#
+      -- W(D'Last)  = 16#32_3C_00_00#
+    \end{lstlisting}\\ \ \\
+  \textbf{(ii)}\\ \ \\
+    \textit{Eingabe:}$B=\underbrace{B(1)||B(2)||B(3)||B(4)}_{W(0)}
+    \underbrace{B(5)||B(6)||B(7)||B(8)}_{W(1)}
+    \underbrace{B(9)||B(10)}_{W(2)}$\\ \ \\
+    \textit{Ausgabe:} $W=W(0)||W(1)||W(2)$\\ \ \\
+    \hline\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \textbf{To\_DWord}\ \\
+  \begin{lstlisting}{} 
+    function To_DWord (X : Byte_DWord) return DWord;
+  \end{lstlisting}\\
+  Diese Funktion wandelt ein Byte\_DWord in ein DWord um.
+  Dabei wird X(Byte\_Word'First) zum höchstwertigesten Byte des DWords und 
+  X(Byte\_Word'Last) zu dessen niederwertigsten Byte.\\ \ \\
+  \hline\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+\begin{tabular}{p{\textwidth}}   
+\textbf{R\_To\_DWord}\ \\
+  \begin{lstlisting}{}
+    function R_To_DWord (X : Byte_DWord) return DWord;  
+  \end{lstlisting}
+  Diese Funktion wandelt ein Byte\_DWord in ein DWord um.
+  Dabei wird X(Byte\_Word'First) zum niederwertigsten Byte und 
+  X(Byte\_Word'Last) zum höchstwertigsten Byte des Resultats.\\ \ \\
+  \hline\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \textbf{To\_DWords}\ \\
+  \begin{lstlisting}{}
+  function To_DWords  (Byte_Array : Bytes) return DWords;
+  \end{lstlisting}
+  Diese Funktion wandelt ein Byte\_Array B in ein DWord-Array um.
+  Dabei wird B als n-Bit Zahl interpretiert bei der  B(B'First)
+  das höchstwertigste Byte und B(B'Last) das niederwerigste Byte dieser
+  Zahl darstellt. Diese Zahl wird in ein DWord-Array konvertiert, das ebenfalls
+  als Zahl interpretiert wird, bei der das erste Element (First) den 
+  höchstwertigsten und das letzte Element (Last) den niederwertigsten Teil der
+  Zahl darstellt.\\ \ \\
+  \textbf{Beispiel:}
+\begin{lstlisting}{}
+    B : Bytes(1..10) : (10, 20, 30, 40, 50, 60, 70, 80, 90, 100);
+    D : DWords := Byte_to_Dwords(B);
+    -- D(D'First) =             16#0A_14_1E_28_32_3C_46_50#
+    -- D(D'Last) = D(First+1) = 16#5A_64_00_00_00_00_00_00#
+  \end{lstlisting}\\ \ \\
+  \hline\\
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \textbf{To\_String}\ \\
+  \begin{lstlisting}{}
+    function Bytes_To_String(ASCII : Bytes) return String;
+  \end{lstlisting}
+  Diese Funktion wandelt ein Byte-Array in einen String um, indem sie die 
+  einzelnen Bytes als ASCII-Code interpretiert.\\ \ \\
+  \hline\\
+\end{tabular}\ \\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \textbf{To\_Hex}\ \\
+  \begin{lstlisting}{}
+    function To_Hex(B : Byte)  return Hex_Byte;
+    function To_Hex(W : Word)  return Hex_Word;
+    function To_Hex(D : DWord) return Hex_DWord;
+  \end{lstlisting}
+  Diese Funktionen wandelt ein Byte, Word oder DWord in einen Hex-String
+  der Länge 2, 8 oder 16 um.
+  Beispielsweise entspricht \texttt{Put(To\_Hex(W));} in C dem Ausdruck
+  \texttt{ printf(``\%08X'', i);}.\\ \ \\
+  \textbf{Beispiel:}
+\begin{lstlisting}{}
+    B : Word := 0;
+    W : Word := 16#AABBCCDDEEFF#;
+    
+    HB:Hex_Byte:=To_Hex(W); -- Es gilt: HB="00".
+    HW:Hex_Word:=To_Hex(W); -- Es gilt: HW="0000AABBCCDDEEFF".
+  \end{lstlisting}\ \\
+\end{tabular}\ \\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Is\_Zero Funktionen}
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+   function Is_Zero(Byte_Array  : Bytes)  return Boolean;
+   function Is_Zero(Word_Array  : Words)  return Boolean;
+   function Is_Zero(DWord_Array : DWords) return Boolean;
+  \end{lstlisting}
+  Diese Funktionen geben ``True'' zurück, wenn alle Felder des übergebenen
+  Arrays den Wert ``0'' enthalten. Ansonsten geben diese Funktionen ``False''
+  zurück.\\
+\end{tabular}\ \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Padding Prozeduren}
+ \begin{lstlisting}{}
+procedure Padding(Data           : in out Bytes;
+                  Message_Length : in  Word;
+                  Data2          : out Bytes);
+
+procedure Padding(Data           : in  out Words;
+                  Message_Length : in  Word;
+                  Data2          : out Words);
+
+ procedure Padding(Data           : in  out DWords;
+                   Message_Length : in  Word;
+                   Data2          : out DWords); 
+ \end{lstlisting}
+ \textbf{Parameter:}\\ \ \\
+ \textit{Data:}\\
+ Data muss ein Array sein, das eine Nachricht enthält.
+ Die Nachricht muss folgendem Bereich von Data entsprechen:\\
+\texttt{Data(Data'First)..Data(Data'First+(Message\_Length-1))}\\ \ \\
+\textit{Message\_Length:}\\
+Die Länge der Nachricht die Data enthält.\\ \ \\
+\textit{Data2:}\\
+Wird für Sonderfälle benötigt. Im Normalfall gilt nach dem 
+Prozeduraufruf Is\_Zero(Data2) = true.\\ 
+\ \\
+\textbf{Vorbedingungen:}\\
+\begin{enumerate}
+ \item Data'Length = Data2'Length
+ \item Message\_Length $\le$ Data'Length
+ \item Word(Data'Length) - Message\_Length $>$ 2**16-1\footnotemark 
+ \end{enumerate}\ \\
+ \textbf{Nachbedingung:}
+ \begin{enumerate}
+ \item Message\_Length $<$ Data'Length-2 $\Rightarrow$ Is\_Zero(Data2) = True
+ \item Is\_Zero(Data2) = False  $\Longleftrightarrow$ Message'Length $>$ 
+   Data'Length-2
+ \end{enumerate}\ \\
+ \textbf{Exceptions:}\\
+ \addtocounter{footnote}{-1} 
+\begin{tabular}{l@{ : }l}
+ Constraint\_Message\_Length\_Error &  Message\_Length $>$ Data'Length\\
+ Constraint\_Length\_Error &  Data'Length $>$ (2 * Byte'Last)
+ \footnote{Gilt nur wenn Data vom Type Byte ist}\\
+ \end{tabular}\ \\ \ \\
+ Diese Funktionen fügt einer Nachricht Null-Bytes/Words/Dwords an gefolgt
+ von einem Byte/Word/DWord das der Anzahl der eingefügten Null-Bytes
+ entspricht. Dabei können folgende Sonderfälle auftreten:
+ \begin{enumerate}
+ \item Message\_Length+1=Data'Length\\
+   Nachdem ein Null-Byte an die Nachricht angefügt wurde ist kein Platz mehr 
+   vorhanden um die Anzahl der eingefügten Null-Bytes/Words/DWords an die
+   Nachricht anzuhängen. Data(Data'Last) wurde ja mit einem 
+   Null-Byte/Word/DWord aufgefüllt. Um dieses Problem zu lösen werden 
+   alle Felder von Data2 außer Data2'Length auf 0 gesetzt. Data2'Last wird 
+   auf den Wert Data2'Length gesetzt.
+ \item Message\_Length=Data'Length\\
+   Analog zu dem ersten Sonderfall bis auf folgende Abweichungen:
+   \begin{enumerate}
+   \item Es wird kein Null-Byte/Word/DWord an die Nachricht angehängt  
+   \item Data2'Last := Data2'Length-1
+   \end{enumerate}
+ \end{enumerate}\ \\
+
+\subsubsection{Beispiel}
+\begin{lstlisting}[frame=brtl]{}
+  ... 
+  package BIO is new Ada.Text_Io.Modular_IO (Byte);
+ 
+  X : Bytes(1..9) := (1 => 2, 2 => 4, 3 => 6, 
+                      4 => 8, 5 => 9, others =>1);
+  Y : Bytes(1..9);
+begin
+  Padding(X, N, Y);
+  Put("X:");
+  for I in X'Range loop
+     BIO.Put(X(I));
+  end loop;
+  New_Line;
+  if Is_Zero(Y) = False  then
+      Put("Y:");
+      for I in Y.all'Range loop
+	 BIO.Put(Y.all(I));
+      end loop;
+   end if;
+...
+\end{lstlisting}\ \\
+\underline{Ausgabe:}\\
+\begin{itemize}
+\item N = 5\\
+  X : 2   4   6  8  9   0   0   0   3
+\item N = 8\\
+  X : 2   4   6   8   9   1   1   1   0\\
+  Y : 0   0   0   0   0   0   0   0   9
+\item N = 9\\
+  X : 2   4   6   8   9   1   1   1   1\\
+  Y : 0   0   0   0   0   0   0   0   8
+\end{itemize}
+
+
+
+

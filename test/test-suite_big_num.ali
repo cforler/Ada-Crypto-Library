@@ -1,0 +1,333 @@
+V "GNAT Lib v4.6"
+A -O3
+A -Wextra
+A -Werror
+A -ggdb
+A -g
+A -gnat05
+A -gnato
+A -gnatn
+A -gnatwr
+A -gnatwc
+A -gnatwl
+A -gnatwp
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnvnnnnvnnnnnnnnnnnnnnnn
+
+U test.suite_big_num%b	test-suite_big_num.adb	8c8a6aa2 OO PK
+W test%s		test.ads		test.ali
+W test.big_number_add%s	test-big_number_add.adb	test-big_number_add.ali
+W test.big_number_add_mod_utils%s  test-big_number_add_mod_utils.adb  test-big_number_add_mod_utils.ali
+W test.big_number_and%s	test-big_number_and.adb	test-big_number_and.ali
+W test.big_number_b_add%s  test-big_number_b_add.adb  test-big_number_b_add.ali
+W test.big_number_b_div%s  test-big_number_b_div.adb  test-big_number_b_div.ali
+W test.big_number_b_mult%s  test-big_number_b_mult.adb  test-big_number_b_mult.ali
+W test.big_number_b_sub%s  test-big_number_b_sub.adb  test-big_number_b_sub.ali
+W test.big_number_comp%s  test-big_number_comp.adb  test-big_number_comp.ali
+W test.big_number_dec%s	test-big_number_dec.adb	test-big_number_dec.ali
+W test.big_number_div%s	test-big_number_div.adb	test-big_number_div.ali
+W test.big_number_div_mod_utils%s  test-big_number_div_mod_utils.adb  test-big_number_div_mod_utils.ali
+W test.big_number_exponentiate%s  test-big_number_exponentiate.adb  test-big_number_exponentiate.ali
+W test.big_number_inc%s	test-big_number_inc.adb	test-big_number_inc.ali
+W test.big_number_inv_mod_utils%s  test-big_number_inv_mod_utils.adb  test-big_number_inv_mod_utils.ali
+W test.big_number_iseven%s  test-big_number_iseven.adb  test-big_number_iseven.ali
+W test.big_number_isodd%s  test-big_number_isodd.adb  test-big_number_isodd.ali
+W test.big_number_lprime_mod_utils%s  test-big_number_lprime_mod_utils.adb  test-big_number_lprime_mod_utils.ali
+W test.big_number_lsb%s	test-big_number_lsb.adb	test-big_number_lsb.ali
+W test.big_number_min_max%s  test-big_number_min_max.adb  test-big_number_min_max.ali
+W test.big_number_mod%s	test-big_number_mod.adb	test-big_number_mod.ali
+W test.big_number_mod_type_comp_and_add%s  test-big_number_mod_type_comp_and_add.adb  test-big_number_mod_type_comp_and_add.ali
+W test.big_number_mod_types%s  test-big_number_mod_types.adb  test-big_number_mod_types.ali
+W test.big_number_mr_mod_utils%s  test-big_number_mr_mod_utils.adb  test-big_number_mr_mod_utils.ali
+W test.big_number_msb%s	test-big_number_msb.adb	test-big_number_msb.ali
+W test.big_number_mult2%s  test-big_number_mult2.adb  test-big_number_mult2.ali
+W test.big_number_mult_mod_utils%s  test-big_number_mult_mod_utils.adb  test-big_number_mult_mod_utils.ali
+W test.big_number_multiplication%s  test-big_number_multiplication.adb  test-big_number_multiplication.ali
+W test.big_number_or%s	test-big_number_or.adb	test-big_number_or.ali
+W test.big_number_pow_mod_utils%s  test-big_number_pow_mod_utils.adb  test-big_number_pow_mod_utils.ali
+W test.big_number_prime_mod_utils%s  test-big_number_prime_mod_utils.adb  test-big_number_prime_mod_utils.ali
+W test.big_number_rand_mod_utils%s  test-big_number_rand_mod_utils.adb  test-big_number_rand_mod_utils.ali
+W test.big_number_rl%s	test-big_number_rl.adb	test-big_number_rl.ali
+W test.big_number_sl%s	test-big_number_sl.adb	test-big_number_sl.ali
+W test.big_number_sr%s	test-big_number_sr.adb	test-big_number_sr.ali
+W test.big_number_sub%s	test-big_number_sub.adb	test-big_number_sub.ali
+W test.big_number_sub_mod_utils%s  test-big_number_sub_mod_utils.adb  test-big_number_sub_mod_utils.ali
+W test.big_number_swap%s  test-big_number_swap.adb  test-big_number_swap.ali
+W test.big_number_xor%s	test-big_number_xor.adb	test-big_number_xor.ali
+W test.big_numbers_utils%s  test-big_numbers_utils.adb  test-big_numbers_utils.ali
+
+U test.suite_big_num%s	test-suite_big_num.ads	2ebf0035 EE NE OO PK
+W aunit%s		aunit.adb		aunit.ali
+W aunit.test_suites%s	aunit-test_suites.adb	aunit-test_suites.ali
+W test%s		test.ads		test.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-calend.ads		20090409150019 343c83dd
+D a-charac.ads		20070912115821 2d3ec45b
+D a-chlat1.ads		20070912115821 2825df20
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-stream.ads		20090409150019 2ca4ee37
+D a-string.ads		20070406091342 90ac6797
+D a-strmap.ads		20090409150019 9cb836fb
+D a-strunb.ads		20101220072657 e684739b
+D a-tags.ads		20101021101406 c7695348
+D a-unccon.ads		20070406091342 f9eb8f06
+D ada_containers.ads	20111107163335 11329e00
+D ada_containers-aunit_lists.ads  20111107163335 d9ebc89a
+D ada_containers-aunit_lists.adb  20111107163335 8eef1efa
+D aunit.ads		20111107163336 76cdf7c6
+D aunit-assertions.ads	20111107165920 68f88c78
+D aunit-memory.ads	20111107163336 a0315146
+D aunit-memory-utils.ads  20111107163336 5b1e3d11
+D aunit-options.ads	20111107163336 2fedf7fb
+D aunit-simple_test_cases.ads  20111107163336 4111c32f
+D aunit-test_cases.ads	20111107170228 9d52df4f
+D aunit-test_filters.ads  20111107163336 f10b2127
+D aunit-test_results.ads  20111107170709 3a8a9b0e
+D aunit-test_suites.ads	20111107165838 56536f43
+D aunit-tests.ads	20111107163336 1da11d49
+D aunit-time_measure.ads  20111107163336 58355f18
+D gnat.ads		20050905075125 fd2ad2f1
+D g-souinf.ads		20050905075401 e66ff50e
+D interfac.ads		20090409150019 f77d8799
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D test.ads		20111108195717 1948acb1
+D test-big_number_add.ads  20111108200255 c93fa02c
+D test-big_number_add_mod_utils.ads  20111108200436 894b9d2f
+D test-big_number_and.ads  20111108200513 2a57ed82
+D test-big_number_b_add.ads  20111105175318 02c8d66c
+D test-big_number_b_div.ads  20111108200737 f4e9dbb5
+D test-big_number_b_mult.ads  20111105175318 37827c73
+D test-big_number_b_sub.ads  20111105175318 216fe5c2
+D test-big_number_comp.ads  20111105175318 8dcbd514
+D test-big_number_dec.ads  20111105175318 dedfd726
+D test-big_number_div.ads  20111105175318 b4b526e9
+D test-big_number_div_mod_utils.ads  20111105175318 ac5738ee
+D test-big_number_exponentiate.ads  20111105175318 991bf081
+D test-big_number_inc.ads  20111105175318 3348ce59
+D test-big_number_inv_mod_utils.ads  20111105175318 6be5399a
+D test-big_number_iseven.ads  20111105175318 5b793000
+D test-big_number_isodd.ads  20111105175318 7c6d2cdb
+D test-big_number_lprime_mod_utils.ads  20111105175318 ab76a69c
+D test-big_number_lsb.ads  20111105175318 3e118f57
+D test-big_number_min_max.ads  20111105175318 1df49d65
+D test-big_number_mod.ads  20111105175318 69357c00
+D test-big_number_mod_type_comp_and_add.ads  20111105175318 b5bdc582
+D test-big_number_mod_types.ads  20111105175318 792c0058
+D test-big_number_mr_mod_utils.ads  20111105175318 3f336d3f
+D test-big_number_msb.ads  20111105175318 48a4c89f
+D test-big_number_mult2.ads  20111105175318 2826d37f
+D test-big_number_mult_mod_utils.ads  20111105175318 7b16acdf
+D test-big_number_multiplication.ads  20111105175319 e58fa3e7
+D test-big_number_or.ads  20111105175319 414c8b48
+D test-big_number_pow_mod_utils.ads  20111105175319 667fb046
+D test-big_number_prime_mod_utils.ads  20111105175319 5befc4e4
+D test-big_number_rand_mod_utils.ads  20111105175319 4e8f0525
+D test-big_number_rl.ads  20111105175319 564e1356
+D test-big_number_sl.ads  20111105175319 0119d206
+D test-big_number_sr.ads  20111105175319 e3571b1d
+D test-big_number_sub.ads  20111105175319 d69cc0f1
+D test-big_number_sub_mod_utils.ads  20111105175319 672948de
+D test-big_number_swap.ads  20111105175319 5a862cb7
+D test-big_number_xor.ads  20111105175319 87688c3a
+D test-big_numbers_utils.ads  20111108202119 bb373b96
+D test-suite_big_num.ads  20111105175319 61a4c3c7
+D test-suite_big_num.adb  20111107121105 77b5ad05
+X 17 aunit.ads
+29K9*AUnit 43e10 86|1r6 2r5
+X 26 aunit-test_suites.ads
+36K15*Test_Suites 81e22 86|1w12 2r11
+38R9*Test_Suite<27|33R9> 79e14 87|43r43
+39P9*Access_Test_Suite(38R9) 86|6r31 87|84r26
+43U14*Add_Test 87|86s7 87s7 88s7 89s7 90s7 91s7 92s7 93s7 94s7 95s7 96s7
+. 97s7 98s7 99s7 100s7 101s7 102s7 103s7 104s7 105s7 106s7 107s7 108s7 109s7
+. 110s7 111s7 112s7 113s7 114s7 115s7 116s7 117s7 118s7 119s7 120s7 121s7
+. 122s7 123s7 124s7
+X 46 test.ads
+23K9*Test 24e9 86|4r9 8r5 87|1r6 2r6 3r6 4r6 5r6 6r6 7r6 8r6 9r6 10r6 11r6
+. 12r6 13r6 14r6 15r6 16r6 17r6 18r6 19r6 20r6 21r6 22r6 23r6 24r6 25r6 26r6
+. 27r6 28r6 29r6 30r6 31r6 32r6 33r6 34r6 35r6 36r6 37r6 38r6 39r6 42r14
+. 44r43 45r43 46r43 47r43 48r43 49r43 50r43 51r43 52r43 53r43 54r43 55r43
+. 56r43 57r43 58r43 59r43 60r43 61r43 62r43 63r43 64r43 65r43 66r43 67r43
+. 68r43 69r43 70r43 71r43 72r43 73r43 74r43 75r43 76r43 77r43 78r43 79r43
+. 80r43 81r43 82r43 128r5
+X 47 test-big_number_add.ads
+4K14*Big_Number_Add 28e24 87|6w11 49r48
+7R9*Big_Number_Test<23|38R9> 7e69 87|49r63
+X 48 test-big_number_add_mod_utils.ads
+4K14*Big_Number_Add_Mod_Utils 29e34 87|26w11 69r48
+7R14*Big_Number_Test<23|38R9> 7e74 87|69r73
+X 49 test-big_number_and.ads
+4K14*Big_Number_AND 29e24 87|11w11 54r48
+7R14*Big_Number_Test<23|38R9> 7e74 87|54r63
+X 50 test-big_number_b_add.ads
+5K14*Big_Number_B_Add 31e26 87|36w11 79r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|79r65
+X 51 test-big_number_b_div.ads
+4K14*Big_Number_B_Div 29e26 87|39w11 82r48
+7R14*Big_Number_Test<23|38R9> 7e74 87|82r65
+X 52 test-big_number_b_mult.ads
+5K14*Big_Number_B_Mult 31e27 87|38w11 81r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|81r66
+X 53 test-big_number_b_sub.ads
+5K14*Big_Number_B_Sub 31e26 87|37w11 80r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|80r65
+X 54 test-big_number_comp.ads
+5K14*Big_Number_Comp 27e25 87|5w11 48r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|48r64
+X 55 test-big_number_dec.ads
+5K14*Big_Number_Dec 25e28 87|17w11 60r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|60r63
+X 56 test-big_number_div.ads
+5K14*Big_Number_Div 31e24 87|8w11 51r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|51r63
+X 57 test-big_number_div_mod_utils.ads
+5K14*Big_Number_Div_Mod_Utils 31e34 87|30w11 73r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|73r73
+X 58 test-big_number_exponentiate.ads
+5K14*Big_Number_Exponentiate 31e33 87|12w11 55r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|55r72
+X 59 test-big_number_inc.ads
+5K14*Big_Number_Inc 27e28 87|16w11 59r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|59r63
+X 60 test-big_number_inv_mod_utils.ads
+5K14*Big_Number_Inv_Mod_Utils 31e34 87|29w11 72r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|72r73
+X 61 test-big_number_iseven.ads
+5K14*Big_Number_IsEven 29e31 87|18w11 61r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|61r66
+X 62 test-big_number_isodd.ads
+5K14*Big_Number_IsOdd 29e30 87|19w11 62r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|62r65
+X 63 test-big_number_lprime_mod_utils.ads
+5K14*Big_Number_LPrime_Mod_Utils 31e37 87|34w11 77r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|77r76
+X 64 test-big_number_lsb.ads
+5K14*Big_Number_LSB 19e28 87|20w11 63r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|63r63
+X 65 test-big_number_min_max.ads
+5K14*Big_Number_Min_Max 21e28 87|14w11 57r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|57r67
+X 66 test-big_number_mod.ads
+5K14*Big_Number_Mod 31e24 87|13w11 56r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|56r63
+X 67 test-big_number_mod_type_comp_and_add.ads
+5K14*Big_Number_Mod_Type_Comp_and_Add 41e42 87|3w11 46r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|46r81
+X 68 test-big_number_mod_types.ads
+5K14*Big_Number_Mod_Types 31e30 87|4w11 47r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|47r69
+X 69 test-big_number_mr_mod_utils.ads
+5K14*Big_Number_MR_Mod_Utils 31e33 87|35w11 78r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|78r72
+X 70 test-big_number_msb.ads
+5K14*Big_Number_MSB 19e28 87|21w11 64r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|64r63
+X 71 test-big_number_mult2.ads
+5K14*Big_Number_Mult2 27e26 87|2w11 45r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|45r65
+X 72 test-big_number_mult_mod_utils.ads
+5K14*Big_Number_Mult_Mod_Utils 31e35 87|28w11 71r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|71r74
+X 73 test-big_number_multiplication.ads
+5K14*Big_Number_Multiplication 31e35 87|1w11 44r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|44r74
+X 74 test-big_number_or.ads
+5K14*Big_Number_OR 31e23 87|10w11 53r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|53r62
+X 75 test-big_number_pow_mod_utils.ads
+5K14*Big_Number_Pow_Mod_Utils 31e34 87|31w11 74r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|74r73
+X 76 test-big_number_prime_mod_utils.ads
+5K14*Big_Number_Prime_Mod_Utils 31e36 87|33w11 76r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|76r75
+X 77 test-big_number_rand_mod_utils.ads
+5K14*Big_Number_Rand_Mod_Utils 31e35 87|32w11 75r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|75r74
+X 78 test-big_number_rl.ads
+5K14*Big_Number_RL 27e27 87|24w11 67r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|67r62
+X 79 test-big_number_sl.ads
+5K14*Big_Number_SL 27e27 87|23w11 66r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|66r62
+X 80 test-big_number_sr.ads
+5K14*Big_Number_SR 27e27 87|22w11 65r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|65r62
+X 81 test-big_number_sub.ads
+5K14*Big_Number_Sub 31e24 87|7w11 50r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|50r63
+X 82 test-big_number_sub_mod_utils.ads
+5K14*Big_Number_Sub_Mod_Utils 31e34 87|27w11 70r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|70r73
+X 83 test-big_number_swap.ads
+5K14*Big_Number_Swap 25e29 87|25w11 68r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|68r64
+X 84 test-big_number_xor.ads
+5K14*Big_Number_XOR 31e24 87|9w11 52r48
+9R14*Big_Number_Test<23|38R9> 9e74 87|52r63
+X 85 test-big_numbers_utils.ads
+4K14*Big_Numbers_Utils 41e27 87|15w11 58r48
+7R9*Big_Number_Test<23|38R9> 7e69 87|58r66
+X 86 test-suite_big_num.ads
+4K14*Suite_Big_Num 46|23k9 86|8l10 8e23 87|42b19 128l10 128t23
+6V18*Suite{26|39P9} 87|84b13 126l8 126t13
+X 87 test-suite_big_num.adb
+43r4 Result{26|38R9} 86m16 87m16 88m16 89m16 90m16 91m16 92m16 93m16 94m16
+. 95m16 96m16 97m16 98m16 99m16 100m16 101m16 102m16 103m16 104m16 105m16
+. 106m16 107m16 108m16 109m16 110m16 111m16 112m16 113m16 114m16 115m16 116m16
+. 117m16 118m16 119m16 120m16 121m16 122m16 123m16 124m16 125m14
+44r4 Test_Mult{73|9R14} 86m31
+45r4 Test_Mult2{71|9R14} 87m31
+46r4 Test_Mod_Type_Comp_and_Add{67|9R14} 88m31
+47r4 Test_Mod_Types{68|9R14} 89m31
+48r4 Test_Comp{54|9R14} 90m31
+49r4 Test_Add{47|7R9} 91m31
+50r4 Test_Sub{81|9R14} 92m31
+51r4 Test_Div{56|9R14} 93m31
+52r4 Test_XOR{84|9R14} 94m31
+53r4 Test_OR{74|9R14} 95m31
+54r4 Test_AND{49|7R14} 96m31
+55r4 Test_Exponentiate{58|9R14} 97m31
+56r4 Test_Mod{66|9R14} 98m31
+57r4 Test_Min_Max{65|9R14} 99m31
+58r4 Test_Utils{85|7R9} 100m31
+59r4 Test_Increase{59|9R14} 101m31
+60r4 Test_Decrease{55|9R14} 102m31
+61r4 Test_Is_Even{61|9R14} 103m31
+62r4 Test_Is_Odd{62|9R14} 104m31
+63r4 Test_Least_Significant_Bit{64|9R14} 105m31
+64r4 Test_Most_Significant_Bit{70|9R14} 106m31
+65r4 Test_Shift_Right{80|9R14} 107m31
+66r4 Test_Shift_Left{79|9R14} 108m31
+67r4 Test_Rotate_Left{78|9R14} 109m31
+68r4 Test_Swap{83|9R14} 110m31
+69r4 Test_Add_Mod_Utils{48|7R14} 111m31
+70r4 Test_Sub_Mod_Utils{82|9R14} 112m31
+71r4 Test_Mult_Mod_Utils{72|9R14} 113m31
+72r4 Test_Inv_Mod_Utils{60|9R14} 114m31
+73r4 Test_Div_Mod_Utils{57|9R14} 115m31
+74r4 Test_Pow_Mod_Utils{75|9R14} 116m31
+75r4 Test_Rand_Mod_Utils{77|9R14} 117m31
+76r4 Test_Prime_Mod_Utils{76|9R14} 118m31
+77r4 Test_LPrime_Mod_Utils{63|9R14} 119m31
+78r4 Test_MR_Mod_Utils{69|9R14} 120m31
+79r4 Test_B_Add{50|9R14} 121m31
+80r4 Test_B_Sub{53|9R14} 122m31
+81r4 Test_B_Mult{52|9R14} 123m31
+82r4 Test_B_Div{51|7R14} 124m31
+

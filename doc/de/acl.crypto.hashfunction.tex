@@ -1,0 +1,191 @@
+\chapter{Crypto.Hashfunction}\label{hash}
+Mit Hilfe dieses generischen Paketes lässt sich aus dem Algorithmus einer
+kryptographsichen Hashfunktion (siehe Kapitel \ref{algoh})
+eine krypto. Hashfunktion erstellen die sich hervorragend für folgende Zwecke 
+einsetzen:
+\begin{itemize}
+\item Integritätsüberprüfung von Nachrichten
+\item Generierung und Verifizierung von digitalen Signaturen.
+\item Generierung von Zufallszahlen bzw. Zufallsbits
+\end{itemize}
+Der Zweck dieses Paketes ist es die API für Hashfunktionen zu vereintheilichen
+und zu vereinfachen. Aus Sicht der Sicherheit spricht hier nichst dagegen 
+direkt die native API aus \texttt{Crypto.Symmetric.Algorithm} zu verwenden.\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Generischer Teil}
+ \begin{lstlisting}{}
+generic
+   type Hash_Type                 is private;
+   type Message_Type              is private;
+   type Message_Block_Length_Type is private;
+   
+   with procedure Init(Hash_Value : out Hash_Type) is <>;
+
+   with procedure Round(Message_Block : in     Message_Type;
+                        Hash_Value    : in out Hash_Type) is <>;
+
+   with function Final_Round(Last_Message_Block  : Message_Type;
+                             Last_Message_Length :
+                             Message_Block_Length_Type;
+                             Hash_Value          : Hash_Type)
+                             return Hash_Type is <>;
+
+   with procedure Hash(Message    : in Bytes;
+                       Hash_Value : out  Hash_Type) is <>;
+
+   with procedure Hash(Message    : in String;
+                       Hash_Value : out  Hash_Type) is <>;
+
+   with procedure F_Hash(Filename : in String;
+                         Hash_Value : out  Hash_Type) is <>;
+
+ \end{lstlisting}\ \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{API}
+Die API einer generischen Hashfunktion besteht aus einer High- und einer 
+Low-Level-API. Die Low-Level-API sollen sie nur verwenden, wenn sie sich mit
+krptographischen Hashfunktionen auskennen. Wenn dies nicht der Fall ist, dann
+verwenden sie bitte die folgende High-Level-API.
+
+\subsection{High-Level-API}
+\begin{lstlisting}{}
+  function Hash  (Message  : Bytes)  return Hash_Type;
+  function Hash  (Message  : String) return Hash_Type;
+  
+  function F_Hash(Filename : String) return Hash_Type;
+\end{lstlisting}
+Die Funktion \textbf{Hash} liefert den Hashwert einer Nachricht 
+(\textit{Message}). Bei der Nachricht kann es sich dabei entweder um ein 
+Byte-Array oder einen String handeln. Die Funktion \textbf{F\_Hash} gibt den 
+Hashwert der Datei \textit{Filename} zurück.  Beispielsweise liefert 
+die Codezeile
+\begin{lstlisting}{}
+  H := F_Hash("/bin/ls")
+\end{lstlisting}
+den Hashwert von \texttt{/bin/ls}.\\ \ \\
+
+
+\subsection{Low-Level-API}
+Die Low-Level-API besteht aus einer Funktion und zwei Prozeduren. 
+
+\begin{itemize}
+\item Die Prozedur \textbf{Init} initialisiert bzw. reinitailisert die 
+  Hashfunktion. Jedesmal wenn eine Nachricht gehashed werde soll muss 
+  zunächst diese Prozedure aufgerufen werden.
+  \begin{lstlisting}{}
+ procedure Init;
+  \end{lstlisting}
+
+\item Mit der Prozedure \textbf{Round}, können iterativ Nachrichtenblöcke
+  gehashed werden. 
+  \begin{lstlisting}{}
+procedure Round(Message_Block : in Message_Type);
+ \end{lstlisting}
+ 
+\item Die Funktion \textbf{Final\_Round} padded und hashed anschließend einen
+  Nachrichtenblock \textit{Last\_Message\_Block}. Auf Grund des Paddings muss
+  die Bytelänge des Nachrichtenmaterials \textit{Last\_Message\_Length} 
+  angegeben werden.  Denn eine Nachricht ist i.d.R.  kürzer als eine 
+  Nachrichtenblock vom Typ \textit{Message\_Type}. Der Rückgabewert dieser 
+  Funktion entspricht dem finalen Hashwert einer Nachricht.
+   \begin{lstlisting}{}
+function Final_Round(Last_Message_Block  : Message_Type;
+                     Last_Message_Length : Message_Block_Length_Type)
+                     return Hash_Type;
+  \end{lstlisting}
+\end{itemize}\ \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Anwendungsbeispiel}
+\subsection{High-Level-API}
+Das folgende Beispiel gibt den SHA-256 Hashwert von \textbf{/bin/ls} aus.
+ \begin{lstlisting}{}
+with Ada.Text_IO;
+with Crypto.Types,
+with Crypto.Hashfunction_SHA256;
+
+
+use Crypto.Types, Ada.Text_IO;
+
+procedure example is
+   package SHA256 renames Crypto.Hashfunction_SHA256;
+
+   Hash : W_Block256 := SHA256.F_Hash("/bin/ls");
+begin
+   for I in Hash'Range loop
+      Put(To_Hex(Hash(I)));
+   end loop;
+   Put_Line(" /bin/ls");
+end example;
+ \end{lstlisting}
+
+\pagebreak
+
+\subsection{Low-Level-API}
+\begin{lstlisting}{}
+with Ada.Text_IO;
+with Crypto.Types;
+with Crypto.Hashfunction;
+with Crypto.Symmetric.Algorithm.SHA256;
+
+use Ada.Text_IO;
+use Crypto.Types;
+use Crypto.Symmetric.Algorithm.SHA256;
+
+pragma Elaborate_All (Crypto.Hashfunction);
+
+procedure Example_Hashing is
+   package WIO is new  Ada.Text_IO.Modular_IO(Word);
+
+    package SHA256 is
+      new Crypto.Hashfunction(Hash_Type    => W_Block256,
+                              Message_Type => W_Block512,
+                              Message_Block_Length_Type =>
+                              Crypto.Types.Message_Block_Length512);
+
+   Message : String :=  "All your base are belong to us!";
+
+   W : Words := To_Words(To_Bytes(Message));
+
+   M : W_Block512 := (others => 0);
+   H : W_Block256;
+begin
+   M(W'Range) := W;
+
+   SHA256.Init;
+
+   -- Berechne den Hashwert von Message
+   H := SHA256.Final_Round(M, Message'Last);
+
+   -- Gib den Hashwert von Message aus
+   for I in W_Block256'Range loop
+      WIO.Put(H(I), Base => 16);
+      New_line;
+   end loop;
+   New_Line;
+end Example_Hashing;
+\end{lstlisting}
+
+\pagebreak
+
+\section{Anmerkung}
+Sie müssen nicht jedes mal von neuem aus einem dafür vorgesehenen symmetrischen
+Algorithmus eine Hashfunktion generieren. Stattdessen können Sie auch eine der 
+vorgefertigten Hashfunktionen verwenden.
+\begin{itemize}
+\item Crypto.Hashfunktion\_SHA1
+\item Crypto.Hashfunktion\_SHA256
+\item Crypto.Hashfunktion\_SHA512
+\item Crypto.Hashfunktion\_Whirlpool
+\end{itemize}
+
+

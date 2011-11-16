@@ -1,0 +1,56 @@
+Basic Installation
+==================
+needed packets to generate:
+-make
+- gnat
+- binutils
+
+
+The simplest way to compile this package is:
+
+  1. Type `make' to compile the package.
+
+  2. Type 'make acltest' and then 'cd test; ./alctest; cd..' to run the
+     regression test 
+
+  3. Type 'make shared' to build the shared library
+
+  4. Type `su -c "make install"' to install the data files and
+     documentation. 
+
+  5. You can install the ACL as a shared library. If you want this then type
+     'su -c "make install-shared"'  
+	 	  
+  6. You can remove the program binaries and the object files from the
+     source code and the test directory by typing `make clean'.  
+
+  7. Type `make uninstall` to uninstall the ACL
+
+  8. Type 'make clean-acltest' to remove onlly the regression test binary and 
+     object  files from the test directory
+
+	
+Documentation
+===============
+needed packets to generate:
+- tetex-bin
+- tetex-extra
+
+Deutsch (german)
+---------------
+1. Um die deutsche Dokumentation erstellen müssen sie 'make doc-de' eingeben.
+2. Um die deutsche Dokumentation nach "/usr/local/share/doc/libadacrypt-dev"
+  zu kopieren müssen sie 'su -c "make install-doc-de"' eingeben.
+3. Um die deutsche Dokumentation zu deinstallieren müssen sie 
+   'su -c "make uninstall-doc-de"' eingeben.
+4. Um deutsche Dokumentation zu löschen müssen sie 'make clean-doc-de'
+   eingeben.
+
+English
+--------
+1. Type  'make doc-en' to create the documentation.
+2. Type 'su -c "make install-doc-en"' to install the documentation in 
+   "/usr/local/share/doc/libadacrypt-dev".
+3. Type 'su -c "make uninstall-doc-en" to uninstall the documentation.
+4. Type 'make clean-doc-en' to delete|clean the documentation.
+

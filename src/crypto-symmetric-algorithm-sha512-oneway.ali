@@ -1,0 +1,81 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.symmetric.algorithm.sha512.oneway%b  crypto-symmetric-algorithm-sha512-oneway.adb  c44bc832 NE OO PK
+W crypto.symmetric.algorithm.sha512%s  crypto-symmetric-algorithm-sha512.adb  crypto-symmetric-algorithm-sha512.ali
+
+U crypto.symmetric.algorithm.sha512.oneway%s  crypto-symmetric-algorithm-sha512-oneway.ads  a3b24a7f BN EE NE OO PK
+W crypto.symmetric.algorithm.sha512%s  crypto-symmetric-algorithm-sha512.adb  crypto-symmetric-algorithm-sha512.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-unccon.ads		20070406091342 f9eb8f06
+D a-uncdea.ads		20070406091342 f15a5ed1
+D crypto.ads		20110824150609 b0d04738
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-algorithm.ads  20110824150609 46346c43
+D crypto-symmetric-algorithm-sha512.ads  20110824150609 c6ef18af
+D crypto-symmetric-algorithm-sha512.adb  20111104193544 43e6d5f3
+D crypto-symmetric-algorithm-sha512-oneway.ads  20110824150609 655d52d0
+D crypto-symmetric-algorithm-sha512-oneway.adb  20111104200556 a1169ae2
+D crypto-symmetric-algorithm-sha_utils.ads  20110824150609 5c3efb6a
+D crypto-symmetric-algorithm-sha_utils.adb  20111104161709 3e129394
+D crypto-types.ads	20111110185132 2d86af0f
+D crypto-types.adb	20111110185221 8112d1d6
+D gnat.ads		20050905075125 fd2ad2f1
+D g-os_lib.ads		20090409150019 0db74523
+D interfac.ads		20090409150019 f77d8799
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-fatflt.ads		20090409150019 11beb392
+D s-fatgen.ads		20090409150019 9267ca45
+D s-fatgen.adb		20100909085708 9ba81cee
+D s-os_lib.ads		20100910151410 e0681e2d
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-string.ads		20090417130712 46b01415
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+X 5 crypto.ads
+24K9*Crypto 25e11 10|24r9 53r5 11|24r14 47r6
+X 6 crypto-symmetric.ads
+23K16*Symmetric 5|24k9 6|25e21 10|24r16 53r12 11|24r21 47r13
+X 7 crypto-symmetric-algorithm.ads
+27K26*Algorithm 6|23k16 7|65e31 10|24r26 53r22 11|24r31 47r23
+X 8 crypto-symmetric-algorithm-sha512.ads
+25K36*SHA512 7|27k26 8|60e38 10|24r36 53r32 11|24r41 47r33
+30U14*Init 11|40s7
+32U14*Round 11|44s7
+X 10 crypto-symmetric-algorithm-sha512-oneway.ads
+24K43*Oneway 8|25k36 10|53l39 53e45 11|24b48 47l40 47t46
+26R9*Cipherkey_SHA512 31r42 34r39 45c9 48e14 11|27r42 35r39
+30U14*Prepare_Key 30>26 31<26 50r18 11|26b14 31l8 31t19
+30a26 Key{14|87A9} 11|26b26 29r30 30r30
+31r26 Cipherkey{26R9} 11|27b26 29m7 30m7
+34U14*Encrypt 34>22 35>22 36<22 11|35b14 45l8 45t15
+34r22 Cipherkey{26R9} 11|35b22 41r27 43r27
+35a22 Plaintext{14|89A9} 11|36b22 42r27
+36a22 Ciphertext{14|89A9} 11|37b22 40m12 44m30
+46a7*Left_Key{14|87A9} 11|29m17 41r37
+47a7*Right_Key{14|87A9} 11|30m17 43r37
+X 11 crypto-symmetric-algorithm-sha512-oneway.adb
+38a7 M{14|59A9} 41m7 42m7 43m7 44r26
+X 14 crypto-types.ads
+43M9*DWord
+59A9*DWords(43M9)<integer> 11|38r11 41r20 42r20 43r20
+87A9*DW_Block256<59A9><integer> 10|30r42 46r19 47r19 11|26r42
+89A9*DW_Block512<59A9><integer> 10|35r39 36r39 11|36r39 37r39
+90A9*DW_Block1024<59A9><integer> 11|38r18 44r13
+

@@ -1,0 +1,37 @@
+V "GNAT Lib v4.6"
+A -O3
+A -Wextra
+A -Werror
+A -ggdb
+A -g
+A -gnat05
+A -gnato
+A -gnatn
+A -gnatwr
+A -gnatwc
+A -gnatwl
+A -gnatwp
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U big_number_or_results%b  big_number_or_results.adb  110c964d NE OO PK
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+
+U big_number_or_results%s  big_number_or_results.ads  196b4669 EE NE OO PK
+
+D ada.ads		20070406091342 3ffc8e18
+D a-unccon.ads		20070406091342 f9eb8f06
+D big_number_or_results.ads  20111105175318 196b4669
+D big_number_or_results.adb  20111105175318 0867d024
+D system.ads		20110928073203 23e1f70b
+D s-secsta.ads		20090707124243 eea35a36
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+X 3 big_number_or_results.ads
+1K9*Big_Number_OR_Results 7l5 7e26 4|1b14 127l5 127t26
+3V18*Result_0{string} 4|3b18 63l13 63t21
+5V18*Result_1{string} 4|65b18 125l13 125t21
+X 4 big_number_or_results.adb
+4a17 Str_Result_0{string} 6m17 62r24
+66a17 Str_Result_1{string} 68m17 124r24
+

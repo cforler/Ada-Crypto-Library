@@ -1,0 +1,79 @@
+Author: Christian Forler <crypto@shortie.inka.de>
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE
+as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser
+General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+For the specifics of this license, see file 'COPYING', included in
+this distribution.
+
+
+Welcome to the ADA Crypto Library (ACL) aka libadacrypt-dev-0.1.0
+==================================================================
+
+About ACL:
+---------
+This library is an ongoing project of Christian Forler. Its goal is
+to provide "strong" and clean coded (no OOP, no pointer-arithmetics. Just
+generic types ;-) cryptography.
+
+Note that depending on where you are, the use of cryptography may be
+limited or forbidden by law. Before using this library, make sure you
+are legally entitled to do so.
+
+
+Included in the library are:
+    - Block ciphers: AES, Twofish, 3DES, Serpent
+    - Hash functions: SHA-1 (broken), SHA-256, (SHA-384), SHA-512, Whirlpool
+     -MACs: RMAC
+    - Big (unsigned) number library
+    - Probabilistic primality testing
+    - DSA signature scheme
+    - OEAP-RSA 
+    - Modes of operations: counter, cfb, cbc, ofb
+
+
+Planned for the future are:
+    - Tiger2
+    - HMAC
+    - XOR-MAC
+    - PSS-RSA
+    - Heap and Stack burning
+    - Zero-knowledge algorithms
+    - More blockcipher modes 
+    - Universal hashfunctions and MACs.
+
+The library has been tested on the following platforms:
+    - i686 (PentiunIII) with GNU/Linux and gnat-3.14
+    - i686 (PentiumIII) with GNU/Linux and gnat-3.15
+    - i686 (PentiumIV) with GNU/Linux and gnat-4.1  
+
+NO WARRENTY
+------------
+This program is WITHOUT ANY (DAMN) WARRANTY; without even the implied warranty 
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+See the  GNU General Public License for more details.
+
+
+For more information, refer to the documentation in the 'docs' directory.
+
+If you want to report bugs, make suggestions, contribute bugfixes or
+enhancements, please contact me at mail: crypto@shortie.inka.de
+
+Sincerely,
+     Christian Forler
+
+-- 
+May the source be with you. 
+ 
+

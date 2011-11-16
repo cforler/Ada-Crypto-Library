@@ -1,0 +1,801 @@
+\chapter{Crypto.Types.Big\_Numbers}
+Dieses Paket stellt den generischen Typen \textit{Big\_Unsigned}, mit einem 
+ganzen Satz von Prozeduren und Funktionen, zur Verfügung. Dieser Typ verwendet
+intern ein Array das aus k CPU-Wörtern besteht. Dieses Array wird als ein
+modularer Typ interpretiert. Aus diesem Grund es ist nur möglich 
+Big\_Unsigneds deren Bitlänge einem Vielfachem der CPU-Wortlänge entspricht zu
+generieren. Das dieses Paket ohne Zeiger und Inline-Assembler arbeitet, ist
+es um ein vielfaches langsamer als z.B. die auf Effizienz optimierte MPI des
+GnuPG\cite{gpg}.\\
+Dieses Paket basiert auf Jerome Delcourts Big\_Number-Bibliothek\cite{bignum}.
+Ursprünglich sollte  diese Bibliothek an dieser Stelle verwendet werden.
+Es stellte sich aber heraus, das diese doch nicht nicht den gewünschten
+Anforderungen entsprach. Aus diesem Grund wurde dieses Paket noch mal komplett
+neu geschrieben. Einen wesentlichen Beitrag zu dem derzeitigen Code
+trugen die Analyse des Quellcodes von java.math.BigInteger\cite{bigint} und
+Bob Debliers beecyrpt\cite{beecrypt} sowie folgende Quellen
+\cite{handout, cormen, schneier, wiki, 2004-hankerson} bei.
+
+
+\subsubsection{Notation}
+\begin{itemize}
+\item $|X| \hat{=}$ : Bitlänge von X.
+\item $|CPU|$ \quad : Länge eines CPU-Wortes.\\ 
+  (Bei einem n-Bit Prozessor gilt i.d.R. $|CPU|=n$) 
+\end{itemize}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{API}
+
+\subsection{Generischer Teil}
+\begin{lstlisting}{}
+generic
+   Size : Positive;
+\end{lstlisting}
+\textbf{Vorbedingung:}
+$Size = k \cdot |CPU| \quad k \in N$\\ \ \\
+\textbf{Exception:}
+$Size \not= k \cdot |CPU| \quad k \in N$ : Constraint\_Size\_Error.\\ \ \\
+
+Size gibt die Bitlänge des Types \textit{Big\_Unsigned} an.\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Typen}\ 
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  type Big_Unsigned is private;
+\end{lstlisting}\\
+Dies ist dar Basis-Typ des Paketes. Big\_Unsigned repräsentiert eine 
+modulare n-Bit Zahl. ($n = k\cdot m$ wobei m die Länge eines CPU-Wortes ist).
+Eine Variable von diesem Typ wir immer mit der Konstanten Big\_Unsigned\_Zero
+(\ref{buz}) initialisiert.\\ \ \\
+ \hline
+\end{tabular}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   subtype Number_Base is Integer range 2 .. 16;
+\end{lstlisting}\\
+Dieser Typ wird später bei der Konvertierung einer Big\_Unsigned in einen 
+String benötigt. Ein Big\_Unsigned Variable kann nur als eine Zahl zu einer
+Basis dieses Types dargestellt werden.\\ \ \\
+\hline
+\end{tabular}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  type Mod_Type is mod 2**System.Word_Size;
+   for Mod_Type'Size use System.Word_Size;
+\end{lstlisting}\\
+Mod\_Type ist ein Modulare Typ der die Länge eines CPU-Wortes hat. Bei einem
+24-Bit Prozessor ist System.Word\_Size = 24 bei einem 32-Bit Prozessor ist
+System.Word\_Size = 32 usw.\\ \ \\ \ \\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Konstanten}\label{buz}
+\begin{lstlisting}{}
+ Big_Unsigned_Zero    : constant Big_Unsigned; -- = 0
+ Big_Unsigned_One     : constant Big_Unsigned; -- = 1
+ Big_Unsigned_Two     : constant Big_Unsigned; -- = 2
+ Big_Unsigned_Three   : constant Big_Unsigned; -- = 3
+ Big_Unsigned_Four    : constant Big_Unsigned; -- = 4
+ Big_Unsigned_Sixteen : constant Big_Unsigned; -- = 16
+ Big_Unsigned_First   : constant Big_Unsigned; -- = 0
+ Big_Unsigned_Last    : constant Big_Unsigned; -- = "Big_Unsigned'Last"
+\end{lstlisting}\ \\ 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Vergleichsoperationen}
+\begin{lstlisting}{}
+ -- Vergleiche Big_Unsigned mit Big_Unsigned
+
+ function "="(Left, Right : Big_Unsigned) return Boolean;
+ function "<"(Left, Right : Big_Unsigned) return Boolean;
+ function ">"(Left, Right : Big_Unsigned) return Boolean;
+
+ function "<="(Left, Right : Big_Unsigned) return Boolean;
+ function ">="(Left, Right : Big_Unsigned) return Boolean;
+
+ function Min(X, Y : in Big_Unsigned) return Big_Unsigned;
+ function Max(X, Y : in Big_Unsigned) return Big_Unsigned;
+
+
+  -- Vergleiche Big_Unsigned mit Mod_Type
+
+ function "=" (Left  : Big_Unsigned;
+               Right : Mod_Type)
+               return  Boolean;
+
+ function "=" (Left  : Mod_Type;
+               Right : Big_Unsigned) 
+	       return  Boolean;
+
+ function "<" (Left  : Big_Unsigned;
+               Right : Mod_Type)
+               return Boolean;
+
+ function "<" (Left  : Mod_Type;
+               Right : Big_Unsigned)
+               return  Boolean;
+
+ function ">" (Left  : Big_Unsigned; 
+               Right : Mod_Type)
+               return  Boolean;
+
+ function ">" (Left  : Mod_Type;
+               Right : Big_Unsigned)
+               return  Boolean;
+
+ function "<=" (Left  : Big_Unsigned;
+                Right : Mod_Type)
+                return  Boolean;
+
+ function "<="(Left  : Mod_Type;
+               Right : Big_Unsigned)
+               return  Boolean;
+  
+ function ">=" (Left  : Big_Unsigned;
+                Right : Mod_Type)
+                return  Boolean;
+
+ function ">=" (Left  : Mod_Type; 
+                Right : Big_Unsigned) 
+                return  Boolean;
+\end{lstlisting}\ \\
+
+\subsection{Elementare Operationen}
+\begin{lstlisting}{}
+function "+" (Left, Right : Big_Unsigned) return Big_Unsigned;
+
+function "+" (Left  : Big_Unsigned;
+              Right : Mod_Type) 
+              return  Big_Unsigned;
+
+function "+" (Left :  Mod_Type;
+              Right : Big_Unsigned)
+              return  Big_Unsigned;
+
+
+function "-" (Left, Right : Big_Unsigned) return Big_Unsigned;
+
+function "-" (Left  : Big_Unsigned;
+              Right : Mod_Type)
+              return  Big_Unsigned;
+
+function "-" (Left  : Mod_Type;
+              Right : Big_Unsigned) 
+              return  Big_Unsigned;
+
+
+function "*" (Left, Right : Big_Unsigned) return Big_Unsigned;
+
+function "*" (Left  : Big_Unsigned; 
+              Right : Mod_Type) 
+              return  Big_Unsigned;
+
+function "*" (Left  : Mod_Type; 
+              Right : Big_Unsigned)
+              return  Big_Unsigned;
+
+
+function "/" (Left, Right : Big_Unsigned) return Big_Unsigned;
+
+function "/" (Left  : Big_Unsigned; 
+              Right : Mod_Type)
+              return  Big_Unsigned;
+
+function "/" (Left  : Mod_Type; 
+              Right : Big_Unsigned)
+              return  Big_Unsigned;
+
+
+function "xor" (Left, Right : Big_Unsigned) return Big_Unsigned;
+
+function "and" (Left, Right : Big_Unsigned) return Big_Unsigned;
+
+function "or"  (Left, Right : Big_Unsigned) return Big_Unsigned;
+
+function "**"  (Left, Right : Big_Unsigned) return Big_Unsigned;
+
+function "mod" (Left, Right : Big_Unsigned) return Big_Unsigned;
+
+function "mod" (Left  : Big_Unsigned;
+                Right : Mod_Type) 
+                return  Big_Unsigned;
+\end{lstlisting} \ \\
+
+
+\subsubsection{Multiplikation}
+Zusätzlich zu der elementaren Multiplikation wurden noch weitere Algorithmen 
+implementiert, die ihr Potential bei größeren Zahlen entfalten. Leider lassen
+die theoretischen Laufzeiten nicht in der ACL erreichen. Je komplexer die 
+Algorithmen werden, desto mehr Rechenoperationen und Variablen werden benötigt.
+An dieser Stelle lässt sich der Flaschenhals erkennen, welcher in der 
+Initialisierung von \textit{Big\_Unsigned} steckt.\\
+
+Weitere Multiplikationsalgorihmen sind:\\
+\begin{tabular}{l}
+\hline
+\begin{lstlisting}{}
+ function Russ        (Left, Right : Big_Unsigned)
+                      return Big_Unsigned;
+\end{lstlisting}
+Die Russische Bauernmultiplikation $O(N^2)$ basierend auf Bitoperationen.\\
+
+\hline
+\begin{lstlisting}{}
+ function Karatsuba   (Left, Right : Big_Unsigned)
+                      return Big_Unsigned;
+\end{lstlisting}
+Der Karatsuba $ \left(O\left(N^{log_2 3}\right) = O\left(N^{1.585}\right)\right)$ 
+Algorithmus teilt die Faktoren intern in Polynome 1. Grades und brechnet die 
+Teilprodukte mit der Schulmethode.\\
+
+\hline
+\begin{lstlisting}{}
+ function Karatsuba_P (Left, Right : Big_Unsigned)
+                      return Big_Unsigned;
+\end{lstlisting}
+Die Berechnung der Teilprodukte wird parallel in Tasksausgeführt.\\
+
+\hline
+\begin{lstlisting}{}
+ function Toom_Cook   (Left, Right : Big_Unsigned)
+                      return Big_Unsigned;
+\end{lstlisting}
+Die hier Implementierte variante ist der Toom-Cook-3-Way 
+$\left(O\left(N^{1,465}\right)\right)$ Algorithmus nach D. Knuth. Er teilt die 
+Faktoren intern in Polynome 2. Grades und brechnet die 
+Teilprodukte mit der Schulmethode.\\
+
+\hline
+\begin{lstlisting}{}
+ function Toom_Cook_P (Left, Right : Big_Unsigned)
+                      return Big_Unsigned;
+\end{lstlisting}
+Die Berechnung der Teilprodukte wird parallel in Tasksausgeführt.\\
+\hline
+\end{tabular}
+Alle Algorithmen lassen sich explizit Aufrufen und zur Multiplikation zweier 
+\textit{Big\_Unsigned} benutzen.\\
+
+Eine Performance-Steigerung lässt sich dennoch durch die Verzahnung
+der Algorithmen erreichen, welche versucht die Stärken der
+verschiedenen Algorithmen zu kombinieren. Intern ruft dazu der
+überladene Operator \texttt{*} für kleine Faktoren die Schulmethode, für
+größere (ca. 3100 Bit) den parallelen Karatsuba und ab ca. 3900 Bit
+Länge den parallelen Toom-Cook-Algorithmus auf.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Utils}
+In dem separatem Body Crypto.Types.Big\_Numbers.Utils verbergen sich sehr
+viele nützliche Funktionen und Prozeduren. Der Zugriff erfolgt über das Präfix
+\textbf{Utils.}\\
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Swap(X, Y : in out Big_Unsigned);
+\end{lstlisting}\\
+Diese Prozedur vertauscht \textit{X} mit \textit{Y}.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Set_Least_Significant_Bit(X : in out Big_Unsigned);
+\end{lstlisting}\\
+Diese Prozedur setzt das niederwertigste Bit von \textit{X} auf 1.\\
+Dadurch ist \textit{X} nach diesem Prozeduraufruf immer ungerade. \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+ procedure Set_Most_Significant_Bit(X : in out Big_Unsigned); 
+\end{lstlisting}\\
+Diese Prozedur setzt das höchstwertigste Bit von \textit{X} auf 1.\\
+Damit ist \textit{X} nach dem Prozeduraufruf eine Size-Bit Zahl.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  function Is_Odd(X : Big_Unsigned) return Boolean;
+\end{lstlisting}\\
+Diese Funktion liefert  \textit{True} zurück, wenn
+\textit{X} ungerade ist, ansonsten \textit{False}.  \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  function Is_Even(X : Big_Unsigned) return Boolean;
+\end{lstlisting}\\
+Diese Funktion liefert \textit{True} zurück, wenn
+X gerade ist, ansonsten \textit{False}. \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+ procedure Inc(X : in out Big_Unsigned);
+\end{lstlisting}\\
+Diese Prozedur erhöht X um 1.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+ procedure Dec(X : in out Big_Unsigned);
+\end{lstlisting}\\
+Diese Prozedur vermindert X um 1.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+ function Shift_Left (Value  : Big_Unsigned; 
+                      Amount : Natural) 
+                      return   Big_Unsigned;
+
+\end{lstlisting}\\
+Diese Funktion berechnet  $Value * 2^{Amount}$.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Shift_Right (Value  : Big_Unsigned; 
+                      Amount : Natural)
+                      return    Big_Unsigned;
+\end{lstlisting}\\
+Diese Funktion berechnet  $\lfloor Value / 2^{Amount}\rfloor$.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Rotate_Left(Value  : Big_Unsigned;
+                     Amount : Natural)
+                     return   Big_Unsigned;
+\end{lstlisting}\\
+Diese Funktion berechnet
+$((Value * 2^{Amount})\; \oplus\; (\lfloor Value / 2^{Size - Amount}\rfloor))$
+$\bmod\; 2^{Size}$.\\ \ \\
+Der eingebene Amount wird als erstes mod size genommen, sodass nachfolgender Code ausgef"uhrt werden kann:
+\begin{lstlisting}{}
+Shift_Left(Value, Amount) xor Shift_Right(Value,Size - Amount)
+\end{lstlisting}
+$\bmod\; 2^{Size}$.\\ \ \\
+
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    function Rotate_Right(Value  : Big_Unsigned; 
+    Amount : Natural)
+    return   Big_Unsigned;
+  \end{lstlisting}\\
+  Diese Funktion berechnet
+  $((Value * 2^{Size-Amount})\; \oplus\; (\lfloor Value / 2^{Amount}\rfloor))$
+  $\bmod\; 2^{Size}$.\\ \ \\
+  Der eingebene Amount wird als erstes mod size genommen, sodass nachfolgender Code ausgef"uhrt werden kann:
+  \begin{lstlisting}{}
+    Shift_Right(Value, Amount) xor Shift_Left(Value,Size - Amount)
+  \end{lstlisting}\\
+  \hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Get_Random return Big_Unsigned;
+\end{lstlisting}\\
+Diese Funktion generierte eine Zufallszahl aus dem Intervall 
+\{$0\ldots ,$Big\_Unsigned\_Last\}.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Bit_Length(X : Big_Unsigned) return Natural;
+\end{lstlisting}\\
+Diese Funktion berechnet die Bitlänge von X.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Lowest_Set_Bit(X : Big_Unsigned) return Natural;
+\end{lstlisting}\\
+Diese Funktion berechnet die Position des niederwertigsten Bits von X, das
+den Wert ``1'' hat.\\ \ \\
+\textbf{Exception:}\\
+$X =$ Big\_Unsigned\_Zero : Is\_Zero\_Error\\ \ \\   
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Gcd(Left, Right : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}\\
+Diese Funktion berechnet den größten gemeinsamen Teiler von \textit{Left}
+und \textit{Right}.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Length_In_Bytes(X : Big_Unsigned) return Natural;
+\end{lstlisting}\\
+Diese Funktion berechnet die Anzahl der Bytes die man benötigt um X als
+Byte-Array auszugeben.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function To_Big_Unsigned(X : Bytes) return Big_Unsigned;
+\end{lstlisting}\\
+Diese Funktion wandelt ein Byte-Array \textit{X} in eine Big\_Unsigned B um.
+Dabei wird X(X'First) zum höchstwertigstem Byte von B und X(X'Last)
+zum niederwertigstem Byte von B.\\ \ \\
+\textbf{Exception:}\\
+$X'Length * Byte'Size > Size$  : Constraint\_Error\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function To_Bytes(X : Big_Unsigned) return Bytes;
+\end{lstlisting}\\
+Diese Funktion wandelt \textit{X} in ein Byte-Array B um.
+Dabei wird das höchstwertigste Byte von X zu B(B'First), und das 
+niederwertigste Byte von X wird zu B(B'Last).\\ \ \\  
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function To_String (Item : Big_Unsigned;
+                    Base : Number_Base := 10)
+		    return String;
+\end{lstlisting}\\
+Diese Funktion wandelt \textit{Item} in einen String um. Die Umwandlung 
+erfolgt dabei zur Basis \textit{Base} ($Base \in \{2,\ldots ,16\}$)
+Der String hat folgenden Aufbau:
+\begin{description}
+\item[Base=10: ] Einen Zahl zur Basis 10
+  (Bsp. ``1325553'')
+\item[Base/=10: ] \textit{Base}\# eine Zahl zur Basis B\#
+  (Bsp. ``12\#AB45623A3402\#'')
+\end{description}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function To_Big_Unsigned(S : String) return Big_Unsigned;
+\end{lstlisting}\\
+Dies Funktion wandelt eine Zeichenkette \textit{S} in eine Big\_Unsigned um.
+Die übergebene Zeichenkette wird als Zahl in dezimaler Notation oder als 
+eine Zahl zur Basis B ($B \in \{2,...,16\}$) betrachtet und muss folgenden
+Aufbau haben: 
+\begin{itemize}
+\item B\#eine Zahl zur Basis B\#
+  (Bsp. S = ``16\#FF340A12B1\#'')
+\item eine Zahl zur Basis 10 
+  (Bsp. S = ``333665'')
+\end{itemize} \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  S ist eine leere Zeichenkette & Conversion\_Error\\
+  S hat eine ungültige Basis & Conversion\_Error\\
+  S hat ungültige Ziffern &  Conversion\_Error
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Put (Item : in Big_Unsigned;
+               Base : in Number_Base := 10);
+\end{lstlisting}\\
+Diese Prozedur gibt die Big\_Unsigned \textit{Item} auf der Standardausgabe
+zur Basis \textit{Base} ($Base \in \{2,...,16\}$) aus.\\ \ \\ 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Put_Line(Item : in Big_Unsigned;
+                   Base : in Number_Base := 10);
+\end{lstlisting}\\
+Diese Prozedur gibt die Big\_Unsigned \textit{Item} auf der Standardausgabe,
+inklusive Zeilenumbruch, zur Basis \textit{Base} 
+($Base \in \{2,...,16\}$) aus.\\ \ \\ 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Big_Div (Dividend, Divisor : in Big_Unsigned;
+                   Quotient, Remainder : out Big_Unsigned);
+\end{lstlisting}\\
+Diese Prozedur berechnet den Quotienten \textit{Quotient} und den Rest
+\textit{Remainder} einer ganzzahligen Division. Es gilt:
+\begin{itemize}
+\item $Quotient := \lfloor \frac{Dividend}{Divisor} \rfloor$
+\item $Remainder :=  Dividend\; \bmod\; Divisor$
+\end{itemize}\ \\
+\textbf{Exception:}\\
+$X =$ Big\_Unsigned\_Zero : Is\_Zero\_Error\\ \ \\   
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Short_Div (Dividend  : in  Big_Unsigned;
+                     Divisor   : in  Mod_Type;
+                     Quotient  : out Big_Unsigned;
+                     Remainder : out Mod_Type);
+\end{lstlisting}\\
+Diese Prozedur berechnet den Quotienten \textit{Quotient} und den Rest
+\textit{Remainder} einer ganzzahligen Division. Es gilt:
+\begin{itemize}
+\item $Quotient := \lfloor \frac{Dividend}{Divisor} \rfloor$
+\item $Remainder :=  Dividend\; \bmod\; Divisor$
+\end{itemize}\ \\
+\textbf{Exception:}\\
+$X =$ Big\_Unsigned\_Zero : Is\_Zero\_Error\\ \ \\   
+\end{tabular}\ \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Mod\_Utils}
+In dem separatem Body Crypto.Types.Big\_Numbers.Mod\_Utils befinden sich 
+Funktionen und Prozeduren die man häufig in der Public-Key-Kryptographie 
+benötigt. Der Zugriff erfolgt über das Präfix \textbf{Mod\_Utils.}\\
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Add (Left, Right, N : Big_Unsigned)
+              return Big_Unsigned;
+\end{lstlisting}
+Diese Funktion berechnet $Left + Right \pmod{N}$.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Sub (Left, Right, N : Big_Unsigned)
+              return Big_Unsigned;
+\end{lstlisting}
+Diese Funktion berechnet $Left - Right \pmod{N}$.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Div (Left, Right, N : Big_Unsigned)
+              return Big_Unsigned;
+\end{lstlisting}
+Diese Funktion berechnet $Left / Right \pmod{N}$.\\ \ \\
+\textbf{Exception:}\\
+$Right =$ Big\_Unsigned\_Zero : Constraint\_Error.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Mult (Left, Right, N : Big_Unsigned) 
+               return Big_Unsigned;
+\end{lstlisting}
+Diese Funktion berechnet $Left \cdot Right \pmod{N}$.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Pow (Base, Exponent, N : Big_Unsigned) 
+              return Big_Unsigned;
+\end{lstlisting}
+Diese Funktion berechnet $Base^{Exponent} \pmod{N}$.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Get_Random (N : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+Diese Funktion berechnet eine zufällige Big\_Unsigned\textit{B} mit
+$B < N$.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Inverse (X, N : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+Diese Funktion berechnet das Inverse (bezüglich der Multiplikation)
+von \textit{X} mod \textit{N}. Falls kein Inverses von \textit{X} mod 
+\textit{N} existiert gibt diese Funktion Big\_Unsigned\_Zero zurück. \\ \ \\ 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Get_Prime(N : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+Diese Funktion berechnet mit einer überwältigenden Wahrscheinlichkeit eine
+Primzahl P mit $P < N$.  Sie benutzt dazu die Funktion \textit{Is\_Prime}
+(\ref{isprime}).\\ \ \\
+\textbf{Exception:}\\
+  $N <=$  Big\_Unsigned\_Two :  Constraint\_Error\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Get_N_Bit_Prime(N : Positive) return Big_Unsigned;
+\end{lstlisting}
+Diese Funktion berechnet mit einer überwältigenden Wahrscheinlichkeit eine
+N-Bit-Primzahl. Sie benutzt dazu die Funktion \textit{Is\_Prime}
+(\ref{isprime}).\\ \ \\
+\textbf{Exception:}\\
+$(N = 2) \vee (N > Size)$  : Constraint\_Error \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}\label{isprime}
+\begin{lstlisting}{}
+Is_Prime(X : Big_Unsigned) return Boolean;
+\end{lstlisting}
+Dies Funktion gibt mit überwältigender Wahrscheinlichkeit \textit{False}
+zurück, wenn es sich bei \textit{X} nicht um eine Primzahl handelt.\\
+\textbf{Funktionsweise:}
+\begin{enumerate}
+\item Es wird getestet ob \textit{X} durch eine einstellige Primzahl 
+(2,3,5,7) teilbar ist.
+\item Es wird getestet ob \textit{X} durch eine zweistellige Primzahl 
+  teilbar ist.
+\item Es wird getestet ob es sich bei \textit{X} um eine 
+  Lucas-Lemehr-Primzahl handelt.
+\item Es wird getestet  ob \textit{X} durch eine dreistellige Primzahl 
+teilbar ist.
+\item Es werden 2-50 Miller-Rabin-Test durchgeführt. Wobei die Anzahl der 
+  Tests von X abhängig ist. Je größer $|X|$, desto weniger Test werden
+  durchgeführt.
+\end{enumerate}\ \\
+\hline
+\end{tabular}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Looks_Like_A_Prime(X : Big_Unsigned) return Boolean;
+\end{lstlisting}
+Dies Funktion gibt mit hoher Wahrscheinlichkeit \textit{False}
+zurück, wenn es sich bei \textit{X} nicht um eine Primzahl handelt.\\ \ \\
+\textbf{Funktionsweise:}\\
+Wie \textit{Is\_Prime} (\ref{isprime}) mit dem Unterschied, daß anstelle des
+Miller-Rabin-Tests ein einfacherer aber unzuverlässiger
+Primzahlentest, der 2-50 Zufallszahlen zieht und testet ob es sich dabei
+um einen Miller-Rabin-Zeugen oder einen echten Teiler von \textit{X} handelt.
+Wenn keiner dieser Zufallszahlen ein Miller-Rabin-Zeuge oder ein echter Teiler
+von \textit{X} ist, geht die Funktion davon aus, das es sich bei \textit{X} 
+um eine Primzahl handelt.\\ \ \\
+\hline
+\end{tabular}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+ function Passed_Miller_Rabin_Test (X : Big_Unsigned;
+                                    S : Positive) 
+                                    return Boolean;
+\end{lstlisting}
+Dies Funktion gibt \textit{True} zurück, wenn \textit{X} eine gewisse Anzahl 
+von  Miller-Rabin-Test (\textit{S}-Stück) überlebt. Die Wahrscheinlichkeit
+das eine Pseudoprimzahl diesen Test besteht ist kleiner als 
+$\frac{1}{2^{2S}}$.\\ \ \\
+\hline
+\end{tabular}
+
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+function Jacobi(X, N : Big_Unsigned) return Integer;
+  \end{lstlisting}
+  Diese Funktion berechnet das Jacobisymbol für eine Element \textit{X} aus 
+  $\mathbf{Z}_N$.\\ \ \\
+  \underline{Vorbedingung:}\\
+  N muss ungerade sein.\\ \ \\
+  \underline{Rückgabewerte:}\\
+  \begin{tabular}{l@{\ :\ }l}
+  Jacobi(N,C) = 0 & X mod N = 0\\
+  Jacobi(N,C) = 1 & X ist ein quadratischer Rest mod N \\ 
+  Jacobi(N,C) = -1 & X ist ein quadratischer Rest mod N \\ 
+  \end{tabular}\\ \ \\
+  \textbf{Ausnahme:}\\
+  N ungerade :  Constraint\_Error\\ \ \\
+  \hline
+\end{tabular}
+  

@@ -1,0 +1,37 @@
+\chapter{Crypto.Symmetric.Algorithm.Oneway}\label{onealg}
+
+Jede symmetrische Chiffre und kryptographische Hashfunktion
+hat ein Unterpaket \glqq Oneway \grqq. Bei diesem Paket handelt es sich um 
+eine symmetrische Chiffre ohne Entschlüsslungsoperation.\\
+Auch bei den Oneway-Algorithmen sollte sie davon Abstand nehmen die vorhanden
+API direkt zu verwenden.\\ \ \\
+
+\subsubsection{API}
+
+Ein Oneway-Paket stellt dem Anwendungsprogrammierer folgende Typen und 
+Operationen zur Verfügung.
+
+
+\begin{itemize} 
+   \item Einen privaten Typ \textbf{Cipherkey\_Oneway} der deterministisch aus
+     einem  Schlüssel generiert wird. Mit dessen Hilfe  kann man 
+     die  Verschlüsselungsfunktion des entsprechenden Paketes aufrufen.
+   \item Eine Prozedur \textbf{Prepare\_Oneway\_Key} die aus einem Schlüssel
+     den zugehörigen Cipherkey erstellt.\\ \ \\
+     \textit{Beispiel:}
+     \begin{lstlisting}{}
+procedure Prepare_Oneway_Key(Key       : in B_Block; 
+                             Cipherkey : out Cipherkey_Oneway);
+     \end{lstlisting}
+     
+   \item Eine Prozedur \textbf{Encrypt\_Oneway}. 
+     Diese Prozedur verschlüsselte einen Klartext (Plaintext) mit Hilfe eines
+     Cipherkeys in einen Chiffretext (Ciphertext).\\ \ \\
+     \textit{Beispiel:}
+     \begin{lstlisting}{}
+ procedure Encrypt_Oneway(Cipherkey  : in  Cipherkey_Oneway;
+                          Plaintext  : in  B_Block;
+                          Ciphertext : out B_Block);
+     \end{lstlisting}
+\end{itemize}
+

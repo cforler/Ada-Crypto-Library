@@ -1,0 +1,29 @@
+-- Support for tweakable block ciphers
+-- Support for authenticated encryption schemes
+-- Nonce Support
+
+
+-- random
+take n-Bits /dev/urandom (seed)
+generate a proovable secure PRNG from a strong universal hashfunction
+because the quality of the  random bits decrease when you take to much random
+bits from /dev/urandom.
+
+-- secure storage pool. !IMPORTANT!
+A secure storage pool overrides every allocated byte and the complete stack.
+
+Now, the ACL don't burn down his heap and stack after usage.
+After execution of an application that uses the ACL you will find (parts of)
+the key in the memory. It's a very good and cheap cryptographic attacks to 
+search key material in the memory after the execution of an application.
+So, without a secure storage pool this lib is only a toy for cryptographes 
+and researchers.
+
+
+
+
+
+
+
+	
+

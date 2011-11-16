@@ -1,0 +1,94 @@
+\section{Binäre Körper GF($2^m$)}
+\subsection{Erläuterungen}
+In dem separatem Body Crypto.Types.Big\_Numbers.Mod\_Binfield\_Utils befinden 
+sich Funktionen und Prozeduren bei denen eine \texttt{Big\_Unsigned} Variable 
+als Element aus dem Körper GF($2^m$) interpretiert wird.\\ \ \\
+\textbf{Beispiel:}
+\begin{lstlisting}[frame=tlrb]{}
+  -- Es wird das 1., 2. und 6. Bit von A gesetzt.
+  -- Danach enspricht A dem Element/Polynom z^5 + z + 1
+  A := Big_Unsigned_One;
+  A := A xor Shift_left(Big_Unsigned_One,1);
+  A := A xor Shift_left(Big_Unsigned_One,5);
+\end{lstlisting}
+Die \texttt{Big\_Unsigned} Variable F ist im folgenden immer ein irreduzible 
+Polynom $f(z)$ vom Grad m.
+Der Zugriff erfolgt über das Präfix \textbf{Binfield\_Utils.}\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{API}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function B_Add(Left,Right : Big_Unsigned) return Big_Unsigned;
+function B_Sub(Left,Right : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}\\
+Diese beiden Funktion berechnen Left xor Right.
+Dies entspricht einer Addtion bzw. Subtraktion in GF($2^m$).\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  function B_Mult(Left, Right, F : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}\\
+Diese Funktion berechnet Left $\cdot$ Right mod F.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+function B_Square(A, F : Big_Unsigned)    return Big_Unsigned;
+  \end{lstlisting}\\
+  Diese Funktion berechnet $A^2\; \bmod\; F$.\\ \ \\
+  \hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function B_Div (Left, Right, F : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}\\
+Diese Funktion berechnet Left/Right mod F.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+function B_Mod(Left, Right  : Big_Unsigned) return Big_Unsigned;
+  \end{lstlisting}\\
+  Diese Funktion berechnet Left mod Right.\\ \ \\
+  \hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+function B_Inverse(X, F : Big_Unsigned) return Big_Unsigned;
+  \end{lstlisting}\\
+  Diese Funktion berechnet $X^-1\; \bmod\; F$.\\ \ \\
+  \hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Exceptions}
+
+\begin{lstlisting}{}
+  Constraint_Size_Error : exception;
+  Conversion_Error      : exception;
+  Division_By_Zero      : exception;
+  Is_Zero_Error         : exception;
+\end{lstlisting}

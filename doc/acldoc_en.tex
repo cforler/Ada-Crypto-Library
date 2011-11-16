@@ -1,0 +1,55 @@
+\documentclass[11pt,a4paper]{report}
+
+\usepackage{a4}
+\usepackage{latexsym}
+\usepackage[latin1]{inputenc}
+\usepackage{pstricks, pst-node, pst-tree}
+\usepackage{listings}
+\usepackage{graphics}
+\usepackage{wrapfig}
+
+\lstset{language=[95]Ada}
+
+\linespread{1.1}
+
+\title{Ada Crypto Library (ACL) aka libadacrypt-dev\\ Documentation v. 0.1.0 }
+\author{Christian Forler}
+\date{\today}
+
+%Hyphenation
+\hyphenation{dev Gathering Ciphertext Message libacl Byte Word DWord Arrays}
+\hyphenation{Crypto Ferguson Initial Private}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+  \include{./en/aclintro_en}
+  \include{./en/acl.crypto}
+  \include{./en/acl.crypto.types}
+  \include{./en/acl.crypto.random}
+  \include{./en/acl.crypto.symmetric}
+  \include{./en/acl.crypto.symmetric.algorithm} 
+%  \include{acl.crypto.symmetric.algorithm.oneway}
+%  \include{acl.crypto.symmetric.blockcipher}
+%  \include{acl.crypto.symmetric.oneway_blockcipher}
+%  \include{acl.crypto.symmetric.mode}
+%  \include{acl.crypto.symmetric.mode.oneway}
+%  \include{acl.crypto.hashfunction}
+%  \include{acl.crypto.types.big-numbers}
+%  \include{acl.crypto.asymmetric}
+%  \include{acl.crypto.asymmetric.dsa}
+%  \include{acl.crypto.asymmetric.rsa}
+
+
+%literature
+\bibliographystyle{plain} 
+\bibliography{crypto}
+
+\end{document}
+
+    
+    
+
+

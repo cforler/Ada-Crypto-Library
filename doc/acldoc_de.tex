@@ -1,0 +1,77 @@
+\documentclass[11pt,a4paper]{report}
+
+\usepackage{a4}
+\usepackage{ngerman}
+\usepackage{latexsym}
+\usepackage[latin1]{inputenc}
+\usepackage{pstricks, pst-node, pst-tree}
+\usepackage{listings}
+\usepackage{graphics}
+\usepackage{wrapfig}
+
+\lstset{language=[95]Ada}
+
+\linespread{1.1}
+
+\title{Ada Crypto Lib (ACL) aka libadacrypt-dev\\
+  Version 0.1.2 (beta)\\
+  Benutzer-Dokumentation }
+\author{Christian Forler}
+\date{\today}
+
+%Trennung
+\hyphenation{dev Gathering Ciphertext Message libacl Byte Word DWord Arrays}
+\hyphenation{Crypto Ferguson Initial Hash-funktionen Private}
+
+\begin{document}
+
+\input ngerman.sty
+% Groß-/Kleinschreibung der deutschen Umlaute
+\catcode`ä=\active \defä{"a}
+\catcode`ö=\active \defö{"o}
+\catcode`ü=\active \defü{"u}
+\catcode`ß=\active \defß{"s}
+\catcode`Ä=\active \defÄ{"A}
+\catcode`Ö=\active \defÖ{"O}
+\catcode`Ü=\active \defÜ{"U}
+
+\maketitle
+\tableofcontents
+
+  \include{./de/acleinfuehrung}
+  \include{./de/acl.crypto}
+  \include{./de/acl.crypto.types}
+  \include{./de/acl.crypto.random}
+  \include{./de/acl.crypto.symmetric}
+  \include{./de/acl.crypto.symmetric.algorithm} 
+  \include{./de/acl.crypto.symmetric.algorithm.oneway}
+  \include{./de/acl.crypto.symmetric.blockcipher}
+  \include{./de/acl.crypto.symmetric.oneway_blockcipher}
+  \include{./de/acl.crypto.symmetric.mode}
+  \include{./de/acl.crypto.symmetric.mode.oneway}
+  \include{./de/acl.crypto.hashfunction}
+  \include{./de/acl.crypto.symmetric.mac}
+  \include{./de/acl.crypto.types.big-numbers}
+  \include{./de/acl.crypto.types.big-numbers.binfield}
+  \include{./de/acl.crypto.asymmetric}
+  \include{./de/acl.crypto.asymmetric.dsa}
+  \include{./de/acl.crypto.asymmetric.rsa}
+  \include{./de/acl.crypto.types.elliptic-curves}
+  \include{./de/acl.crypto.types.elliptic-curves.databasezp}
+  \include{./de/acl.crypto.asymmetric.ecdsa}
+  \include{./de/acl.crypto.asymmetric.ecnr}
+  \include{./de/acl.crypto.symmetric.algorithm.ecdh}
+  \include{./de/acl.crypto.symmetric.algorithm.ecmqv}
+  \include{./de/acl.crypto.symmetric.algorithm.ecies}  
+  \include{./de/acl.tests}
+
+% Literaturdatenbank
+\bibliographystyle{plain} 
+\bibliography{crypto}
+
+\end{document}
+
+    
+    
+
+

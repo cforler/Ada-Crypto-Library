@@ -1,0 +1,18 @@
+\chapter{Acl.Crypto.Asymmetric}
+
+\subsubsection{Beschreibung}
+Dies ist das Wurzelpaket für die asymmetrische Kryptographie.\\
+
+\subsubsection{Funktion}
+Dieses Paket ermöglicht dem symmetrischen Teil den direkten Zugriff auf 
+Crypto.Types, welches grundlegende Typen und deren Basisfunktionen zur 
+Verfügung stellt. Des weiteren  ermöglicht diese Paket  dem asymmetrischen Teil
+den Zugriff auf Crypto.Types.Big\_Numbers.
+
+\section{Exceptions}
+\begin{lstlisting}{}
+  Invalid_Private_Key_Error : exception;
+  Invalid_Public_Key_Error  : exception;
+  Plaintext_Too_Long_Error  : exception;
+  Decrypt_Error             : exception;
+\end{lstlisting}

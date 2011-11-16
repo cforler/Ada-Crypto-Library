@@ -1,0 +1,48 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.symmetric.oneway_blockcipher%b  crypto-symmetric-oneway_blockcipher.adb  05c4330c NE OO PK GE
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+
+U crypto.symmetric.oneway_blockcipher%s  crypto-symmetric-oneway_blockcipher.ads  e2bf73c7 BN EE NE OO PK GE
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+
+D crypto.ads		20110824150609 b0d04738
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-oneway_blockcipher.ads  20110824150609 a37d8bd9
+D crypto-symmetric-oneway_blockcipher.adb  20110824150609 a6b9b8d5
+D system.ads		20110928073203 23e1f70b
+X 1 crypto.ads
+24K9*Crypto 25e11 3|41r9 56r5 4|24r14 46r5
+X 2 crypto-symmetric.ads
+23K16*Symmetric 1|24k9 2|25e21 3|41r16 56r12 4|24r21 46r12
+X 3 crypto-symmetric-oneway_blockcipher.ads
+25+9 Block 33r43 34r44 45r38 45r62 4|39r37 39r61
+26+9 Key_Type 29r40 43r38 4|32r36
+27+9 Cipherkey_Type 30r47 32r43 4|28r9
+29U19 Prepare_Key 29>31 30<31 4|34s7
+29*31 Key{26+9}
+30*31 Cipherkey{27+9}
+32U19 Encrypt 32>27 33>27 34<27 4|41s7
+32*27 Cipherkey{27+9}
+33*27 Plaintext{25+9}
+34*27 Ciphertext{25+9}
+41k26*Oneway_Blockcipher 2|23k16 3|25z9 26z9 27z9 29z19 32z19 56l22 56e40
+. 4|24b31 46l22 46t40
+43U14*Prepare_Key 43>26 4|32b15 35l8 35t19
+43*26 Key{26+9} 4|32b27 34r19
+45U14*Encrypt 45>22 45<45 4|39b14 42l8 42t15
+45*22 Plaintext{25+9} 4|39b22 41r19
+45*45 Ciphertext{25+9} 4|39b44 41m30
+X 4 crypto-symmetric-oneway_blockcipher.adb
+28*4 Ck{3|27+9} 34m24 41r15
+

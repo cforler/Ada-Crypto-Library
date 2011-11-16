@@ -1,0 +1,123 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.symmetric.mac.hmac_sha512%b  crypto-symmetric-mac-hmac_sha512.ads  ec64cdf2 NE OO PK
+W crypto%s		crypto.ads		crypto.ali
+W crypto.hashfunction%s	crypto-hashfunction.adb	crypto-hashfunction.ali
+W crypto.hashfunction_sha512%s  crypto-hashfunction_sha512.ads  crypto-hashfunction_sha512.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.mac%s  crypto-symmetric-mac.adb  crypto-symmetric-mac.ali
+W crypto.symmetric.mac.hmac%s  crypto-symmetric-mac-hmac.adb  crypto-symmetric-mac-hmac.ali  EA
+
+U crypto.symmetric.mac.hmac_sha512%s  crypto-symmetric-mac-hmac_sha512.ads  b1ec6a1d EB NE OO PK
+W crypto%s		crypto.ads		crypto.ali
+W crypto.hashfunction%s	crypto-hashfunction.adb	crypto-hashfunction.ali
+W crypto.hashfunction_sha512%s  crypto-hashfunction_sha512.ads  crypto-hashfunction_sha512.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.mac%s  crypto-symmetric-mac.adb  crypto-symmetric-mac.ali
+W crypto.symmetric.mac.hmac%s  crypto-symmetric-mac-hmac.adb  crypto-symmetric-mac-hmac.ali  EA
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-stream.ads		20090409150019 2ca4ee37
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-timoau.ads		20090409150019 01c06610
+D a-timoio.ads		20090409150019 d32407b9
+D a-timoio.adb		20090409150019 de0ea1c6
+D a-unccon.ads		20070406091342 f9eb8f06
+D a-uncdea.ads		20070406091342 f15a5ed1
+D crypto.ads		20110824150609 b0d04738
+D crypto-hashfunction.ads  20111104145729 f39f5a0c
+D crypto-hashfunction.adb  20111104124714 13d5e610
+D crypto-hashfunction_sha512.ads  20111104191433 f6aaa4ea
+D crypto-hashfunction_sha512.ads  20111104191433 f6aaa4ea
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-algorithm.ads  20110824150609 46346c43
+D crypto-symmetric-algorithm-sha512.ads  20110824150609 c6ef18af
+D crypto-symmetric-algorithm-sha512.adb  20111104193544 43e6d5f3
+D crypto-symmetric-algorithm-sha_utils.ads  20110824150609 5c3efb6a
+D crypto-symmetric-algorithm-sha_utils.adb  20111104161709 3e129394
+D crypto-symmetric-mac.ads  20111105101518 79bad5d1
+D crypto-symmetric-mac.adb  20111105101535 dee26c89
+D crypto-symmetric-mac-hmac.ads  20110824150609 d298d6d4
+D crypto-symmetric-mac-hmac.adb  20110824150609 519527b3
+D crypto-symmetric-mac-hmac_sha512.ads  20110824150609 ec64cdf2
+D crypto-symmetric-mac-hmac_sha512.ads  20110824150609 ec64cdf2
+D crypto-types.ads	20111110185132 2d86af0f
+D crypto-types.adb	20111110185221 8112d1d6
+D gnat.ads		20050905075125 fd2ad2f1
+D g-os_lib.ads		20090409150019 0db74523
+D interfac.ads		20090409150019 f77d8799
+D i-cstrea.ads		20100622165701 1bd72c32
+D system.ads		20110928073203 23e1f70b
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-fatflt.ads		20090409150019 11beb392
+D s-fatgen.ads		20090409150019 9267ca45
+D s-fatgen.adb		20100909085708 9ba81cee
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-os_lib.ads		20100910151410 e0681e2d
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-string.ads		20090417130712 46b01415
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+X 14 crypto.ads
+24K9*Crypto 25e11 30|23r6 24r6 28r9 29r9 29r45 30r45 31r45 32r45 34r37
+X 15 crypto-hashfunction.ads
+28+9 Message_Block_Length_Type
+X 18 crypto-hashfunction_sha512.ads
+32K16*Hashfunction_SHA512[15|53] 30|24w13 29r52
+X 19 crypto-symmetric.ads
+23K16*Symmetric 14|24k9 19|25e21 30|23r13 28r16 29r16 30r52 31r52 32r52 34r44
+X 21 crypto-symmetric-algorithm-sha512.ads
+30U14*Init 15|32i19
+32U14*Round 15|34i19
+35V13*Final_Round{31|89A9} 15|37i18
+42U14*Hash 15|43i19
+44U14*Hash 15|46i19
+46U14*F_Hash 15|49i19
+X 25 crypto-symmetric-mac.ads
+25K26*Mac 19|23k16 25|68e25 30|23r23 28r26 29r26 30r62 31r62 32r62 34r54
+32U14*Fill36 30|31r66
+40U14*Fill5C 30|32r66
+48U14*Copy 30|30r66
+55V13*M_B_Length{natural} 30|34r58
+X 27 crypto-symmetric-mac-hmac.ads
+26K17 H 30|29r35
+30U19 Fill36 30|31r35
+31U19 Fill5C 30|32r35
+33U19 Copy 30|30r35
+36V20 M_B_Length{15|28+9[26]} 30|33r35
+40k30*Hmac 68e30 30|23w27 29r30
+X 30 crypto-symmetric-mac-hmac_sha512.ads
+28K30*Hmac_SHA512[27|40] 25|25k26
+X 31 crypto-types.ads
+43M9*DWord
+59A9*DWords(43M9)<integer>
+89A9*DW_Block512<59A9><integer>
+90A9*DW_Block1024<59A9><integer>
+242V13*"xor"{90A9} 27|28i18
+

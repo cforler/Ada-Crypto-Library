@@ -1,0 +1,106 @@
+\chapter{Ellyptische Kurven Datenbank ZP}
+Die ACL bietet für die ellyptischen Kurven der Form
+\begin{itemize}
+\item $y^2 = x^3 + ax + b\; \bmod\; p \mbox{ mit } p \in \mathbf{P}
+  \setminus\{2,3\}$
+  \\
+  Hier handelt es sich um ellyptische Kurven über dem endlichen Körper $Z_p$.
+\end{itemize}
+eine Datenbank, welche die durch NIST (National Institute of Standards and Technology) herausgegebenen elliptischen Kurven enthält.
+\\~\\
+Es sind die folgenden Kurven enthalten.
+\begin{itemize}
+	\item Curve P-192
+	\item Curve P-224
+	\item Curve P-256
+	\item Curve P-384
+	\item Curve P-521
+	\item Test Curve (5 bit)
+\end{itemize}
+ 
+\section{API}
+
+\subsection{Generischer Teil}
+\begin{lstlisting}{}
+  generic
+  with package Big is new Crypto.Types.Big_Numbers(<>);
+\end{lstlisting}
+
+\subsection{Typen}
+Dieses Paket stellt den Typ \textit{Bit\_Length} und den Typ \textit{Precomputed\_Elliptic\_Curve} zur Verfügung.
+\begin{lstlisting}{}
+  type Bit_Length is new natural;
+  
+ 	type Precomputed_Elliptic_Curve is record
+ 	  -- prime modulus
+		p      : String(1..192) := (others=>' ');
+		-- order	
+		r      : String(1..192) := (others=>' ');
+		-- 160-bit input seed to SHA-1	
+		s      : String(1..192) := (others=>' ');	
+		-- output of SHA-1
+		c      : String(1..192) := (others=>' ');	
+		-- coefficient b (satisfying b*b*c = -27 (mod p))
+		b      : String(1..192) := (others=>' ');
+		-- base point x coordinate	
+		Gx     : String(1..192) := (others=>' ');	
+		-- base point x coordinate
+		Gy     : String(1..192) := (others=>' ');
+		-- Bit lenght	
+		length : Bit_Length;                      
+	end record;
+\end{lstlisting}\ \\
+
+
+\subsection{Prozeduren}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  procedure Get_Elliptic_Curve(ECZ    : out Elliptic_Curve_Zp; 
+                               ECP    : out EC_Point; 
+                               order  : out Big_Unsigned; 
+                               length : in  Bit_Length);
+\end{lstlisting}\\
+Diese Prozedur holt alle Variablen aus der Datenbank, die zum Rechnen mit Elliptische Kurven benötigt werden. Die Kurve hat mindestens die kryptografische Sicherheit von \textit{length}.\\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  BitLength is not supported. (Max BitLength = 521) & LEN\_EX\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  procedure Set_Elliptic_Curve_Map;
+\end{lstlisting}\\
+Diese Prozedur initiert die Datenbank. Sie ist nur für den internen Gebrauch notwendig.
+\\ \ \\
+\end{tabular}
+
+\section{Anwendungsbeispiel}
+\begin{lstlisting}{}
+with Crypto.Types; use Crypto.Types;
+with Crypto.Types.Big_Numbers;
+with Crypto.Types.Elliptic_Curves.Zp;
+with Crypto.Types.Elliptic_Curves.Zp.Database;
+
+procedure Example_EC_DB_ZP is
+  package Big is new Crypto.Types.Big_Numbers(Size);
+  use Big;
+  package EC  is new Crypto.Types.Elliptic_Curves(Big);
+  use EC;
+  package Zp is new EC.Zp;
+  use Zp;
+	package DB is new Zp.Database;
+	use DB;
+  
+  EC_ZP : Public_Key_ECNR;
+  EC_P  : Private_Key_ECNR;
+  order : Signature_ECNR;
+
+begin
+	Get_Elliptic_Curve(EC_ZP, EC_P, order, 168);
+end Example_EC_DB_ZP;
+\end{lstlisting}
+
+

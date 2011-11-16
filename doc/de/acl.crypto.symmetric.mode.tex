@@ -1,0 +1,419 @@
+\chapter{Crypto.Symmetric.Mode}\label{modus}
+
+Mit Hilfe von generischen Betriebsmodi ist es möglich eine Blockchiffre in 
+einem sicheren Betriebsmodus zu betreiben. Ein Betriebsmodus verknüpft
+für gewöhnlich eine Blockchiffre mit einer Rückkopplung und einigen einfachen
+Operationen (+, xor), und wird mit Hilfe eines zufälligen öffentlichen 
+Startwertes (Initial Value (IV)) initialisiert. Der Chiffretext ist damit
+nicht  nur von dem verwendeten Chiffre, Klartext und Schlüssel abhängig,
+sondern auch von dem zufälligen Startwert. 
+Wenn Sie einen Klartext mehrmals mit der gleichen Chiffre und dem gleichen
+Schlüssel aber unterschiedlichen IVs verschlüsselt, erhalten Sie
+unterschiedliche Chiffretexte. Durch die Rückkopplung werden gleiche
+Klartextblöcke zu unterschiedlichen Chiffretextblöcken chiffriert, d.h ein 
+Betriebsmodus verschlüsselt zwei Klartextblöcke p1 und p2 mit p1=p2, mit 
+überwältigender Wahrscheinlichkeit zu zwei Chiffretextblöcke c1 und c2 mit 
+c1$\not=$c2. Damit ist es nun möglich mehrere Nachrichten sicher
+mit dem selben Schlüssel zu verschlüsseln.\\
+\textbf{Vorsicht: Um einen Chiffretext zu entschlüsseln benötigt Sie den 
+gleichen Schlüssel und Startwert wie bei der Verschlüsselung.}
+Aus diesem Grund sollte Sie den Startwert immer mit dem zugehörigen Chiffretext
+aufbewahren. \textbf{Die Sicherheit eines Modus ist unabhängig vom 
+\glqq Bekanntheitsgrad\grqq des Startwertes}.  Daher ist es üblich, dass man
+den Startwert mit dem Chiffretext multipliziert ($IV*C = C'= IV||C$),
+d.h. man hängt den Chiffretext einfach an den Startwert an um das 
+finale Chiffrat C' zu erhalten.\\
+In diesem Kapitel wird auf die einzelnen Modi ihre API, Einsatzweck und 
+Merkmale eingegangen.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{API}\label{mode-api}
+
+Die API eine Blockchiffre besteht aus den folgenden 4 Prozeduren.
+
+\begin{enumerate}
+\item Die Prozedur \textbf{Init} initialisiert einen Blockchiffre und Modus 
+indem sie der Blockchiffre einen Schlüssel \textit{Key} und dem Modus einen
+ Startwert  \textit{Initial\_Value} zuweist.
+  \begin{lstlisting}{}
+    procedure Init(Key           : in Key_Type;
+                   Initial_Value : in Block);
+  \end{lstlisting}
+
+\item Die Prozedur \textbf{Encrypt} verschlüsselt einen Klartextblock 
+  (Plaintext) in einen Chiffretextblock (Ciphertext) 
+  \begin{lstlisting}{}
+    procedure Encrypt(Plaintext  : in Block; 
+                      Ciphertext : out Block);
+  \end{lstlisting}
+
+\item Die Prozedur \textbf{Decrypt} entschlüsselt einen Chiffretextblock 
+  (Ciphertext) in einen Klartextblock (Plaintext).
+  \begin{lstlisting}{}
+    procedure Decrypt(Ciphertext : in Block;
+                      Plaintext  : out Block);
+  \end{lstlisting}
+
+\item Die Prozedur \textbf{Set\_IV} weist dem Modus den Startwert 
+  \textit{Initial\_Value} zu. D.h. mit Hilfe dieser Prozedur lässt sich eine
+  Modus reinitialisieren. Nach jeder ver- bzw. entschlüsselten Nachricht 
+  (Eine Nachricht besteht aus n-Klartextblöcken,dies entspricht n-Aufrufe der 
+  \textit{Encrypt} bzw. \textit{Decrypt}-Prozedur) muss eine Chiffre 
+  reinitialisiert werden. Außerdem muss eine Chiffre jedes mal reinitialisieren
+  werden wenn man den Richtung (Verschlüsselung, Entschlüsselung) des Modus
+  ändert
+ \begin{lstlisting}{}
+procedure Set_IV(Initial_Value : in Block);
+ \end{lstlisting}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Cipher-Block-Chaining-Modus (CBC)}
+\subsubsection{Paket: Crypto.Symmetric.Mode.CBC}
+Bei diesem Betriebsmodus fließt das Ergebnis der Verschlüsselung früherer 
+Blöcke in  die Verschlüsselung des aktuellen Blockes mit ein, 
+indem der Klartext vor der Verschlüsselung mit dem vorherigen
+(zwischengespeicherten) Chiffretextblock mit der XOR-Operation verknüpft wird. 
+
+\subsection{Verschlüsselung}
+Bei der Initialisierung wird der Startwert IV als $C_0$ zwischengespeichert. 
+Wird nun ein Klartextblock $P_i$ verschlüsselt, so wird dieser zuerst 
+mit $C_0$ mittels der XOR-Operation verknüpft und danach mit Hilfe der 
+Blockchiffre zu dem Chiffretextblock $C_1$ verschlüsselt und 
+zwischengespeichert. Der nächste Klartextblock $P_2$ wird zuerst mit $C_1$ 
+mittels der XOR-Operation verknüpft und danach zu $C_2$ verschlüsselt und 
+zwischengespeichert usw.\\ \ \\
+Mathematische Beschreibung: $C_i = E_K(P\oplus C_{i-1})$ 
+
+
+\subsection{Entschlüsselung}
+Die Entschlüsselung verläuft analog zur Verschlüsselung. Zu Beginn wird der
+Betriebsmodus mit dem Startwert $C_0$ initialisiert bzw. mittels 
+\textit{Set\_IV} reinitialisiert. Der Chiffretextblock $C_1$ wird nun ganz
+normal entschlüsselt und das Ergebnis der Entschlüsselung dann mit $C_0$
+mittels der XOR-Operation verknüpft. Das Ergebnis dieser XOR-Operation
+ist der Klartextblock $P_i$. Als nächstes wird der Chiffretextblock $C_2$
+entschlüsselt und das Ergebnis dieser Entschlüsselung wird dann mit $C_1$,
+mittels der XOR-Operation, zu dem Klartextblock $P_2$, verknüpft usw. \\ \ \\
+
+Mathematische Beschreibung: $P_i = C_{i-1} \oplus D_K(C_i)$ 
+
+\subsection{Verwendungszweck}
+\begin{itemize}
+\item \textbf{Verschlüsselung von Dateien}\\
+  Da mit diesem Modus keine Synchronisationsfehler behoben werden können, 
+  eignet er sich besonders für die Verschlüsselung von Dateien.
+  Dabei kommt es praktisch nie zu synchronisations Fehlern, dafür aber 
+  gelegentlich zu Bitfehler (durch defekte Hardware o.ä.). Ein Bitfehler in 
+  einem Chiffretextblock $C_i$ betrifft den kompletten Klartextblock $P_i$ 
+  sowie das  entsprechenden Bit im nächsten Klartextblock $P_{i+1}$.\\
+\item \textbf{Integritätsprüfung von Nachrichten}\\
+  Um die Integrität einer Nachricht M zu überprüfen verschlüsseln sie diese und
+  merken sich nur die beiden Chiffretextblöcke $C_0=IV$ und $C_n$. 
+  Die restlichen Chiffretextblöcke werden nicht benötigt. Jetzt sind Sie in 
+  der Lage jederzeit festzustellen ob die Nachricht manipuliert wurde,
+  indem Sie die Nachricht  M' nochmals  mit dem Startwert $C_0$ verschlüsseln 
+  $C_n'$ berechnen und überprüft  ob $C_n=C_n'$ gilt. Ist dies der Fall, dann 
+  wurde die M nicht manipuliert.
+  Wenn $C_n\not=C_n'$ gilt, dann wurde entweder $IV$, $C_n$ oder M manipuliert.
+  Unter manipuliert versteht man hier das zufällige Kippen eines oder mehrer 
+  Bits.
+\item \textbf{Authentifizierung}\\
+  Angenommen sie teilen mit Alice, die Sie noch nie zuvor getroffen haben, 
+  ein Geheimnis  (Key). Eines Tages wollen Sie sich mit Alice treffen um mit 
+  ihr vertrauliche Daten  auszutauschen. Um sicher zugehen das sich es bei der
+  Person am vereinbarten Treffpunkt wirklich um Alice handelt nehmen Sie 
+  einfach eine Nachricht M und einen Zufälligen Startwert IV mit. Bitten Sie 
+  ``Alice'' M mit ihrem Geheimnis und dem Startwert IV $C_n$ zu  berechnen.
+  Wenn dieser Wert mit dem von ihnen berechneten $C_n$  übereinstimmen 
+  (und weder Alice noch Sie ihr  Geheimnis jemand anderem verraten hat), 
+  dann handelt es sich bei der Person mit überwältigender Wahrscheinlichkeit 
+  um Alice. Wenn die Werte nicht übereinstimmen, dann handelt es sich bei 
+  dieser Person nicht um Alice.\\
+  \textbf{VORSICHT: Der CBC-MAC ist nur sicher, wenn die alle ausgetauschten
+    Nachrichten gleich lang sind.} Aus diesem Grund sollte man davon Abstand
+    nehmen  den CBC-MAC zu verwendet.     
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+\section{Cipher-Feedback-Modus (CFB)}\label{CFB}
+\subsubsection{Paket: Crypto.Symmetric.Mode.CFB}
+Der CFB-Modus wandelt eine Blockchiffre in eine selbst synchronisierte
+Blockchiffre um. Z.B. versetzt dies ein Terminal in die Lage, jedes 
+eingetippte Zeichen sofort zum Host zu übertragen. \\
+\textbf{Achtung: Bei diesem Modus muss der Startwert nach jeder Nachricht
+geändert werden.} Ansonsten ist dieses Verfahren nicht sicher.
+
+\subsection{Verschlüsselung}
+Bei der Initialisierung wird der Startwert IV als $C_0$ zwischengespeichert.
+Wenn nun n-Bytes (n $<$ Block'Size) verschlüsselt werden soll, dann werden die 
+n-Bytes an den Anfang des Klartextblockes $P_0$ kopiert. Dieser wird dann mit
+Nullen aufgefüllt. Bei der Verschlüsselung von $P_1$ wird $C_0$ 
+verschlüsselt und der dadurch generierte Chiffretext $C_1$ wird mittels
+der XOR-Operation mit $P_1$ verknüpft. Das Ergebnis dieser Operation wird
+ausgegeben und als $C_1$ zwischengespeichert. Der nächste aufgefüllte 
+Klartextblock $P_2$ wird nach der Verschlüsselung zu $C_2$ indem $C_1$
+verschlüsselt und mit Hilfe der XOR-Operation mit $P_2$ verknüpft wird. Dies 
+wird solange wiederholt bis die gesamte Nachricht übermittelt wurde.\\ \ \\
+Mathematische Beschreibung: $C_i = P_i \oplus E_K(C_{i-1})$    
+
+\subsection{Entschlüsselung}
+Die Entschlüsselung verläuft analog zur Verschlüsselung. Zu Beginn wird der
+Betriebsmodus mit dem Startwert IV initialisiert bzw. mittels 
+\textit{Set\_IV} reinitialisiert und als $C_0$ zwischengespeichert.
+Bei der Entschlüsselung eines Chiffretextblockes $C_i$ wird zunächst $C_{i-1}$
+entschlüsselt und  mit Hilfe der XOR-Operation mit $C_i$ verknüpft. Das
+Ergebnis dieser Operation ist $P_i$. Zum Schluss wird noch $C_i$ 
+zwischengespeichert.\\ \ \\
+Mathematische Beschreibung: $P_i = C_{i} \oplus E_K(C_{i-1})$ 
+
+\subsection{Verwendungszweck}  
+Im Gegensatz zum CBC-Modus wo die Verschlüsselung erst dann
+beginnen kann, wenn ein vollständiger Datenblock vorliegt, können im 
+CFB-Modus Daten z.B. auch Byteweise (8-CFB) verschlüsselt werden. Dadurch 
+eignet sich dieses Verfahren
+hervorragend für die \textbf{Verschlüsselung von Byteströme (z.B. Remoteshell)}
+
+\subsection{Anmerkungen}  
+Beim n-CFB-Modus
+\begin{itemize}
+\item wirkt sich ein Fehler im Klartext auf den gesamten nachfolgenden
+  Chiffretext aus und macht bei der Entschlüsselung selbst wieder 
+  rückgängig.
+\item wirkt sich ein Fehler im Chiffretext $C_i$ auf den  
+  Klartextblock $P_i$ und die folgenden  $\frac{m}{n}-1$ Klartextblöcke aus,
+  wobei m die Blockgröße ist. 
+\item Ein Angreifer kann die Nachrichtenbits im letzten Chiffretextblock 
+  verändern ohne dabei entdeckt zu werden.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Couter-Modus (CTR)}\label{CTR}
+\subsubsection{Paket: Crypto.Symmetric.Mode.CTR}
+Beim Counter-Modus wird die die Blockchiffre in einen Schlüsselstromgenerator
+umgewandelt. Die Rückkopplung hängt also nicht vom Klartext ab sondern von 
+einem Zähler, der nach jeder Verschlüsselungsoperation um eins erhöht wird.
+
+
+\subsection{Verschlüsselung}
+Bei der Initialisierung wird der Zähler auf den Startwert (IV) gesetzt. 
+Bei der Verschlüsselung des Klartextblockes $P_i$ wird $IV+i-1$ mit Hilfe der
+Blockchiffre zu dem Schlüsselstromblock $K_i$ verschlüsselt.
+Danach wird mit Hilfe der
+XOR-Operation $K_i$ mit $P_i$ verknüpft. Das Ergebnis dieser Verknüpfung ist 
+der Chiffretext $C_i$ .\\ \ \\
+Mathematische Beschreibung: $C_i = P_{i} \oplus E_K(IV+i-1)$   
+
+\subsection{Entschlüsselung}
+Die Entschlüsselung verläuft analog zur Verschlüsselung. Zu Beginn wird der
+Zähler mit dem Startwert IV initialisiert bzw. mittels \textit{Set\_IV} 
+reinitialisiert. Bei der Entschlüsselung eines Chiffretextblockes $C_i$ wird
+zunächst $IV+i-1$ mittels der Blockchiffre zu dem Schlüsselstromblock $K_i$
+verschlüsselt. Danach wird $C_i$ mit Hilfe der XOR-Operation zu mit $K_i$
+verknüpft. Das Ergebnis dieser Operation ist $P_i$ .\\ \ \\
+Mathematische Beschreibung: $P_i = C_{i} \oplus E_K(IV+i-1)$   
+
+\subsection{Verwendungszweck}  
+\begin{itemize}
+\item  \textbf{Ent/Verschlüsselung von Nachrichten mit wahlfreiem Zugriff}
+  Da Sie mit dem Counter-Modus in der Lage sind gezielt 
+  einzelne Chiffretextblock zu entschlüsseln eignet sich dieses Verfahren 
+  für die Verschlüsselung von Dateien mit wahlfreiem Zugriff wie z.B. 
+  Datenbanken. Hier können   sie bei einer Anfrage an eine verschlüsselte
+  Datenbank genau die Daten, die angefragt wurden.  
+\item \textbf{Parallele Ent/Verschlüsselung}\\
+  Eine Parallelisierung ist möglich indem man aus dem Startwert des Zählers 
+  IV und  der Länge der Nachricht L folgendes Intervall berechnet: 
+  $[IV...IV+L]$
+  Das Intervall lässt sich in max. L disjunkte Teilintervalle zerlegen. 
+  Die Nachrichtenblöcke der Teilintervalle können parallel ver- bzw. 
+  entschlüsselt werden.
+\item \textbf{Phasenweise ``High Speed''-Verschlüsselung}\\
+  Die ist eine Expertenanwendung die auf der ``Low-Level-API'' (\ref{ctrllapi})
+  des CTR-Modus beruht. Verwenden sie diese nur wenn Sie genau wissen, 
+  was Sie tun.\\
+  Beim Counter-Modus ist es möglich beliebig viele Schlüsselstrombits, ohne
+  das ein Nachrichtenblock benötigt wird, zu generiere. Wenn Sie mit 
+  Hilfe des Counter-Modus genügend Schlüsselstrombits generieren, 
+  dann sind Sie in  der Lage  Nachrichten sehr schnell zu verschlüsseln,
+  indem Sie sie einfach mit den vorher erzeugten Schlüsselstrombits 
+  XOR-Verknüpft. 
+\end{itemize}
+
+
+\subsection{Anmerkungen}
+\begin{itemize}
+\item Ein Bit-Fehler im Klartext wirkt sich nur auf ein Bit im Chiffretext aus 
+  und umgekehrt.
+\item Manipulationen am Klartext sind sehr einfach, da jede Änderung des 
+  Chiffretextes beeinflusst direkt den Klartext.
+\item Synchronisationsfehler (Alice und Bob haben unterschiedliche 
+  Counterstände) können nicht behoben werden.
+\end{itemize}
+
+\subsection{Low-Level-API}\label{ctrllapi}
+Die folgende API sollten Sie nur dann verwenden, wenn Sie genau wissen was Sie
+tun.\\
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+    procedure Next_Block(Keystream : out Block);
+  \end{lstlisting}\\
+Diese Prozedur generiert einen Schlüssselstromblock (\textit{Keystream})
+indem sie den Wert des internen Zähler Counter zuerst zu C verschlüsselt,
+ihn dann um Eins erhöht und zu guter letzt C ausgibt.
+Bei der Initialisierung wird Counter auf IV gesetzt.\\
+Mathematische Beschreibung: $C = E_K(Counter); \quad Counter:=Counter+1$\\
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Output-Feedback-Modus (OFB)}\label{OFB}
+\subsubsection{Paket: Crypto.Symmetric.Mode.OFB}
+Der OFB-Modus transformiert wie der Counter-Modus eine Blockchiffre in eine 
+Stromchiffre. D.h. die interne Rückkopplung ist hier unabhängig vom Klartext.
+
+\subsection{Verschlüsselung}
+Bei der Initialisierung wird der interne Schlüsselstromblock $K_0$ auf IV
+gesetzt.
+Bei der Verschlüsselung eines Klartextblock $P_i$ wird $K_{i-1}$ zu $K_i$
+verschlüsselt und mit $P_i$ XOR verknüpft. Das Ergebnis dieser Operation, ist
+der Chiffretextblock $C_i$\\
+Mathematische Beschreibung: $C_i =  P_i \oplus K_i$
+
+\subsection{Entschlüsselung}
+Die Entschlüsselung verläuft analog zur Verschlüsselung. Zu Beginn wird der
+Schlüsselstromblock $K_0$ mit dem Startwert $IV$ initialisiert bzw. mittels 
+\textit{Set\_IV} reinitialisiert. 
+Bei der Entschlüsselung eines Chiffretextblock $C_i$ wird $K_{i-1}$ zu $K_i$
+verschlüsselt und mit $C_i$ XOR verknüpft. Das Ergebnis dieser Operation, ist
+der Klartextblock $P_i$. Die Chiffretextblöcke müssen in der gleichen
+Reihenfolge 
+in der sie geniertet wurden entschlüsselt werden.\\
+Mathematische Beschreibung: $P_i = C_i \oplus K_i$
+
+
+\subsection{Verwendung}
+Diesen Modus macht eigentlich nur mit der ``Low-Level-API'' für Experten 
+(\ref{ofbllapi})
+Sinn. Mit Hilfe dieser können Sie einen Schlüsselstrom ohne Klartextblöcke 
+generieren. Dadurch sind Sie in der Lage Klartextblöcke sehr schnell zu  
+verschlüsseln. Zum Beispiel wäre es denkbar nachts Schlüsselstromblöcke zu 
+generieren und mit Hilfe dieser dann Klartextblöcke am Tag zu verschlüsselt. 
+Dieser Modus eignet sich daher besonders gut, wenn 
+\textbf{phasenweise  sehr schnell Klartextblöcke verschlüsseln} werden müssen. 
+
+\subsection{Anmerkungen}
+\begin{itemize}
+\item Der Schlüsselstrom wiederholt sich irgendwann. 
+  D.h. $\exists\; L: K_0=K_L$
+  Wenn m die Blockgröße in Bits ist, beträgt die durchschnittliche Länge eines
+  Zyklus $2^m-1$ Bits
+\item Ein Bit-Fehler im Klartext wirkt sich nur auf ein Bit im Chiffretext aus 
+  und umgekehrt.
+\item Manipulationen am Klartext sind sehr einfach, da jede Änderung des 
+  Chiffretextes beeinflusst direkt den Klartext.
+\item Synchronisationsfehler (Alice und Bob haben unterschiedliche 
+  Counterstände) können nicht behoben werden.
+\end{itemize}
+
+
+\subsection{Low-Level-API}\label{ofbllapi}
+ Die folgende API sollten Sie nur dann verwenden, wenn Sie genau wissen was 
+ Sie tun.\\
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  procedure Next_Block(Keystream : out Block);
+\end{lstlisting}\\
+Bei der Initialisierung mittels der \textit{Init}-Prozedur wird der Startwert
+(IV) als Schlüsselstromblock $K_0$ zwischengespeichert. Jedes mal wenn nun die 
+\textit{Next\_Block}-Prozedur aufgerufen wird, passiert folgendes:  Der 
+Schlüsselstromblock $K_i$ wird zu $K_{i+1}$ verschlüsselt, zwischengespeichert
+und als Keystream ausgegeben.\\ \ \\
+Mathematische Beschreibung: $K_i =  E_K(K_{i-1})$
+\end{tabular}
+
+\section{Generischer Teil}
+\begin{lstlisting}{}
+generic
+   with package C is
+      new Crypto.Symmetric.Blockcipher(<>);
+
+   with function "xor" (Left, Right  : in C.Block) 
+                         return C.Block is <>;
+
+    -- Diese Funktion wird nur beim Counter-Mode benoetigt
+   with function "+"   (Left : C.Block; Right : Byte)
+                        return C.Block is <>;
+\end{lstlisting}
+
+
+
+\section{Anwendungsbeispiel}
+\begin{lstlisting}{}
+with Crypto.Types;
+with Ada.Text_IO;
+with Crypto.Symmetric.Blockcipher_Tripledes;
+with Crypto.Symmetric.Mode.CBC;
+
+
+procedure Bsp_Modus_CBC is
+   use Ada.Text_IO;
+   use Crypto.Types;
+
+  package TDES renames Crypto.Symmetric.Blockcipher_Tripledes;
+
+  --Benutze die TDES im sicheren CBC-Modus
+   package TDES_CBC is new Crypto.Symmetric.Mode.CBC(TDES);
+
+  use TDES_CBC;
+
+  -- Schluessel
+  Key : B_Block192 := 
+              (16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
+               16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
+               16#00#, 16#00#, 16#00#, 16#00#, 16#01#, 16#23#,
+               16#45#, 16#67#, 16#89#, 16#ab#, 16#cd#, 16#ef#);
+
+   --Startwert
+  IV : B_Block64 := (16#12#, 16#34#, 16#56#, 16#78#,
+                     16#90#, 16#ab#, 16#cd#, 16#ef#);
+
+   -- Klartext
+   P_String : String :="Now is the time for all .";
+
+   --Klartext wird in drei 64-Bit Bloecke unterteilt
+   P : array (1..3) of B_Block64 :=
+     ((To_Bytes(P_String(1..8))),
+      (To_Bytes(P_String(9..16))),
+      (To_Bytes(P_String(17..24))));
+
+   -- Chiffretrext
+   C : array (0..3) of B_Block64;
+  begin
+    --1. Initialisierung
+    Init(Key, IV);
+
+    -- 1a) Chiffreblock = Startwert.
+    C(0) := IV;
+
+   -- 2. Verschluesselung
+   for I in P'Range loop
+      Encrypt(P(I), C(I));
+   end loop;
+
+   -- Fuer die Entschluesselung wird die Chiffre mit dem
+   -- gleichen Startwert wie bei der Entschluesselung reinitalisiert
+     Set_IV(C(0));
+
+   -- 3. Entschluesselung
+   for I in P'Range loop
+      Decrypt(C(I), P(I));
+      Put(To_String(P(I)));
+   end loop;
+end  Bsp_Modus_CBC;
+\end{lstlisting}

@@ -1,0 +1,280 @@
+\chapter{Acl.Crypto.Asymmetric.DSA}
+
+Bei diesem generischen Paket handelt es sich um eine Implementierung des
+DSA-Signaturalgorithmus. Der DSA-Algorithmus ist Teil des digitalen Signatur
+Standards (DSS) \cite{dss} der von der NSA entworfen und 1994 vom NIST 
+verabschiedet wurde. Die Bezeichner wurden aus dem DSS übernommen.\\
+Mit Hilfe von DSA sind Sie  in der Lage digitale Unterschriften zu 
+erstellen und deren Authentizität zu verifizieren. 
+Um eine Nachricht digital zu unterschreiben (signieren) benötigt Sie einen 
+öffentlichen und einen privaten Schlüssel.
+Den privaten Schlüssel benötigt Sie für den Signierungsprozess und den 
+öffentlichen Schlüssel für den Verifikationsprozess. Bei diesen Prozessen
+wird nicht die Nachricht selbst sondern deren SHA-1 Hash-Wert 
+\ref{sha1} unterschrieben. Jemand der den privaten Schlüssel nicht kennt, ist 
+nicht in der Lage eine gültige (verifizierbare) Signatur zu erstellen.
+Aber jeder der den öffentlichen Schlüssel kennt, kann sich von der Korrektheit
+einer Signatur überzeugen indem er sie dem Verifizierungsprozess unterwirft.
+
+
+\section{Generischer Teil}
+\begin{lstlisting}{}
+generic
+  Size : Positive;
+\end{lstlisting}\ \\
+\textbf{Exception}
+$Size \not= 512+i64 \quad (i \in \{0, \ldots , 8\})$ : Constraint\_Error;\\
+
+\section{API}
+\subsection{Typen}
+\begin{lstlisting}{}
+ subtype DSA_Number is Bytes(0..Size/8-1);
+ type Public_Key_DSA  is private;
+ type Private_Key_DSA is private;
+ type Signature_DSA   is private;
+\end{lstlisting}
+Bei DSA\_Number handeltes sich um ein Byte-Array das als Zahl interpretiert
+wird. Das erste Element des Arrays (First) enstpricht dabei dem 
+dem höchstwertigsten Byte und das letzte Element des Arrays (Last)
+dem niederwertigsten Byte dieser Zahl.\\ \ \\
+
+\subsection{Prozeduren und Funktionen}
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Gen_Key(Public_Key  : out Public_Key_DSA;
+                     Private_Key : out Private_Key_DSA);
+\end{lstlisting}\\
+Diese Prozedur erzeugt ein Schlüsselpaar, das aus einem öffentlichen 
+\textit{Public\_Key} und einem privaten Schlüssel \textit{Private\_Key}
+besteht.\\ \ \\
+\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Sign(Private_Key   : in  Private_Key_DSA;
+                 SHA1_Hash   : in  W_Block160;
+                 Signature   : out Signature_DSA);
+\end{lstlisting}\\
+Diese Prozedur signiert den SHA-1 Hashwert (\textit{SHA1\_Hash}) einer
+Nachricht mit einem privaten Schlüssel (\textit{Private\_Key}).\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Verify(Public_Key  : Public_Key_DSA;
+                 SHA1_Hash   : W_Block160;
+                 Signature   : Signature_DSA) return Boolean;
+\end{lstlisting}\\
+Diese Funktion gibt den Wert ``True'' zurück, wenn mit Hilfe des öffentlichen
+Schlüssels \textit{Public\_Key} verifiziert werden kann,
+ob es sich bei \textit{Signature} um eine gültige Unterschrift des SHA-1
+Hashwertes \textit{SHA1\_Hash} handelt.
+Ist dies nicht der Fall gibt sie ``False'' zurück.\\
+Mit einem öffentlichen Schlüssel, können nur Signaturen des zugehörigen
+privaten Schlüssels verifiziert werden. Passen die beiden Schlüssel nicht 
+zusammen, gibt diese Funktion ``False'' zurück.\\
+Wenn Bob anstatt seines den Ausweis den von Alice mit sich führt, dann kann 
+man anhand dieses Ausweises auch nicht die Identität von  Bob überprüfen, 
+obwohl Alice Ausweis gültig ist. \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Sign_File(Filename      : in  String;
+                      Private_Key : in  Private_Key_DSA;
+                      Signature   : out Signature_DSA);
+\end{lstlisting}\\
+Mit dieser Prozedur kann man mit Hilfe eines privaten Schlüssels 
+\textit{Private\_Key} eine Datei (\textit{Filename}) signieren.\\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  Die Datei \textit{Filename} ist größer als $2^{26}$ TB & 
+  SHA1\_Constraint\_Error\\
+  Private\_Key wurde nicht initialisiert & Invalid\_Private\_Key\\
+  Lesefehler & File\_Open\_Error\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Verify_File(Filename    : String;
+                      Public_Key : Public_Key_DSA;
+                      Signature  : Signature_DSA) return Boolean;
+\end{lstlisting}\\
+Diese Funktion gibt den Wert ``True'' zurück, wenn mit Hilfe des öffentlichen
+Schlüssels \textit{Public\_Key} verifiziert werden kann, ob es sich bei
+\textit{Signature} um eine gültige Unterschrift der Datei (\textit{Filename})
+handelt. Ist dies nicht der Fall gibt sie ``False'' zurück.\\
+Mit einem öffentlichen Schlüssel, können nur Signaturen des dazugehörigen
+privaten Schlüssels verifiziert werden. Passen die beiden Schlüssel nicht 
+zusammen, gibt diese Funktion ``False'' zurück.\\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ }l}
+Die Datei \textit{Filename} ist größer als $2^{26}$ TB & 
+SHA1\_Constraint\_Error\\
+Public\_Key  wurde nicht initialisiert  & Invalid\_Public\_Key\\
+Lesefehler & File\_Open\_Error\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  function Verify_Key_Pair(Private_Key : Private_Key_DSA;
+                            Public_Key  : Public_Key_DSA) return Boolean;
+\end{lstlisting}\\
+Diese Funktion gibt ``True'' zurück, wenn der privaten \textit{Private\_Key}
+und der öffentliche Schlüssel \textit{Public\_Key} zusammengehören, d.h. ein 
+Paar bilden, ansonsten gibt sie ``False'' zurück. \\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  Public\_Key  wurde nicht initialisiert & Invalid\_Public\_Key\_Error\\
+  Private\_Key wurde nicht initialisiert & Invalid\_Private\_Key\_Error\\
+\end{tabular}\\ \ \\
+\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   procedure Get_Public_Key(Public_Key : in Public_Key_DSA;
+                            P : out DSA_Number;
+                            Q : out DSA_Number;
+                            G : out DSA_Number;
+                            Y : out DSA_Number);
+\end{lstlisting}\\
+Diese Prozedur zerlegt einen öffentlichen Schlüssel \textit{Public\_Key} 
+in folgende Komponenten:
+\begin{itemize}
+\item Eine Size-Bit-Primzahl P.
+\item Eine 160-Bit-Primzahl Q.
+\item Einen Generator G der eine Untergruppe von P mit der Ordnung Q erzeugt.
+\item Der eigentliche öffentliche Schlüssel Y. 
+\end{itemize}\ \\
+Mit Hilfe dieser Werte lässt sich der öffentliche Schlüssel zu einem späteren 
+Zeitpunkt wieder rekonstruieren.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+ procedure Get_Private_Key(Private_Key : in Private_Key_DSA;
+                             P : out DSA_Number;
+                             Q : out DSA_Number;
+                             G : out DSA_Number;
+                             X : out DSA_Number);
+\end{lstlisting}\\
+Diese Prozedur zerlegt einen privaten Schlüssel \textit{Private\_Key} 
+in folgende Komponenten:
+\begin{itemize}
+\item Eine Size-Bit-Primzahl P.
+\item Eine 160-Bit-Primzahl Q.
+\item Einen Generator G der eine Untergruppe von P mit der Ordnung Q erzeugt.
+\item Der eigentliche geheime Schlüssel X. 
+\end{itemize}\ \\
+Mit Hilfe dieser Werte lässt sich der private Schlüssel zu einem späteren 
+Zeitpunkt wieder rekonstruieren.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  procedure Set_Public_Key(P : in DSA_Number;
+                            Q : in DSA_Number;
+                            G : in DSA_Number;
+                            Y : in DSA_Number;
+                            Public_Key : out Public_Key_DSA);
+\end{lstlisting}\\
+Mit Hilfe dieser Prozedur ist es möglich einen öffentlichen Schlüssel 
+\textit{Public\_Key} zu (re-)konstruieren. Man benötigt dazu folgende 
+Werte:
+\begin{itemize}
+\item Eine Size-Bit-Primzahl \textit{P}.
+\item Eine 160-Bit-Primzahl \textit{Q}.
+\item Einen Generator \textit{G} der eine Untergruppe von $ Z_P^*$  mit der
+  Ordnung \textit{Q} erzeugt.
+\item Den eigentliche öffentlichen Schlüssel \textit{Y}.
+\end{itemize}\ \\
+\textbf{Exception:}\\
+P, Q, G oder Y unzulässig : Invalid\_Public\_Key\_Error.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+ procedure Set_Private_Key(P : in DSA_Number;
+                             Q : in DSA_Number;
+                             G : in DSA_Number;
+                             X : in DSA_Number;
+                             Private_Key : out Private_Key_DSA);
+\end{lstlisting}\\
+Mit Hilfe dieser Prozedur ist es möglich einen privaten Schlüssel 
+(\textit{Private\_key}) zu (re-)konstruieren. Man benötigt dazu folgende 
+Werte:
+\begin{itemize}
+\item Eine Size-Bit-Primzahl \textit{P}.
+\item Eine 160-Bit-Primzahl \textit{Q}.
+\item Einen Generator \textit{G} der eine Untergruppe von $ Z_P^*$  mit der
+  Ordnung \textit{Q} erzeugt.
+\item Den eigentliche geheime Schlüssel \textit{X}.
+\end{itemize}\ \\
+\textbf{Exception:}\\
+P, Q, G oder Y unzulässig : Invalid\_Private\_Key\_Error.\\ \ \\
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Anwendungsbeispiel}
+\begin{lstlisting}{}
+with Crypto.Types.Big_Numbers;
+with Crypto.Asymmetric.Dsa;
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Example_DSA is
+   package DSA is new Crypto.Asymmetric.DSA(512);
+   use DSA;
+
+   Public_Key  : Public_Key_DSA;
+   Private_Key : Private_Key_DSA;
+   Signature   : Signature_DSA;
+
+begin
+   --Schluesselgenerierung
+   Gen_Key(Public_Key, Private_Key);
+
+   --Signierung
+   Sign_File("example_dsa.adb", Private_Key, Signature);
+
+   --Verifikation
+   if Verify_File("example_dsa.adb", Public_Key, Signature) then
+        Put_Line("OK");
+   else Put_Line("Implementation error.");
+   end if;
+
+end Example_DSA;
+\end{lstlisting}

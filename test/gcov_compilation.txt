@@ -1,0 +1,14 @@
+gcov test-big_number_comp test-big_number_mod_type_comp_and_add test-big_number_mod_types test-big_number_min_max (bis 373)
+
+gcov test-big_number_add test-big_number_and test-big_number_div test-big_number_exponentiate test-big_number_mod test-big_number_mult2 test-big_number_multiplication test-big_number_or test-big_number_sub test-big_number_xor
+
+gcov test-big_number_dec test-big_number_inc test-big_number_iseven test-big_number_isodd test-big_number_swap test-big_number_lsb test-big_number_msb
+gcov test-big_number_sl test-big_number_sr test-big_numbers_utils 
+
+test-big_number_rl 
+
+gcov test-big_number_b_add test-big_number_b_div test-big_number_b_mult test-big_number_b_sub
+
+gcov test-big_number_add_mod_utils test-big_number_div_mod_utils test-big_number_inv_mod_utils test-big_number_lprime_mod_utils test-big_number_mr_mod_utils test-big_number_mult_mod_utils test-big_number_pow_mod_utils test-big_number_prime_mod_utils test-big_number_rand_mod_utils test-big_number_sub_mod_utils 
+
+

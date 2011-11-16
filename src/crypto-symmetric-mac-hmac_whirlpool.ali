@@ -1,0 +1,121 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.symmetric.mac.hmac_whirlpool%b  crypto-symmetric-mac-hmac_whirlpool.ads  c9c861d3 NE OO PK
+W crypto%s		crypto.ads		crypto.ali
+W crypto.hashfunction%s	crypto-hashfunction.adb	crypto-hashfunction.ali
+W crypto.hashfunction_whirlpool%s  crypto-hashfunction_whirlpool.ads  crypto-hashfunction_whirlpool.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.mac%s  crypto-symmetric-mac.adb  crypto-symmetric-mac.ali
+W crypto.symmetric.mac.hmac%s  crypto-symmetric-mac-hmac.adb  crypto-symmetric-mac-hmac.ali  EA
+
+U crypto.symmetric.mac.hmac_whirlpool%s  crypto-symmetric-mac-hmac_whirlpool.ads  65125679 EB NE OO PK
+W crypto%s		crypto.ads		crypto.ali
+W crypto.hashfunction%s	crypto-hashfunction.adb	crypto-hashfunction.ali
+W crypto.hashfunction_whirlpool%s  crypto-hashfunction_whirlpool.ads  crypto-hashfunction_whirlpool.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.mac%s  crypto-symmetric-mac.adb  crypto-symmetric-mac.ali
+W crypto.symmetric.mac.hmac%s  crypto-symmetric-mac-hmac.adb  crypto-symmetric-mac-hmac.ali  EA
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-stream.ads		20090409150019 2ca4ee37
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-timoau.ads		20090409150019 01c06610
+D a-timoio.ads		20090409150019 d32407b9
+D a-timoio.adb		20090409150019 de0ea1c6
+D a-unccon.ads		20070406091342 f9eb8f06
+D a-uncdea.ads		20070406091342 f15a5ed1
+D crypto.ads		20110824150609 b0d04738
+D crypto-hashfunction.ads  20111104145729 f39f5a0c
+D crypto-hashfunction.adb  20111104124714 13d5e610
+D crypto-hashfunction_whirlpool.ads  20111104193712 07f834af
+D crypto-hashfunction_whirlpool.ads  20111104193712 07f834af
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-algorithm.ads  20110824150609 46346c43
+D crypto-symmetric-algorithm-whirlpool.ads  20110824150609 d0f2908e
+D crypto-symmetric-algorithm-whirlpool.adb  20111104194247 a540a86b
+D crypto-symmetric-algorithm-whirlpool-tables.ads  20110824150609 14f86220
+D crypto-symmetric-mac.ads  20111105101518 79bad5d1
+D crypto-symmetric-mac.adb  20111105101535 dee26c89
+D crypto-symmetric-mac-hmac.ads  20110824150609 d298d6d4
+D crypto-symmetric-mac-hmac.adb  20110824150609 519527b3
+D crypto-symmetric-mac-hmac_whirlpool.ads  20110824150609 c9c861d3
+D crypto-symmetric-mac-hmac_whirlpool.ads  20110824150609 c9c861d3
+D crypto-types.ads	20111110185132 2d86af0f
+D crypto-types.adb	20111110185221 8112d1d6
+D gnat.ads		20050905075125 fd2ad2f1
+D g-os_lib.ads		20090409150019 0db74523
+D interfac.ads		20090409150019 f77d8799
+D i-cstrea.ads		20100622165701 1bd72c32
+D system.ads		20110928073203 23e1f70b
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-fatflt.ads		20090409150019 11beb392
+D s-fatgen.ads		20090409150019 9267ca45
+D s-fatgen.adb		20100909085708 9ba81cee
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-os_lib.ads		20100910151410 e0681e2d
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-string.ads		20090417130712 46b01415
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+X 14 crypto.ads
+24K9*Crypto 25e11 29|23r6 24r6 29r9 30r9 30r45 31r45 32r45 33r45 35r37
+X 15 crypto-hashfunction.ads
+28+9 Message_Block_Length_Type
+X 17 crypto-hashfunction_whirlpool.ads
+32K16*Hashfunction_Whirlpool[15|53] 29|24w13 30r52
+X 19 crypto-symmetric.ads
+23K16*Symmetric 14|24k9 19|25e21 29|23r13 29r16 30r16 31r52 32r52 33r52 35r44
+X 21 crypto-symmetric-algorithm-whirlpool.ads
+29U14*Init 15|32i19
+31U14*Round 15|34i19
+34V13*Final_Round{30|89A9} 15|37i18
+40U14*Hash 15|43i19
+41U14*Hash 15|46i19
+42U14*F_Hash 15|49i19
+X 24 crypto-symmetric-mac.ads
+25K26*Mac 19|23k16 24|68e25 29|23r23 29r26 30r26 31r62 32r62 33r62 35r54
+31U14*Fill36 29|32r66
+39U14*Fill5C 29|33r66
+47U14*Copy 29|31r66
+55V13*M_B_Length{natural} 29|35r58
+X 26 crypto-symmetric-mac-hmac.ads
+26K17 H 29|30r35
+30U19 Fill36 29|32r35
+31U19 Fill5C 29|33r35
+33U19 Copy 29|31r35
+36V20 M_B_Length{15|28+9[26]} 29|34r35
+40k30*Hmac 68e30 29|23w27 30r30
+X 29 crypto-symmetric-mac-hmac_whirlpool.ads
+29K30*Hmac_Whirlpool[26|40] 24|25k26
+X 30 crypto-types.ads
+43M9*DWord
+59A9*DWords(43M9)<integer>
+89A9*DW_Block512<59A9><integer>
+241V13*"xor"{89A9} 26|28i18
+

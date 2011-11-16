@@ -1,0 +1,150 @@
+\chapter{Ellyptische Kurven}
+Die ACL unterstützt die beiden folgenden Klasen von ellyptischen Kurven
+\begin{itemize}
+\item $y^2 = x^3 + ax + b\; \bmod\; p \mbox{ mit } p \in \mathbf{P}
+  \setminus\{2,3\}$
+  \\
+  Hier handelt es sich um ellyptische Kurven über dem endlichen Körper $Z_p$.
+\item  $y^2 + xy = x^3 + a(z)x^2 + b(z) \;\bmod\; f(z)$\\
+  Hier handelt es sich über nicht supersingulare ellyptische Kurven über 
+  den endlichen Körper $GF(2^{\deg{f(z)}})$.\\
+  \textbf{Vorraussetzung:} $f(z)$ ein irreduzibles Polynom.\\
+\end{itemize}
+
+\section{Wurzelpaket: Types.Elliptic\_Curves}
+Dieses generische Paket ist das Wurzelpaket für ellyptische Kurven.
+In ihm ist der Basistype \texttt{EC\_Point} für ellyptische Kurven definiert.
+
+\subsection{API}
+
+\subsubsection{Generischer Teil}
+\begin{lstlisting}{}
+  generic
+  with package Big is new Crypto.Types.Big_Numbers(<>);
+\end{lstlisting}
+
+\subsubsection{Typen}
+Dieses Paket stellt den Typ \textit{EC\_Point} zur Verfügung.
+\begin{lstlisting}{}
+  -- (x,y)
+  type EC_Point is record
+     X : Big.Big_Unsigned;
+     Y : Big.Big_Unsigned;
+  end record;
+\end{lstlisting}\ \\
+Die Konstante \texttt{EC\_Point\_Infinity} entspricht dem Punkt $\infty$.
+Dieser Punkt befindet sich auf jeder ellyptischen Kurve und entspricht dem
+neutrale Element der Addition.
+
+
+\subsubsection{Prozeduren}
+\begin{lstlisting}{}
+  procedure Put(Item : in EC_Point; Base : in Big.Number_Base := 10;
+  
+  procedure Put_Line(Item : in EC_Point; Base : in Big.Number_Base := 10);
+\end{lstlisting}
+Die beiden Prozeduren geben einen \texttt{EC\_Point} auf der Standardausgabe
+in Form eines Tupels aus.\\ 
+\ \\
+\textbf{Beispiel:}
+\begin{lstlisting}{}
+  procedure Example is
+    P : EC_Point(X => Big_unsigned_Three, Y => Big_Unsigned_one)
+  begin
+    Put(P);             -- Ausgabe: "(3,1)"
+    Put(P, Base => 2);  -- Ausgabe: "(2#11, 2#1#)"
+  end Example;
+\end{lstlisting}\ \\ \ \\
+
+\section{Kinderpakete}
+Die beiden Kinderpakete
+\begin{itemize}
+  \item Types.Elliptic\_Curves.Zp
+  \item Types.Elliptic\_Curves.NSS\_BF
+\end{itemize}
+verfügen über die folgende Typen
+
+\subsubsection{Typen}
+Das Paket \textit{Types.Elliptic\_Curves.Zp} stellt den Typ \textit{Elliptic\_Curve\_Zp} zur Verfügung.
+\begin{lstlisting}{}
+  -- (A,B,P)
+  type Elliptic_Curve_Zp is record
+    A : Big_Unsigned;
+    B : Big_Unsigned;
+    P : Big_Unsigned;
+  end record;
+\end{lstlisting}\ \\
+
+
+\subsubsection{API}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   procedure Init(A, B, P : in Big_Unsigned);
+   procedure Init(ECZ : in Elliptic_Curve_Zp);
+
+   procedure Init(A, B, F : in Big_Unsigned);
+\end{lstlisting}\\
+Diese Prozeduren initialiseren die ellyptische Kurven.
+Die ersten beiden bilden die ellyptische Kurve 
+$y^2 = x^3 + Ax + B\; \bmod\; P$, die dritte die Kurve
+$y^2 + xy = x^3 + Ax^2 + B \;\bmod\; F.$\\
+Diese Funktion testet nicht, ob es sich bei \texttt{P} bzw. \texttt{F}
+wirklich um eine Primzahl bzw. irreduzibles Polynom handelt oder die
+Parameter tatsächlich eine ellyptische Kurve bilden.\\ \ \\
+\hline
+\end{tabular}   
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    function Is_Elliptic_Curve return Boolean;
+  \end{lstlisting}\\
+  Diese Funktion testet, ob durch die Initalisierung mittels \texttt{Init}
+  ein ellyptische Kurve konstruiert worden ist. Wenn dies nicht der Fall ist,
+  dann liefern alle folgenden Funktionen und Prozeduren wahrscheinlich 
+  nicht das gewünschte Ergebnis.\\ \ \\
+  \hline
+\end{tabular}   
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    function On_Elliptic_Curve(X : EC_Point) return Boolean;
+  \end{lstlisting}
+  Diese Funktion testet, ob \texttt{X} ein Punkt auf der eyllptischen Kurve 
+  ist.\\ \ \\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    function Negative(X : EC_Point) return EC_Point;
+  \end{lstlisting}
+  Dies Funktion berechnet \texttt{-X}.\\ \ \\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    function "+"(Left, Right : EC_Point) return EC_Point;
+  \end{lstlisting}
+  Dies Funktion berechnet \texttt{Left + Right}.\\ \ \\
+  \hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   \begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    function Double(X : EC_Point) return EC_Point;
+  \end{lstlisting}
+  Dies Funktion berechnet \texttt{2X}.\\ \ \\
+  \hline
+   \end{tabular}
+
+

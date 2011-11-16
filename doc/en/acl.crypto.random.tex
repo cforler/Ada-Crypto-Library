@@ -1,0 +1,57 @@
+\chapter{Crypto.Random}
+This package uses ``dev/random/'' as default.
+On Linux systems, ``/dev/random'' is a pseudo-device capable of producing
+cryptographically secure pseudo-random bits. If you should be using an 
+operatingsystem without such a pseudo-device, you can use Brian Warner's
+``Entropy Gathering Daemon''(EGD) that can be found at
+\textit{http://www.lothar.com/tech/crypto/}.
+The EGD is a userspace implementation of the Linux kernel driver
+ ``dev/random/'', that can be used for generating cryptographically secure 
+pseudo-random bits.\\
+The private part includes the ``Path'' variable. These variable contains the
+path to a file, a named pipe or a device storing cryptographically secure 
+random bits. As a result, you can even link the ACL to a cryptographically 
+secure pseudo-random bit source on non-POSIX compliant operating systems such 
+as Windows XP.
+
+\section{API}
+\subsection{Prozedures}
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    procedure Read(B : out Byte);
+    procedure Read(W : out Word);
+    procedure Read(D : out DWord);
+  \end{lstlisting}
+This three procedures return a random Byte, Word or DWord. \\ \ \\
+  \hline\\
+\end{tabular}
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    procedure Read(Byte_Array  : out Bytes);
+    procedure Read(Word_Array  : out Words);
+    procedure Read(DWord_Array : out DWords);
+  \end{lstlisting}\\
+Any of thes  prozedures fill an array with random numbers from the pseudo 
+random number generator (PNRG).\\ \ \\
+\end{tabular}
+
+
+\subsection{Exceptions}
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+    Random_Source_Does_Not_Exist_Error : exception;
+  \end{lstlisting}\\
+  This exception occur when no secure PRNG were  found.\\ \ \\
+  \hline\\
+  \begin{lstlisting}{}
+    Random_Source_Read_Error : exception;
+  \end{lstlisting}\\
+  This exception occur when he ACL can't read random bits from  the PRNG.\\ 
+  \ \\
+  \hline\\
+\end{tabular}
+
+\begin{lstlisting}{}
+\end{lstlisting}
+

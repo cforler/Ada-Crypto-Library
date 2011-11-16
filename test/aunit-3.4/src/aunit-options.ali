@@ -1,0 +1,55 @@
+V "GNAT Lib v4.6"
+A -O3
+A -fno-strict-aliasing
+A -gnat05
+A -gnatn
+A -gnatwr
+A -gnatwc
+A -gnatwl
+A -gnatwp
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U aunit.options%s	aunit-options.ads	a82b211a NE OO PK
+W ada.tags%s		a-tags.adb		a-tags.ali
+W aunit%s		aunit.adb		aunit.ali
+W aunit.test_filters%s	aunit-test_filters.adb	aunit-test_filters.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-stream.ads		20090409150019 2ca4ee37
+D a-tags.ads		20101021101406 c7695348
+D a-unccon.ads		20070406091342 f9eb8f06
+D aunit.ads		20111107163336 76cdf7c6
+D aunit-options.ads	20111107163336 2fedf7fb
+D aunit-test_filters.ads  20111107163336 f10b2127
+D aunit-tests.ads	20111107163336 1da11d49
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+X 8 aunit.ads
+29K9*AUnit 43e10 9|27r6 29r9 34r25 43r5
+X 9 aunit-options.ads
+29K15*Options 8|29k9 9|43l11 43e18
+31R9*AUnit_Options 35e14 38r31
+32b7*Global_Timer{boolean} 39m7
+33b7*Test_Case_Timer{boolean} 40m7
+34p7*Filter{10|36P9} 41m7
+38r4*Default_Options{31R9}
+X 10 aunit-test_filters.ads
+33K15*Test_Filters 9|27w12 34r31 10|71e23
+36P9*Test_Filter_Access(35R9) 9|34r44
+

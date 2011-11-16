@@ -1,0 +1,291 @@
+\chapter{Crypto.Symmetric.MAC}
+Ein Message Authentication Code (MAC) dient zur Sicherung der Integrität und
+Authentizität einer Nachricht. Er gewährt keine Verbindlichkeit, da er nur 
+einen symmetrischen Schlüssel verwendet. Bei den asymmertrischen Verfahren 
+spricht man von digitalen Signaturen. Bei MACs von \glqq authentication Tags
+\grqq. Der Autor dieser Bibliothek bezeichnet diese meist als (digitiale)
+Stempel.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Randomized MAC (RMAC)}
+Der RMAC wurde von Eliane Jaulmes, Antoine Joux and Frederic
+Valette entwickelt. Er basiert auf dem CBC-MAC und basiert daher auf einer 
+Einweg-Blockchiffre (Kapitel \ref{oneblock}) . Er ist beweisbar sicher 
+gegenüber \glqq Geburtstagsparadoxon-Angriffe \grqq. Er benötigt zwei 
+Schlüssel.
+Der digitale Stempel ist doppelt so lange wie die verwendete Blockchiffre.\\
+\ \\
+Mathematische Beschreibung:
+$$\mbox{RMAC}_{K_1,K_2}(E,M) = E_{K2 \oplus R}(C_n)
+\mbox{ mit } C_i = E_{K_1}(M_i \oplus C_{i-1}), \quad R \in_R \{0,1\}^{|K_1|}
+\mbox{ und } C_0=0$$
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Generischer Teil}
+\begin{lstlisting}{}
+generic
+   with package C is 
+       new Crypto.Symmetric.Oneway_Blockcipher(<>);
+
+   with procedure Read (Random : out C.Key_Type) is <>;
+   with function "xor" (Left, Right : C.Block)
+                         return C.Block is <>;
+   with function "xor" (Left, Right : C.Key_type) 
+                         return C.Key_Type is <>;
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{API}
+\subsubsection{High-Level-API}
+\begin{lstlisting}{}
+  type Blocks  is array (Integer range <>) of Block;
+
+  procedure Sign(Message : in Blocks;
+                 Key1, Key2 : in Key_Type;
+                 R   : out Key_Type;
+                 Tag : out Block);
+
+
+  function Verify(Message : in Blocks;
+                  Key1, Key2 : in Key_Type;
+                  R   : in Key_Type;
+                  Tag : in Block) return Boolean;
+\end{lstlisting}\ \\
+Die Funktion \textbf{Sign} signiert eine Nachricht \textbf{Message} unter
+den beiden Schlüssel \textbf{Key1} und \textbf{Key2}. Sie liefert einen 
+digitiale Stempel $S=Tag||R$. Wobei es sich bei \textbf{R} um eine zufällig
+generierte Zahl handelt.\\ \ \\
+Die Funktion \textbf{Verify} liefert \textit{true} zurück, wenn $S=Tag||R$
+ein gültiger Stempel ist ansonsten  \textit{false} zurück. D.h. wenn einer oder
+Mehrere Parameter nicht mit denen aus der Prozedur \textbf{Sign} übereinstimmt,
+dann liefert die Funktion mit überwältigender Wahrscheinlichkeit
+\textit{false} zurück.\\ \ \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Low-Level-API}
+\begin{lstlisting}{}
+   procedure Init(Key1, Key2 : in Key_Type);
+
+   procedure Sign(Message_Block : in Block);
+   procedure Final_Sign(Final_Message_Block : in Block;
+                        R   : out Key_Type;
+                        Tag : out Block);
+
+   procedure Verify(Message_Block : in Block);
+   function Final_Verify(Final_Message_Block  : in Block;
+                         R   : in Key_Type;
+                         Tag : in Block)
+                        return Boolean;
+\end{lstlisting}\ \\
+\begin{itemize}
+\item Die Prozedur \textbf{Init} initalisiert einen RMAC mit den beiden 
+  Schlüsseln \textbf{Key1} und \textbf{Key2} und einem internen Anfangszustand.
+\item Die Prozedur \textbf{Sign} \glqq hashed \grqq einen Nachrichtenblock 
+  (\textbf{Message\_Block}).
+\item Die Prozedur \textbf{Final\_Sign} hashed den finalen Nachrichtenblock 
+  \textbf{Final\_Message\_Block}, generiert eine Zufallszahl \textbf{R}
+  berechnet \textbf{Tag} und setzt den RMAC auf seinen Anfangszustand zurück.
+\item  Die Prozedur \textbf{Verify} \glqq hashed \grqq einen Nachrichtenblock 
+  (\textbf{Message\_Block}).
+\item Die Funktion \textbf{Final\_Verify} hashed den finalen Nachrichtenblock 
+  \textbf{Final\_Message\_Block} und verifiziert mit Hilfe eines internen 
+  Zustandes und \textbf{R}, ob es sich bei \textbf{Tag} bzw. $\mathbf{R||Tag}$ 
+  um einen gültigen Stempel handelt. Falls ja gibt sie \textit{true}, ansonsten
+  \textit{false} zurück.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Anwendungsbeispiel}
+\begin{lstlisting}{}
+  with Crypto.Types; use Crypto.Types;
+  with Ada.Text_IO;  use Ada.Text_IO;
+  with Crypto.Symmetric.MAC.RMAC;
+  with Crypto.Symmetric.Oneway_Blockcipher_AES128;
+
+pragma Elaborate_All (Crypto.Symmetric.MAC.RMAC);
+ 
+procedure Example is
+  package AES128 renames  Crypto.Symmetric.Oneway_Blockcipher_AES128;
+  package RMAC is new Crypto.Symmetric.MAC.RMAC(AES128);
+  use RMAC;
+
+  Key1 : B_Block128 :=
+        (
+         16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#,
+         16#06#, 16#07#, 16#08#, 16#09#, 16#0a#, 16#0b#,
+         16#0c#, 16#0d#, 16#0e#, 16#0f#
+        );
+  
+  Key2 : B_Block128 :=
+        (
+         16#00#, 16#11#, 16#22#, 16#33#, 16#44#, 16#55#, 16#66#,
+         16#77#, 16#88#, 16#99#, 16#aa#, 16#bb#, 16#cc#, 16#dd#,
+         16#ee#, 16#ff#
+        );
+
+      R    : B_Block128;
+      Tag  : B_Block128;
+
+      M : B_Block256 := To_Bytes("ALL YOUR BASE ARE BELONG TO US! ");
+      Message : RMAC.Blocks(0..1) := (0 =>  M(0..15), 1 => M(16..31));
+begin
+  Init(K1,K2);
+
+  Sign(Message(0));
+  Final_Sign(Message(1), R, Tag) ;
+
+  Verify(Message(0));
+  Put_Line(Final_Verify(Message(1), R, Tag));
+ end Example;
+\end{lstlisting}\ \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Hashfunction MAC (HMAC)}
+Bei Mihir Bellare, Ran Canettiy und Hugo Krawczykz handelt es sich um die HMAC
+Designer. Der HMAC basiert auf einer Hashfunktion.\\ \ \\
+Mathematische Beschreibung: 
+$$\mbox{HMAC}_K(H,M) =  H(K \oplus opad, H(K \oplus ipad || M)) \mbox{ mit } 
+opad = \{0x5C\}^n \mbox{ und } ipad = \{0x36\}^n$$
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Generischer Teil}
+\begin{lstlisting}{}
+  with package H is new Crypto.Hashfunction(<>);
+
+   with function "xor"
+     (Left, Right : H.Message_Type)  return H.Message_Type is <>;
+   with procedure Fill36 (Ipad : out  H.Message_Type) is <>;
+   with procedure Fill5C (Opad : out  H.Message_Type) is <>;
+
+   with procedure Copy
+     (Source : in H.Hash_Type; Dest : out H.Message_Type) is <>;
+
+    with function M_B_Length
+       (Z : H.Hash_Type) return H.Message_Block_Length_Type is <>;
+\end{lstlisting}\ \\
+\begin{itemize}
+\item Die beiden Prozeduren \textbf{Fill36} und \textbf{Fill5C} füllen
+  einen \textit{Message\_Type} \textbf{Ipad} bzw. \textbf{Opad}  mit dem Wert 
+  \texttt{0x36} bzw. \texttt{0x5C} auf.
+\item  Die Prozedur \textbf{Copy} kopiert den Inhalt von \textbf{Soucre} nach
+\textbf{Destination}. Ist der  \textit{Message\_Type} \glqq kleiner \grqq
+als der \textit{Hash\_Type} der Hashfunktion, dann wird der Rest mit Nullen
+aufgefüllt. 
+\item Die Funktion \textbf{M\_B\_Length} gibt die Länge in Bytes von von 
+  \textbf{Z} bzw. dem \textit{Hash\_Typ} zurück.
+\end{itemize}
+All diese Hilfsfmethoden sind in \textit{Crypto.Symmetric.MAC} definiert.\\ 
+\ \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{API}
+\begin{lstlisting}{}
+    procedure Init(Key : in Message_Type);
+    
+    procedure Sign(Message_Block : in Message_Type);
+
+    procedure Final_Sign
+      (Final_Message_Block        : in Message_Type;
+       Final_Message_Block_Length : in Message_Block_Length_Type;
+       Tag                        : out Hash_Type);
+    
+    
+    procedure Verify(Message_Block : in Message_Type);
+
+    function Final_Verify
+      (Final_Message_Block        : Message_Type;
+       Final_Message_Block_Length : Message_Block_Length_Type;
+       Tag                        : Hash_Type) return Boolean;
+\end{lstlisting}\ \\
+\begin{itemize}
+\item Die Prozedur \textbf{Init} initialisiert den HMAC mit dem Schlüssel
+  \textbf{Key} und einem internen Anfangszustand.
+\item Die Prozedur \textbf{Sign} hashed einen Nachrichtenblock.
+\item \item Die Prozedur \textbf{Final\_Sign} hashed einen Nachrichtenblock
+  der Bytelänge  \textbf{Final\_Message\_Block\_Length}, gibt den digitalen 
+  Stempel \textbf{Tag} zurück und setzt den HMAC auf seine Anfangszustand 
+  zurück.
+\item Die Prozedur \textbf{Verify} hashed einen Nachrichtenblock.
+\item Die Funktion  \textbf{Final\_Verify} hashed einen Nachrichtenblock 
+  der Bytelänge  \textbf{Final\_Message\_Block\_Length} und verifiziert mit 
+  Hilfe eines internen Zustandes ob es sich bei \textbf{Tag} um einen gültigen 
+  Stempel handelt. Falls ja gibt sie \textit{true}, ansonsten
+  \textit{false} zurück.
+\end{itemize}\ \\  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Anwendungsbeispiel}
+ \begin{lstlisting}{}
+with Ada.Text_IO;
+with Crypt.Types;
+with Crypto.Symmetric.MAC;
+with Crypto.Symmetric.MAC.HMAC;
+with Crypto.Hashfunction_SHA256;
+
+use  Ada.Text_IO;
+use  Crypt.Types;
+
+pragma Elaborate_All (Crypto.Symmetric.MAC.HMAC);
+
+
+procedure Example is
+
+  package RMAC is new Crypto.Symmetric.MAC.HMAC
+           (H          => Crypto.Hashfunction_SHA256,
+            Copy       => Crypto.Symmetric.Mac.Copy,
+            Fill36     => Crypto.Symmetric.Mac.Fill36,
+            Fill5C     => Crypto.Symmetric.Mac.Fill5C,
+            M_B_Length => Crypto.Symmetric.Mac.M_B_Length);
+
+  use RMAC;
+
+  -- 160-Bit Key
+  Key1 : W_Block512 := (0 => 16#0b_0b_0b_0b#, 1 => 16#0b_0b_0b_0b#,
+                        2 => 16#0b_0b_0b_0b#, 3 => 16#0b_0b_0b_0b#,
+                        4 => 16#0b_0b_0b_0b#, others  => 0);
+
+   -- "Hi There" Len = 8 Byte
+   Message : W_Block512 := (0 => 16#48_69_20_54#, 1 => 16#68_65_72_65#,
+                            others => 0);
+
+   Tag : W_Block256;
+begin
+  Init(Key1);
+  Final_Sign(Message, 8, Tag);
+  
+  Put_Line(Final_Verify(Message1, 8, Tag));
+end Example;
+ \end{lstlisting}\ \\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Anmerkungen}
+Sie müssen nicht jedes mal von neuem aus einer Hashfunktion einen HMAC
+generieren. Stattdessen können Sie auch eine der vorgefertigten HMACs 
+verwenden.
+\begin{itemize}
+\item Crypto.Symmetric.MAC.HMAC\_SHA1
+\item Crypto.Symmetric.MAC.HMAC\_SHA256
+\item Crypto.Symmetric.MAC.HMAC\_SHA512
+\item Crypto.Symmetric.MAC.HMAC\_Whirlpool
+\end{itemize}

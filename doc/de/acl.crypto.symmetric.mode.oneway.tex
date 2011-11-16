@@ -1,0 +1,100 @@
+\chapter{Crypto.Symmmetric.Mode.Oneway}
+
+Dieses generische Paket betreibt eine Einwegblockchiffre in einen bestimmten 
+Einweg-(Betriebs-)modus. Dieser verknüpft gewöhnlich eine Einweg-Blockchiffre 
+mit einer Rückkopplung und einigen einfachen Operationen (+, xor). Ein 
+Einweg-Modus wird mit
+Hilfe eines zufälligen öffentlichen Startwert (Initial Value (IV)) 
+initialisiert. Der Chiffretext ist damit nicht nur von der verwendeten Chiffre,
+Klartext und Schlüssel abhängig, sondern auch von dem zufälligen Startwert. 
+Wenn Sie nun einen Klartext mehrmals mit der gleichen Chiffre und dem gleichen
+Schlüssel aber unterschiedlichen IVs verschlüsselt, erhalten Sie
+unterschiedliche Chiffretext und durch die Rückkopplung in einem Einweg-Modus
+werden gleiche Klartextblöcke zu unterschiedlichen Chiffretextblöcken 
+chiffriert, d.h ein Einweg-Betriebsmodus verschlüsselt zwei Klartextblöcke
+p1 und p2 mit p1=p2, mit  überwältigender Wahrscheinlichkeit, zu zwei 
+Chiffretextblöcke c1 und c2 mit c1$\not=$c2. Damit ist es nun möglich mehrere 
+Nachrichten mit dem selben Schlüssel zu verschlüsseln.\\
+\textbf{Vorsicht: Um einen Chiffretext zu entschlüsseln benötigen Sie den 
+gleichen Schlüssel und Startwert wie bei der Verschlüsselung.}
+Aus diesem Grund sollte der Startwert immer mit dem zugehörigen Chiffretext
+aufbewahrt werden. \textbf{ Die Sicherheit eines Modus ist unabhängig vom 
+\glqq Bekanntheitsgrad\grqq des Startwertes}. Daher Multipliziert man den
+Startwert meist mit dem Chiffretext zu dem endgültigen Chiffrat indem man den
+Startwert vor dem Chiffretext hängt ($IV*C = C'= IV||C$).\\
+
+\section{Anmerkungen}
+\begin{itemize}
+\item 
+  Für die Einweg-Modus gilt das gleiche wie für einen normalen Modus.
+  Falls ein normaler Modus auch als Einweg-Modus zur Verfügung steht, dann
+  sollte Sie diesen dem normalen Modus vorziehen, da dieser etwas schlanker
+  ist. 
+\item Die \textbf{API} ist identisch zu den normalen Modi [ \ref{mode-api} ]
+\item Unterstütze Modi
+  \begin{itemize}
+  \item Cipher-Feedback-Modus (CFB)  [ \ref{CFB} ]
+  \item Counter-Modus (CTR) [ \ref{CTR} ]
+  \item Output-Feedback-Modus (OFB) [ \ref{OFB} ]
+  \end{itemize}
+\end{itemize}
+
+\section{Anwendungsbeispiel}
+\begin{lstlisting}{}
+with Crypto.Types, Ada.Text_IO, Crypto.Symmetric.Mode.Oneway_CTR;
+with Crypto.Symmetric.Oneway_Blockcipher_Twofish128;
+
+procedure Bsp_Oneway_Modus_CTR
+   package TF128 renames Crypto.Symmetric.Oneway_Blockcipher_Twofish128;
+
+   -- Benutze die Blockchiffre in einem sicheren Modus
+   package Twofish128 is new Crypto.Symmetric.Mode.Oneway_CTR(TF128);
+
+   use Ada.Text_IO, Crypto.Types, Twofish128;
+
+   --Schluessel
+   Key : B_Block128:=(16#2b#, 16#7e#, 16#15#, 16#16#, 16#28#, 16#Ae#,
+                      16#D2#, 16#A6#, 16#Ab#, 16#F7#, 16#15#, 16#88#,
+                      16#09#, 16#Cf#, 16#4f#, 16#3c#);
+
+   --Startwert
+   IV : B_Block128 := (15 => 1, others => 0);
+
+   --Nachricht
+   Message : String :="All your Base are belong to us! ";
+
+   -- Nachrichtenbloecke
+   P : array(1..2) of B_Block128 :=
+     (To_Bytes(Message(1..16)), To_Bytes(Message(17..32)));
+
+   --Chiffretextbloecke
+   C : array(0..2) of B_Block128;
+
+begin
+   --Initialisierung
+   Init(Key, IV);
+
+   -- 1. Chiffreblock = Startwert.
+   C(0) := IV;
+
+    -- Verschluesselung
+   for I in P'Range loop
+      Encrypt(P(I), C(I));
+   end loop;
+
+   -- Fuer die Entschluesselung wird die Chiffre mit dem
+   -- gleichen Startwert wie bei der Entschluesselung reinitalisiert
+   Set_IV(C(0));
+
+   -- Entschluesselung
+   for I in P'Range loop
+      Decrypt(C(I), P(I));
+      Put(To_String(P(I)));
+   end loop;
+
+end Bsp_Oneway_Modus_CTR;
+\end{lstlisting}
+
+
+
+

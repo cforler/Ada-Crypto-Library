@@ -1,0 +1,148 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P SS ZX
+R nnnnnnnnnnnnnnnnnnvnnvnnnvnnnvnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnn
+
+U crypto.symmetric.mac%b  crypto-symmetric-mac.adb  9f354c8c OO PK
+W ada%s			ada.ads			ada.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W ada.text_io.modular_aux%s  a-timoau.adb	a-timoau.ali
+W ada.text_io.modular_io%s
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W system%s		system.ads		system.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.unsigned_types%s  s-unstyp.ads		s-unstyp.ali
+
+U crypto.symmetric.mac%s  crypto-symmetric-mac.ads  15fe82c0 BN EE NE OO PK
+W crypto%s		crypto.ads		crypto.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.types%s	crypto-types.adb	crypto-types.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-stream.ads		20090409150019 2ca4ee37
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-timoau.ads		20090409150019 01c06610
+D a-timoio.ads		20090409150019 d32407b9
+D a-timoio.adb		20090409150019 de0ea1c6
+D a-unccon.ads		20070406091342 f9eb8f06
+D crypto.ads		20110824150609 b0d04738
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-mac.ads  20111105101518 79bad5d1
+D crypto-symmetric-mac.adb  20111105101535 dee26c89
+D crypto-types.ads	20111110185132 2d86af0f
+D interfac.ads		20090409150019 f77d8799
+D i-cstrea.ads		20100622165701 1bd72c32
+D system.ads		20110928073203 23e1f70b
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+X 1 ada.ads
+16K9*Ada 19e8 16|23r6 24r5 28r23
+X 8 a-textio.ads
+49K13*Text_IO 472e16 16|23w10 24r9 28r27
+X 10 a-timoio.ads
+45k21*Modular_IO 84e27 16|28r35
+X 13 crypto.ads
+24K9*Crypto 25e11 15|23r6 25r9 26r8 68r5 16|26r14 200r5
+X 14 crypto-symmetric.ads
+23K16*Symmetric 13|24k9 14|25e21 15|25r16 68r12 16|26r21 200r12
+X 15 crypto-symmetric-mac.ads
+25K26*Mac 14|23k16 15|68l22 68e25 16|26b31 200l22 200t25
+28U14*Fill36 28<22 16|31b14 34l8 34t14
+28a22 Word_Array{17|58A9} 16|31b22 33r7
+29U14*Fill36 29<22 16|38b14 41l8 41t14
+29a22 DWord_Array{17|59A9} 16|38b22 40r7
+30U14*Fill36 30<22 16|45b14 48l8 48t14
+30a22 W{17|83A9} 16|45b22 47r7
+31U14*Fill36 31<22 16|52b14 55l8 55t14
+31a22 D{17|89A9} 16|52b22 54r7
+32U14*Fill36 32<22 16|60b14 63l8 63t14
+32a22 D{17|90A9} 16|60b22 62r7
+35U14*Fill5C 35<22 16|67b14 70l8 70t14
+35a22 Word_Array{17|58A9} 16|67b22 69r7
+36U14*Fill5C 36<22 16|74b14 77l8 77t14
+36a22 DWord_Array{17|59A9} 16|74b22 76r7
+37U14*Fill5C 37<22 16|88b15 91l8 91t14
+37a22 W{17|82A9} 16|88b23 90r7
+38U14*Fill5C 38<22 16|81b14 84l8 84t14
+38a22 W{17|83A9} 16|81b22 83r7
+39U14*Fill5C 39<22 16|94b14 97l8 97t14
+39a22 D{17|89A9} 16|94b22 96r7
+40U14*Fill5C 40<22 16|101b14 104l8 104t14
+40a22 D{17|90A9} 16|101b22 103r7
+43U14*Copy 43>19 43<39 16|108b14 116l8 116t12 134s7 141s7
+43a19 Source{17|58A9} 16|108b19 110r24 111r15 111r32 112r15 114r18
+43a39 Dest{17|58A9} 16|108b38 110r10 111m10 112r10 112r30 114m10 114r25
+44U14*Copy 44>19 44<39 16|120b14 128l8 128t12 155s7
+44a19 Source{17|59A9} 16|120b19 122r24 123r15 123r32 124r15 126r18
+44a39 Dest{17|59A9} 16|120b39 122r10 123m10 124r10 124r30 126m10 126r25
+45U14*Copy 45>19 45<43 16|132b14 135l8 135t12
+45a19 Source{17|80A9} 16|132b19 134r19
+45a43 Dest{17|83A9} 16|132b43 134m34
+46U14*Copy 46>19 46<43 16|139b14 142l8 142t12
+46a19 Source{17|82A9} 16|139b19 141r19
+46a43 Dest{17|83A9} 16|139b43 141m34
+47U14*Copy 47>19 47<44 16|146b14 149l8 149t12
+47a19 Source{17|89A9} 16|146b19 148r15
+47a44 Dest{17|89A9} 16|146b44 148m7
+48U14*Copy 48>19 48<44 16|153b15 156l8 156t12
+48a19 Source{17|89A9} 16|153b20 155r19
+48a44 Dest{17|90A9} 16|153b45 155m35
+50V13*M_B_Length{natural} 50>24 16|159b13 162l8 162t18
+50a24 H{17|58A9} 16|159b24 161r25
+51V13*M_B_Length{natural} 51>24 16|166b13 169l8 169t18
+51a24 H{17|59A9} 16|166b24 168r25
+52V13*M_B_Length{natural} 52>24 16|173b13 176l8 176t18
+52a24 H{17|80A9} 16|173b24 175r25
+53V13*M_B_Length{natural} 53>24 16|180b13 183l8 183t18
+53a24 H{17|82A9} 16|180b24 182r25
+54V13*M_B_Length{natural} 54>24 16|187b13 190l8 190t18
+54a24 H{17|83A9} 16|187b24 189r25
+55V13*M_B_Length{natural} 55>24 16|194b13 197l8 197t18
+55a24 H{17|89A9} 16|194b24 196r25
+X 16 crypto-symmetric-mac.adb
+28K12 WIO[10|45] 29r8
+X 17 crypto-types.ads
+23K16*Types 15|23w13 26r15 17|334e17
+40M9*Word 16|28r47
+43M9*DWord
+58A9*Words(40M9)<integer> 15|28r41 35r42 43r31 43r50 50r28 16|31r41 67r41
+. 108r31 108r49 134r13 134r28 141r13 141r28 159r28
+59A9*DWords(43M9)<integer> 15|29r41 36r42 44r31 44r50 51r28 16|38r42 74r42
+. 120r31 120r50 155r12 155r28 166r28
+80A9*W_Block160<58A9><integer> 15|45r31 52r28 16|132r31 173r28
+82A9*W_Block256<58A9><integer> 15|37r31 46r31 53r28 16|88r31 139r31 180r28
+83A9*W_Block512<58A9><integer> 15|30r31 38r31 45r54 46r54 54r28 16|45r31
+. 81r30 132r54 139r54 187r28
+89A9*DW_Block512<59A9><integer> 15|31r31 39r31 47r31 47r55 48r31 55r28 16|52r31
+. 94r31 146r31 146r55 153r32 194r28
+90A9*DW_Block1024<59A9><integer> 15|32r31 40r31 48r55 16|60r31 101r31 153r56
+105V13*Shift_Left{natural} 16|161s14 168s14 175s14 182s14 189s14 196s14
+

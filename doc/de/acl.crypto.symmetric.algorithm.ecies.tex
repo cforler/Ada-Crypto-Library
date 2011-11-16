@@ -1,0 +1,243 @@
+\chapter{Acl.Crypto.Symmetric.Algorithm.ECIES}
+
+Bei diesem generischen Paket handelt es sich um eine Implementierung des
+ECIES-Verschlüsslungsalgorithmus. Der ECIES-Algorithmus ist die Erweiterung des IES-Algorithmus 
+auf den Bereich der Elliptischen Kurven.\\
+Mit Hilfe von ECIES sind zwei Parteien in der Lage  Daten mittels einem gemeinsamen geheimen Schlüssel 
+zu ver- und entschlüsseln. Um einen gemeinsamen Schlüssel zu erzeugen wird oft der ECDH-Algorithmus verwendet. 
+
+\section{Beschreibung}
+\subsection{Voraussetzung}
+Ein gemeinsamer Schlüssel der mittels ECDH berechnet wurde. In dieser Variante 
+werden folgende Algorithmen/Procedere genutzt um ECIES zu realisieren.
+
+\begin{itemize}
+	\item Punktkompression: \textbf{keine}
+	\item Hashalgorithmus: \textbf{Sha-256}
+	\item Verschlüsslungsalgorithmus: \textbf{AES-256}
+	\item Mac-Algorithmus: \textbf{HMAC-Sha-256}	
+\end{itemize}
+
+\subsection{Verschlüsselung}
+\begin{enumerate}
+	\item Generiere aus dem gemeinsamen ECDH-Schlüssel einen Schlüssel für den Verschlüsslungsalgorithmus und einen Schlüssel für den Mac-Algorithmus. Unter Verwendung, der vorher festgelegten Hashfunktion.
+	\item Verschlüssel die Nachricht, unter Verwendung des erzeugten Verschlüsslungsschlüssels.
+	\item Berechne den Mac für die verschlüsselte Nachricht unter Verwendung des erzeugten Mac-Schlüssels.
+	\item Gib die verschlüsselte Nachricht und den zugehörigen Mac aus.
+\end{enumerate}
+
+\subsection{Entschlüsselung}
+\begin{enumerate}
+	\item Generiere aus dem gemeinsamen ECDH-Schlüssel einen Schlüssel für den Verschlüsslungsalgorithmus und einen Schlüssel für den Mac-Algorithmus. Unter Verwendung, der vorher festgelegten Hashfunktion.
+	\item Entschlüssel die Nachricht, unter Verwendung des erzeugten Verschlüsslungsschlüssels.
+	\item Berechne den Mac für die verschlüsselte Nachricht unter Verwendung des erzeugten Mac-Schlüssels.
+	\item Vergleiche den gegeben und den erzeugten Mac.
+	\item Sind die beiden Macs gleich, so gib die unverschlüsselte Nachricht aus. Ansonsten gib einen Fehler aus.
+\end{enumerate}
+
+\section{Generischer Teil}
+\begin{lstlisting}{}
+generic
+  Size : Positive;
+\end{lstlisting}\ \\
+\textbf{Exception}
+$Size \not= 512+i64 \quad (i \in \{0, \ldots , 8\})$ : Constraint\_Error;\\
+
+\section{API}
+\subsection{Typen}
+\begin{lstlisting}{}
+   type Cipher_ECIES is private;
+   type Plain_ECIES is private;
+\end{lstlisting}
+Der \textit{Cipher\_ECIES}  ist ein beinhaltet folgende Variablen:
+\begin{lstlisting}{}
+  Public_Point        : EC_Point;
+  Message_Block_Count : natural := 0;
+  Mac                 : W_Block256;
+  Cipher              : Unbounded_String;
+  Cipher_Map          : Container_Cipher_Map.Map;	
+\end{lstlisting}
+\textit{Public\_Point} ist ein öffentlicher Schlüssel. 
+\textit{Message\_Block\_Count} ist der Zähler für die Anzahl der Nachrichtenblöcke.
+\textit{Mac} ist der Mac über die verschlüsselten Nachrichtblöcke. 
+\textit{Cipher} ist die verschlüsselte Nachricht. 
+\textit{Cipher\_Map} enthält die verschlüsselte Nachricht in Blöcke aufgeteilt. Als Schlüssel für die Map fungiert die Nummer des Nachrichtenblockes.
+\\~\\
+Der \textit{Plain\_ECIES} beinhaltet folgende Variablen:
+\begin{lstlisting}{}
+  Message_Block_Count : natural := 1;
+  AES_Key             : B_Block256;
+  Mac_Key             : W_Block512;
+  Message             : Unbounded_String;
+  Message_Map         : Container_Message_Map.Map;
+\end{lstlisting}
+\textit{Message\_Block\_Count} ist der Zähler für die Anzahl der Nachrichtenblöcke.
+\textit{AES\_Key} ist der Schlüssel für den AES-256. 
+\textit{Mac\_Key} ist der Schlüssel für den HMac-SHA-256. 
+\textit{Message} ist die unschlüsselte Nachricht. 
+\textit{Message\_Map} enthält die unschlüsselte Nachricht in Blöcke aufgeteilt. Als Schlüssel für die Map fungiert die Nummer des Nachrichtenblockes.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Prozeduren und Funktionen}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   --internal purpose 
+   procedure Message_Prepare(Plain   : out Plain_ECIES;
+                             Message : in  String);
+\end{lstlisting}\\
+Diese Prozedur wandelt einen String in eine Map mit entsprechend vielen \textit{B\_Block128} um. Sie ist nur für interne Zwecke bestimmt.
+\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   --internal purpose 
+   procedure Key_Prepare(AES_Key    : out B_Block256;
+                         Mac_Key    : out W_Block512;
+                         Shared_Key : in  Shared_Key_ECDH);
+\end{lstlisting}\\
+Diese Prozedur berechnet aus dem, vorher mittels ECDH erzeugten, \textit{Shared\_Key} sowohl den Schlüssel für AES-256 (\textit{AES\_Key})  als auch den für den HMAC-SHA-256 (\textit{Mac\_Key}). Sie ist nur für interne Zwecke bestimmt.
+\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   --internal purpose 
+   procedure Mac_Compute(Mac_Key : in  W_Block512;
+                         Cipher  : in  Cipher_ECIES;
+                         Mac	   : out W_Block256);
+\end{lstlisting}\\
+Diese Prozedur berechnet aus dem, vorher erzeugten (\textit{Mac\_Key}) einen HMAC-SHA-256 über die verschlüsselten Nachrichtenblöcke. Sie ist nur für interne Zwecke bestimmt.
+\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   procedure Encrypt(Public_Key_A : in  Public_Key_ECDH;
+                     Shared_Key   : in  Shared_Key_ECDH;
+                     Plaintext	  : in  String;
+                     Cipher       : out Cipher_ECIES);
+\end{lstlisting}\\
+Diese Prozedur verschlüsselt den \textit{Plaintext} nach dem oben beschriebenen Prinzip von ECIES. Dies geschieht unter Verwendung des \textit{Shared\_Key}. Diese Prozedur kann verwendet werden, falls man bereits einen \textit{Shared\_Key} berechnet hat.
+\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   procedure Encrypt(Public_Key_A  : in  Public_Key_ECDH;
+                     Public_Key_B  : in  Public_Key_ECDH;
+                     Private_Key_A : in  Private_Key_ECDH;
+                     Plaintext	   : in  String;
+                     Cipher        : out Cipher_ECIES);
+\end{lstlisting}\\
+Diese Prozedur verschlüsselt den \textit{Plaintext} nach dem oben beschriebenen Prinzip von ECIES. Diese Prozedur berechnet zuerst den den gemeinsamen ECDH-Schlüssel aus dem \textit{Public\_Key\_B} und dem \textit{Private\_Key\_A}. Im Anschluss verwendet sie die andere \textit{Encrypt} um zu entschlüsseln. Außerdem testet Sie die Parameter der beiden \textit{Public\_Key\_ECDH} auf Gleichheit.
+\\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  Found different curve or domainparameter. & CURVE\_EX\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   procedure Decrypt(Shared_Key	: in  Shared_Key_ECDH;
+                     Cipher     : in  Cipher_ECIES;
+                     Plaintext  : out Unbounded_String);
+\end{lstlisting}\\
+Diese Prozedur entschlüsselt den \textit{Cipher} nach dem oben beschriebenen Prinzip von ECIES. Dies geschieht unter Verwendung des \textit{Shared\_Key}. Diese Prozedur kann verwendet werden, falls man bereits einen \textit{Shared\_Key} berechnet hat.
+\\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  Found different MACs. & MAC\_EX\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   procedure Decrypt(Public_Key_B  : in  Public_Key_ECDH;
+                     Private_Key_A : in  Private_Key_ECDH;
+                     Cipher        : in  Cipher_ECIES;
+                     Plaintext     : out Unbounded_String);
+\end{lstlisting}\\
+Diese Prozedur entschlüsselt den \textit{Cipher} nach dem oben beschriebenen Prinzip von ECIES. Diese Prozedur berechnet zuerst den den gemeinsamen ECDH-Schlüssel aus dem \textit{Public\_Key\_B} und dem \textit{Private\_Key\_A}. Im Anschluss verwendet sie die andere \textit{Decrypt} um zu verschlüsseln.
+\\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  Found different MACs. & MAC\_EX\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Anwendungsbeispiel}
+\begin{lstlisting}{}
+with Crypto.Symmetric.Algorithm.ECIES;
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
+procedure Example_ECIES is
+   package ECIES is new  Crypto.Symmetric.Algorithm.ECIES(512);
+   use ECIES;
+
+   Public_Key_A  : ECDH.Public_Key_ECDH;
+   Public_Key_B  : ECDH.Public_Key_ECDH;
+   Private_Key_A : ECDH.Private_Key_ECDH;
+   Private_Key_B : ECDH.Private_Key_ECDH;
+   Cipher 	     : Cipher_ECIES;
+	 Input		     : String := "Hi there";
+	 Temp		       : Unbounded_String;
+	 Output 	     : Unbounded_String;
+   Result        : Boolean := False;
+ 
+begin
+   --ECDH
+   Gen_Public_Key(Public_Key_A, 178);
+   Gen_Single_Private_Key(Public_Key_A, Private_Key_A);
+
+   Gen_Public_Key(Public_Key_B, 178);
+   Gen_Single_Private_Key(Public_Key_B, Private_Key_B);
+
+   --ECIES
+	 Encrypt(Public_Key_A, Public_Key_B, Private_Key_A, Input, Cipher);
+
+   Decrypt(Public_Key_B, Private_Key_A, Cipher, Output);
+   
+	 Append(Temp, Input);
+	 for I in 1 .. Input'Length loop
+	   if to_string(Temp)(I) = to_string(Output)(I) then
+	     Result := True;
+		 else
+	     Result := False;
+		 end if;
+	 end loop;
+		
+	 if Result then Put_Line("ECIES - OK");
+	 else Put_Line("ECIES - Implementation error.")
+	 end if;
+
+end Example_ECIES;
+\end{lstlisting}

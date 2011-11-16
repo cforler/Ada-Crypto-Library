@@ -1,0 +1,141 @@
+V "GNAT Lib v4.6"
+A -O3
+A -fno-strict-aliasing
+A -gnat05
+A -gnatn
+A -gnatwr
+A -gnatwc
+A -gnatwl
+A -gnatwp
+P SS ZX
+R nnnnnnnnnnnvvnnnnnnnnnnvnnvnnnnnnnnnnnnnnvnnvnnnnnnnnnnnnnvnnvnvnnnnnnnnnnnnnnnn
+
+U aunit.reporter.xml%b	aunit-reporter-xml.adb	73ec3413 OO PK
+W ada.tags%s		a-tags.adb		a-tags.ali
+W aunit%s		aunit.adb		aunit.ali
+W aunit.reporter%s	aunit-reporter.ads	aunit-reporter.ali
+W aunit.time_measure%s	aunit-time_measure.adb	aunit-time_measure.ali  EA
+W gnat%s		gnat.ads		gnat.ali
+W gnat.io%s		g-io.adb		g-io.ali
+W system.exn_int%s	s-exnint.adb		s-exnint.ali
+
+U aunit.reporter.xml%s	aunit-reporter-xml.ads	36327df5 EE OO PK
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.streams%s		a-stream.ads		a-stream.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W aunit.reporter%s	aunit-reporter.ads	aunit-reporter.ali
+W system%s		system.ads		system.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.storage_elements%s  s-stoele.adb	s-stoele.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-calend.ads		20090409150019 343c83dd
+D a-except.ads		20090727140100 0c711ac9
+D a-stream.ads		20090409150019 2ca4ee37
+D a-tags.ads		20101021101406 c7695348
+D a-unccon.ads		20070406091342 f9eb8f06
+D ada_containers.ads	20111107163335 11329e00
+D ada_containers-aunit_lists.ads  20111107163335 d9ebc89a
+D ada_containers-aunit_lists.adb  20111107163335 8eef1efa
+D aunit.ads		20111107163336 76cdf7c6
+D aunit-memory.ads	20111107163336 a0315146
+D aunit-memory-utils.ads  20111107163336 5b1e3d11
+D aunit-reporter.ads	20111107163336 e8ac6b5a
+D aunit-reporter-xml.ads  20111107163336 de9e16af
+D aunit-reporter-xml.adb  20111107170245 6a4a4716
+D aunit-test_results.ads  20111107170709 3a8a9b0e
+D aunit-time_measure.ads  20111107163336 58355f18
+D aunit-time_measure.adb  20111107163336 9c205255
+D gnat.ads		20050905075125 fd2ad2f1
+D g-io.ads		20050905080700 9f0d3ab2
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-exnint.ads		20090409150019 428c1c5c
+D s-finroo.ads		20090409150019 dbb860c9
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-traent.ads		20090417130712 5221ee41
+X 7 ada_containers.ads
+20I9*Count_Type<integer>
+X 8 ada_containers-aunit_lists.ads
+46R9*List 15|35r49[16|70] 48r49[16|70] 104r27[16|70] 114r27[16|70] 121r27[16|70]
+48R9*Cursor 15|52r11[16|70]
+62V13*Element{16|59R9} 15|60s23[16|70]
+150V13*First{48R9[16|70]} 15|52s21[16|70]
+160U14*Next 15|61s10[16|70]
+180V13*Has_Element{boolean} 15|59s13[16|70]
+X 10 aunit.ads
+29K9*AUnit 43e10 14|28r9 34r5 15|28r6 28r30 33r14 218r5
+31P9*Message_String(string)
+X 13 aunit-reporter.ads
+29K15*Reporter 10|29k9 13|39e19 14|28r15 34r11 15|33r20 218r11
+31H9*Reporter 31e48 14|30r29
+X 14 aunit-reporter-xml.ads
+28K24*XML 13|29k15 14|34l20 34e23 15|33b29 218l20 218t23
+30R9*XML_Reporter<13|31R9> 30e54 32P14 32r31 15|69r31
+32U14*Report<13|33p14> 32>22 33=22 15|69b14 129l8 129t14
+32r22 Engine{30R9} 15|69b22 72r28
+33c22 R<16|37R9> 15|70b22 78r20 79r37 90r33 93r36 93r64 96r36 99r34 107m21
+. 116m20 123m18
+X 15 aunit-reporter-xml.adb
+35U14 Dump_Result_List 35>32 48b14 63l8 63t24 108s10 117s10 124s10
+35r32 L{8|46R9[16|70]} 48b32 52r28
+38U14 Put_Measure[17|53] 82s10 210s10 18|61b14
+41U14 Report_Test 41>27 60s10 135b14 216l8 216t19
+41r27 Test{16|59R9} 135b27 141r17 143r10 145r15 150r10 150r39 151r13 168r20
+. 170r20 177r23 180r23 187r23 190r16 192r26 196r16 198r26 206r10 207r28
+52r7 C{8|48R9[16|70]} 59r26 60r32 61m16
+73o7 T{17|36O9} 79m10 82r23
+104r10 S{8|46R9[16|70]} 107m24 108r28
+114r10 F{8|46R9[16|70]} 116m23 117r28
+121r10 E{8|46R9[16|70]} 123m21 124r28
+136b7 Is_Assert{boolean} 152m13 154m13 159r13 167r13 174r13
+137o7 T{17|36O9} 207m10 210r23
+X 16 aunit-test_results.ads
+37R9*Result 14|33r38 15|70r38 16|141e14
+42p7*Message{10|31P9} 15|168r33
+43p7*Source_Name{10|31P9} 15|177r36
+44i7*Line{natural} 15|180r36
+46P9*Test_Failure_Access(41R9)
+51p7*Exception_Name{10|31P9} 15|170r31 187r34
+52p7*Exception_Message{10|31P9} 15|190r27 192r37
+53p7*Traceback{10|31P9} 15|196r27 198r37
+55P9*Test_Error_Access(50R9)
+59R9*Test_Result 15|41r34 135r34 16|65e14
+60p7*Test_Name{10|31P9} 15|141r22
+61p7*Routine_Name{10|31P9} 15|143r15 145r20
+62p7*Failure{46P9} 15|150r15 151r18 168r25 177r28 180r28
+63p7*Error{55P9} 15|150r44 170r25 187r28 190r21 192r31 196r21 198r31
+64r7*Elapsed{17|31R9} 15|206r15 207r33
+70K12*Result_Lists[8|44] 15|35r36 48r36 50r11 104r14 114r14 121r14
+99V13*Error_Count{7|20I9} 15|93R51 99R21
+102U14*Errors 15|123R10
+106V13*Failure_Count{7|20I9} 15|93R21 96R21
+109U14*Failures 15|116R10
+112V13*Elapsed{17|31R9} 15|78R10 79R28
+121U14*Successes 15|107R10
+127V13*Test_Count{7|20I9} 15|90R21
+X 17 aunit-time_measure.ads
+29K15*Time_Measure 15|28w12 28r36 78r26 206r26 17|60e23
+36O9*AUnit_Duration 15|73r13 137r11
+38r4*Null_Time{31R9} 15|78r39 206r39
+47V13*Get_Measure{36O9} 15|79s15 207s15
+53u14*Gen_Put_Measure 15|38r33
+X 19 gnat.ads
+36K9*GNAT 15|27r6 27r30 19|39e9
+X 20 g-io.ads
+43K14*IO 15|27w11 27r35 20|93e12
+61U14*Put 15|90s7 93s7 96s7 99s7 180s13 17|51i22
+70U14*Put 15|76s7 81s10 89s7 92s7 95s7 98s7 140s7 141s7 144s10 145s10 157s10
+. 160s13 162s13 166s10 168s13 170s13 176s13 177s13 179s13 186s13 187s13 191s16
+. 192s16 197s16 198s16 209s10 17|52i22
+74U14*Put_Line 15|75s7 83s10 85s10 88s7 91s7 94s7 97s7 100s7 101s7 106s10
+. 109s10 112s7 126s7 128s7 139s7 148s7 165s10 172s10 175s13 178s13 181s13
+. 182s13 185s13 188s13 193s16 199s16 202s13 211s10 213s10 215s7
+

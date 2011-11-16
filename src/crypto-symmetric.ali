@@ -1,0 +1,23 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.symmetric%s	crypto-symmetric.ads	f112bf26 NE OO PK
+W crypto%s		crypto.ads		crypto.ali
+
+D crypto.ads		20110824150609 b0d04738
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D system.ads		20110928073203 23e1f70b
+X 1 crypto.ads
+24K9*Crypto 25e11 2|23r9 25r5
+X 2 crypto-symmetric.ads
+23K16*Symmetric 1|24k9 2|25l12 25e21
+

@@ -1,0 +1,264 @@
+V "GNAT Lib v4.6"
+A -O3
+A -Wextra
+A -Werror
+A -ggdb
+A -g
+A -gnat05
+A -gnato
+A -gnatn
+A -gnatwr
+A -gnatwc
+A -gnatwl
+A -gnatwp
+P SS ZX
+R nnnvnnnnnnvvnnnnnnvnnvnnnnvvvvnvnnvnnvnnnvnnvnnnnvnvnnnnnnvnvnnvnnnnnnnv2nv1+nnnnnn
+
+U test.big_number_exponentiate%b  test-big_number_exponentiate.adb  a0d23873 OO PK
+W ada%s			ada.ads			ada.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.real_time%s	a-reatim.adb		a-reatim.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W aunit%s		aunit.adb		aunit.ali
+W aunit.assertions%s	aunit-assertions.adb	aunit-assertions.ali
+W big_number_constants%s  big_number_constants.adb  big_number_constants.ali
+W big_number_exponentiate_results%s  big_number_exponentiate_results.adb  big_number_exponentiate_results.ali
+W crypto%s		crypto.ads		crypto.ali
+W crypto.asymmetric.prime_tables%s  crypto-asymmetric-prime_tables.ads  crypto-asymmetric-prime_tables.ali
+W crypto.random%s	crypto-random.adb	crypto-random.ali
+W crypto.types%s	crypto-types.adb	crypto-types.ali
+W crypto.types.big_numbers%s  crypto-types-big_numbers.adb  crypto-types-big_numbers.ali  EA
+W interfaces%s		interfac.ads		interfac.ali
+W system%s		system.ads		system.ali
+W system.exception_table%s  s-exctab.adb	s-exctab.ali
+W system.finalization_implementation%s  s-finimp.adb  s-finimp.ali
+W system.finalization_root%s  s-finroo.adb	s-finroo.ali
+W system.img_int%s	s-imgint.adb		s-imgint.ali
+W system.parameters%s	s-parame.adb		s-parame.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.standard_library%s  s-stalib.adb	s-stalib.ali
+W system.task_info%s	s-tasinf.adb		s-tasinf.ali
+W system.tasking%s	s-taskin.adb		s-taskin.ali
+W system.tasking.rendezvous%s  s-tasren.adb	s-tasren.ali
+W system.tasking.stages%s  s-tassta.adb		s-tassta.ali
+W test%s		test.ads		test.ali
+
+U test.big_number_exponentiate%s  test-big_number_exponentiate.ads  8d480722 EE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W aunit%s		aunit.adb		aunit.ali
+W aunit.test_cases%s	aunit-test_cases.adb	aunit-test_cases.ali
+W system%s		system.ads		system.ali
+W system.storage_elements%s  s-stoele.adb	s-stoele.ali
+W test%s		test.ads		test.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-calend.ads		20090409150019 343c83dd
+D a-charac.ads		20070912115821 2d3ec45b
+D a-chlat1.ads		20070912115821 2825df20
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-reatim.ads		20090409150019 63f07669
+D a-stream.ads		20090409150019 2ca4ee37
+D a-string.ads		20070406091342 90ac6797
+D a-strmap.ads		20090409150019 9cb836fb
+D a-strsea.ads		20101008130255 b9bc90ba
+D a-strunb.ads		20101220072657 e684739b
+D a-strunb.adb		20101220072657 9db21471
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-unccon.ads		20070406091342 f9eb8f06
+D a-uncdea.ads		20070406091342 f15a5ed1
+D ada_containers.ads	20111107163335 11329e00
+D ada_containers-aunit_lists.ads  20111107163335 d9ebc89a
+D ada_containers-aunit_lists.adb  20111107163335 8eef1efa
+D aunit.ads		20111107163336 76cdf7c6
+D aunit-assertions.ads	20111107165920 68f88c78
+D aunit-memory.ads	20111107163336 a0315146
+D aunit-memory-utils.ads  20111107163336 5b1e3d11
+D aunit-options.ads	20111107163336 2fedf7fb
+D aunit-simple_test_cases.ads  20111107163336 4111c32f
+D aunit-test_cases.ads	20111107170228 9d52df4f
+D aunit-test_filters.ads  20111107163336 f10b2127
+D aunit-test_results.ads  20111107170709 3a8a9b0e
+D aunit-tests.ads	20111107163336 1da11d49
+D aunit-time_measure.ads  20111107163336 58355f18
+D big_number_constants.ads  20111105175318 30b9ec4c
+D big_number_exponentiate_results.ads  20111105175318 8f1381ef
+D crypto.ads		20110824150609 b0d04738
+D crypto-asymmetric.ads	20110824150609 696c0cdb
+D crypto-asymmetric-prime_tables.ads  20110824150609 15dc4267
+D crypto-random.ads	20111105142025 dbeacf54
+D crypto-random.adb	20111105142002 9f914dd4
+D crypto-types.ads	20111105121422 f3dcaecc
+D crypto-types-big_numbers.ads  20110824150609 c34a9f67
+D crypto-types-big_numbers.adb  20111104122225 b209960b
+D crypto-types-big_numbers-binfield_utils.adb  20110824150609 dd892182 crypto.types.big_numbers.binfield_utils
+D crypto-types-big_numbers-mod_utils.adb  20110824150609 5a8ff0c4 crypto.types.big_numbers.mod_utils
+D crypto-types-big_numbers-utils.adb  20110824150609 1810544f crypto.types.big_numbers.utils
+D gnat.ads		20050905075125 fd2ad2f1
+D g-souinf.ads		20050905075401 e66ff50e
+D interfac.ads		20090409150019 f77d8799
+D i-c.ads		20101007125900 809c38c4
+D i-cstrea.ads		20100622165701 1bd72c32
+D i-cstrea.adb		20090409150019 98747b85
+D system.ads		20110928073203 23e1f70b
+D s-atacco.ads		20090409150019 1dc856ad
+D s-carun8.ads		20090417131547 da3bf6cd
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-exctab.adb		20090417131547 ba1a43ac
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-htable.ads		20101011104304 efdfacdf
+D s-imgint.ads		20090409150019 02dbe0c2
+D s-linux.ads		20090730092306 47911ab1
+D s-multip.ads		20101011073009 38ac9f73
+D s-osinte.ads		20101127183452 6e2d2e09
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-soflin.adb		20090417130712 d6066804
+D s-stache.ads		20090417130712 596fc1b4
+D s-stausa.ads		20101018101807 bba781f7
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-tasinf.ads		20090409150019 21316953
+D s-taspri.ads		20080408071349 af44aca8
+D s-taprop.ads		20090409150019 07f79e46
+D s-taskin.ads		20101021101406 b2eaee08
+D s-taprob.ads		20090409150019 502249e3
+D s-tpoben.ads		20090409150019 e8374469
+D s-tasren.ads		20090409150019 86fa7427
+D s-tassta.ads		20101018103456 e88ef99e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+D test.ads		20111108195717 1948acb1
+D test-big_number_exponentiate.ads  20111105175318 991bf081
+D test-big_number_exponentiate.adb  20111105175318 2dd1b64e
+X 1 ada.ads
+16K9*Ada 19e8 89|3r6 7r13
+X 11 a-string.ads
+16K13*Strings 35e16 89|3r10 7r17
+X 14 a-strunb.ads
+77K21*Unbounded 490e26 89|3w18 7r25
+X 23 aunit.ads
+29K9*AUnit 43e10 89|1w6 2r6 6r13 90|1r6 78r11 103r11 119r11 134r11 149r11
+. 164r11 179r11
+31P9*Message_String(string)
+33P12*Test_String{31P9} 89|15r50 90|66r51
+X 24 aunit-assertions.ads
+34K15*Assertions 140e21 90|1w12 78r17 103r17 119r17 134r17 149r17 164r17
+. 179r17
+38U14*Assert 90|85s12 87s12 89s12 94s12 110s12 125s12 140s12 155s12 170s12
+. 183s12 186s12 189s12 192s12
+91U14*Init_Test
+94U14*Clear_Failures
+97V13*Has_Failures{boolean}
+100R9*Failure_Iter
+103V13*First_Failure{100R9}
+X 28 aunit-simple_test_cases.ads
+52U14*Set_Up
+55U14*Tear_Down
+X 29 aunit-test_cases.ads
+36K15*Test_Cases 118e21 89|2w12 9r37 17r59 19r59 21r59 23r59 25r59 27r59
+. 29r59 90|49r21 77r55 102r55 118r55 133r55 148r55 163r55 178r55
+38H9*Test_Case<28|39R9> 116e14 89|9r48 17r70 19r70 21r70 23r70 25r70 27r70
+. 29r70 90|77r66 102r66 118r66 133r66 148r66 163r66 178r66
+54U14*Set_Up_Case
+57U14*Tear_Down_Case
+60K12*Registration 71e20 90|49r32
+62U17*Register_Routine 90|52s17 53s17 54s17 55s17 56s17 57s17 58s17
+88U14*Run<28|62p14>
+95U14*Run_Test<28|48p14>
+98V13*Routine_Name{23|31P9}<28|45p13>
+X 34 big_number_constants.ads
+1K9*Big_Number_Constants 19e25 90|3w6 21r9
+9V18*Cons_2048{string} 90|34s43
+11V18*Cons_1025{string} 90|35s43
+13V18*Cons_1024{string} 90|36s43
+15V18*Cons_768{string} 90|37s43
+17V18*Cons_582{string} 90|38s43
+X 35 big_number_exponentiate_results.ads
+1K9*Big_Number_Exponentiate_Results 17e36 90|4w6 22r13
+3V18*Result_0{string} 90|84s38
+5V18*Result_1{string} 90|93s38
+7V18*Result_2{string} 90|109s38
+9V18*Result_3{string} 90|124s38
+11V18*Result_4{string} 90|139s38
+13V18*Result_5{string} 90|154s38
+15V18*Result_6{string} 90|169s38
+X 36 crypto.ads
+24K9*Crypto 25e11 90|2r6 16r28
+X 41 crypto-types.ads
+23K16*Types 333e17 90|2r13 16r35
+X 42 crypto-types-big_numbers.ads
+39k22*Big_Numbers 410e29 90|2w19 16r41
+41R9*Big_Unsigned 90|24r53[16] 25r26[16]
+67V13*"="{boolean} 90|85s21[16] 87s21[16] 89s21[16] 94s21[16] 110s21[16]
+. 125s21[16] 140s21[16] 155s21[16] 170s21[16] 183s21[16] 186s21[16] 189s21[16]
+. 192s21[16]
+131V13*"**"{41R9[90|16]} 90|83s24[16] 86s20[16] 88s20[16] 92s24[16] 108s19[16]
+. 123s23[16] 138s23[16] 153s23[16] 168s24[16] 182s23[16] 185s23[16] 188s23[16]
+. 191s23[16]
+140K12*Utils 90|18r13[16]
+197V16*To_Big_Unsigned{41R9[90|16]} 90|34s27[16] 35s27[16] 36s27[16] 37s27[16]
+. 38s27[16] 39s24[16] 40s24[16] 82s17[16] 84s22[16] 91s17[16] 93s22[16] 106s17[16]
+. 107s17[16] 109s22[16] 122s17[16] 124s22[16] 137s17[16] 139s22[16] 152s17[16]
+. 154s22[16] 167s17[16] 169s22[16]
+X 88 test.ads
+23K9*Test 24e9 89|5r9 31r5 90|10r14 198r5
+X 89 test-big_number_exponentiate.ads
+5K14*Big_Number_Exponentiate 88|23k9 89|31l10 31e33 90|10b19 198l10 198t33
+9R14*Big_Number_Test<29|38R9> 24|91p14 94p14 97p13 103p13 28|52p14 55p14
+. 29|54p14 57p14 88P14 95P14 98P13 89|9e74 13P19 13r44 15P18 15r26 90|48r45
+. 66r27
+11U19*Constants 90|31b19 42l13 42t22 81s12
+13U19*Register_Tests<29|51p14> 13=34 90|48b19 60l13 60t27
+13r34 T{9R14} 90|48b34 52m34 53m34 54m34 55m34 56m34 57m34 58m34
+15V18*Name{23|33P12}<28|42p13> 15>23 90|66b18 69l13 69t17
+15r23 T{9R14} 90|66b23
+17U19*Big_Number_Exponentiate_Test1 17=49 90|52r37 77b14 96l8 96t37
+17c49 T<29|38R9> 90|77b44
+19U19*Big_Number_Exponentiate_Test2 19=49 90|53r37 102b14 112l8 112t37
+19c49 T<29|38R9> 90|102b44
+21U19*Big_Number_Exponentiate_Test3 21=49 90|54r37 118b14 127l8 127t37
+21c49 T<29|38R9> 90|118b44
+23U19*Big_Number_Exponentiate_Test4 23=49 90|55r37 133b14 142l8 142t37
+23c49 T<29|38R9> 90|133b44
+25U19*Big_Number_Exponentiate_Test5 25=49 90|56r37 148b14 157l8 157t37
+25c49 T<29|38R9> 90|148b44
+27U19*Big_Number_Exponentiate_Test6 27=49 90|57r37 163b14 172l8 172t37
+27c49 T<29|38R9> 90|163b44
+29U19*Big_Number_Exponentiate_Test7 29=49 90|58r37 178b14 194l8 194t37
+29c49 T<29|38R9> 90|178b44
+X 90 test-big_number_exponentiate.adb
+16K17 Big[42|39] 17r9 18r9
+24r5 X_2048{42|41R9[16]} 34m17 92r17
+24r13 X_1025{42|41R9[16]} 35m17 168r17
+24r21 X_1024{42|41R9[16]} 36m17 83r17
+24r29 X_768{42|41R9[16]} 37m17 138r17 153r17 182r17 185r17 186r23
+24r36 X_582{42|41R9[16]} 38m17 123r17 188r17 189r23 191r17
+24r43 X_1{42|41R9[16]} 39m17 88r17 89r23 183r23 185r26 188r26 192r23
+24r48 X_0{42|41R9[16]} 40m17 86r17 87r23 182r26 191r26
+25r9 A{42|41R9[16]} 82m12 83r27 86r22 88r22 91m12 92r27 106m12 108r22 122m12
+. 123r26 137m12 138r26 152m12 153r26 167m12 168r27
+25r12 B{42|41R9[16]} 107m12 108r17
+25r15 X{42|41R9[16]} 83m12 85r19 86m12 87r19 88m12 89r19 92m12 94r19 108m12
+. 110r19 123m12 125r19 138m12 140r19 153m12 155r19 168m12 170r19 182m12 183r19
+. 185m12 186r19 188m12 189r19 191m12 192r19
+25r18 Result{42|41R9[16]} 84m12 85r23 93m12 94r23 109m12 110r23 124m12 125r23
+. 139m12 140r23 154m12 155r23 169m12 170r23
+

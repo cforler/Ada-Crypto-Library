@@ -1,0 +1,115 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.types.elliptic_curves.nss_bf%b  crypto-types-elliptic_curves-nss_bf.adb  c12b7e07 NE OO PK GE
+W crypto.types.elliptic_curves%s  crypto-types-elliptic_curves.adb  crypto-types-elliptic_curves.ali
+
+U crypto.types.elliptic_curves.nss_bf%s  crypto-types-elliptic_curves-nss_bf.ads  36406288 BN EE NE OO PK GE
+W crypto.types%s	crypto-types.adb	crypto-types.ali
+W crypto.types.elliptic_curves%s  crypto-types-elliptic_curves.adb  crypto-types-elliptic_curves.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-unccon.ads		20070406091342 f9eb8f06
+D crypto.ads		20110824150609 b0d04738
+D crypto-types.ads	20111110185132 2d86af0f
+D crypto-types-big_numbers.ads  20110824150609 c34a9f67
+D crypto-types-elliptic_curves.ads  20110824150609 3d0bb977
+D crypto-types-elliptic_curves-nss_bf.ads  20110824150609 0b4bdbff
+D crypto-types-elliptic_curves-nss_bf.adb  20110824150609 ca60a5f8
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-stalib.ads		20101021102512 c4241c00
+X 3 crypto.ads
+24K9*Crypto 25e11 7|5r9 26r5 8|2r14 180r5
+X 4 crypto-types.ads
+23K16*Types 3|24k9 4|334e17 7|5r16 26r12 8|2r21 180r12
+47M9*Mod_Type 8|147r22 157r23 159r31
+61A9*Mod_Types(47M9)<integer> 8|140r20
+129V13*Shift_Right{47M9} 8|148s17 160s18 167s17
+X 5 crypto-types-big_numbers.ads
+41R9 Big_Unsigned 7|9r32[6|27] 24r24[6|27] 8|7r10[6|27] 8r10[6|27] 11r10[6|27]
+. 17r32[6|27] 33r11[6|27] 96r28[6|27] 124r32[6|27] 137r24[6|27]
+52r4 Big_Unsigned_Zero{41R9[6|27]} 8|33r27[6|27] 42r15[6|27] 142r17[6|27]
+53r4 Big_Unsigned_One{41R9[6|27]} 8|37r40[6|27]
+56r4 Big_Unsigned_Four{41R9[6|27]} 8|36r47[6|27] 38r45[6|27]
+67V13 "="{boolean} 8|42r12[6|27] 56s53[6|27] 142s15[6|27]
+99V13 "+"{41R9[6|27]} 8|33s46[6|27]
+140K12 Utils 8|140r38[6|27]
+190V16 To_Mod_Types{4|61A9} 8|140s44[6|27]
+281K12 Binfield_Utils 8|3r14[6|27]
+287V18 B_Add{41R9[6|27]} 8|35s12[6|27] 36s34[6|27] 38s25[6|27] 56s10[6|27]
+. 57s9[6|27] 57s15[6|27] 70s14[6|27] 97s18[6|27] 97s41[6|27] 99s22[6|27]
+. 99s28[6|27] 100s22[6|27] 100s28[6|27] 102s22[6|27] 102s43[6|27] 103s22[6|27]
+. 124s48[6|27] 126s26[6|27] 126s32[6|27] 127s26[6|27] 128s26[6|27]
+290V18 B_Mult{41R9[6|27]} 8|35s18[6|27] 36s18[6|27] 36s40[6|27] 38s31[6|27]
+. 38s38[6|27] 56s33[6|27] 57s21[6|27] 58s21[6|27] 102s28[6|27] 127s49[6|27]
+291V18 B_Div{41R9[6|27]} 8|97s12[6|27] 124s58[6|27]
+293V18 B_Square{41R9[6|27]} 8|36s25[6|27] 56s16[6|27] 57s28[6|27] 58s28[6|27]
+. 99s34[6|27] 126s38[6|27] 127s32[6|27]
+297V18 B_Inverse{41R9[6|27]} 8|40s12[6|27]
+X 6 crypto-types-elliptic_curves.ads
+27K17 Big[5|39] 7|6r8 8|3r10 140r34
+29k22*Elliptic_Curves 4|23k16 6|59e33 7|5r22 26r18 8|2r27 180r18
+33R9*EC_Point 36e14 7|14r35 16r26 16r43 18r31 18r48 20r31 20r48 22r24 22r41
+. 24r46 24r63 8|50r35 67r27 67r44 68r11 76r32 76r49 95r19 110r32 110r49 117r25
+. 117r42 123r23 137r46 137r63 138r11 139r11
+34r7 X{5|41R9[27]} 8|56r42 57r39 57r46 58r39 70r26 97r52 97r60 99m17 99r69
+. 100m17 100r41 100r49 102r54 102r63 102r77 124r56 124r70 126m21 127r43 127r70
+. 128r49
+35r7 Y{5|41R9[27]} 8|56r27 56r47 70m9 70r22 97r29 97r37 102m17 103m17 103r35
+. 103r43 124r66 127m21 128m21 128r39
+38r4*EC_Point_Infinity{33R9} 8|52r14 82r21 84r23 87r27 120r19 143r17
+X 7 crypto-types-elliptic_curves-nss_bf.ads
+5k38 NSS_BF 6|29k22 7|26l34 26e40 8|2b43 19r7 20r7 21r7 180l34 180t40
+9U14*Init 9>19 9>22 9>25 8|17b14 22l8 22t12
+9r19 A{5|41R9[6|27]} 8|17b19 19r19
+9r22 B{5|41R9[6|27]} 8|17b22 20r19
+9r25 F{5|41R9[6|27]} 8|17b25 21r19
+12V13*Is_Elliptic_Curve{boolean} 8|32b13 46l8 46t25
+14V13*On_Elliptic_Curve{boolean} 14>31 8|50b13 63l8 63t25
+14r31 X{6|33R9} 8|50b31 52r10 56r25 56r40 56r45 57r37 57r44 58r37
+16V13*Negative{6|33R9} 16>22 8|67b14 72l8 72t16 81s20 112s21 119s15
+16r22 X{6|33R9} 8|67b23 68r23
+18V13*"+"{6|33R9} 18>17 18>23 8|76b14 106l9 106t12 112s19 149s23 168s24
+18r17 Left{6|33R9} 8|76b18 78r12 79r24 81r13 84r16 88r26 97r24 97r47 99r64
+. 102r49 103r38
+18r23 Right{6|33R9} 8|76b24 78r19 81r29 85r23 87r19 97r31 97r54 100r43
+20V13*"-"{6|33R9} 20>17 20>23 8|110b14 113t7
+20r17 Left{6|33R9} 8|110b18 112r14
+20r23 Right{6|33R9} 8|110b24 112r30
+22V13*Double{6|33R9} 22>20 8|79s17 117b14 133l9 133t15 151s18 170s18
+22r20 X{6|33R9} 8|117b21 119r11 119r24 124r54 124r64 124r68 127r41
+24V13*"*"{6|33R9} 24>17 24>38 8|137b13 175l8 175t11
+24r17 Left{5|41R9[6|27]} 8|137b17 140r57 142r10
+24r38 Right{6|33R9} 8|137b38 139r24
+X 8 crypto-types-elliptic_curves-nss_bf.adb
+7r6 A{5|41R9[6|27]} 19m14 36r65 38r64 58r44 100r52 126r67
+8r6 B{5|41R9[6|27]} 20m14 35r27 38r70 38r76 58r50
+11r6 F{5|41R9[6|27]} 21m14 35r29 36r67 37r58 38r66 38r72 39r26 40r24 56r29
+. 56r49 57r41 57r48 58r41 58r46 97r64 99r51 102r66 124r72 126r54 127r45 127r72
+33r7 D{5|41R9[6|27]} 35m7 35r25 40m7 40r22 42r10
+68r7 R{6|33R9} 70m7 70r20 70r24 71r14
+95r10 Result{6|33R9} 99m10 100m10 100r34 102m10 102r56 102r70 103m10 103r28
+. 104r17
+96r10 Lambda{5|41R9[6|27]} 99r43 99r55 102r35
+123r14 Result{6|33R9} 126m14 127m14 127r63 128m14 128r32 128r42 130r21
+124r14 Lambda{5|41R9[6|27]} 126r47 126r58 127r56
+138r7 Q{6|33R9} 149m16 149r21 168m16 168r22 174r14
+139r7 P{6|33R9} 149r25 151m13 151r25 168r26 170m13 170r25
+140a7 K{4|61A9} 146r16 146r25 148r29 157r35 157r37
+146i11 I{integer} 148r31
+147i14 J{integer} 148r34
+156i10 L{natural} 161m16 166r22
+157m10 Y{4|47M9} 160r30 167r29
+159i14 I{integer} 160r32 161r21
+166i14 I{integer} 167r31
+

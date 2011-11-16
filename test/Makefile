@@ -1,0 +1,65 @@
+AUNIT_DIR = aunit-3.4/src
+CC = gnatmake	
+CFLAGS = -W -Werror -ggdb -g -gnat05 -gnato -I../src -I$(AUNIT_DIR) -O3 -gnatn -gnatwrclp
+
+GNATCLEAN=gnatclean
+DEL=rm -f
+
+BB = gnatbind
+BFLAGS = -shared -aO./ -aO/lib/ -I$(AUNIT_DIR) -aO../src -I- -x
+
+LL = gnatlink
+LFLAGS = -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src -lacl
+LFLAGS = -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src
+
+all : aunit big_number test asymmetric hash symmetric
+
+
+#enable for use of GCOV:
+gcov: CFLAGS = -O0 -gnatwrclp  -I../src  -I../src -I$(AUNIT_DIR) -gnat05 -gnatE -gnatf -gnato -W -Wall -Werror -fprofile-arcs -ftest-coverage -fprofile-arcs -fno-inline
+gcov: all 
+
+.PHONY : clean
+.SILENT : clean
+clean: test-clean aunit-clean
+
+aunit:
+	$(MAKE) -C $(AUNIT_DIR) all 
+
+
+#Compile all test-cases/-suites:
+test : 
+	$(CC) $(CFLAGS) test-tests
+	$(BB) $(BFLAGS) test-tests.ali
+#	$(LL) $(LFLAGS) test-tests.ali
+
+#Compile all asymmetric cipher test-cases/-suites
+asymmetric : 
+	$(CC) $(CFLAGS) test-asymmetric_ciphers		
+	$(BB) $(BFLAGS) test-asymmetric_ciphers.ali
+#	$(LL) $(LFLAGS) test-asymmetric_ciphers.ali
+
+#Compile all big_number test-cases/-suites
+big_number : 
+	$(CC) $(CFLAGS) test-big_number	
+	$(BB) $(BFLAGS) test-big_number.ali
+#	$(LL) $(LFLAGS) test-big_number.ali
+
+#Compile all hash test-cases/-suites and MAC's
+hash : 
+	$(CC) $(CFLAGS) test-hash		
+	$(BB) $(BFLAGS) test-hash.ali
+#	$(LL) $(LFLAGS) test-hash.ali
+
+#Compile all symmetric cipher and blockcipher test-cases/-suites
+symmetric : 
+	$(CC) $(CFLAGS) test-symmetric_ciphers		
+	$(BB) $(BFLAGS) test-symmetric_ciphers.ali
+#	$(LL) $(LFLAGS) test-symmetric_ciphers.ali
+
+aunit-clean:
+	$(MAKE) -C $(AUNIT_DIR) clean 
+
+test-clean:
+	$(GNATCLEAN) *.o *.ali
+	$(DEL) *.gcno *.gcov *.gcda

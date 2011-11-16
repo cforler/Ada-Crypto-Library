@@ -1,0 +1,102 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.symmetric.mac.rmac%b  crypto-symmetric-mac-rmac.adb  9658a363 NE OO PK GE
+W crypto.symmetric.mac%s  crypto-symmetric-mac.adb  crypto-symmetric-mac.ali
+
+U crypto.symmetric.mac.rmac%s  crypto-symmetric-mac-rmac.ads  4577e80e BN EE NE OO PK GE
+W crypto%s		crypto.ads		crypto.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.mac%s  crypto-symmetric-mac.adb  crypto-symmetric-mac.ali
+W crypto.symmetric.oneway_blockcipher%s  crypto-symmetric-oneway_blockcipher.adb  crypto-symmetric-oneway_blockcipher.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-unccon.ads		20070406091342 f9eb8f06
+D crypto.ads		20110824150609 b0d04738
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-mac.ads  20111105101518 79bad5d1
+D crypto-symmetric-mac-rmac.ads  20110824150609 9fb0b606
+D crypto-symmetric-mac-rmac.adb  20110824150609 09e81565
+D crypto-symmetric-oneway_blockcipher.ads  20110824150609 a37d8bd9
+D crypto-types.ads	20111110185132 2d86af0f
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-stalib.ads		20101021102512 c4241c00
+X 3 crypto.ads
+24K9*Crypto 25e11 6|23r6 26r26 32r9 74r5 7|24r14 121r5
+X 4 crypto-symmetric.ads
+23K16*Symmetric 3|24k9 4|25e21 6|23r13 26r33 32r16 74r12 7|24r21 121r12
+X 5 crypto-symmetric-mac.ads
+25K26*Mac 4|23k16 5|68e25 6|32r26 74r22 7|24r31 121r22
+X 6 crypto-symmetric-mac-rmac.ads
+26K17 C[8|41] 28r38 29r39 29r58 30r39 30r58 33r8 7|26r11 27r11 33r7 42r7
+. 51r7 53r7 54r7 62r7 73r7 74r7 75r7 94r7 95r7 112r7 113r7
+28U19 Read 28<25 7|52s7 93s7
+28*25 Random{8|26+9[26]}
+29V18 "xor"{8|25+9[26]} 29>25 29>31 7|35s14 42s19 51s19 55s14 62s19 73s19
+. 77s14 96s14 115s14
+29*25 Left{8|25+9[26]}
+29*31 Right{8|25+9[26]}
+30V18 "xor"{8|26+9[26]} 30>25 30>31 7|53s25 74s25 94s25 112s25
+30*25 Left{8|26+9[26]}
+30*31 Right{8|26+9[26]}
+32k30*Rmac 5|25k26 6|26z17 28z19 29z18 30z18 74l26 74e30 7|24b35 121l26 121t30
+35A9*Blocks(8|25+9[26])<integer> 55r32 62r33 7|83r32 101r33
+38U14*Init 38>19 38>25 69r19 7|31b14 36l8 36t12 88s7 107s7
+38*19 Key1{8|26+9[26]} 7|31b19 33r21
+38*25 Key2{8|26+9[26]} 7|31b25 34r14
+40U14*Sign 40>19 7|40b14 43l8 43t12 91s10
+40*19 Message_Block{8|25+9[26]} 7|40b19 42r23
+41U14*Final_Sign 41>25 42<25 43<25 7|47b14 56l8 56t18
+41*25 Final_Message_Block{8|25+9[26]} 7|47b25 51r23
+42*25 R{8|26+9[26]} 7|48b25 52m12 53r29
+43*25 Tag{8|25+9[26]} 7|49b25 54m20
+46U14*Verify 46>21 7|60b14 63l8 63t14 110s10
+46*21 Message_Block{8|25+9[26]} 7|60b21 62r23
+47V13*Final_Verify{boolean} 47>26 48>26 49>26 7|67b13 79l9 79t21
+47*26 Final_Message_Block{8|25+9[26]} 7|67b26 73r23
+48*26 R{8|26+9[26]} 7|68b26 74r29
+49*26 Tag{8|25+9[26]} 7|69b26 76r18
+55U14*Sign 55>19 56>19 56>25 57<19 58<19 7|83b14 97l8 97t12
+55a19 Message{35A9} 7|83b19 90r16 91r15
+56*19 Key1{8|26+9[26]} 7|84b18 88r12
+56*25 Key2{8|26+9[26]} 7|84b24 88r17
+57*19 R{8|26+9[26]} 7|85b18 93m12 94r29
+58*19 Tag{8|25+9[26]} 7|86b18 95m20
+62V13*Verify{boolean} 62>20 63>20 63>26 64>20 65>20 7|101b13 117l8 117t14
+62a20 Message{35A9} 7|101b20 109r16 110r17
+63*20 Key1{8|26+9[26]} 7|102b20 107r12
+63*26 Key2{8|26+9[26]} 7|102b26 107r17
+64*20 R{8|26+9[26]} 7|103b20 112r29
+65*20 Tag{8|25+9[26]} 7|104b20 114r18
+X 7 crypto-symmetric-mac-rmac.adb
+26*4 T{8|25+9[6|26]} 35m7 35r12 35r18 42r17 42m38 51r17 51m44 54r17 55m7
+. 55r12 55r18 62r17 62m38 73r17 73m44 75r17 75m20 76r24 77m7 77r12 77r18
+. 95r17 96m7 96r12 96r18 113r17 113m20 114r24 115m7 115r12 115r18
+27*4 Key{8|26+9[6|26]} 34m7 53r21 74r21 94r21 112r21
+71b7 Result{boolean} 76m7 78r14
+90i11 I{integer} 91r23
+105b7 Result{boolean} 114m7 116r14
+109i11 I{integer} 110r25
+X 8 crypto-symmetric-oneway_blockcipher.ads
+25+9 Block 6|29r41[26] 29r60[26] 35r48[26] 40r38[26] 41r50[26] 43r35[26]
+. 46r40[26] 47r52[26] 49r35[26] 58r29[26] 65r29[26] 7|26r13[6|26] 40r38[6|26]
+. 47r50[6|26] 49r35[6|26] 60r40[6|26] 67r51[6|26] 69r35[6|26] 86r28[6|26]
+. 104r29[6|26]
+26+9 Key_Type 6|28r40[26] 30r41[26] 30r60[26] 38r35[26] 42r35[26] 48r35[26]
+. 56r35[26] 57r29[26] 63r36[26] 64r29[26] 7|27r13[6|26] 31r35[6|26] 48r35[6|26]
+. 68r33[6|26] 84r34[6|26] 85r28[6|26] 102r36[6|26] 103r29[6|26]
+41k26*Oneway_Blockcipher 6|23w23 26r43 8|56e40
+43U14 Prepare_Key 7|33s9[6|26] 53s9[6|26] 74s9[6|26] 94s9[6|26] 112s9[6|26]
+45U14 Encrypt 7|42s9[6|26] 51s9[6|26] 54s9[6|26] 62s9[6|26] 73s9[6|26] 75s9[6|26]
+. 95s9[6|26] 113s9[6|26]
+

@@ -1,0 +1,12 @@
+subject        	 	 reason(s)
+-------         	 -----------
+Alexander Böhm 	(translation)
+Stefan Lucks     	(supervision)
+Niels Ferguson   	(twofischClib)
+Markus Kuhn      	(serpent-code)
+J. Delcourt      	(BIG_NUMBER library)
+RSA Security Inc. (PKCS #1)
+NIST             	(specs and test vectors)
+Erik Zenner      	(handout "Zahlenthoretische Algorithmen")
+Maxim Reznik 		(blowfish code)
+Free software community	(passion)

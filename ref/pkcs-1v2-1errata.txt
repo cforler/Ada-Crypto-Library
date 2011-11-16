@@ -1,0 +1,64 @@
+		     PKCS #1 v2.1 Errata
+		     -------------------
+$Revision: 1.0 $
+
+February, 2003
+
+Copyright (C) 2003 RSA Laboratories, a division of RSA Security
+Inc. License to copy this document is granted provided that it is
+identified as "RSA Security Inc. Public-Key Cryptography Standards
+(PKCS)" in all material mentioning or referencing this document.
+
+This note lists known errors in PKCS #1: RSA Cryptography Standard,
+version 2.1, and should be incorporated into that version.
+
+-Section 5.1.2: Note should refer to step 2.b rather than 2.a.
+
+-Section 5.2.1: Note should refer to step 2.b rather than 2.a.
+
+-Section B.1: Replace the text
+
+  The parameters field associated with these OIDs in a value of
+  type AlgorithmIdentifier shall have a value of type NULL.
+
+with the text
+
+  The parameters field associated with id-md2 and id-md5 in a value of
+  type AlgorithmIdentifier shall have a value of type NULL.
+
+  The parameters field associated with id-sha1, id-sha256, id-sha384,
+  and id-sha512 should be omitted, but if present, shall have a value
+  of type NULL.
+
+This is to align with the definitions originally promulgated by NIST.
+For the SHA algorithms, implementations MUST accept
+AlgorithmIdentifier values both without parameters and with NULL
+parameters.
+
+-Section C: After the definition of PKCS1-v1-5DigestAlgorithms, add
+the text
+
+  -- When id-md2 and id-md5 are used in an AlgorithmIdentifier the
+  -- parameters MUST be present and MUST be NULL.
+
+  -- When id-sha1, id-sha256, id-sha384 and id-sha512 are used in an
+  -- AlgorithmIdentifier the parameters (which are optional) SHOULD
+  -- be omitted. However, an implementation MUST also accept
+  -- AlgorithmIdentifier values where the parameters are NULL.
+
+Also, although not errors, the references should be updated as
+follows to reflect new publication data:
+
+   [25]  Housley, R., "Cryptographic Message Syntax (CMS)", RFC 3369,
+         August 2002.  Housley, R., "Cryptographic Message Syntax (CMS)
+         Algorithms", RFC 3370, August 2002.
+
+   [27]  IEEE P1363 working group.  IEEE P1363a D11: Draft Standard
+         Specifications for Public Key Cryptography -- Amendment 1:
+         Additional Techniques. December 16, 2002.  Available from
+         http://grouper.ieee.org/groups/1363/.
+
+   [32]  J. Jonsson and B. Kaliski.  On the Security of RSA Encryption
+         in TLS.  In M. Yung, editor, Advances in Cryptology - CRYPTO
+         2002, vol. 2442 of Lecture Notes in Computer Science, pp. 127 -
+         142.  Springer Verlag, 2002.

@@ -1,0 +1,68 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.symmetric.mode.oneway_cfb%b  crypto-symmetric-mode-oneway_cfb.adb  5da4a71b NE OO PK GE
+W crypto.symmetric.mode%s  crypto-symmetric-mode.adb  crypto-symmetric-mode.ali
+
+U crypto.symmetric.mode.oneway_cfb%s  crypto-symmetric-mode-oneway_cfb.ads  7387e6d9 BN EE NE OO PK GE
+W crypto%s		crypto.ads		crypto.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.mode%s  crypto-symmetric-mode.adb  crypto-symmetric-mode.ali
+W crypto.symmetric.oneway_blockcipher%s  crypto-symmetric-oneway_blockcipher.adb  crypto-symmetric-oneway_blockcipher.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-unccon.ads		20070406091342 f9eb8f06
+D crypto.ads		20110824150609 b0d04738
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-mode.ads  20110824150609 53baea9d
+D crypto-symmetric-mode-oneway_cfb.ads  20110824150609 8340879d
+D crypto-symmetric-mode-oneway_cfb.adb  20110824150609 dee42086
+D crypto-symmetric-oneway_blockcipher.ads  20110824150609 a37d8bd9
+D crypto-types.ads	20111110185132 2d86af0f
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-stalib.ads		20101021102512 c4241c00
+X 3 crypto.ads
+24K9*Crypto 25e11 6|23r6 26r26 30r9 48r9 7|23r14 64r5
+X 4 crypto-symmetric.ads
+23K16*Symmetric 3|24k9 4|25e21 6|23r13 26r33 30r16 48r16 7|23r21 64r12
+X 5 crypto-symmetric-mode.ads
+31K26*Mode 4|23k16 5|40e27 6|30r26 48r26 7|23r31 64r22
+X 6 crypto-symmetric-mode-oneway_cfb.ads
+26K17 C[8|41] 28r39 28r55 31r8 7|33r7 40r7 50r7
+28V18 "xor"{8|25+9[26]} 28>25 28>31 7|41s24 51s23
+28*25 Left{8|25+9[26]}
+28*31 Right{8|25+9[26]}
+30k31*Oneway_CFB 5|31k26 6|26z17 28z18 48l31 48e41 7|23b36 64l27 64t37
+33U14*Init 33>19 33>38 45r19 7|29b14 34l8 34t12
+33*19 Key{8|26+9[26]} 7|29b19 33r21
+33*38 Initial_Value{8|25+9[26]} 7|30b19 32r13
+35U14*Encrypt 35>22 35<45 7|38b14 43l8 43t15
+35*22 Plaintext{8|25+9[26]} 7|38b22 41r28
+35*45 Ciphertext{8|25+9[26]} 7|38b44 41m7 42r13
+36U14*Decrypt 36>22 36<45 45r34 7|47b14 53l8 53t15
+36*22 Ciphertext{8|25+9[26]} 7|47b22 51r27 52r12
+36*45 Plaintext{8|25+9[26]} 7|48b22 51m7
+38U14*Set_IV 38>21 45r43 7|57b14 60l8 60t14
+38*21 Initial_Value{8|25+9[26]} 7|57b21 59r13
+X 7 crypto-symmetric-mode-oneway_cfb.adb
+25*4 IV{8|25+9[6|26]} 32m7 40r17 40m21 41r21 42m7 50r17 50m21 51r20 52m7
+. 59m7
+X 8 crypto-symmetric-oneway_blockcipher.ads
+25+9 Block 6|28r41[26] 28r57[26] 33r57[26] 35r38[26] 35r62[26] 36r38[26]
+. 36r62[26] 38r40[26] 7|25r9[6|26] 30r38[6|26] 38r37[6|26] 38r61[6|26] 47r38[6|26]
+. 48r38[6|26] 57r40[6|26]
+26+9 Key_Type 6|33r28[26] 7|29r28[6|26]
+41k26*Oneway_Blockcipher 6|23w23 26r43 8|56e40
+43U14 Prepare_Key 7|33s9[6|26]
+45U14 Encrypt 7|40s9[6|26] 50s9[6|26]
+

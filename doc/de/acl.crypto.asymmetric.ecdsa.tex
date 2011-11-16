@@ -1,0 +1,220 @@
+\chapter{Acl.Crypto.Asymmetric.ECDSA}
+
+Bei diesem generischen Paket handelt es sich um eine Implementierung des
+ECDSA-Signaturalgorithmus. Der ECDSA-Algorithmus ist die Erweiterung des DSA-Algorithmus 
+auf den Bereich der Elliptischen Kurven.\\
+Mit Hilfe von ECDSA sind Sie  in der Lage digitale Unterschriften zu 
+erstellen und deren Authentizität zu verifizieren. 
+Um eine Nachricht digital zu unterschreiben (signieren) benötigt Sie einen 
+öffentlichen und einen privaten Schlüssel.
+Den privaten Schlüssel benötigt Sie für den Signierungsprozess und den 
+öffentlichen Schlüssel für den Verifikationsprozess. Bei diesen Prozessen
+wird nicht die Nachricht selbst sondern deren SHA-1 Hash-Wert 
+\ref{sha1} unterschrieben. Jemand der den privaten Schlüssel nicht kennt, ist 
+nicht in der Lage eine gültige (verifizierbare) Signatur zu erstellen.
+Aber jeder der den öffentlichen Schlüssel kennt, kann sich von der Korrektheit
+einer Signatur überzeugen indem er sie dem Verifizierungsprozess unterwirft.
+
+
+\section{Generischer Teil}
+\begin{lstlisting}{}
+generic
+  Size : Positive;
+\end{lstlisting}\ \\
+\textbf{Exception}
+$Size \not= 512+i64 \quad (i \in \{0, \ldots , 8\})$ : Constraint\_Error;\\
+
+\section{API}
+\subsection{Typen}
+\begin{lstlisting}{}
+ type Public_Key_ECDSA  is private;
+ type Private_Key_ECDSA is private;
+ type Signature_ECDSA   is private;
+\end{lstlisting}
+Der \textit{Public\_Key\_ECDSA}  ist ein beinhaltet folgende Variablen:
+\begin{lstlisting}{}
+ E : Elliptic_Curve_Zp;
+ P : EC_Point;
+ n : Big_Unsigned;
+ Q : EC_Point;
+\end{lstlisting}
+\textit{E} ist eine elliptische Kurve üpber ZP. \textit{P} ist ein öffentlicher Punkt auf dieser Kurve, dessen Ordnung \textit{n} bekannt ist.
+\textit{Q} ist der öffenliche Teil des Schlüssels.\\
+\ \\
+Der \textit{Private\_Key\_ECDSA} beinhaltet folgende Variablen:
+\begin{lstlisting}{}
+ Q : EC_Point;
+ n : Big_Unsigned;
+\end{lstlisting}
+\textit{Q} ist ein Punkt auf der Elliptischen Kurve und der öffenliche Teil des Schlüssels. \textit{n} ist eine Zahl und der geheime Teil des Schlüssels. 
+\\ \ \\
+Die \textit{Signatur\_ECDSA} enthält zwei Zahlen. 
+\begin{lstlisting}{}
+ R : Big_Unsigned;
+ S : Big_Unsigned;
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Prozeduren und Funktionen}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Gen_Public_Key(Public_Key : out Public_Key_ECDSA;
+                         length     : in DB.Bit_Length);
+\end{lstlisting}\\
+Diese Prozedur holt eine Elliptische Kurve aus der Datenbank. Die Kurve hat mindestens die kryptografische Sicherheit von \textit{length}.\\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  BitLength is not supported. (Max BitLength = 521) & LEN\_EX\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Gen_Private_Key(Public_Key : in out Public_Key_ECDSA;
+                         Private_Key : out Private_Key_ECDSA);
+\end{lstlisting}\\
+Diese Prozedur erzeugt ein Schlüsselpaar, den \textit{Private\_Key}. Hierzu wird eine zufällige Zahl generiert, diese ist der geheime Teil des Schlüssels. 
+Des weiteren wird ein Punkt als öffentlicher Teil des Schlüssels, als Produkt aus dem eben generierten Zahl und dem öffentlichen Punkt des \textit{Public\_Key} berechnet. Dieser Punkt wird sowohl im öffentlichen als auch im privaten Schlüssel gespeichert.
+\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Sign(	 Public_Key  : in Public_Key_ECDSA;
+								 Private_Key : in  Private_Key_ECDSA;
+                 SHA1_Hash   : in  W_Block160;
+                 Signature   : out Signature_ECDSA);
+\end{lstlisting}\\
+Diese Prozedur signiert den SHA-1 Hashwert (\textit{SHA1\_Hash}) einer
+Nachricht mit einem privaten Schlüssel (\textit{Private\_Key}).\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Verify(Public_Key  : Public_Key_ECDSA;
+                 SHA1_Hash   : W_Block160;
+                 Signature   : Signature_ECDSA) return Boolean;
+\end{lstlisting}\\
+Diese Funktion gibt den Wert ``True'' zurück, wenn mit Hilfe des öffentlichen
+Schlüssels \textit{Public\_Key} verifiziert werden kann,
+ob es sich bei \textit{Signature} um eine gültige Unterschrift des SHA-1
+Hashwertes \textit{SHA1\_Hash} handelt.
+Ist dies nicht der Fall gibt sie ``False'' zurück.\\
+Mit einem öffentlichen Schlüssel, können nur Signaturen des zugehörigen
+privaten Schlüssels verifiziert werden. Passen die beiden Schlüssel nicht 
+zusammen, gibt diese Funktion ``False'' zurück.\\
+Wenn Bob anstatt seines den Ausweis den von Alice mit sich führt, dann kann 
+man anhand dieses Ausweises auch nicht die Identität von  Bob überprüfen, 
+obwohl Alice Ausweis gültig ist. \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Sign_File(Filename      : in  String;
+                      Public_Key  : in  Public_Key_ECDSA;
+                      Private_Key : in  Private_Key_ECDSA;
+                      Signature   : out Signature_ECDSA);
+\end{lstlisting}\\
+Mit dieser Prozedur kann man mit Hilfe eines privaten Schlüssels 
+\textit{Private\_Key} eine Datei (\textit{Filename}) signieren.\\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  Die Datei \textit{Filename} ist größer als $2^{26}$ TB & 
+  SHA1\_Constraint\_Error\\
+  Private\_Key wurde nicht initialisiert & Invalid\_Private\_Key\\
+  Lesefehler & File\_Open\_Error\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Verify_File(Filename    : String;
+                      Public_Key : Public_Key_ECDSA;
+                      Signature  : Signature_ECDSA) return Boolean;
+\end{lstlisting}\\
+Diese Funktion gibt den Wert ``True'' zurück, wenn mit Hilfe des öffentlichen
+Schlüssels \textit{Public\_Key} verifiziert werden kann, ob es sich bei
+\textit{Signature} um eine gültige Unterschrift der Datei (\textit{Filename})
+handelt. Ist dies nicht der Fall gibt sie ``False'' zurück.\\
+Mit einem öffentlichen Schlüssel, können nur Signaturen des dazugehörigen
+privaten Schlüssels verifiziert werden. Passen die beiden Schlüssel nicht 
+zusammen, gibt diese Funktion ``False'' zurück.\\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ }l}
+Die Datei \textit{Filename} ist größer als $2^{26}$ TB & 
+SHA1\_Constraint\_Error\\
+Public\_Key  wurde nicht initialisiert  & Invalid\_Public\_Key\\
+Lesefehler & File\_Open\_Error\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  function Verify_Key_Pair(Private_Key : Private_Key_ECDSA;
+                            Public_Key  : Public_Key_ECDSA) return Boolean;
+\end{lstlisting}\\
+Diese Funktion gibt ``True'' zurück, wenn der privaten \textit{Private\_Key}
+und der öffentliche Schlüssel \textit{Public\_Key} zusammengehören, d.h. ein 
+Paar bilden, ansonsten gibt sie ``False'' zurück. \\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  Public\_Key  wurde nicht initialisiert & Invalid\_Public\_Key\_Error\\
+  Private\_Key wurde nicht initialisiert & Invalid\_Private\_Key\_Error\\
+\end{tabular}\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Anwendungsbeispiel}
+\begin{lstlisting}{}
+with Crypto.Types.Big_Numbers;
+with Crypto.Asymmetric.ECDSA;
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Example_ECDSA is
+   package ECDSA is new Crypto.Asymmetric.ECDSA(512);
+   use ECDSA;
+
+   Public_Key  : Public_Key_ECDSA;
+   Private_Key : Private_Key_ECDSA;
+   Signature   : Signature_ECDSA;
+
+begin
+   --Schluesselgenerierung
+   Gen_Public_Key(Public_Key, 178);
+   Gen_Private_Key(Public_Key, Private_Key);
+
+   --Signierung
+   Sign_File("example_ecdsa.adb",Public_Key, Private_Key, Signature);
+
+   --Verifikation
+   if Verify_File("example_ecdsa.adb", Public_Key, Signature) then
+        Put_Line("OK");
+   else Put_Line("Implementation error.");
+   end if;
+
+end Example_ECDSA;
+\end{lstlisting}

@@ -1,0 +1,93 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.symmetric.mac.hmac%b  crypto-symmetric-mac-hmac.adb  830df167 NE OO PK GE
+W crypto.symmetric.mac%s  crypto-symmetric-mac.adb  crypto-symmetric-mac.ali
+
+U crypto.symmetric.mac.hmac%s  crypto-symmetric-mac-hmac.ads  58bd5909 BN EE NE OO PK GE
+W crypto%s		crypto.ads		crypto.ali
+W crypto.hashfunction%s	crypto-hashfunction.adb	crypto-hashfunction.ali
+W crypto.symmetric.mac%s  crypto-symmetric-mac.adb  crypto-symmetric-mac.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-unccon.ads		20070406091342 f9eb8f06
+D crypto.ads		20110824150609 b0d04738
+D crypto-hashfunction.ads  20111104145729 f39f5a0c
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-mac.ads  20111105101518 79bad5d1
+D crypto-symmetric-mac-hmac.ads  20110824150609 d298d6d4
+D crypto-symmetric-mac-hmac.adb  20110824150609 519527b3
+D crypto-types.ads	20111110185132 2d86af0f
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-stalib.ads		20101021102512 c4241c00
+X 3 crypto.ads
+24K9*Crypto 25e11 7|23r7 26r26 40r9 68r5 8|23r14 115r6
+X 4 crypto-hashfunction.ads
+26+9 Hash_Type 7|34r21[26] 37r15[26] 50r41[26] 58r37[26] 8|57r35[7|26] 88r35[7|26]
+. 93r15[7|26]
+27+9 Message_Type 7|29r23[26] 29r47[26] 30r41[26] 31r41[26] 34r45[26] 43r29[26]
+. 45r39[26] 48r40[26] 53r41[26] 56r37[26] 8|25r8[7|26] 30r14[7|26] 39r28[7|26]
+. 47r38[7|26] 54r50[7|26] 58r15[7|26] 59r15[7|26] 78r40[7|26] 85r51[7|26]
+. 90r15[7|26] 91r15[7|26]
+28+9 Message_Block_Length_Type 7|37r35[26] 49r40[26] 57r37[26] 8|56r28[7|26]
+. 60r15[7|26] 87r29[7|26] 92r15[7|26]
+53k16*Hashfunction 70e24 7|23w14 26r33
+60U14 Init 8|33s7[7|26] 65s7[7|26] 97s7[7|26]
+61U14 Round 8|34s7[7|26] 49s7[7|26] 66s7[7|26] 80s7[7|26] 98s7[7|26]
+62V13 Final_Round{26+9[7|26]} 8|62s15[7|26] 71s15[7|26] 94s9[7|26] 103s16[7|26]
+X 5 crypto-symmetric.ads
+23K16*Symmetric 3|24k9 5|25e21 7|40r16 68r12 8|23r21 115r13
+X 6 crypto-symmetric-mac.ads
+25K26*Mac 5|23k16 6|68e25 7|40r26 68r22 8|23r31 115r23
+X 7 crypto-symmetric-mac-hmac.ads
+26K17 H[4|53] 29r21 29r45 30r39 31r39 34r19 34r43 37r13 37r33 41r8
+28V18 "xor"{4|27+9[26]} 29>7 29>13 8|34s15 66s15 98s15
+29*7 Left{4|27+9[26]}
+29*13 Right{4|27+9[26]}
+30U19 Fill36 30<27 8|32s7
+30*27 Ipad{4|27+9[26]}
+31U19 Fill5C 31<27 8|64s7 96s7
+31*27 Opad{4|27+9[26]}
+33U19 Copy 34>7 34<32 8|68s7 100s7
+34*7 Source{4|26+9[26]}
+34*32 Dest{4|27+9[26]}
+36V20 M_B_Length{4|28+9[26]} 37>9 8|69s15 101s14
+37*9 Z{4|26+9[26]}
+40k30*Hmac 6|25k26 7|26z17 28z18 30z19 31z19 33z19 36z20 68l26 68e30 8|23b35
+. 115l27 115t31
+43U15*Init 43>20 8|39b14 43l8 43t12
+43*20 Key{4|27+9[26]} 8|39b19 41r12
+45U15*Sign 45>20 65r25 8|47b14 50l8 50t12
+45*20 Message_Block{4|27+9[26]} 8|47b19 49r13
+47U15*Final_Sign 48>8 49>8 50<8 8|54b14 74l8 74t18
+48*8 Final_Message_Block{4|27+9[26]} 8|54b25 62r27
+49*8 Final_Message_Block_Length{4|28+9[26]} 8|55b25 62r48
+50*8 Tag{4|26+9[26]} 8|57b25 62m7 68r12 69r26 71m7
+53U15*Verify 53>22 8|78b14 81l8 81t14
+53*22 Message_Block{4|27+9[26]} 8|78b21 80r13
+55V14*Final_Verify{boolean} 56>8 57>8 58>8 8|85b13 109l8 109t20
+56*8 Final_Message_Block{4|27+9[26]} 8|85b26 94r21
+57*8 Final_Message_Block_Length{4|28+9[26]} 8|86b26 94r42
+58*8 Tag{4|26+9[26]} 8|88b26 101r25 107r14
+X 8 crypto-symmetric-mac-hmac.adb
+25*4 K{4|27+9[7|26]} 34r13 41m7 66r13 98r13
+29U14 Reset 29b14 35l8 35t13 42s7 73s7 105s7
+30*7 Ipad{4|27+9[7|26]} 32m14 34r19
+58*7 Opad{4|27+9[7|26]} 64m14 66r19
+59*7 Final{4|27+9[7|26]} 68m16 71r27
+60*7 Len{4|28+9[7|26]} 69m7 71r34
+90*7 Opad{4|27+9[7|26]} 96m14 98r19
+91*7 Final{4|27+9[7|26]} 100m17 103r28
+92*7 Len{4|28+9[7|26]} 101m7 103r35
+93*7 Tag2{4|26+9[7|26]} 100r12 103m7 107r20
+

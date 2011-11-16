@@ -1,0 +1,104 @@
+\chapter{Crypto.Symmetric.Oneway\_Blockcipher}\label{oneblock}
+
+Mit Hilfe dieses generischen Paketes können Sie aus einem symmetrischen 
+Einweg-Algorithmus (\textbf{Kapitel} \ref{onealg}) oder einer Hashfunktion 
+(\textbf{Kapitel} Kapitel \ref{hash}) eine Einweg-Blockchiffre
+(oneway-Blockcipher) generieren.
+Sie sollten aber davon Abstand nehmen die API dieses Paketes direkt zu 
+verwenden. Diese Paket implementiert nämlich eine Blockchiffre ``unsicheren''
+im ECB-Modus (Electronic Codebook Modus).  In diesem Modus werden zwei
+identische Klartextblöcke  p1=p2, die mit dem selben Schlüssel chiffriert
+werden, zu zwei identischen Chiffretextblöcken c1,c2 mit c1=c2. 
+Der Chiffretext kann also immer noch Informationen über die Struktur des 
+Klartextes enthalten. \\
+Bei Einweg-Blockchiffre die auf Hashfunktionen beruhen wurde die Schlüssellänge
+(mind. 256 Bit) so gewählt, dass es unmöglich ist den kompletten
+Schlüsselraum abzusuchen. 
+Ein (irreversibler) 219-Bit Zähler der all seine Zustände durchläuft benötigt 
+min. $10^{51} erg.$. Dies entspricht der Energie die eine typische Supernova
+abgibt. Damit ein 256-Bit Zähler alle Zustände durchläuft benötigt er min. die
+Energie von 64 Milliarden Supernoven. Der Energieaustoß unserer Sonne beträgt
+im Jahr gerade mal $1,21 \cdot 10^{41}$ erg. \cite{schneier}\\
+Damit ist eine solche Einweg-Blockchiffre so (un-)sicher wie die 
+zugrundeliegende Hashfunktionen.
+
+\section{API}
+
+Die API eine Blockchiffre besteht den folgenden beiden Prozeduren.
+
+\begin{enumerate}
+\item Die Prozedur \textbf{Prepare\_Key} weisen sie einer Blockchiffre
+  einen Schlüssel \textit{Key} zu.
+  \begin{lstlisting}{}
+ procedure Prepare_Key(Key  : in Key_Type);
+  \end{lstlisting}
+  
+\item Die Prozedur \textbf{Encrypt} verschlüsselt (mit Hilfe eines vorher 
+  zugewiesenen Schlüssels) einen Klartextblock  (Plaintext) in einen 
+  Ciffretextblock (Ciphertext) 
+  \begin{lstlisting}{}
+ procedure Encrypt(Plaintext : in Block; Ciphertext : out Block);
+  \end{lstlisting}
+
+\end{enumerate}
+
+
+\section{Generischer Teil}
+
+ \begin{lstlisting}{}
+generic
+   type Block is private;
+   type Key_Type is private;
+   type Cipherkey_Type is private;
+
+   with procedure Prepare_Key(Key : in Key_Type;
+                              Cipherkey : out Cipherkey_Type);
+
+   with procedure Encrypt(Cipherkey  : in Cipherkey_Type;
+                          Plaintext  : in Block;
+                          Ciphertext : out Block);
+    
+ \end{lstlisting}
+
+\section{Anwendungsbeispiel}
+\begin{lstlisting}{generic onewayTDES}
+with Crypto.Types;
+with Crypto.Symmetric.Oneway_Blockcipher;
+with Crypto.Symmetric.Algorithm.TripleDES.Oneway;
+
+procedure Generic_Oneway_TripleDES is
+use Crypto.Types;
+use Crypto.Symmetric.Algorithm.TripleDES.Oneway;
+
+   package Oneway_TripleDES is 
+      new  Crypto.Symmetric.Oneway_Blockcipher
+      (Block           => B_Block64,
+       Key_Type        => B_Block192,
+       Cipherkey_Type  => Cipherkey_Oneway_TDES,
+       Prepare_Key     => Prepare_Oneway_Key,
+       Encrypt         => Encrypt_Oneway);
+                                  
+begin
+   ...
+end Generic_Oneway_TripleDES;
+\end{lstlisting}
+
+
+\section{Anmerkung}
+Sie müssen nicht jedes mal auf neue aus einem Algorithmus eine 
+Einweg-Blockchiffre generieren. Stattdessen können Sie auch eine der folgenden 
+vorgefertigten Blockchiffren verwenden.
+\begin{itemize}
+\item Crypto.Symmetric.Oneway\_Blockcipher\_AES128
+\item Crypto.Symmetric.Oneway\_Blockcipher\_AES192
+\item Crypto.Symmetric.Oneway\_Blockcipher\_AES256
+\item Crypto.Symmetric.Oneway\_Blockcipher\_SHA1
+\item Crypto.Symmetric.Oneway\_Blockcipher\_SHA256
+\item Crypto.Symmetric.Oneway\_Blockcipher\_SHA512
+\item Crypto.Symmetric.Oneway\_Blockcipher\_Serpent256
+\item Crypto.Symmetric.Oneway\_Blockcipher\_Tripledes
+\item Crypto.Symmetric.Oneway\_Blockcipher\_Twofish128
+\item Crypto.Symmetric.Oneway\_Blockcipher\_Twofish192
+\item Crypto.Symmetric.Oneway\_Blockcipher\_Twofish256
+\item Crypto.Symmetric.Oneway\_Blockcipher\_Whirlpool
+\end{itemize}

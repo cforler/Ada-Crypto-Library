@@ -1,0 +1,127 @@
+V "GNAT Lib v4.6"
+A -O3
+A -Wextra
+A -Werror
+A -ggdb
+A -g
+A -gnat05
+A -gnato
+A -gnatn
+A -gnatwr
+A -gnatwc
+A -gnatwl
+A -gnatwp
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U big_numbers_mod_utils%b  big_numbers_mod_utils.adb  1c35017b NE OO PK
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+
+U big_numbers_mod_utils%s  big_numbers_mod_utils.ads  a6e6327e EE NE OO PK
+
+D ada.ads		20070406091342 3ffc8e18
+D a-unccon.ads		20070406091342 f9eb8f06
+D big_numbers_mod_utils.ads  20111105175318 a6e6327e
+D big_numbers_mod_utils.adb  20111105175318 bad33305
+D system.ads		20110928073203 23e1f70b
+D s-secsta.ads		20090707124243 eea35a36
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+X 3 big_numbers_mod_utils.ads
+1K9*Big_Numbers_Mod_Utils 101l5 101e26 4|1b14 923l5 923t26
+3V18*Number_1{string} 4|3b18 25l13 25t21
+5V18*Number_2{string} 4|27b18 48l13 48t21
+7V18*Number_3{string} 4|50b18 64l13 64t21
+9V18*Number_4{string} 4|66b18 80l13 80t21
+11V18*Number_5{string} 4|82b18 91l13 91t21
+13V18*Number_6{string} 4|93b18 102l13 102t21
+15V18*Number_7{string} 4|104b18 113l13 113t21
+17V18*Number_8{string} 4|115b18 136l13 136t21
+19V18*Number_9{string} 4|138b18 160l13 160t21
+21V18*Number_10{string} 4|162b18 184l13 184t22
+23V18*Number_11{string} 4|186b18 208l13 208t22
+25V18*Number_12{string} 4|210b18 232l13 232t22
+27V18*Number_13{string} 4|234b18 257l13 257t22
+29V18*Number_14{string} 4|259b18 281l13 281t22
+31V18*Number_15{string} 4|283b18 306l13 306t22
+33V18*Number_16{string} 4|308b18 329l13 329t22
+35V18*Number_17{string} 4|331b18 352l13 352t22
+37V18*Number_18{string} 4|354b18 375l13 375t22
+39V18*Number_19{string} 4|377b18 398l13 398t22
+41V18*Number_20{string} 4|400b18 421l13 421t22
+43V18*Number_21{string} 4|423b18 444l13 444t22
+45V18*Number_22{string} 4|446b18 467l13 467t22
+47V18*Number_23{string} 4|469b18 490l13 490t22
+49V18*Number_24{string} 4|492b18 513l13 513t22
+51V18*Number_25{string} 4|515b18 529l13 529t22
+53V18*Number_26{string} 4|531b18 545l13 545t22
+55V18*Number_27{string} 4|547b18 555l13 555t22
+57V18*Number_28{string} 4|557b18 566l13 566t22
+59V18*Number_29{string} 4|568b18 582l13 582t22
+61V18*Number_30{string} 4|584b18 598l13 598t22
+63V18*Number_31{string} 4|600b18 614l13 614t22
+65V18*Number_32{string} 4|616b18 630l13 630t22
+67V18*Number_33{string} 4|632b18 641l13 641t22
+69V18*Number_34{string} 4|643b18 652l13 652t22
+71V18*Number_35{string} 4|654b18 663l13 663t22
+73V18*Number_36{string} 4|665b18 674l13 674t22
+75V18*Number_37{string} 4|676b18 685l13 685t22
+77V18*Number_38{string} 4|687b18 696l13 696t22
+79V18*Number_39{string} 4|698b18 707l13 707t22
+81V18*Number_40{string} 4|709b18 732l13 732t22
+83V18*Number_41{string} 4|734b18 756l13 756t22
+85V18*Number_42{string} 4|758b18 780l13 780t22
+87V18*Number_43{string} 4|782b18 805l13 805t22
+89V18*Number_44{string} 4|807b18 829l13 829t22
+91V18*Number_45{string} 4|831b18 849l13 849t22
+93V18*Number_46{string} 4|851b18 873l13 873t22
+95V18*Number_47{string} 4|875b18 897l13 897t22
+X 4 big_numbers_mod_utils.adb
+4a17 Str_1{string} 6m17 24r24
+28a17 Str_2{string} 30m17 47r24
+51a17 Str_3{string} 53m17 63r24
+67a17 Str_4{string} 69m17 79r24
+83a17 Str_5{string} 85m17 90r24
+94a17 Str_6{string} 96m17 101r24
+105a17 Str_7{string} 107m17 112r24
+116a17 Str_8{string} 118m17 135r24
+139a17 Str_9{string} 141m17 159r24
+163a17 Str_10{string} 165m17 183r24
+187a17 Str_11{string} 189m17 207r24
+211a17 Str_12{string} 213m17 231r24
+235a17 Str_13{string} 237m17 256r24
+260a17 Str_14{string} 262m17 280r24
+284a17 Str_15{string} 286m17 305r24
+309a17 Str_16{string} 311m17 328r24
+332a17 Str_17{string} 334m17 351r24
+355a17 Str_18{string} 357m17 374r24
+378a17 Str_19{string} 380m17 397r24
+401a17 Str_20{string} 403m17 420r24
+424a17 Str_21{string} 426m17 443r24
+447a17 Str_22{string} 449m17 466r24
+470a17 Str_23{string} 472m17 489r24
+493a17 Str_24{string} 495m17 512r24
+516a17 Str_25{string} 518m17 528r24
+532a17 Str_26{string} 534m17 544r24
+548a17 Str_27{string} 550m17 554r24
+558a17 Str_28{string} 560m17 565r24
+569a17 Str_29{string} 571m17 581r24
+585a17 Str_30{string} 587m17 597r24
+601a17 Str_31{string} 603m17 613r24
+617a17 Str_32{string} 619m17 629r24
+633a17 Str_33{string} 635m17 640r24
+644a17 Str_34{string} 646m17 651r24
+655a17 Str_35{string} 657m17 662r24
+666a17 Str_36{string} 668m17 673r24
+677a17 Str_37{string} 679m17 684r24
+688a17 Str_38{string} 690m17 695r24
+699a17 Str_39{string} 701m17 706r24
+710a17 Str_40{string} 712m17 731r24
+735a17 Str_41{string} 737m17 755r24
+759a17 Str_42{string} 761m17 779r24
+783a17 Str_43{string} 785m17 804r24
+808a17 Str_44{string} 810m17 828r24
+832a17 Str_45{string} 834m17 848r24
+852a17 Str_46{string} 854m17 872r24
+876a17 Str_47{string} 878m17 896r24
+

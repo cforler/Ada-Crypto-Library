@@ -1,0 +1,279 @@
+\chapter{Acl.Crypto.Asymmetric.RSA}
+
+Bei diesem generischen Paket handelt es sich um eine RSA 
+(Rivest Shamir Adelman) Implementierung. Klartextblöcke (Plaintext) bzw.
+Chiffretextblöcke (Ciphertext) können mit Hilfe von RSAES-OAEP \cite{rsa}
+ver- bzw. entschlüsselt werden. RSAES-PKCS1-v1\_5 wurde nicht implementiert, da
+im PKCS \#1 v2.1 (Public-Key Cryptography Standards) empfohlen wird für
+neue Anwendungen RSAES-OEAP zu verwenden.\\
+
+\subsubsection{OEAP-Details}
+\begin{itemize}
+\item Diese Implementation verwendet SHA1 innerhalb der MGF1\\
+  (Mask Generation Function 1)
+\item Diese Implementation unterstüzt nicht das optionale Label L, d.h. L ist
+  immer ein leerer String
+\end{itemize}
+
+
+\section{Generischer Teil}
+\begin{lstlisting}{}
+generic
+  Size : Positive;
+\end{lstlisting}\ \\
+\textbf{Vorbedingung:}\\
+Size $\ge$512\\ \ \\
+\textbf{Exception:}\\
+Size $<$ 512  : Constraint\_Size\_Error;\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{API}
+\subsection{Typen}
+\begin{lstlisting}{}
+ subtype RSA_Number is Bytes(0..Size/8-1);
+ type Public_Key_RSA  is private;
+ type Private_Key_RSA is private;
+\end{lstlisting}
+Bei RSA\_Number handeltes sich um ein Byte-Array das als Zahl interpretiert
+wird. Das erste Element des Arrays (First) enstpricht dabei dem 
+dem höchstwertigsten Byte und das letzte Element des Arrays (Last)
+dem niederwertigsten Byte dieser Zahl.\\ \ \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Prozeduren und Funktionen}\ 
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  procedure Gen_Key(Public_Key    : out Public_Key_RSA;
+                      Private_Key : out Private_Key_RSA);
+\end{lstlisting}\\
+Dies Prozedure erzeugt ein Schlüsselpaar, das aus einem  öffentlichen 
+\textit{Public\_Key} und einem privaten Schlüssel \textit{Private\_Key}
+besteht.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{tabular}{p{\textwidth}}\label{rsavkp}
+\begin{lstlisting}{}
+ function Verify_Key_Pair(Private_Key  : Private_Key_RSA;
+                           Public_Key  : Public_Key_RSA) return Boolean;
+\end{lstlisting}\\
+Diese Funkton gibt ``True'' zurück, wenn der privaten \textit{Private\_Key}
+und der öffentliche Schlüssel \textit{Public\_Key} zusammengehören, d.h. ein 
+Paar bilden, ansonsten gibt sie ``False'' zurück. \\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  Public\_Key  wurde nicht initalisiert & Invalid\_Public\_Key\_RSA\\
+  Private\_Key wurde nicht initalisiert & Invalid\_Private\_Key\_RSA\\
+\end{tabular}\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+ function OAEP_Encrypt(Public_Key : in  Public_Key_RSA;
+                         Plaintext  : in  Bytes) return RSA_Number;
+\end{lstlisting}
+Diese Funktion verschlüsselt einen Klartext(-block) (\textit{Plaintext})
+mit dem OEAP-Verfahren \cite{rsa} und gibt den Chiffretext zurück.\\ \ \\
+\textbf{Vorbedingung:}\\
+\textit{Plaintext'Length} $\le Size - 336 (= 2 \cdot 160 + 2\cdot 8)$\\
+\textit{Public\_Key} is ein zulässiger Schlüssel.\\ \ \\
+\textbf{Exceptions:}\\
+\begin{tabular}{l@{\ : \ }l}
+  Plaintext'Length $>$ Size - 336 & Plaintext\_Too\_Long\_Error\\ 
+  Public\_Key wurde nicht initalisiert & Invalid\_Public\_Key\_Error\\
+  Unzulässiger Public\_Key & Invalid\_Public\_Key\_Error\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function OAEP_Decrypt(Private_Key : in  Private_Key_RSA;
+                         Ciphertext  : in  RSA_Number) return Bytes;
+\end{lstlisting}
+Diese Funktion entschlüsselt einen Chiffretext(-block)  (\textit{Ciphertext}),
+mit Hilfe eines privaten Schlüssels (\textit{Private\_Key}). 
+Der entschlüsselte Text entspricht nur dem ``orginal'' Klartext,
+wenn der dabei benutze öffentliche Schlüssel und 
+\textit{Private\_Key} ein Schlüsselpaar bilden (\ref{rsavkp}).\\
+\ \\
+\textbf{Vorbedingungen:}
+\begin{itemize}
+\item \textit{Private\_Key} ist ein zulässiger Schlüssel.
+\item \textit{Ciphertext} wurde mit dem RSAES-OEAP-Verfahren verschlüsselt.
+\item Der öffenltiche Schlüssel mit dem \textit{Ciphertext} 
+  verschlüsselt wurde und \textit{Private\_Key} bilden ein Schlüsselpaar.
+\end{itemize}\ \\
+\textbf{Exception:}\\ 
+Verletzung einer Vorbedingung : Decrypt\_Error\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+ procedure Get_Public_Key(Public_Key : in Public_Key_RSA;
+                            N : out RSA_Number;
+                            E : out RSA_Number);
+\end{lstlisting}
+Diese Prozedur zerlegt einen öffentlichen Schlüssel \textit{Public\_Key} 
+in folgende Komponenten:
+\begin{itemize}
+\item Einen Size-Bit-RSA-Modulus N. (N = PQ \quad P,Q Prime)
+\item Einen öffentlichen RSA-Exponenten E.
+\end{itemize}\ \\
+Mit Hilfe dieser Werte lässt sich der öffentliche Schlüssel zu einem späteren 
+Zeitpunkt wieder rekonstruieren.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  procedure Get_Private_Key(Private_Key : in Private_Key_RSA;
+                             N   : out RSA_Number;
+                             D   : out RSA_Number;
+                             Phi : out RSA_Number);
+\end{lstlisting}
+Diese Prozedur zerlegt einen privaten Schlüssel \textit{Private\_Key} 
+in folgende Komponenten:
+\begin{itemize}
+\item Einen Size-Bit-RSA-Modulus N. (N = PQ \quad P,Q Prim)
+\item Einen privaten RSA-Exponenten D.
+\item Phi = (P-1)(Q-1). 
+\end{itemize}\ \\
+Mit Hilfe dieser Werte lässt sich der private Schlüssel zu einem späteren 
+Zeitpunkt wieder rekonstruieren.\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+ procedure Set_Public_Key(N : in RSA_Number;
+                            E : in RSA_Number;
+                            Public_Key : out Public_Key_RSA);
+  \end{lstlisting}
+Mit Hilfe dieser Prozedur ist es möglich einen öffentlichen Schlüssel 
+\textit{Public\_Key} zu (re-)konstruieren. Man benötigt dazu folgende 
+Werte:
+\begin{itemize}
+\item Einen Size-Bit-RSA-Modulus \textit{N}.
+\item Einen öffentlichen RSA-Exponenten \textit{E}.
+\end{itemize}\ \\
+\textbf{Exception:}\\
+N oder E unzulässig  : Invalid\_Public\_Key\_Error.\\ \ \\
+\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+ procedure Set_Private_Key(N   : in RSA_Number;
+                             D   : in RSA_Number;
+                             Phi : in RSA_Number;
+                             Private_Key : out Private_Key_RSA);
+
+  \end{lstlisting}
+  Mit Hilfe dieser Prozedur ist es möglich einen privaten Schlüssel 
+  \textit{Private\_Key} zu (re-)konstruieren. Man benötigt dazu folgende 
+  Werte:
+\begin{itemize}
+\item Einen Size-Bit-RSA-Modulus \textit{N}. (\textit{N} = PQ \quad P,Q Prim)
+\item Einen privaten RSA-Exponenten \textit{D}.
+\item Phi = (P-1)(Q-1). 
+\end{itemize}\ \\
+\textbf{Exception:}\\
+N, D oder S unzulässig : Invalid\_Public\_Key\_Error.\\ \ \\
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Low-Level-API}
+Diese API sollten sie nur verwenden, wenn Sie wissen was Sie tun.
+Bei einem naiven Einsatz können kritische Sicherheitsprobleme auftreten, da
+identische Klartexte zu identischen Chiffretexten verschlüsselt werden.
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+  procedure Encrypt(Public_Key : in  Public_Key_RSA;
+                     Plaintext  : in  RSA_Number;
+                     Ciphertext : out RSA_Number);
+  \end{lstlisting}
+  Diese Prozedur verschlüsselt einen Klartext  (\textit{Plaintext}) mit
+  Hilfe eines öffentlichen Schlüssels (\textit{Public\_Key}) zu einem
+  Chiffretext (\textit{Ciphertext}). Sie verwendet dabei das ``naive'' 
+  RSA-Verfahren ($c = p^d \pmod{n}$). \\ \ \\
+  \hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+  \begin{lstlisting}{}
+  procedure Decrypt(Private_Key : in  Private_Key_RSA;
+                      Ciphertext  : in  RSA_Number;
+                      Plaintext   : out RSA_Number);
+  \end{lstlisting}
+  Diese Prozedur entschlüsselt einen Chiffretext  (\textit{Ciphertext}) mit
+  Hilfe eines privaten Schlüssels (\textit{Private\_Key}) zu einem
+  Klartext  (\textit{Plaintext}). Sie verwendet dabei das ``naive'' 
+  RSA-Verfahren ($p = c^e \pmod{n}$). \\ \ \\
+\end{tabular}\ \\
+
+\subsection{Anwendungsbeispiel}
+\begin{lstlisting}{}
+with Crypto.Types;
+with Crypto.Asymmetric.RSA;
+with Ada.Text_IO;
+
+procedure Example_RSA is
+   package RSA is new Crypto.Asymmetric.RSA(512);
+   use Crypto.Types;
+   use Ada.Text_IO;
+   use RSA;
+
+   Message : Bytes := To_Bytes("All your base...");
+   Public_Key  : Public_Key_RSA;
+   Private_Key : Private_Key_RSA;
+
+begin
+   --Generierung des Schluesselpaares
+   Gen_Key(Public_Key, Private_Key);
+
+   declare
+      --Verschluesselung
+      Ciphertext : RSA_Number := OAEP_Encrypt(Public_Key, Message);
+
+      -- Entschluesselung
+      Plaintext : Bytes := OAEP_Decrypt(Private_Key, Ciphertext);
+
+   begin
+      -- Ausgabe des Chiffretextes
+      Put(To_String(Ciphertext)); New_Line;
+
+      -- Ausgabe des entschluesselten Chiffretextes
+      Put(To_String(Plaintext));
+   end;
+end Example_RSA;
+\end{lstlisting}
+

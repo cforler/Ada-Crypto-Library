@@ -1,0 +1,97 @@
+\chapter{Crypto.Symmetric.Blockcipher}\label{block}
+Mit Hilfe dieses generischen Paketes lässt sich aus dem Algorithmus einer
+symmetrischen Chiffre (siehe Kapitel \ref{algobc}) eine Blockchiffre erstellen.
+Sie sollten davon Abstand nehmen die API dieses Paketes direkt zu 
+verwenden, denn dieses Paket implementiert eine Blockchiffre im ``unsicheren''
+ECB-Modus (Electronic Codebook Modus). 
+Wenn man in diesem Modus zwei identische Klartextblöcke  p1=p2 mit dem selben
+Schlüssel chiffriert, dann erhält man zwei identische Chiffretextblöcke  c1=c2.
+Dadurch kann der Chiffretext noch Informationen über die Struktur des 
+Klartextes enthalten. 
+
+\section{API}
+
+Die API eine Blockchiffre besteht aus drei Prozeduren.
+
+\begin{enumerate}
+\item Die Prozedur \textbf{Prepare\_Key} weist einer Blockchiffre
+  einen Schlüssel \textit{Key} zu.
+  \begin{lstlisting}{}
+ procedure Prepare_Key(Key : in Key_Type);
+  \end{lstlisting}
+  
+\item Die Prozedur \textbf{Encrypt} verschlüsselt (mit Hilfe eines vorher 
+  zugewiesenen Schlüssels) einen Klartextblock  (Plaintext) in einen 
+  Chiffretextblock (Ciphertext) 
+  \begin{lstlisting}{}
+ procedure Encrypt(Plaintext : in Block; Ciphertext : out Block);
+  \end{lstlisting}
+
+\item Die Prozedur \textbf{Decrypt} entschlüsselt (mit Hilfe eines vorher
+  zugewiesenen Schlüssels) einen Chiffretextblock (Ciphertext) in einen 
+  Klartextblock (Plaintext).
+  \begin{lstlisting}{}
+ procedure Decrypt(Ciphertext : in Block; Plaintext  : out Block);
+  \end{lstlisting}
+
+\end{enumerate}
+
+\section{Generischer Teil}
+
+ \begin{lstlisting}{}
+ type Block is private;
+ type Key_Type is private;
+ type Cipherkey_Type is private;
+
+ with procedure Prepare_Key(Key       : in  Key_Type;
+                            Cipherkey : out Cipherkey_Type);
+
+ with procedure Encrypt(Cipherkey  : in  Cipherkey_Type;
+                        Plaintext  : in  Block;
+                        Ciphertext : out Block);
+
+ with procedure Decrypt(Cipherkey  : in  Cipherkey_Type;
+                        Ciphertext : in  Block;
+                        Plaintext  : out Block);
+ \end{lstlisting}
+
+\section{Anwendungsbeispiel}
+\begin{lstlisting}{generic TDES}
+with Crypto.Types;
+with Crypto.Symmetric.Blockcipher;
+with Crypto.Symmetric.Algorithm.TripleDES;
+
+procedure Generic_TripleDES is
+use Crypto.Types;
+use Crypto.Symmetric.Algorithm.TripleDES;
+
+   package Generic_TripleDES is 
+      new  Crypto.Symmetric.Blockcipher
+      (Block          => B_Block64,
+       Key_Type       => B_Block192,
+       Cipherkey_Type => Cipherkey_TDES,
+       Prepare_Key    => Prepare_Key,
+       Encrypt        => Encrypt,
+       Decrypt        => Decrypt);
+begin
+   ...
+end Generic_TripleDES;
+\end{lstlisting}
+
+\section{Anmerkung}
+Sie müssen nicht jedes mal von neuem aus einem symmetrischen Algorithmus eine
+Blockchiffre generiern. Statdessen können Sie auch eine der folgenden 
+vorgefertigten  Blockchiffren verwenden.
+\begin{itemize}
+\item Crypto.Symmetric.Blockcipher\_AES128
+\item Crypto.Symmetric.Blockcipher\_AES192
+\item Crypto.Symmetric.Blockcipher\_AES256
+\item Crypto.Symmetric.Blockcipher\_Serpent256
+\item Crypto.Symmetric.Blockcipher\_Tripledes
+\item Crypto.Symmetric.Blockcipher\_Twofish128
+\item Crypto.Symmetric.Blockcipher\_Twofish192
+\item Crypto.Symmetric.Blockcipher\_Twofish256
+\end{itemize}
+
+
+

@@ -1,0 +1,81 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.symmetric.oneway_blockcipher_twofish256%b  crypto-symmetric-oneway_blockcipher_twofish256.ads  95c92114 NE OO PK
+W crypto%s		crypto.ads		crypto.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.algorithm%s  crypto-symmetric-algorithm.ads  crypto-symmetric-algorithm.ali
+W crypto.symmetric.algorithm.twofish%s  crypto-symmetric-algorithm-twofish.adb  crypto-symmetric-algorithm-twofish.ali
+W crypto.symmetric.algorithm.twofish.oneway%s  crypto-symmetric-algorithm-twofish-oneway.adb  crypto-symmetric-algorithm-twofish-oneway.ali
+W crypto.symmetric.oneway_blockcipher%s  crypto-symmetric-oneway_blockcipher.adb  crypto-symmetric-oneway_blockcipher.ali  EA
+W crypto.types%s	crypto-types.adb	crypto-types.ali
+
+U crypto.symmetric.oneway_blockcipher_twofish256%s  crypto-symmetric-oneway_blockcipher_twofish256.ads  98373728 EB NE OO PK
+W crypto%s		crypto.ads		crypto.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.algorithm%s  crypto-symmetric-algorithm.ads  crypto-symmetric-algorithm.ali
+W crypto.symmetric.algorithm.twofish%s  crypto-symmetric-algorithm-twofish.adb  crypto-symmetric-algorithm-twofish.ali
+W crypto.symmetric.algorithm.twofish.oneway%s  crypto-symmetric-algorithm-twofish-oneway.adb  crypto-symmetric-algorithm-twofish-oneway.ali
+W crypto.symmetric.oneway_blockcipher%s  crypto-symmetric-oneway_blockcipher.adb  crypto-symmetric-oneway_blockcipher.ali  EA
+W crypto.types%s	crypto-types.adb	crypto-types.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-unccon.ads		20070406091342 f9eb8f06
+D crypto.ads		20110824150609 b0d04738
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-algorithm.ads  20110824150609 46346c43
+D crypto-symmetric-algorithm-twofish.ads  20110824150609 18e50cbf
+D crypto-symmetric-algorithm-twofish.adb  20111104195619 a50c81df
+D crypto-symmetric-algorithm-twofish-oneway.ads  20110824150609 c2c7caf4
+D crypto-symmetric-algorithm-twofish-oneway.adb  20110824150609 3aa1c3fd
+D crypto-symmetric-algorithm-twofish-tables.ads  20110824150609 ec958cb3
+D crypto-symmetric-oneway_blockcipher.ads  20110824150609 a37d8bd9
+D crypto-symmetric-oneway_blockcipher.adb  20110824150609 a6b9b8d5
+D crypto-symmetric-oneway_blockcipher_twofish256.ads  20110824150609 95c92114
+D crypto-symmetric-oneway_blockcipher_twofish256.ads  20110824150609 95c92114
+D crypto-types.ads	20111110185132 2d86af0f
+D interfac.ads		20090409150019 f77d8799
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-parame.ads		20091130110856 9c5d83fa
+D s-stalib.ads		20101021102512 c4241c00
+D s-traent.ads		20090417130712 5221ee41
+X 4 crypto.ads
+24K9*Crypto 25e11 15|23r6 23r24 24r6 25r6 27r6 31r9 32r9
+X 5 crypto-symmetric.ads
+23K16*Symmetric 4|24k9 5|25e21 15|24r13 25r13 27r13 31r16 32r16
+X 6 crypto-symmetric-algorithm.ads
+27K26*Algorithm 65e31 15|24r23 27r23
+X 7 crypto-symmetric-algorithm-twofish.ads
+37K36*Twofish 132e40 15|24r33 27r33
+X 9 crypto-symmetric-algorithm-twofish-oneway.ads
+24K44*Oneway 73e46 15|24w41 27r41
+28R9*Cipherkey_Oneway_Twofish256 15|35r22
+39U14*Prepare_Oneway_Key256 15|36r22
+54U14*Encrypt_Oneway256 15|37r22
+X 12 crypto-symmetric-oneway_blockcipher.ads
+25+9 Block 15|33r4
+26+9 Key_Type 15|34r4
+27+9 Cipherkey_Type 15|35r4
+29U19 Prepare_Key 15|36r4
+32U19 Encrypt 15|37r4
+41k26*Oneway_Blockcipher 56e40 15|25w23 32r26
+X 15 crypto-symmetric-oneway_blockcipher_twofish256.ads
+31K26*Oneway_Blockcipher_Twofish256[12|41] 5|23k16
+X 16 crypto-types.ads
+23K16*Types 15|23w13 23r31 16|334e17
+34M9*Byte
+57A9*Bytes(34M9)<integer>
+73A9*B_Block128<57A9><integer> 15|33r22
+76A9*B_Block256<57A9><integer> 15|34r22
+

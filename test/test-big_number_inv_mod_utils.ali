@@ -1,0 +1,302 @@
+V "GNAT Lib v4.6"
+A -O3
+A -Wextra
+A -Werror
+A -ggdb
+A -g
+A -gnat05
+A -gnato
+A -gnatn
+A -gnatwr
+A -gnatwc
+A -gnatwl
+A -gnatwp
+P SS ZX
+R nnnvnnnnnnvvnnnnnnvnnvnnnvvvvvnvnnvnnvnnnvnnvnnnnvnvnnnnnnvnvnnvnnnnnnnv2nv1+nnnnnn
+
+U test.big_number_inv_mod_utils%b  test-big_number_inv_mod_utils.adb  6518b3b4 OO PK
+W ada%s			ada.ads			ada.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.real_time%s	a-reatim.adb		a-reatim.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W aunit%s		aunit.adb		aunit.ali
+W aunit.assertions%s	aunit-assertions.adb	aunit-assertions.ali
+W big_number_constants%s  big_number_constants.adb  big_number_constants.ali
+W big_numbers_mod_utils%s  big_numbers_mod_utils.adb  big_numbers_mod_utils.ali
+W crypto%s		crypto.ads		crypto.ali
+W crypto.asymmetric.prime_tables%s  crypto-asymmetric-prime_tables.ads  crypto-asymmetric-prime_tables.ali
+W crypto.random%s	crypto-random.adb	crypto-random.ali
+W crypto.types%s	crypto-types.adb	crypto-types.ali
+W crypto.types.big_numbers%s  crypto-types-big_numbers.adb  crypto-types-big_numbers.ali  EA
+W interfaces%s		interfac.ads		interfac.ali
+W system%s		system.ads		system.ali
+W system.exception_table%s  s-exctab.adb	s-exctab.ali
+W system.finalization_implementation%s  s-finimp.adb  s-finimp.ali
+W system.finalization_root%s  s-finroo.adb	s-finroo.ali
+W system.img_int%s	s-imgint.adb		s-imgint.ali
+W system.parameters%s	s-parame.adb		s-parame.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.standard_library%s  s-stalib.adb	s-stalib.ali
+W system.task_info%s	s-tasinf.adb		s-tasinf.ali
+W system.tasking%s	s-taskin.adb		s-taskin.ali
+W system.tasking.rendezvous%s  s-tasren.adb	s-tasren.ali
+W system.tasking.stages%s  s-tassta.adb		s-tassta.ali
+W test%s		test.ads		test.ali
+
+U test.big_number_inv_mod_utils%s  test-big_number_inv_mod_utils.ads  7fb6ce39 EE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W aunit%s		aunit.adb		aunit.ali
+W aunit.test_cases%s	aunit-test_cases.adb	aunit-test_cases.ali
+W system%s		system.ads		system.ali
+W system.storage_elements%s  s-stoele.adb	s-stoele.ali
+W test%s		test.ads		test.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-calend.ads		20090409150019 343c83dd
+D a-charac.ads		20070912115821 2d3ec45b
+D a-chlat1.ads		20070912115821 2825df20
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-reatim.ads		20090409150019 63f07669
+D a-stream.ads		20090409150019 2ca4ee37
+D a-string.ads		20070406091342 90ac6797
+D a-strmap.ads		20090409150019 9cb836fb
+D a-strsea.ads		20101008130255 b9bc90ba
+D a-strunb.ads		20101220072657 e684739b
+D a-strunb.adb		20101220072657 9db21471
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-unccon.ads		20070406091342 f9eb8f06
+D a-uncdea.ads		20070406091342 f15a5ed1
+D ada_containers.ads	20111107163335 11329e00
+D ada_containers-aunit_lists.ads  20111107163335 d9ebc89a
+D ada_containers-aunit_lists.adb  20111107163335 8eef1efa
+D aunit.ads		20111107163336 76cdf7c6
+D aunit-assertions.ads	20111107165920 68f88c78
+D aunit-memory.ads	20111107163336 a0315146
+D aunit-memory-utils.ads  20111107163336 5b1e3d11
+D aunit-options.ads	20111107163336 2fedf7fb
+D aunit-simple_test_cases.ads  20111107163336 4111c32f
+D aunit-test_cases.ads	20111107170228 9d52df4f
+D aunit-test_filters.ads  20111107163336 f10b2127
+D aunit-test_results.ads  20111107170709 3a8a9b0e
+D aunit-tests.ads	20111107163336 1da11d49
+D aunit-time_measure.ads  20111107163336 58355f18
+D big_number_constants.ads  20111105175318 30b9ec4c
+D big_numbers_mod_utils.ads  20111105175318 a6e6327e
+D crypto.ads		20110824150609 b0d04738
+D crypto-asymmetric.ads	20110824150609 696c0cdb
+D crypto-asymmetric-prime_tables.ads  20110824150609 15dc4267
+D crypto-random.ads	20111105142025 dbeacf54
+D crypto-random.adb	20111105142002 9f914dd4
+D crypto-types.ads	20111105121422 f3dcaecc
+D crypto-types-big_numbers.ads  20110824150609 c34a9f67
+D crypto-types-big_numbers.adb  20111104122225 b209960b
+D crypto-types-big_numbers-binfield_utils.adb  20110824150609 dd892182 crypto.types.big_numbers.binfield_utils
+D crypto-types-big_numbers-mod_utils.adb  20110824150609 5a8ff0c4 crypto.types.big_numbers.mod_utils
+D crypto-types-big_numbers-utils.adb  20110824150609 1810544f crypto.types.big_numbers.utils
+D gnat.ads		20050905075125 fd2ad2f1
+D g-souinf.ads		20050905075401 e66ff50e
+D interfac.ads		20090409150019 f77d8799
+D i-c.ads		20101007125900 809c38c4
+D i-cstrea.ads		20100622165701 1bd72c32
+D i-cstrea.adb		20090409150019 98747b85
+D system.ads		20110928073203 23e1f70b
+D s-atacco.ads		20090409150019 1dc856ad
+D s-carun8.ads		20090417131547 da3bf6cd
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-exctab.adb		20090417131547 ba1a43ac
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-htable.ads		20101011104304 efdfacdf
+D s-imgint.ads		20090409150019 02dbe0c2
+D s-linux.ads		20090730092306 47911ab1
+D s-multip.ads		20101011073009 38ac9f73
+D s-osinte.ads		20101127183452 6e2d2e09
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-soflin.adb		20090417130712 d6066804
+D s-stache.ads		20090417130712 596fc1b4
+D s-stausa.ads		20101018101807 bba781f7
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-tasinf.ads		20090409150019 21316953
+D s-taspri.ads		20080408071349 af44aca8
+D s-taprop.ads		20090409150019 07f79e46
+D s-taskin.ads		20101021101406 b2eaee08
+D s-taprob.ads		20090409150019 502249e3
+D s-tpoben.ads		20090409150019 e8374469
+D s-tasren.ads		20090409150019 86fa7427
+D s-tassta.ads		20101018103456 e88ef99e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+D test.ads		20111108195717 1948acb1
+D test-big_number_inv_mod_utils.ads  20111105175318 6be5399a
+D test-big_number_inv_mod_utils.adb  20111105175318 0b7db2d7
+X 1 ada.ads
+16K9*Ada 19e8 89|3r6 7r13 90|5r6 19r13
+X 11 a-string.ads
+16K13*Strings 35e16 89|3r10 7r17
+X 14 a-strunb.ads
+77K21*Unbounded 490e26 89|3w18 7r25
+X 17 a-textio.ads
+49K13*Text_IO 472e16 90|5w10 19r17
+X 23 aunit.ads
+29K9*AUnit 43e10 89|1w6 2r6 6r13 90|1r6 80r11 120r11 154r11 188r11 222r11
+. 256r11 290r11
+31P9*Message_String(string)
+33P12*Test_String{31P9} 89|15r50 90|68r51
+X 24 aunit-assertions.ads
+34K15*Assertions 140e21 90|1w12 80r17 120r17 154r17 188r17 222r17 256r17
+. 290r17
+38U14*Assert 90|86s12 89s12 92s12 95s12 99s12 102s12 105s12 108s12 111s12
+. 124s12 127s12 130s12 133s12 136s12 139s12 142s12 145s12 158s12 161s12 164s12
+. 167s12 170s12 173s12 176s12 179s12 192s12 195s12 198s12 201s12 204s12 207s12
+. 210s12 213s12 226s12 229s12 232s12 235s12 238s12 241s12 244s12 247s12 260s12
+. 263s12 266s12 269s12 272s12 275s12 278s12 281s12 294s12 297s12 300s12 303s12
+. 306s12 309s12 312s12 315s12
+91U14*Init_Test
+94U14*Clear_Failures
+97V13*Has_Failures{boolean}
+100R9*Failure_Iter
+103V13*First_Failure{100R9}
+X 28 aunit-simple_test_cases.ads
+52U14*Set_Up
+55U14*Tear_Down
+X 29 aunit-test_cases.ads
+36K15*Test_Cases 118e21 89|2w12 9r37 17r56 19r56 21r56 23r56 25r56 27r56
+. 29r56 90|51r21 79r52 119r52 153r52 187r52 221r52 255r52 289r52
+38H9*Test_Case<28|39R9> 116e14 89|9r48 17r67 19r67 21r67 23r67 25r67 27r67
+. 29r67 90|79r63 119r63 153r63 187r63 221r63 255r63 289r63
+54U14*Set_Up_Case
+57U14*Tear_Down_Case
+60K12*Registration 71e20 90|51r32
+62U17*Register_Routine 90|54s17 55s17 56s17 57s17 58s17 59s17 60s17
+88U14*Run<28|62p14>
+95U14*Run_Test<28|48p14>
+98V13*Routine_Name{23|31P9}<28|45p13>
+X 34 big_number_constants.ads
+1K9*Big_Number_Constants 19e25 90|3w6 20r13
+3V18*Cons_4096{string} 90|33s43
+5V18*Cons_4095{string} 90|34s43
+7V18*Cons_3812{string} 90|35s43
+9V18*Cons_2048{string} 90|36s43
+11V18*Cons_1025{string} 90|37s43
+13V18*Cons_1024{string} 90|38s43
+15V18*Cons_768{string} 90|39s43
+17V18*Cons_582{string} 90|40s43
+X 35 big_numbers_mod_utils.ads
+1K9*Big_Numbers_Mod_Utils 101e26 90|4w6 21r13
+X 36 crypto.ads
+24K9*Crypto 25e11 90|2r6 14r28
+X 41 crypto-types.ads
+23K16*Types 333e17 90|2r13 14r35
+X 42 crypto-types-big_numbers.ads
+39k22*Big_Numbers 410e29 90|2w19 14r41
+41R9*Big_Unsigned 90|23r77[14] 24r27[14]
+67V13*"="{boolean} 90|89s21[14] 92s21[14] 99s21[14] 102s21[14] 105s21[14]
+. 108s21[14] 111s21[14] 124s21[14] 127s21[14] 130s21[14] 133s21[14] 136s21[14]
+. 139s21[14] 142s21[14] 145s21[14] 158s21[14] 164s21[14] 167s21[14] 170s21[14]
+. 173s21[14] 176s21[14] 179s21[14] 192s21[14] 195s21[14] 198s21[14] 201s21[14]
+. 204s21[14] 207s21[14] 210s21[14] 213s21[14] 226s21[14] 232s21[14] 235s21[14]
+. 238s21[14] 241s21[14] 244s21[14] 247s21[14] 260s21[14] 263s21[14] 266s21[14]
+. 269s21[14] 272s21[14] 275s21[14] 278s21[14] 281s21[14] 294s21[14] 297s21[14]
+. 300s21[14] 303s21[14] 306s21[14] 309s21[14] 312s21[14] 315s21[14]
+78V13*"="{boolean} 90|86s21[14] 95s21[14] 161s21[14] 229s21[14]
+108V13*"*"{41R9[90|14]} 90|98s24[14] 98s33[14]
+140K12*Utils 90|16r13[14]
+197V16*To_Big_Unsigned{41R9[90|14]} 90|33s27[14] 34s27[14] 35s27[14] 36s27[14]
+. 37s27[14] 38s27[14] 39s27[14] 40s27[14] 41s24[14] 42s24[14] 87s17[14]
+217K12*Mod_Utils 90|17r13[14]
+223V16*Mult{41R9[90|14]} 90|88s17[14]
+232V16*Inverse{41R9[90|14]} 90|85s17[14] 91s17[14] 94s17[14] 97s17[14] 101s17[14]
+. 104s17[14] 107s17[14] 110s17[14] 123s17[14] 126s17[14] 129s17[14] 132s17[14]
+. 135s17[14] 138s17[14] 141s17[14] 144s17[14] 157s17[14] 160s17[14] 163s17[14]
+. 166s17[14] 169s17[14] 172s17[14] 175s17[14] 178s17[14] 191s17[14] 194s17[14]
+. 197s17[14] 200s17[14] 203s17[14] 206s17[14] 209s17[14] 212s17[14] 225s17[14]
+. 228s17[14] 231s17[14] 234s17[14] 237s17[14] 240s17[14] 243s17[14] 246s17[14]
+. 259s17[14] 262s17[14] 265s17[14] 268s17[14] 271s17[14] 274s17[14] 277s17[14]
+. 280s17[14] 293s17[14] 296s17[14] 299s17[14] 302s17[14] 305s17[14] 308s17[14]
+. 311s17[14] 314s17[14]
+X 88 test.ads
+23K9*Test 24e9 89|5r9 31r5 90|8r14 321r5
+X 89 test-big_number_inv_mod_utils.ads
+5K14*Big_Number_Inv_Mod_Utils 88|23k9 89|31l10 31e34 90|8b19 321l10 321t34
+9R14*Big_Number_Test<29|38R9> 24|91p14 94p14 97p13 103p13 28|52p14 55p14
+. 29|54p14 57p14 88P14 95P14 98P13 89|9e74 13P19 13r44 15P18 15r26 90|50r45
+. 68r27
+11U19*Results 90|30b19 44l13 44t20 83s12
+13U19*Register_Tests<29|51p14> 13=34 90|50b19 62l13 62t27
+13r34 T{9R14} 90|50b34 54m34 55m34 56m34 57m34 58m34 59m34 60m34
+15V18*Name{23|33P12}<28|42p13> 15>23 90|68b18 71l13 71t17
+15r23 T{9R14} 90|68b23
+17U19*Big_Number_Mod_Utils_Test1 17=46 90|54r37 79b14 113l8 113t34
+17c46 T<29|38R9> 90|79b41
+19U19*Big_Number_Mod_Utils_Test2 19=46 90|55r37 119b14 147l8 147t34
+19c46 T<29|38R9> 90|119b41
+21U19*Big_Number_Mod_Utils_Test3 21=46 90|56r37 153b14 181l8 181t34
+21c46 T<29|38R9> 90|153b41
+23U19*Big_Number_Mod_Utils_Test4 23=46 90|57r37 187b14 215l8 215t34
+23c46 T<29|38R9> 90|187b41
+25U19*Big_Number_Mod_Utils_Test5 25=46 90|58r37 221b14 249l8 249t34
+25c46 T<29|38R9> 90|221b41
+27U19*Big_Number_Mod_Utils_Test6 27=46 90|59r37 255b14 283l8 283t34
+27c46 T<29|38R9> 90|255b41
+29U19*Big_Number_Mod_Utils_Test7 29=46 90|60r37 289b14 317l8 317t34
+29c46 T<29|38R9> 90|289b41
+X 90 test-big_number_inv_mod_utils.adb
+14K17 Big[42|39] 15r9 16r9 17r9
+23r5 X_4096{42|41R9[14]} 33m17 85r33 88r33 91r33 94r33 97r33 101r33 104r32
+. 107r32 110r30 123r25 157r25 191r25 225r25 259r25 293r25
+23r13 X_4095{42|41R9[14]} 34m17 85r25 88r22 126r25 160r25 194r25 228r25 262r25
+. 296r25
+23r21 X_3812{42|41R9[14]} 35m17 91r25 123r33 126r33 129r25 129r33 132r33
+. 135r33 138r33 141r32 144r30 163r25 197r25 231r25 265r25 299r25
+23r29 X_2048{42|41R9[14]} 36m17 94r25 132r25 157r33 160r33 163r33 166r25
+. 166r33 169r33 172r33 175r32 178r30 200r25 234r25 268r25 302r25
+23r37 X_1025{42|41R9[14]} 37m17 97r25 98r17 98r26 98r35 135r25 169r25 170r23
+. 191r33 194r33 197r33 200r33 203r25 203r33 206r33 209r32 212r30 237r25 271r25
+. 305r25
+23r45 X_1024{42|41R9[14]} 38m17 101r25 138r25 172r25 192r23 201r23 206r25
+. 207r23 225r33 228r33 231r33 234r33 237r33 240r25 240r33 243r32 246r30 274r25
+. 308r25
+23r53 X_768{42|41R9[14]} 39m17 104r25 141r25 175r25 209r25 243r25 259r33
+. 262r33 265r33 268r33 271r33 274r33 277r25 277r32 280r30 311r25
+23r60 X_582{42|41R9[14]} 40m17 107r25
+23r67 X_1{42|41R9[14]} 41m17 89r23 110r25 111r23 144r25 145r23 178r25 179r23
+. 212r25 213r23 238r23 246r25 247r23 280r25 281r23 293r33 296r33 299r33 302r33
+. 305r33 308r33 311r32 314r25 314r30
+23r72 X_0{42|41R9[14]} 42m17 92r23 102r23 105r23 108r23 124r23 127r23 130r23
+. 133r23 136r23 139r23 142r23 158r23 164r23 167r23 173r23 176r23 195r23 198r23
+. 204r23 210r23 226r23 232r23 235r23 241r23 244r23 260r23 263r23 266r23 269r23
+. 272r23 275r23 278r23 294r23 297r23 300r23 303r23 306r23 309r23 312r23 315r23
+24r9 A{42|41R9[14]} 87m12 88r30
+24r12 N{42|41R9[14]} 98m12 99r23
+24r15 X{42|41R9[14]} 85m12 86r19 88m12 89r19 91m12 92r19 94m12 95r19 97m12
+. 99r19 101m12 102r19 104m12 105r19 107m12 108r19 110m12 111r19 123m12 124r19
+. 126m12 127r19 129m12 130r19 132m12 133r19 135m12 136r19 138m12 139r19 141m12
+. 142r19 144m12 145r19 157m12 158r19 160m12 161r19 163m12 164r19 166m12 167r19
+. 169m12 170r19 172m12 173r19 175m12 176r19 178m12 179r19 191m12 192r19 194m12
+. 195r19 197m12 198r19 200m12 201r19 203m12 204r19 206m12 207r19 209m12 210r19
+. 212m12 213r19 225m12 226r19 228m12 229r19 231m12 232r19 234m12 235r19 237m12
+. 238r19 240m12 241r19 243m12 244r19 246m12 247r19 259m12 260r19 262m12 263r19
+. 265m12 266r19 268m12 269r19 271m12 272r19 274m12 275r19 277m12 278r19 280m12
+. 281r19 293m12 294r19 296m12 297r19 299m12 300r19 302m12 303r19 305m12 306r19
+. 308m12 309r19 311m12 312r19 314m12 315r19
+24r18 Result{42|41R9[14]}
+

@@ -1,0 +1,167 @@
+\chapter{Acl.Crypto.Symmetric.Algorithm.ECDH}
+
+Bei diesem generischen Paket handelt es sich um eine Implementierung des
+ECDH-Schlüsselgenerierungsalgorithmus. Der ECDH-Algorithmus ist die Erweiterung des DH-Algorithmus 
+auf den Bereich der Elliptischen Kurven.\\
+Mit Hilfe von ECDH sind zwei Parteien in der Lage ein gemeinsamen geheimen Schlüssel 
+aus den eigenen Schlüsselpaar und aus dem öffentlichen Schlüssel der anderen Partei zu erzeugen.
+
+\section{Mathematische Beschreibung}
+\subsection{Voraussetzung}
+Eine Elliptische Kurve $E$ der Form $y^2 = x^3 + a*x + b mod p$. \\
+Ein Punkt $P$ der auf der Kurve $E$ liegt und  von der Ordnung $n$ ist.
+\\~\\
+Ein Schlüsselpaar besteht aus einem öffentlichen Punkt $Q$ und einer geheimen Zahl $d$ welche die Gleichung $Q = d * P$ erfüllen.
+\\~\\
+Es werden also folgende Parameter benötigt: $a$, $b$, $p$, $P$ und $n$. Sowie ein Schlüsselpaar $(d,Q)$.
+\\~\\
+Die öffentlichen Schlüssel der anderen Partei werden mit $'$ gekennzeichnet.
+
+\subsection{Schlüsselgenerierung}
+\begin{enumerate}
+	\item Berechne einen Punkt $G$ mit $G = d*Q'$. $G$ darf nicht der Punkt im Unendlichen sein.
+	\item Wandle $x_G$ in eine Zahl $z$ um. 
+	\item Gib $z$ als gemeinsamen Schlüssel aus.
+\end{enumerate}
+
+\section{Generischer Teil}
+\begin{lstlisting}{}
+generic
+  Size : Positive;
+\end{lstlisting}\ \\
+\textbf{Exception}
+$Size \not= 512+i64 \quad (i \in \{0, \ldots , 8\})$ : Constraint\_Error;\\
+
+\section{API}
+\subsection{Typen}
+\begin{lstlisting}{}
+ type Public_Key_ECDH;
+ type Private_Key_ECDH is private;
+ type Shared_Key_ECDH;
+\end{lstlisting}
+Der \textit{Public\_Key\_ECDH}  ist ein beinhaltet folgende Variablen:
+\begin{lstlisting}{}
+ E : Elliptic_Curve_Zp;
+ P : EC_Point;
+ n : Big_Unsigned;
+ Q : EC_Point;
+\end{lstlisting}
+\textit{E} ist eine elliptische Kurve üpber ZP. \textit{P} ist ein öffentlicher Punkt auf dieser Kurve, dessen Ordnung \textit{n} bekannt ist.
+\textit{Q} ist der öffenliche Teil des Schlüssels. 
+\\~\\
+Der \textit{Private\_Key\_ECDH} beinhaltet folgende Variablen:
+\begin{lstlisting}{}
+ Q : EC_Point;
+ d : Big_Unsigned;
+\end{lstlisting}
+\textit{Q} ist ein Punkt auf der Elliptischen Kurve und der öffenliche Teil des Schlüssels. \textit{n} ist eine Zahl und der geheime Teil des Schlüssels. 
+\\~\\
+Die \textit{Shared\_Key\_ECDH} enthält einen Punkt. 
+\begin{lstlisting}{}
+ W : EC_Point;
+\end{lstlisting}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Prozeduren und Funktionen}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Gen_Public_Key(Public_Key_A : out Public_Key_ECDH;
+                         length       : in DB.Bit_Length);
+\end{lstlisting}\\
+Diese Prozedur holt eine Elliptische Kurve aus der Datenbank. Die Kurve hat mindestens die kryptografische Sicherheit von \textit{length}.\\ \ \\
+\textbf{Exception:}\\
+\begin{tabular}{l @{\ :\ } l}
+  BitLength is not supported. (Max BitLength = 521) & LEN\_EX\\
+\end{tabular}\ \\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Gen_Single_Private_Key(Public_Key_A  : in out Public_Key_ECDH;
+                                 Private_Key_A : out    Private_Key_ECDH);
+\end{lstlisting}\\
+Diese Prozedur erzeugt ein Schlüsselpaar, den \textit{Private\_Key\_A}. Hierzu wird eine zufällige Zahl generiert, diese ist der geheime Teil des Schlüssels. 
+Des weiteren wird ein Punkt als öffentlicher Teil des Schlüssels, als Produkt aus dem eben generierten Zahl und dem öffentlichen Punkt des \textit{Public\_Key\_A} berechnet. Dieser Punkt wird sowohl im öffentlichen als auch im privaten Schlüssel gespeichert.
+\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+procedure Gen_Shared_Private_Key(Public_Key_B  : in  Public_Key_ECDH;
+                                 Private_Key_A : in  Private_Key_ECDH;
+                                 Shared_Key_A  : out Shared_Key_ECDH);
+\end{lstlisting}\\
+Diese Prozedur erzeugt einen öffentlichen Schlüssel, den \textit{Shared\_Key\_A}. Hierzu wird der öffentliche Schlüssel von Public\_Key\_B mit dem geheimen Schlüssel vom Private\_Key \_A multiplitiert. 
+\\ \ \\
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+function Verify(Public_Key_A  : Public_Key_ECDH;
+                Public_Key_B  : Public_Key_ECDH;
+                Private_Key_A : Private_Key_ECDH;
+                Private_Key_B : Private_Key_ECDH;
+                Shared_Key_A  : Shared_Key_ECDH;
+                Shared_Key_B  : Shared_Key_ECDH) return Boolean;
+\end{lstlisting}\\
+Diese Funktion gibt den Wert ``True'' zurück, wenn mit Hilfe sich auf Basis aller Informationen
+der der gleich geheime Schlüssel für beide Parteien berechnet werden konnte.
+\\ \ \\
+\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Anwendungsbeispiel}
+\begin{lstlisting}{}
+with Crypto.Types.Big_Numbers;
+with Crypto.Asymmetric.ECDH;
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Example_ECDH is
+   package ECDH is new Crypto.Asymmetric.ECDH(512);
+   use ECDH;
+
+   Public_Key_A  : Public_Key_ECDH;
+   Public_Key_B  : Public_Key_ECDH;
+   Private_Key_A : Private_Key_ECDH;
+   Private_Key_B : Private_Key_ECDH;
+   Shared_Key_A  : Signature_ECDH;
+   Shared_Key_B  : Signature_ECDH;
+
+begin
+   --Schluesselgenerierung
+   Gen_Public_Key(Public_Key_A, 178);
+   Gen_Single_Private_Key(Public_Key_A, Private_Key_A);
+
+   Gen_Public_Key(Public_Key_B, 178);
+   Gen_Single_Private_Key(Public_Key_B, Private_Key_B);
+
+   --ECDH-Schluesselgenerierung
+   Gen_Shared_Private_Key(Public_Key_B, Private_Key_A, Shared_Key_A);
+   Gen_Shared_Private_Key(Public_Key_A, Private_Key_B, Shared_Key_B);
+
+   --Verifikation
+   if Verify(Public_Key_A, Public_Key_B, Private_Key_A, Private_Key_B, Shared_Key_A,Shared_Key_B) then
+        Put_Line("OK");
+   else Put_Line("Implementation error.");
+   end if;
+
+end Example_ECDH;
+\end{lstlisting}

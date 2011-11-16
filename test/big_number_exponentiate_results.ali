@@ -1,0 +1,47 @@
+V "GNAT Lib v4.6"
+A -O3
+A -Wextra
+A -Werror
+A -ggdb
+A -g
+A -gnat05
+A -gnato
+A -gnatn
+A -gnatwr
+A -gnatwc
+A -gnatwl
+A -gnatwp
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U big_number_exponentiate_results%b  big_number_exponentiate_results.adb  2020e161 NE OO PK
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+
+U big_number_exponentiate_results%s  big_number_exponentiate_results.ads  8f1381ef EE NE OO PK
+
+D ada.ads		20070406091342 3ffc8e18
+D a-unccon.ads		20070406091342 f9eb8f06
+D big_number_exponentiate_results.ads  20111105175318 8f1381ef
+D big_number_exponentiate_results.adb  20111105175318 af33608e
+D system.ads		20110928073203 23e1f70b
+D s-secsta.ads		20090707124243 eea35a36
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+X 3 big_number_exponentiate_results.ads
+1K9*Big_Number_Exponentiate_Results 17l5 17e36 4|1b14 460l5 460t36
+3V18*Result_0{string} 4|3b18 67l13 67t21
+5V18*Result_1{string} 4|69b18 133l13 133t21
+7V18*Result_2{string} 4|135b18 199l13 199t21
+9V18*Result_3{string} 4|201b18 265l13 265t21
+11V18*Result_4{string} 4|267b18 331l13 331t21
+13V18*Result_5{string} 4|333b18 393l13 393t21
+15V18*Result_6{string} 4|395b18 444l13 444t21
+X 4 big_number_exponentiate_results.adb
+4a17 Str_Result_0{string} 6m17 66r24
+70a17 Str_Result_1{string} 72m17 132r24
+136a17 Str_Result_2{string} 138m17 198r24
+202a17 Str_Result_3{string} 204m17 264r24
+268a17 Str_Result_4{string} 270m17 330r24
+334a17 Str_Result_5{string} 336m17 392r24
+396a17 Str_Result_6{string} 398m17 443r24
+

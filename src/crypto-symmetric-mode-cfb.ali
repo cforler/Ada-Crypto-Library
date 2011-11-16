@@ -1,0 +1,68 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.symmetric.mode.cfb%b  crypto-symmetric-mode-cfb.adb  c295d90c NE OO PK GE
+W crypto.symmetric.mode%s  crypto-symmetric-mode.adb  crypto-symmetric-mode.ali
+
+U crypto.symmetric.mode.cfb%s  crypto-symmetric-mode-cfb.ads  e97f700b BN EE NE OO PK GE
+W crypto%s		crypto.ads		crypto.ali
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.blockcipher%s  crypto-symmetric-blockcipher.adb  crypto-symmetric-blockcipher.ali
+W crypto.symmetric.mode%s  crypto-symmetric-mode.adb  crypto-symmetric-mode.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-unccon.ads		20070406091342 f9eb8f06
+D crypto.ads		20110824150609 b0d04738
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-blockcipher.ads  20111110183030 20bf1553
+D crypto-symmetric-mode.ads  20110824150609 53baea9d
+D crypto-symmetric-mode-cfb.ads  20110824150609 9a7a8fc5
+D crypto-symmetric-mode-cfb.adb  20110824150609 58ef56c9
+D crypto-types.ads	20111110185132 2d86af0f
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-stalib.ads		20101021102512 c4241c00
+X 3 crypto.ads
+24K9*Crypto 25e11 7|23r7 26r26 30r9 48r9 8|23r14 61r5
+X 4 crypto-symmetric.ads
+23K16*Symmetric 3|24k9 4|25e21 7|23r14 26r33 30r16 48r16 8|23r21 61r12
+X 5 crypto-symmetric-blockcipher.ads
+25+9 Block 7|28r45[26] 28r62[26] 33r57[26] 35r38[26] 35r62[26] 36r38[26]
+. 36r62[26] 38r40[26] 8|24r9[7|26] 28r57[7|26] 36r37[7|26] 36r61[7|26] 45r38[7|26]
+. 45r61[7|26] 54r42[7|26]
+26+9 Key_Type 7|33r28[26] 8|28r28[7|26]
+44k26*Blockcipher 63e33 7|23w24 26r43
+46U14 Prepare_Key 8|31s9[7|26]
+48U14 Encrypt 8|38s9[7|26] 47s9[7|26]
+X 6 crypto-symmetric-mode.ads
+31K26*Mode 4|23k16 6|40e27 7|30r26 48r26 8|23r31 61r22
+X 7 crypto-symmetric-mode-cfb.ads
+26K17 C[5|44] 28r43 28r60 31r8 8|31r7 38r7 47r7 54r40
+28V18 "xor"{5|25+9[26]} 28>25 28>31 8|39s24 48s23
+28*25 Left{5|25+9[26]}
+28*31 Right{5|25+9[26]}
+30k31*CFB 6|31k26 7|26z17 28z18 48l31 48e34 8|23b36 61l27 61t30
+33U14*Init 33>19 33>38 45r19 8|28b14 32l8 32t12
+33*19 Key{5|26+9[26]} 8|28b19 31r21
+33*38 Initial_Value{5|25+9[26]} 8|28b38 30r13
+35U14*Encrypt 35>22 35<45 8|36b14 41l8 41t15
+35*22 Plaintext{5|25+9[26]} 8|36b22 39r28
+35*45 Ciphertext{5|25+9[26]} 8|36b44 39m7 40r13
+36U14*Decrypt 36>22 36<45 8|45b14 50l8 50t15
+36*22 Ciphertext{5|25+9[26]} 8|45b22 48r27 49r12
+36*45 Plaintext{5|25+9[26]} 8|45b45 48m7
+38U14*Set_IV 38>21 45r43 8|54b14 57l8 57t14
+38*21 Initial_Value{5|25+9[26]} 8|54b21 56r13
+X 8 crypto-symmetric-mode-cfb.adb
+24*4 IV{5|25+9[7|26]} 30m7 38r17 38m21 39r21 40m7 47r17 47m21 48r20 49m7
+. 56m7
+

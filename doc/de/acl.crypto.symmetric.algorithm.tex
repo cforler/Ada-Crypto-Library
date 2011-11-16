@@ -1,0 +1,547 @@
+\chapter{Crypto.Symmetric.Algorithm}\label{algo}
+Alle Subpakete dieses Paketes sind symmetrische Chiffren oder Hashfunktionen.
+Hier haben Sie einen direkten Zugriff auf die einzelnen Operationen die eine
+Chiffre oder Hashfunktion zur Verfügung stellt. Sie sollten aber davon Abstand 
+nehmen die vorhandene API zu benutzen. Dies ist so als ob Sie direkt 
+Datenblöcke auf die Festplatte schreiben und von der Festplatte lesen ohne ein
+Dateisystem zu verwenden. Ausserdem importiert deieses Paket
+\texttt{Ada.IO\_Exceptions} und \texttt{Gnat.Os\_Lib} und stellt deren API all
+seinen Kindpaketen zur Verfügung. 
+
+\section{Symmetrische Chiffren}\label{algobc}
+\subsection{Allgemein}
+Bei symmetrischen Chiffren werden von der ACL für den Anwendungsprogrammierer 
+folgende Typen und Operationen zur Verfügung gestellt.
+
+\begin{itemize} 
+\item Einen  privaten Typ \textbf{Cipherkey} der deterministisch aus einem 
+  Schlüssel generiert wird. Mit Hilfe dieses \textbf{Cipherkey} kann man 
+  den die Ver- und Entschlüsselungsfunktion der Chiffre aufrufen.
+\item Eine Prozedur \textbf{Prepare\_Key} die aus einem Schlüssel den
+  zugehörigen Cipherkey erstellt.\\ \ \\
+  \textbf{Beispiel:}
+  \begin{lstlisting}{}
+    procedure Prepare_Key(Key       : in  B_Block128;
+                          Cipherkey : out Cipherkey_Type);
+  \end{lstlisting}
+  
+\item Eine Prozedur \textbf{Encrypt}. Diese Prozedur verschlüsselte einen 
+  Klartext (Plaintext) mit Hilfe eines Cipherkeys in einen Chiffretext 
+  (Ciphertext).\\ \ \\
+  \textbf{Beispiel:}
+  \begin{lstlisting}{}
+    procedure Encrypt(Cipherkey  : in  Cipherkey_Type;
+                      Plaintext  : in  B_Block128;
+                      Ciphertext : out B_Block128);
+     \end{lstlisting}
+
+\item Eine Prozedur \textbf{Decrypt}. Dies Prozedur entschlüsselt 
+  mit Hilfe des passenden Cipherkeys einen Chiffretext (Ciphertext) in den
+  zugehörigen Klartext (Plaintex).\\ \ \\
+  \textit{Beispiel:}
+  \begin{lstlisting}{}
+    procedure Decrypt(Cipherkey  : in  Cipherkey_Type;
+                      Ciphertext : in  B_Block128;
+                      Plaintext  : out B_Block128);
+  \end{lstlisting}
+\end{itemize}
+
+\subsection{AES (Rijndael)}
+Rijndael ist der vom Nist evaluierte und 2001 verabschiedete  
+Advanced Encryption Standard (AES) und offizieller DES Nachfolger.
+AES ist eine 128-Bit Blockchiffre der mit 128, 192 oder 265 Bit 
+Schlüsseln betrieben werden kann.
+Wenn sie  Rechtssicherheit benötigen oder sich gerne an allgemeine Standards
+halten, dann ist AES die Chiffre ihrer Wahl.
+Diese Implementation wurde  erfolgreich mit den Testwerten aus der FIPS-197
+\cite{aes2} auf dessen Korrektheit  getestet. Diese Implementation ist für 
+32-Bit Plattformen optimiert, und benutzt die Runden-Transformation 
+für 32-Bit Prozessoren aus dem Paper \glqq AES Proposal:  Rijndael \grqq 
+\cite{aes1},
+
+\subsubsection{API}
+
+\begin{description}
+\item[AES mit 128-Bit Schlüssel:]\ 
+  \begin{lstlisting}{AES128}
+ type Cipherkey_AES128 is private;
+
+ procedure Prepare_key128(Key      : in  B_Block128;
+                         Cipherkey : out Cipherkey_AES128);
+
+ procedure Encrypt128(Cipherkey  : in Cipherkey_AES128;
+                      Plaintext  : in B_Block128;
+                      Ciphertext : out B_Block128);
+
+ procedure Decrypt128(Cipherkey  : in Cipherkey_AES128;
+                      Ciphertext : in B_Block128;
+                      Plaintext  : out B_Block128);
+  \end{lstlisting}
+
+
+\item[AES mit 192-Bit Schlüssel:]\ 
+\begin{lstlisting}{AES192}
+ type Cipherkey_AES192 is private;
+
+ procedure Prepare_key192(Key       : in  B_Block192;
+                          Cipherkey : out Cipherkey_AES192);
+
+ procedure Encrypt192(Cipherkey  : in Cipherkey_AES192;
+                      Plaintext  : in B_Block128;
+                      Ciphertext : out B_Block128);
+
+
+ procedure Decrypt192(Cipherkey  : in  Cipherkey_AES192;
+                      Ciphertext : in B_Block128;
+                      Plaintext  : out B_Block128);
+\end{lstlisting}
+
+\item[AES mit 256-Bit Schlüssel:]\ 
+\begin{lstlisting}{AES256}
+ procedure Prepare_key256(Key       : in B_Block256;
+                          Cipherkey : out Cipherkey_AES256);
+
+ procedure Encrypt256(Cipherkey  : in Cipherkey_AES256;
+                      Plaintext  : in B_Block128;
+                      Ciphertext : out B_Block128);
+ 
+ procedure Decrypt256(Cipherkey  : in Cipherkey_AES256;
+                      Ciphertext : in B_Block128;
+                      Plaintext  : out B_Block128);
+\end{lstlisting}
+\end{description}
+
+
+\subsection{Serpent}
+Serpent ist ein weitere 128-Bit Blockchiffre und einer der 5 Finalisten
+des AES-Wettbewerbs. Wenn Sie sehr hohen Wert auf Sicherheit und nicht so hohen
+Wert auf Performance legen, dann sollte Sie auf jeden Fall mal einen Blick auf
+diese  Blockchiffre wagen.
+Die Implementation basiert auf der Ada-Referenzimplementation von 
+Markus G. Kuhn. Diese kann nur mit 256-Bit Schlüsseln betrieben werden.\\
+Eine API für 128- und 192-Bit Schlüssel ist geplant.
+
+\subsubsection{API}
+\begin{lstlisting}{Serpent256}
+ type Cipherkey_Serpent256 is private;
+
+ procedure Prepare_Key256(Key       : in  B_Block256;
+                          Cipherkey : out Cipherkey_Serpent256);
+
+ procedure Encrypt256(Cipherkey  : in  Cipherkey_Serpent256;
+                      Plaintext  : in  B_Block128;
+                      Ciphertext : out B_Block128);
+
+ procedure Decrypt256(Cipherkey  : in  Cipherkey_Serpent256;
+                      Ciphertext : in  B_Block128;
+                      Plaintext  : out B_Block128);
+\end{lstlisting}
+
+\subsection{Tripel DES (3DES, TDES, TDEA)}
+Diese 64-Bit Blockchiffre arbeitet mit einem 192-Bit Schlüssel den sie in
+3*64-Bit Schlüssel zerlegt. Mit dem ersten Schlüssel wir der Klartext mittels
+DES (Data Encryption Standard) verschlüsselt. Die Ausgabe wird dann mit dem
+zweiten 64-Schlüssel mittels DES entschlüsselt und diese Ausgabe wird 
+wiederum mit dem dritten 64-Bit Schlüssel mittels DES verschlüsselt.
+DES ist Software relativ langsam. Aus diesem Grund ist TDES die 
+langsamste Blockchiffre. Man kann bei dieser Blockchiffre davon ausgehen, das
+diese Chiffre nicht mehr gebrochen wird, da DES über 20 Jahre von den
+besten Kryptoanalytikern auf Schwächen untersucht wurde. Wenn Sie keinen 
+großen Wert auf Performance legt und sich einer effektiven Schlüssellänge von 
+112-Bit geben, dann sollte Sie  TDES verwenden. Diese Bibliothek 
+unterstützt zwei unterschiedliche Implementationen. Die eine stammt aus dem
+Buch \glqq Angewandte Kryptographie\grqq von Burce Scheier \cite{schneier:des}.
+Diese ist für 32-Bit Prozessoren optimiert. Die andere Implementation ist als 
+\glqq obsolete \grqq gekennzeichnet.
+Diese Implementation entspricht bis auf ein paar kleine Optimierungen dem 
+Algorithmus aus der FIPS-800-67 \cite{tdes}. Diese Implementation ist aber um 
+einiges langsamer.
+\subsubsection{API}
+\begin{description}
+\item[TDES:]\ 
+\begin{lstlisting}{TDES}
+type Cipherkey_TDES is private;
+
+ procedure Prepare_Key(Key       : in B_Block192;
+                       Cipherkey : out Cipherkey_TDES);
+
+ procedure Encrypt(Cipherkey  : in  Cipherkey_TDES;
+                   Plaintext  : in  B_Block64;
+                   Ciphertext : out B_Block64);
+
+ procedure Decrypt(Cipherkey  : in  Cipherkey_TDES;
+                   Ciphertext : in  B_Block64;
+                   Plaintext  : out B_Block64);
+\end{lstlisting}
+
+\item[Obsolete TDES:]\ 
+\begin{lstlisting}{Obsolete TDES}
+ type Obsolete_Cipherkey_TDES is private;
+
+ procedure Obsolete_Prepare_Key
+   (Key       : in B_Block192;
+    Cipherkey  : out Obsolete_Cipherkey_TDES);
+ 
+ procedure Obsolete_Encrypt
+   (Cipherkey :in  Obsolete_Cipherkey_TDES;
+    Plaintext  : in  B_Block64;
+    Ciphertext : out B_Block64);
+
+ procedure Obsolete_Decrypt
+   (Cipherkey : in Obsolete_Cipherkey_TDES;
+    Ciphertext : in  B_Block64;
+    Plaintext  : out B_Block64);
+\end{lstlisting}
+\end{description}
+
+\subsection{Twofish}
+Twofish ist eine 128-Bit Blockchiffre, und ein weiterer Finalist des 
+AES-Wettbewerbs. Towfish hat eine klassische Feistelstruktur und 
+schlüsselabhängige S-Boxen. Diese Implementation basiert auf der 
+C-Referenzimplementation von Niels Ferguson \cite{twofischsource}
+und der Twofish-Spezifikation \cite{twofish}, und kann mit
+128, 192 oder 265 Bit Schlüsseln betrieben werden.
+
+
+\subsubsection{API}
+
+\begin{description}
+
+\item[Twofish mit 128-Bit Schlüssel:]\ 
+\begin{lstlisting}{Twofish128}
+
+ subtype Cipherkey_Twofish128 is Cipherkey_Twofish;
+
+ procedure Prepare_Key128(Key       : in B_Block128;
+                          Cipherkey : out Cipherkey_Twofish128);
+
+ procedure Encrypt128(Cipherkey  : in  Cipherkey_Twofish128;
+                      Plaintext  : in  B_Block128;
+                      Ciphertext : out B_Block128);
+
+ procedure Decrypt128(Cipherkey  : in  Cipherkey_Twofish128;
+                      Ciphertext : in  B_Block128;
+                      Plaintext  : out B_Block128);
+\end{lstlisting}
+
+\item[Twofish mit 192-Bit Schlüssel:]\ 
+\begin{lstlisting}{Twofish192}
+
+ subtype Cipherkey_Twofish192 is Cipherkey_Twofish;
+
+ procedure Prepare_Key192(Key       : in B_Block192;
+                          Cipherkey : out Cipherkey_Twofish192);
+
+ procedure Encrypt192(Cipherkey  : in  Cipherkey_Twofish192;
+                      Plaintext  : in  B_Block128;
+                      Ciphertext : out B_Block128);
+
+
+ procedure Decrypt192(Cipherkey  : in  Cipherkey_Twofish192;
+                      Ciphertext : in  B_Block128;
+                      Plaintext  : out B_Block128);
+\end{lstlisting}
+
+
+\item[Twofish mit 256-Bit Schlüssel:]\ 
+\begin{lstlisting}{Twofish256}
+
+ subtype Cipherkey_Twofish256 is Cipherkey_Twofish;
+
+ procedure Prepare_Key256(Key       : in B_Block256;
+                          Cipherkey : out Cipherkey_Twofish256);
+
+ procedure Encrypt256(Cipherkey  : in  Cipherkey_Twofish256;
+                      Plaintext  : in  B_Block128;
+                      Ciphertext : out B_Block128);
+
+
+ procedure Decrypt256(Cipherkey  : in  Cipherkey_Twofish256;
+                      Ciphertext : in  B_Block128;
+                      Plaintext  : out B_Block128);
+\end{lstlisting}
+\end{description}
+
+\section{Hashfunktionen}\label{algoh}
+\subsection{Allgemein}
+Unter Hashfunktion sind hier kryptographische Hashfunktionen mit einem 
+iterativen Aufbau wie beispielsweise SHA-1 \cite{sha} gemeint. Eine solche 
+Hashfunktion lässt sich bei der ACL entweder durch eine Low-Level- oder einer 
+High-Level-API ansprechen. 
+
+\subsubsection{High-Level-API}
+Die High-Level-API besteht aus drei Prozeduren mit der sich Strings, 
+Byte-Arrays und Datein hashen lassen.\\ 
+\ \\
+\textbf{Beispiel:}
+\begin{lstlisting}{HLAPI}
+  procedure Hash(Message : in String; Hash_Value : out W_Block160);
+  procedure Hash(Message : in Bytes;  Hash_Value : out W_Block160);
+  
+  procedure F_Hash(Filename : in String; Hash_Value : out W_Block160);
+\end{lstlisting}
+
+\subsubsection{Low-Level-API}
+Bevor die Low-Level-API erläutert wird folgt zunächst ein kleiner Exkurs über 
+iterative Hashfunktionen
+
+\subsubsection{Exkurs: Iterative Hashfunktionen}
+Eine iterative Hashfunktion H zerlegt eine Nachricht M in m-Bit 
+große Nachrichtenblöcke $M_i$ ($1\le i \le n$). Anschließend hashed alle
+Nachrichenblöcke sequentiell. Damit ein Hashwert h für die komplette Nachricht 
+M erstellt werde kann, muss sich die Hashfunktion die Hashwerte der einzelnen 
+Nachrichtenblöcke speichern. Damit man sich nicht n Hashwerte merken muss wird
+der Haswert $h = h_n$ eienr Nachricht iterativ berechnet. D.h. der Hashwert des
+it-en Nachrichtenblocks hängt von $ h_1,...,h_{i-1}$. Im Allgemeinen gilt
+$h_i := H(M_i,h_{i-1})$. Für i=1 gilt damit $h_1 := H(M_1,h_0)$. Dabei ist
+$h_0$ der initale Hashwert, der zu beginn mit einem Initialen Hashwert
+Initialisiert wird.\\
+Nachrichten deren Länge keinem Vielfachen von m-Bit entspricht werden durch 
+Padding aufgebläht. I.d.R. wird der letzte Nachrichtenblock immer einer
+speziellen Paddingverfahren unterworfen. D.h. Nachrichten die $j \cdot m$
+lang sind werden auf eine Länge von  $(j+1) \cdot m$ aufgebläht.\\
+\ \\
+Mit diesem Wissen widmen wir uns nun den einzelen Funktionen und Prozeduren der
+Low-Level-API.
+
+\begin{itemize}
+\item Die Prozedure \textbf{Init} setzt den Hashwert (\textit{Hash\_Value})
+  auf seinen initalen Wert. Wenn eine Nachricht gehashed werde soll muss diese 
+  Prozedur  aufgerufen werden.\\ \ \\
+  \textbf{Beispiel:}
+  \begin{lstlisting}{LLAPI}
+    procedure Init(Hash_Value : out W_Block160);
+  \end{lstlisting}
+\item Ein Nachrichtenblock (\textit{Message\_Block}) wird mit Hilfe der 
+  Prozedure \textbf{Round} gehashed.\\ \ \\
+  \textbf{Beispiel:}
+  \begin{lstlisting}{LLAPI}
+    procedure Round(Message_Block : in     W_Block512;
+                    Hash_Value    : in out W_Block160);
+  \end{lstlisting}
+
+\item Mit der Funktion \textbf{Final\_Round} wird der letze Nachrichtenblock
+  (\textit{Last\_Message\_Block}) aufgebläht und der finale Hashwert
+  zurückgeliefert. Für das Padding wird die Bytelänge muss die Bytelänge des 
+  letzten Nachrichtenblockes (\textit{Message\_Block\_Length}) als Parameter
+  mit übergeben weden.\\ \ \\
+  \textbf{Beispiel:}
+  \begin{lstlisting}{LLAPI}
+    function Final_Round
+      (Last_Message_Block  : W_Block512;
+       Last_Message_Length : Message_Block_Length512;
+       Hash_Value          : W_Block160)
+      return W_Block160;
+
+  \end{lstlisting}
+\end{itemize}
+
+\subsection{SHA-1}
+Bei SHA-1 \cite{sha} handelt es sich um kryptographsiche 160-Bit Hashfunktion.
+Diese Hashunktion gehört  zum \textit{Secure Hash Standard} \cite{sha} und ist
+die derzeitige Standardhashfunktion. Auf der Crypto 2005 stellten 
+X. Wang, Y.L. Yin und H. Yu erhebliche Schwächen dieser Hashfunktion fest 
+\cite{sha1-col}. Aufgrund dieser neuen Erkenntnisse ist es nicht ratsam diese 
+Hashfunktion zu verwenden. Der einzige Grund weshalb die ACL diese Hashfunktion
+unterstützt ist ihr immenser Verbeitungsrad in Standardprotokollen wie 
+beispielsweise dem Digitalen Signatur Standard (Kapitel \ref{dss}) . \cite{dss}
+Diese Hashfunktion wird voraussichtlich nicht mehr lange von der ACL 
+unterstützt. Aus diesme Grund sollte sie wenn möglich eine andere Hashfunktion 
+verwenden.\\
+\textbf{Anmerkungen:}\\
+Diese Implementation von SHA-1 ist langsamer als die Implementation von 
+SHA-256.
+
+\subsubsection{API}
+\begin{lstlisting}{}
+  -- High-Level-API
+  procedure Hash(Message : in String; Hash_Value : out W_Block160);
+  procedure Hash(Message : in Bytes;  Hash_Value : out W_Block160);
+
+  procedure F_Hash(Filename : in String; Hash_Value : out W_Block160);
+
+  -Low-Level-API
+   procedure Init(Hash_Value : out W_Block160);
+
+   procedure Round(Message_Block : in     W_Block512;
+                   Hash_Value    : in out W_Block160);
+
+   function Final_Round(Last_Message_Block  : W_Block512;
+                        Last_Message_Length : Message_Block_Length512;
+                        Hash_Value          : W_Block160)
+                        return W_Block160;
+\end{lstlisting}
+\subsubsection{Ausnahme}
+\begin{lstlisting}{}
+  SHA1_Constraint_Error : Exception;
+\end{lstlisting}
+Diese Ausnahme tritt auf, wenn eine Nachricht die Länger als 
+$2^{64}-1024$-Bit (ca. 2 Millionen TB) ist mittels SHA-1 gehashed werden
+ soll.\\ \ \\
+
+\subsection{SHA-256}
+SHA-256 \cite{sha} ist wie der Name schon sagt eine 256-Bit Hashfunktion und 
+ein Mitglied der SHA-2 Familie die auf SHA-1 beruht. SHA-256 ist ebenfalls
+wie alle anderen SHA-2 Familien im  \textit{Secure Hash Standard} definiert.
+Dies Hashfamilie hat einen ausreichend langen Hashwert und macht signifikante
+Veränderungen gegenüber des SHA-1 Algorithmus einen sicheren Eindruck. Da diese
+Hashfamilie mit 32-Bit Wörtern arbeitet ist der einsatz dieser auf 
+32-Bit Prozessoren eine Überlegung wert. Wenn möglich sollte SHA-1 durch diese
+neue Generation der SHA-Hashfamilie ausgetauscht werden.\\
+
+\subsubsection{API}
+\begin{lstlisting}{}
+  -- High-Level-API
+  
+  procedure Hash(Message : in Bytes;  Hash_Value :  out W_Block256);
+  procedure Hash(Message : in String; Hash_Value :  out W_Block256);
+  
+  procedure F_Hash(Filename : in String; Hash_Value :  out W_Block256);
+
+
+   -- Low-Level-API
+   procedure Init(Hash_Value : out W_Block256);
+
+   procedure Round(Message_Block : in W_Block512;
+                   Hash_Value    : in out W_Block256);
+
+   function Final_Round(Last_Message_Block  : W_Block512;
+                        Last_Message_Length : Message_Block_Length512;
+                        Hash_Value          : W_Block256)
+			return W_Block256;
+\end{lstlisting}
+\subsubsection{Ausnahme}
+\begin{lstlisting}{}
+  SHA256_Constraint_Error : Exception;
+\end{lstlisting}
+Diese Ausnahme tritt auf, wenn eine Nachricht die Länger als 
+$2^{64}-1024$-Bit (ca. 2 Millionen TB) ist mittels  SHA-256 gehashed werden 
+soll.\\\ \\
+
+\subsection{SHA-512}
+Die 512-Bit Hashfamilie SHA-512 \cite{sha} ist die sicherste Mitglied der SHA-2
+Familie die im  \textit{Secure Hash Standard} definiert ist.
+sie arbeitet mit 64-Bit Wörtern und eignet sich daher besonders für 64-Bit 
+Architekturen. Wenn sie eine sehr sichere und standadisierte Hashfunktion 
+suchen, dann ist diese Hashfamilie wahrscheinlich genau das was sie suchen.\\
+
+\subsubsection{API}
+\begin{lstlisting}{}
+  -- High-Level-API
+   procedure Hash(Message : in Bytes;  Hash_Value : out DW_Block512);
+   procedure Hash(Message : in String; Hash_Value : out DW_Block512);
+
+   procedure F_Hash(Filename : in String; Hash_Value : out DW_Block512);
+
+
+   --  Low-Level-API
+   procedure Init(Hash_Value : out DW_Block512);
+
+   procedure Round(Message_Block : in DW_Block1024;
+                   Hash_Value    : in out DW_Block512);
+
+   function Final_Round(Last_Message_Block  : DW_Block1024;
+                        Last_Message_Length : Message_Block_Length1024;
+                        Hash_Value          : DW_Block512)
+                        return DW_Block512;
+\end{lstlisting}
+\subsubsection{Ausnahme}
+\begin{lstlisting}{}
+  SHA2_Constraint_Error : Exception;
+\end{lstlisting}
+Diese Ausnahme tritt auf, wenn eine Nachricht die Länger als 
+$2^{128}-2048$-Bit (ca. $2^{80}$ TB) ist mittels SHA-512 gehashed werden 
+soll.\\ \ \\
+
+\subsection{SHA-384}
+Bei SHA-384 hadnelt es sich um SHA-512. Diese Hashfunktion unterschieded sich
+genau in zwei Punkten von SHA-512.
+\begin{enumerate}
+\item SHA-384 verwendet andere Initalwerte als SHA512.
+\item Bei der finalen Rounde wird bei SHA-384 der zurückgelieferte Hashwert auf
+  durch abschneiden auf 384-Bit gekürzt.
+\end{enumerate}
+Da diese Hashfamilie intern einen 512-Bit Hashwert verwendet ist dies nicht zu 
+der generischen API von \textit{Crypto.Symmetric.Hashfunction} kompatibel. 
+Daher sollte darauf verzichet werden diese Hashfunktion zu verwenden.
+
+\subsubsection{API}
+\begin{lstlisting}{}
+  -- High-Level-API
+  procedure Hash(Message : in Bytes;  Hash_Value :  out DW_Block384);
+  procedure Hash(Message : in String; Hash_Value :  out DW_Block384);
+
+  procedure F_Hash(Filename : in String; Hash_Value :  out DW_Block384);
+
+
+  -- Low-Level-API
+  procedure Init(Hash_Value : out DW_Block512);
+
+  procedure Round(Message_Block : in DW_Block1024;
+                  Hash_Value : in out DW_Block512);
+  
+  function Final_Round(Last_Message_Block  : DW_Block1024;
+                       Last_Message_Length : Message_Block_Length1024;
+                       Hash_Value          : DW_Block512)
+                       return DW_Block384;
+
+\end{lstlisting}
+
+
+\subsection{Whirlpool}
+Bei Whirlpool \cite{whirlpool} handelt es sich um eine 512-Bit Hashfunktion 
+die 64-Bit Wörter verwendet. Whirlpool wurde nicht wie die SHA-Hashfunktionen 
+von der NSA sondern von den beiden  freien Kryptographen Paulo Barreto und 
+Vincent  Rijmen entwickelt. Diese Hashfunktion ist algorithmisch mit der
+Blockchiffre Rijndael aka AES verwandt. Dies liegt daran, das Vincent Rijmen
+einer der beiden Rijndael Designer ist. Wenn sie eine sichere Hashfunktion 
+benötigen und keine Kompatibilität zum amerikanischen Krypto-Standard
+benötigen, dann sollten sie in betracht ziehen Whirlpool zu verwenden. 
+
+\subsubsection{API}
+\begin{lstlisting}{}
+   -- High-Level-API
+   procedure Hash  (Message  : in Bytes;  Hash_Value : out DW_Block512);
+   procedure Hash  (Message  : in String; Hash_Value : out DW_Block512);
+
+   procedure F_Hash(Filename : in String; Hash_Value : out DW_Block512);
+
+
+   -- Low-Level-API
+   procedure Init(Hash_Value : out DW_Block512);
+
+   procedure Round(Message_Block : in     DW_Block512;
+                   Hash_Value    : in out DW_Block512);
+
+   function Final_Round(Last_Message_Block : DW_Block512;
+                        Last_Message_Length: Message_Block_Length512;
+                        Hash_Value         : DW_Block512)
+                        return DW_Block512;
+\end{lstlisting}
+
+\subsubsection{Ausnahme}
+\begin{lstlisting}{}
+  SHA2_Constraint_Error : Exception;
+\end{lstlisting}
+Diese Ausnahme tritt auf, wenn eine Nachricht die Länger als 
+$2^{128}-2048$-Bit (ca. $2^{80}$ TB) ist mittels SHA-512 gehashed werden 
+soll.\\ \ \\
+
+
+\subsection{Ausnahmen}
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+   File_Open_Error : exception;
+\end{lstlisting}\\
+Diese Ausnahmen wird geworfen wenn es zu einem Fehler beim Öffnen einer zu
+hashenden Datei kommt.\\ \ \\
+\hline
+\end{tabular}
+
+\begin{tabular}{p{\textwidth}}
+\begin{lstlisting}{}
+  File_Read_Error : exception;
+\end{lstlisting}\\
+Diese Ausnahmen wird geworfen wenn es zu einem Fehler beim lesen einer zu
+hashenden Datei kommt.\\ \ \\
+\end{tabular}

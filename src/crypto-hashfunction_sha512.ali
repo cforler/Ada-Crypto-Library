@@ -1,0 +1,95 @@
+V "GNAT Lib v4.6"
+A -gnatwa
+A -O3
+A -Wextra
+A -Wall
+A -Werror
+A -gnato
+A -gnatn
+A -gnat05
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U crypto.hashfunction_sha512%b  crypto-hashfunction_sha512.ads  f6aaa4ea NE OO PK
+W crypto%s		crypto.ads		crypto.ali
+W crypto.hashfunction%s	crypto-hashfunction.adb	crypto-hashfunction.ali  EA
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.algorithm%s  crypto-symmetric-algorithm.ads  crypto-symmetric-algorithm.ali
+W crypto.symmetric.algorithm.sha512%s  crypto-symmetric-algorithm-sha512.adb  crypto-symmetric-algorithm-sha512.ali
+W crypto.types%s	crypto-types.adb	crypto-types.ali
+
+U crypto.hashfunction_sha512%s  crypto-hashfunction_sha512.ads  5e8c0e7e EB NE OO PK
+W crypto%s		crypto.ads		crypto.ali
+W crypto.hashfunction%s	crypto-hashfunction.adb	crypto-hashfunction.ali  EA
+W crypto.symmetric%s	crypto-symmetric.ads	crypto-symmetric.ali
+W crypto.symmetric.algorithm%s  crypto-symmetric-algorithm.ads  crypto-symmetric-algorithm.ali
+W crypto.symmetric.algorithm.sha512%s  crypto-symmetric-algorithm-sha512.adb  crypto-symmetric-algorithm-sha512.ali
+W crypto.types%s	crypto-types.adb	crypto-types.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-unccon.ads		20070406091342 f9eb8f06
+D a-uncdea.ads		20070406091342 f15a5ed1
+D crypto.ads		20110824150609 b0d04738
+D crypto-hashfunction.ads  20111104145729 f39f5a0c
+D crypto-hashfunction.adb  20111104124714 13d5e610
+D crypto-hashfunction_sha512.ads  20111104191433 f6aaa4ea
+D crypto-hashfunction_sha512.ads  20111104191433 f6aaa4ea
+D crypto-symmetric.ads	20110824150609 41c2f81e
+D crypto-symmetric-algorithm.ads  20110824150609 46346c43
+D crypto-symmetric-algorithm-sha512.ads  20110824150609 c6ef18af
+D crypto-symmetric-algorithm-sha512.adb  20111104193544 43e6d5f3
+D crypto-symmetric-algorithm-sha_utils.ads  20110824150609 5c3efb6a
+D crypto-symmetric-algorithm-sha_utils.adb  20111104161709 3e129394
+D crypto-types.ads	20111110185132 2d86af0f
+D crypto-types.adb	20111110185221 8112d1d6
+D gnat.ads		20050905075125 fd2ad2f1
+D g-os_lib.ads		20090409150019 0db74523
+D interfac.ads		20090409150019 f77d8799
+D system.ads		20110928073203 23e1f70b
+D s-exctab.ads		20090417131547 66e51330
+D s-fatflt.ads		20090409150019 11beb392
+D s-fatgen.ads		20090409150019 9267ca45
+D s-fatgen.adb		20100909085708 9ba81cee
+D s-os_lib.ads		20100910151410 e0681e2d
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-string.ads		20090417130712 46b01415
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+X 5 crypto.ads
+24K9*Crypto 25e11 9|23r6 24r6 25r6 27r5 28r5 32r9 33r8 36r30
+X 6 crypto-hashfunction.ads
+26+9 Hash_Type 9|33r28
+27+9 Message_Type 9|34r28
+28+9 Message_Block_Length_Type 9|35r28
+30V18 Generic_To_Bytes{16|57A9} 9|37r28
+53k16*Hashfunction 70e24 9|25w13 33r15
+X 9 crypto-hashfunction_sha512.ads
+32K16*Hashfunction_SHA512[6|53] 5|24k9
+X 10 crypto-symmetric.ads
+23K16*Symmetric 9|24r13 28r12 10|25e21
+X 11 crypto-symmetric-algorithm.ads
+27K26*Algorithm 9|24r23 28r22 11|65e31
+X 12 crypto-symmetric-algorithm-sha512.ads
+25K36*SHA512 9|24w33 28r32 12|60e38
+30U14*Init 6|32i19
+32U14*Round 6|34i19
+35V13*Final_Round{16|89A9} 6|37i18
+42U14*Hash 6|43i19
+44U14*Hash 6|46i19
+46U14*F_Hash 6|49i19
+X 16 crypto-types.ads
+23K16*Types 9|23w13 27r12 36r37 16|334e17
+34M9*Byte
+43M9*DWord
+57A9*Bytes(34M9)<integer>
+59A9*DWords(43M9)<integer>
+89A9*DW_Block512<59A9><integer> 9|33r44
+90A9*DW_Block1024<59A9><integer> 9|34r44
+99I12*Message_Block_Length1024{natural} 9|36r43
+225V13*To_Bytes{57A9} 9|37r48
+
