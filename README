@@ -1,4 +1,4 @@
-Author: Christian Forler <crypto@shortie.inka.de>
+Author: Christian Forler <cforler@gmx.de>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE
@@ -18,49 +18,62 @@ For the specifics of this license, see file 'COPYING', included in
 this distribution.
 
 
-Welcome to the ADA Crypto Library (ACL) aka libadacrypt-dev-0.1.0
-==================================================================
+Welcome to the ADA Crypto Library (ACL) aka libadacrypt-0.2
+============================================================
 
 About ACL:
 ---------
-This library is an ongoing project of Christian Forler. Its goal is
-to provide "strong" and clean coded (no OOP, no pointer-arithmetics. Just
-generic types ;-) cryptography.
+This library is an ongoing project with the goal
+to provide "strong" and clean coded cryptography
+library for Ada.
 
-Note that depending on where you are, the use of cryptography may be
+Note, that depending on where you are, the use of cryptography may be
 limited or forbidden by law. Before using this library, make sure you
 are legally entitled to do so.
 
 
-Included in the library are:
-    - Block ciphers: AES, Twofish, 3DES, Serpent
-    - Hash functions: SHA-1 (broken), SHA-256, (SHA-384), SHA-512, Whirlpool
-     -MACs: RMAC
-    - Big (unsigned) number library
-    - Probabilistic primality testing
-    - DSA signature scheme
-    - OEAP-RSA 
-    - Modes of operations: counter, cfb, cbc, ofb
+Implemented Features
+---------------------
+ -- Symmetric Cryptography
+   - Block Ciphers: AES, Twofish, 3DES, Serpent
+   - Modes of Operation : BPS, CFB, Ctr, OFB 
+   - Hash functions: SHA-1 (broken), SHA-256, (SHA-384), SHA-512, Whirlpool
+   - MACs: RMAC, HMAC
 
+-- Big (unsigned) number library
+  -- Primary cyclic group arithmetic  (Z_p)
+  -- Binary Field arithmetic support.
+     -- Elliptic Curve arithmetic
+        -- Supersingular Elliptic Curves Over Binary Fields  (SS-BF)
+	-- Non-Supersingular Elliptic Curves Over Binary Fields (NSS-BF)
+	-- Elliptic Curves Over Z_p (EC-Z_P)
 
-Planned for the future are:
-    - Tiger2
-    - HMAC
-    - XOR-MAC
-    - PSS-RSA
-    - Heap and Stack burning
-    - Zero-knowledge algorithms
-    - More blockcipher modes 
-    - Universal hashfunctions and MACs.
+-- Asymmetric Cryptography
+  -- Probabilistic primality testing
+  -- DSA signature scheme
+  -- OEAP-RSA 
+  -- ECDSA, ECDH
+
+-- AUnit-3.4 based Test suite
+ 
+
+Planned Feature
+-----------------
+ -- Authenticated Encryption (AE) schemes like OCB and SIV
+ -- Nonce Generator Support
+ -- Data and information flow analysis (SPARK).
+ -- Pseudo Random Number Generators (PRNG)
+ -- X509 support (ASN.1 library is in process)
+ -- Heap and Stack burning
+
 
 The library has been tested on the following platforms:
-    - i686 (PentiunIII) with GNU/Linux and gnat-3.14
-    - i686 (PentiumIII) with GNU/Linux and gnat-3.15
-    - i686 (PentiumIV) with GNU/Linux and gnat-4.1  
+ -- Linux debian 3.1.0-1-amd64 (i5 CPU) 
+
 
 NO WARRENTY
 ------------
-This program is WITHOUT ANY (DAMN) WARRANTY; without even the implied warranty 
+This program is WITHOUT ANY WARRANTY; without even the implied warranty 
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 See the  GNU General Public License for more details.
 
@@ -68,12 +81,7 @@ See the  GNU General Public License for more details.
 For more information, refer to the documentation in the 'docs' directory.
 
 If you want to report bugs, make suggestions, contribute bugfixes or
-enhancements, please contact me at mail: crypto@shortie.inka.de
+beautiful ideas, feel free to contact me at cforler@gmx.de
 
-Sincerely,
-     Christian Forler
 
--- 
-May the source be with you. 
- 
 

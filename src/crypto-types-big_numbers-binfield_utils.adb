@@ -22,7 +22,7 @@
 
 
 -- Most algorithms based on Kankerson, Menezes and Vanstones
--- "Guide to Elliotic Curve Cryptograpyh" (ISBN: 0-387-95273-x
+-- "Guide to Elliptic Curve Cryptograpyh" (ISBN: 0-387-95273-x)
 
 
 -- f(z) = 2^m + r(z)
