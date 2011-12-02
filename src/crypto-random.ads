@@ -77,7 +77,7 @@ package Crypto.Random is
 private
 
    -- Random Source
-   Path :  constant String := "/dev/urandom";
+   Path :  constant String := "/dev/random";
 
    pragma Inline (Read);
    pragma Optimize (Time);

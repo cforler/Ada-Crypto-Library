@@ -298,10 +298,11 @@ Präfix \textit{Crypto.}
 \end{description}
 
 \begin{figure}
-  \scalebox{0.75}{
+  \scalebox{0.65}{
   \pstree[nodesep=2pt]{\TR{Crypto}}{%
     \pstree{\TR{Types}}{%
-      \TR{Big\_Numbers} \TR{Elliptic\_Curves}}
+      \TR{Big\_Numbers}  \pstree{\TR{Elliptic\_Curves}}{
+      \TR{NSS-BF} \TR{SS-BF} \TR{$Z_p$}}}
     \TR{Hashfunction}
     \pstree{\TR{Symmetric}}{%
       \pstree{\TR{Algorithm}}{%
@@ -313,8 +314,8 @@ Präfix \textit{Crypto.}
 	\TR{Oneway}}} % end symmetric
     \TR{Random} 
     \pstree{\TR{Asymmetric}}{%
-      \TR{DSA} \TR{RSA}}
-}
-}
+      \TR{DSA} \TR{RSA} \TR{ECDSA} \TR{ECDH}}
+  }
+  }
 \end{figure}
     
