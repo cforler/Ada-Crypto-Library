@@ -21,11 +21,11 @@
 -- executable file might be covered by the GNU Public License.
 
 with Crypto.Types; use Crypto.Types;
---with Ada.Numerics.Discrete_Random;
-
+with Crypto.Random_Source;
 
 package Crypto.Random is
-
+   procedure Set(Source : in Crypto.Random_Source.Random_Source'Class);
+   
    procedure Read(B : out Byte);
    procedure Read(Byte_Array : out Bytes);
    procedure Read(B : out B_Block128);
@@ -36,50 +36,6 @@ package Crypto.Random is
    procedure Read(D : out DWord);
    procedure Read(DWord_Array : out DWords);
 
-   ---------------------------------------------------------------------------
---   M1 : constant := 179;
---   M2 : constant := M1 - 10;
-
---   subtype Seed_Range_1 is Integer range 1..M1-1;
---   subtype Seed_Range_2 is Integer range 1..M2-1;
-
---   Default_I : constant Seed_Range_1 := 12;
---   Default_J : constant Seed_Range_1 := 34;
---   Default_K : constant Seed_Range_1 := 56;
---   Default_L : constant Seed_Range_1 := 78;
-
---   procedure Start(
---      New_I : Seed_Range_1 := Default_I;
---      New_J : Seed_Range_1 := Default_J;
---      New_K : Seed_Range_1 := Default_K;
---      New_L : Seed_Range_2 := Default_L);
-
---   function Next return Float;
-
-
---   subtype RR is Positive range 10000..50000;
---   package Rand is new Ada.Numerics.Discrete_Random(RR);
---   G : Rand.Generator;
-
-   ---------------------------------------------------------------------------
-   --------------------------EXCEPTIONS---------------------------------------
-   ---------------------------------------------------------------------------
-
-
-   Random_Source_Does_Not_Exists_Error : exception;
-   Random_Source_Read_Error            : exception;
-
-
-   ---------------------------------------------------------------------------
-   --------------------------PRIVATE------------------------------------------
-   ---------------------------------------------------------------------------
-
-private
-
-   -- Random Source
-   Path :  constant String := "/dev/urandom";
-
    pragma Inline (Read);
    pragma Optimize (Time);
-
 end Crypto.Random;
