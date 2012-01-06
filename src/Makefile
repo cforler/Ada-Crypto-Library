@@ -7,7 +7,7 @@ DEL=rm -f
 DELDIR= rm -rf
 
 CC=gnatmake 
-CFLAGS=-c  -shared -gnato -s -O3 -gnatn -gnat05 -W -Wall -Werror
+CFLAGS=-c  -shared -gnato -s -O3 -gnatn -gnat12 -W -Wall -Werror
 
 all: types asymmetric symmetric
 gcov: CFLAGS=-f -c -shared -gnat05 -s -O0 -gnatE -gnatf -gnato -W -Wall -Werror -fprofile-arcs -ftest-coverage -fprofile-arcs -fno-inline
@@ -21,7 +21,7 @@ onewaybc: crypto-symmetric-oneway_blockcipher_whirlpool crypto-symmetric-oneway_
 mode: crypto-symmetric-mode-oneway_ofb crypto-symmetric-mode-oneway_ctr crypto-symmetric-mode-oneway_cfb crypto-symmetric-mode-ofb crypto-symmetric-mode-ctr crypto-symmetric-mode-cfb crypto-symmetric-mode-cbc crypto-symmetric-mode-bps
 mac: crypto-symmetric-mac-rmac crypto-symmetric-mac-hmac_whirlpool crypto-symmetric-mac-hmac_sha512 crypto-symmetric-mac-hmac_sha256 crypto-symmetric-mac-hmac_sha1
 blockcipher:  crypto-symmetric-blockcipher_twofish256 crypto-symmetric-blockcipher_twofish192 crypto-symmetric-blockcipher_twofish128 crypto-symmetric-blockcipher_tripledes crypto-symmetric-blockcipher_serpent256 crypto-symmetric-blockcipher_obsolete_tripledes crypto-symmetric-blockcipher_blowfish128 crypto-symmetric-blockcipher_aes256 crypto-symmetric-blockcipher_aes192 crypto-symmetric-blockcipher_aes128
-types: crypto-types-big_numbers crypto-types-elliptic_curves-ss_bf crypto-types-elliptic_curves-nss_bf
+types: crypto-types-big_numbers crypto-types-elliptic_curves-ss_bf crypto-types-elliptic_curves-nss_bf crypto-types-mutexes crypto-types-nonces-nonces_ctr crypto-types-nonces-nonces_mixed_1 crypto-types-nonces-nonces_mixed_2  crypto-types-nonces-nonces_random crypto-types-nonces-nonces_randomized_counter
 
 crypto-symmetric-algorithm-ecies:
 	$(CC) $(CFLAGS) $@
@@ -147,6 +147,24 @@ crypto-types-elliptic_curves-nss_bf:
 	$(CC) $(CFLAGS) $@
 
 crypto-types-elliptic_curves-ss_bf:
+	$(CC) $(CFLAGS) $@
+
+crypto-types-mutexes:
+	$(CC) $(CFLAGS) $@
+
+crypto-types-nonces-nonces_ctr:
+	$(CC) $(CFLAGS) $@ 
+
+crypto-types-nonces-nonces_mixed_1:
+	$(CC) $(CFLAGS) $@
+
+crypto-types-nonces-nonces_mixed_2:
+	$(CC) $(CFLAGS) $@
+
+crypto-types-nonces-nonces_random:
+	$(CC) $(CFLAGS) $@
+
+crypto-types-nonces-nonces_randomized_counter:
 	$(CC) $(CFLAGS) $@
 
 crypto-hashfunction_whirlpool:

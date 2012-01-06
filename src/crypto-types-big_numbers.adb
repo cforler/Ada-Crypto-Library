@@ -298,8 +298,7 @@ package body Crypto.Types.Big_Numbers is
    ---------------------------------------------------------------------------
 
    function "+"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned is
-      Big_Left : constant Big_Unsigned :=
-        (Last_Index => 0, Number => (0 => Left, OTHERS => 0));
+      Big_Left : constant Big_Unsigned := (Last_Index => 0, Number => (0 => Left, OTHERS => 0));
    begin
       return Big_Left + Right;
    end "+";
@@ -308,11 +307,6 @@ package body Crypto.Types.Big_Numbers is
 
    function "-"(Left, Right : Big_Unsigned) return Big_Unsigned is
    begin
-      --if Left = Right then  return Big_Unsigned_Zero;
-      --elsif Left = Right+1 then return Big_Unsigned_One;
-      --elsif Left+1 = Right then return Big_Unsigned_Last;
-      --   end if;
-
       -- Add the modulus if Right > Left
       if Right > Left then
          return Big_Unsigned_Last - Right + Left + 1;
@@ -342,8 +336,7 @@ package body Crypto.Types.Big_Numbers is
    ---------------------------------------------------------------------------
 
    function "-"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned is
-      Big_Right : constant Big_Unsigned :=
-        (Last_Index => 0, Number => (0 => Right, OTHERS => 0));
+      Big_Right : constant Big_Unsigned := (Last_Index => 0, Number => (0 => Right, OTHERS => 0));
    begin
      return  Left - Big_Right;
    end "-";
@@ -351,8 +344,7 @@ package body Crypto.Types.Big_Numbers is
    ---------------------------------------------------------------------------
 
    function "-"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned is
-      Big_Left : constant  Big_Unsigned :=
-        (Last_Index => 0, Number => (0 => Left, OTHERS => 0));
+      Big_Left : constant  Big_Unsigned := (Last_Index => 0, Number => (0 => Left, OTHERS => 0));
    begin
       return Big_Left - Right;
    end "-";
