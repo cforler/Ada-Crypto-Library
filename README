@@ -71,6 +71,18 @@ The library has been tested on the following platforms:
  -- Linux debian 3.1.0-1-amd64 (i5 CPU) 
 
 
+LCOV code coverage report
+------------------------------------
+Generation:
+# make gcov
+# cd test
+# ./test-tests
+# make lcov
+
+Location: 
+test/coverage
+
+
 NO WARRANTY
 ------------
 This program is WITHOUT ANY WARRANTY; without even the implied warranty 

@@ -1,5 +1,7 @@
 with AUnit.Assertions; 
 with Crypto.Types.Big_Numbers;
+with Ada.Text_IO; 
+with Crypto.Hashfunction_SHA1;
 
 pragma Elaborate_All(Crypto.Types.Big_Numbers);
 pragma Optimize(Time);
@@ -61,7 +63,7 @@ package body Test.Big_Numbers_Utils is
 	"4406160074129456749198230505716423771548163213806310459029161369267083428564" &
 	"4073044789997190178146576347322385026725305989979599609079946920177462481771" &
 	"8449867455659250178329070473119433165550807568221846571746373296884912819520" &
-	"3174570024409266169108741483850784119298045229818573389776481031260859030013" &
+						 "3174570024409266169108741483850784119298045229818573389776481031260859030013" &
 	"02413467189726673216491511131602920781738033436090243804708340403154190335");
 	
    S : constant Integer := Length_In_Bytes(X);
@@ -78,20 +80,19 @@ package body Test.Big_Numbers_Utils is
    procedure Register_Tests(T : in out Big_Number_Test) is
       use Test_Cases.Registration;
    begin
-      Register_Routine(T, Big_Number_Test10'Access,"Big_Number_Test10.");
-      Register_Routine(T, Big_Number_Test11'Access,"Big_Number_Test11.");
-      Register_Routine(T, Big_Number_Test12'Access,"Big_Number_Test12.");
-      Register_Routine(T, Big_Number_Test13'Access,"Big_Number_Test13.");
-      Register_Routine(T, Big_Number_Test14'Access,"Big_Number_Test14.");
-      Register_Routine(T, Big_Number_Test15'Access,"Big_Number_Test15.");
-      Register_Routine(T, Big_Number_Test16'Access,"Big_Number_Test16.");
-      Register_Routine(T, Big_Number_Test17'Access,"Big_Number_Test17.");
-      Register_Routine(T, Big_Number_Test18'Access,"Big_Number_Test18.");
-      Register_Routine(T, Big_Number_Test19'Access,"Big_Number_Test19.");
-      Register_Routine(T, Big_Number_Test20'Access,"Big_Number_Test20.");
-      Register_Routine(T, Big_Number_Test21'Access,"Big_Number_Test21.");
-      Register_Routine(T, Big_Number_Test22'Access,"Big_Number_Test22.");
-      Register_Routine(T, Big_Number_Test23'Access,"Big_Number_Test23.");   
+      Register_Routine(T, Big_Number_Test_Rotate_Left'Access,"Big_Number_Test10.");
+      Register_Routine(T, Big_Number_Test_Rotate_Right'Access,"Big_Number_Test11.");
+      Register_Routine(T, Big_Number_Test_Random'Access,"Big_Number_Test12.");
+      Register_Routine(T, Big_Number_Test_Bit_Length'Access,"Big_Number_Test13.");
+      Register_Routine(T, Big_Number_Test_LSB'Access,"Big_Number_Test14.");
+      Register_Routine(T, Big_Number_Test_Length_In_Bytes'Access,"Big_Number_Test15.");
+      Register_Routine(T, Big_Number_Test_Gcd'Access,"Big_Number_Test16.");
+      Register_Routine(T, Big_Number_Test_To_Bytes'Access,"Big_Number_Test17.");
+      Register_Routine(T, Big_Number_Test_To_Mod_Types'Access,"Big_Number_Test18.");
+      Register_Routine(T, Big_Number_Test_To_String'Access,"Big_Number_Test19.");
+      Register_Routine(T, Big_Number_Test_Put'Access,"Big_Number_Test21.");
+      Register_Routine(T, Big_Number_Test_Big_Div'Access,"Big_Number_Test22.");
+      Register_Routine(T, Big_Number_Test_Short_Div'Access,"Big_Number_Test23.");   
    end Register_Tests;
 
 ------------------------------------------------------------------------------------
@@ -100,18 +101,18 @@ package body Test.Big_Numbers_Utils is
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 
-	function Name(T : Big_Number_Test) return Test_String is
-	begin
-	   return new String'("Big Number Utils Tests");
-	end Name;
-
-	------------------------------------------------------------------------------------
+   function Name(T : Big_Number_Test) return Test_String is
+   begin
+      return new String'("Big Number Utils Tests");
+   end Name;
+   
+------------------------------------------------------------------------------------
 ------------------------------------ Start Tests -----------------------------------
 ------------------------------------------------------------------------------------
-------------------------------------- Test 10 --------------------------------------
+---------------------------------- Test Rotate Left --------------------------------
 ------------------------------------------------------------------------------------
 	
-   procedure Big_Number_Test10(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_Rotate_Left(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
    begin
       P := To_Big_Unsigned("1");
@@ -191,13 +192,13 @@ package body Test.Big_Numbers_Utils is
 	   "2709788571067769752908162400484070380273664");
 
 	   Assert(Q = Z, "Rotate Left failed.");
-   end Big_Number_Test10;
+   end Big_Number_Test_Rotate_Left;
 
 ------------------------------------------------------------------------------------
 ------------------------------------- Test 11 --------------------------------------
 ------------------------------------------------------------------------------------
    
-   procedure Big_Number_Test11(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_Rotate_Right(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
    begin
       P := To_Big_Unsigned("2#10001010#");
@@ -376,58 +377,52 @@ package body Test.Big_Numbers_Utils is
 	   Q := Rotate_Right(Z,4196);
 	   Assert(P = Q, "Rotate Right in for loop failed.");
 
-   end Big_Number_Test11;
+   end Big_Number_Test_Rotate_Right;
 
 ------------------------------------------------------------------------------------
-------------------------------------- Test 12 --------------------------------------
+------------------------------------- Test Random --------------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure Big_Number_Test12(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_Random(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
    begin
-   	   
-   	   for I in 1 .. 9000 loop 
-   	   	   Q := Get_Random;
-   	   	   R := Get_Random;
-   	   	   Assert(Q /= R, "Get_Random failed.");
-	   end loop;
-
-   end Big_Number_Test12;
+      for I in 1 .. 100 loop 
+	 Q := Get_Random;
+	 R := Get_Random;
+	 Assert(Q /= R, "Get_Random failed.");
+      end loop;
+   end Big_Number_Test_Random;
 
 ------------------------------------------------------------------------------------
-------------------------------------- Test 13 --------------------------------------
+----------------------------- Test To_Bit_Length  ----------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure Big_Number_Test13(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_Bit_Length(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
    begin
-
-   	   P := To_Big_Unsigned("0");
-	   Assert(Bit_Length(P) = 0, "Bit_Length failed.");
-	   Assert(Bit_Length(X) = 4096, "Bit_Length failed.");
-	   Assert(Bit_Length(Y_1024) = 1025, "Bit_Length failed.");
-	   Assert(Bit_Length(Big_Unsigned_Last) = 4096, "Bit_Length failed.");
-	   
-	   P := X + 14; -- 13 = (1101)_2
-	   Q := X + 1;
-	   Assert(Bit_Length(Q) = 0, "Bit_Length failed.");
-	   Assert(Bit_Length(P) = 4, "Bit_Length failed."); --Wrap around
-
-   end Big_Number_Test13;
+      P := To_Big_Unsigned("0");
+      Assert(Bit_Length(P) = 0, "Bit_Length failed.");
+      Assert(Bit_Length(X) = 4096, "Bit_Length failed.");
+      Assert(Bit_Length(Y_1024) = 1025, "Bit_Length failed.");
+      Assert(Bit_Length(Big_Unsigned_Last) = 4096, "Bit_Length failed.");
+      
+      P := X + 14; -- 13 = (1101)_2
+      Q := X + 1;
+      Assert(Bit_Length(Q) = 0, "Bit_Length failed.");
+      Assert(Bit_Length(P) = 4, "Bit_Length failed."); --Wrap around
+   end Big_Number_Test_Bit_Length;
 
 ------------------------------------------------------------------------------------
-------------------------------------- Test 14 --------------------------------------
+------------------------------------- Test LSB --------------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure Big_Number_Test14(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_LSB(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
    begin
+      Assert(Lowest_Set_Bit(X) = 1, "Lowest Set Bit failed.");
+      Assert(Lowest_Set_Bit(X_851) = 257, "Lowest Set Bit failed.");
 
-   	   Assert(Lowest_Set_Bit(X) = 1, "Lowest Set Bit failed.");
-
-   	   Assert(Lowest_Set_Bit(X_851) = 257, "Lowest Set Bit failed.");
-
-	   P := To_Big_Unsigned("5221944407065762533458763553583121912899821245236918" &
+      P := To_Big_Unsigned("5221944407065762533458763553583121912899821245236918" &
 	   "9019211674164197695398577872842441340596749877917044505335721963141899378" &
 	   "6719092896803631618043925682638972978488271854999170180795067191859157214" &
 	   "0350059279731131881594196988563728361673421722933087484039543529018520356" &
@@ -445,193 +440,175 @@ package body Test.Big_Numbers_Utils is
 	   "4564097601587285012204633084554370741925392059649022614909286694888240515" &
 	   "6304295150065120673359486333660824575556580146039086901671804512190235417" &
 	   "0201577095168");
-
-   	   Assert(Lowest_Set_Bit(P) = 4096, "Lowest Set Bit failed.");
-
-	   P := To_Big_Unsigned("24");
-   	   
-   	   Assert(Lowest_Set_Bit(P) = 4, "Lowest Set Bit failed.");
-
-   end Big_Number_Test14;
-
-------------------------------------------------------------------------------------
-------------------------------------- Test 15 --------------------------------------
-------------------------------------------------------------------------------------
-
-   procedure Big_Number_Test15(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions; 
-   begin
-	   
-	   Assert(Length_In_Bytes(X) = 512, "First Length in Bytes failed.");
-	   Assert(Length_In_Bytes(Y_1024) = 129, "Second Length in Bytes failed.");
-	   P := To_Big_Unsigned("0");
-	   Assert(Length_In_Bytes(P) = 0, "Third Length in Bytes failed.");
-	   P := Y_1024 - 1;
-	   Assert(Length_In_Bytes(P) = 128, "Second Length in Bytes failed.");
-
-   end Big_Number_Test15;
-
-------------------------------------------------------------------------------------
-------------------------------------- Test 16 --------------------------------------
-------------------------------------------------------------------------------------
-
-   procedure Big_Number_Test16(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions; 
-   begin
-
-   	   Z := Y_1024 - 1;
-	   P := To_Big_Unsigned("1749371770012783641855406037645123465278605460138458" &
-	   "764551345813409589134750");
-	   Q := To_Big_Unsigned("4445232346172534434950653775902724568357389684594867" &
-	   "2547236455");
-
-	   Assert(Gcd(X,Y_1024) = 1, "Greatest Common Divisor failed.");
-	   Assert(Gcd(Y_1024,X) = 1, "Greatest Common Divisor failed.");
-	   Assert(Gcd(Z,X) = Z, "Greatest Common Divisor failed.");
-	   Assert(Gcd(X,Z) = Z, "Greatest Common Divisor failed.");
-	   Assert(Gcd(Y_1024,Z) = 1, "Greatest Common Divisor failed.");
-	   Assert(Gcd(X,P) = 5, "Greatest Common Divisor failed.");
-	   Assert(Gcd(X,Q) = 5, "Greatest Common Divisor failed.");
-	   Assert(Gcd(Y_1024,Q) = 1, "Greatest Common Divisor failed.");
-	   Assert(Gcd(Y_1024,P) = 2, "Greatest Common Divisor failed.");
-	   Assert(Gcd(P,Y_1024) = 2, "Greatest Common Divisor failed.");
-	   Assert(Gcd(Q,Y_1024) = 1, "Greatest Common Divisor failed.");
-	   Assert(Gcd(P,Q) = 5, "Greatest Common Divisor failed.");
-	   Assert(Gcd(Q,P) = 5, "Greatest Common Divisor failed.");
-	   
-	   P:= To_Big_Unsigned("0");
-	   Q := To_Big_Unsigned("0");
-	   Assert(Gcd(P,Q) = 0, "Greatest Common Divisor failed.");
-	   Assert(Gcd(Q,P) = 0, "Greatest Common Divisor failed.");
-	   Assert(Gcd(X,P) = X, "Greatest Common Divisor failed.");
-	   Assert(Gcd(P,X) = X, "Greatest Common Divisor failed.");
-	   P:= To_Big_Unsigned("1");
-	   Q := To_Big_Unsigned("1");
-	   Assert(Gcd(Q,P) = 1, "Greatest Common Divisor failed.");
-	   Assert(Gcd(P,Q) = 1, "Greatest Common Divisor failed.");
-	   P:= To_Big_Unsigned("2");
-	   Q := To_Big_Unsigned("1");
-	   Assert(Gcd(Q,P) = 1, "Greatest Common Divisor failed.");
-	   Assert(Gcd(P,Q) = 1, "Greatest Common Divisor failed.");
-
-   end Big_Number_Test16;
-
-------------------------------------------------------------------------------------
-------------------------------------- Test 17 --------------------------------------
-------------------------------------------------------------------------------------
-
-   procedure Big_Number_Test17(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions; 
-   begin
       
---   	   I := 429496729;
---	   S := 429496725;
---	   T := Max(I,S);
---	   Assert(T = I, "Max failed.");
-	   I := 1;
-
-   end Big_Number_Test17;
+      Assert(Lowest_Set_Bit(P) = 4096, "Lowest Set Bit failed.");     
+      P := To_Big_Unsigned("24");
+      Assert(Lowest_Set_Bit(P) = 4, "Lowest Set Bit failed.");
+   end Big_Number_Test_LSB;
 
 ------------------------------------------------------------------------------------
-------------------------------------- Test 18 --------------------------------------
+------------------------------- Test Length_In_Bytes -------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure Big_Number_Test18(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_Length_In_Bytes(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
    begin
-   	   
-	   B1 := (others => 255);
-	   B2 := (others => 255);
-   	   B := To_Bytes(X);
-   	   Assert(B = B2, "Convert Big_Unsigned to Bytes failed.");
-	   P := To_Big_Unsigned(B1);
-	   Assert(P = To_Big_Unsigned("18446744073709551615"), "Convert Big_Unsigned to Bytes failed."); 
-   	   P := To_Big_Unsigned(B2);
-	   Assert(P = X, "Convert Bytes to Big_Unsigned failed.");
-
-	   B3 := To_Bytes(X_851);
-	   P := To_Big_Unsigned(B3);
-	   Assert(P = X_851, "To_Bytes failed.");
-   end Big_Number_Test18;
+      Assert(Length_In_Bytes(X) = 512, "First Length in Bytes failed.");
+      Assert(Length_In_Bytes(Y_1024) = 129, "Second Length in Bytes failed.");
+      P := To_Big_Unsigned("0");
+      Assert(Length_In_Bytes(P) = 0, "Third Length in Bytes failed.");
+      P := Y_1024 - 1;
+      Assert(Length_In_Bytes(P) = 128, "Second Length in Bytes failed.");
+   end Big_Number_Test_Length_In_Bytes;
 
 ------------------------------------------------------------------------------------
-------------------------------------- Test 19 --------------------------------------
+------------------------------------ Test Gcd --------------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure Big_Number_Test19(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_Gcd(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
    begin
-
-   	   M1 := (others => 4294967295);
-	   M := To_Mod_Types(X);
-	   Assert(M = M1, "To_Mod_Types failed.");
-
-	   M2 := (32 => 1, others => 0);
-	   M3 := To_Mod_Types(Y_1024);
-	   Assert(M3 = M2, "To_Mod_Types failed.");
-
-   end Big_Number_Test19;
+      Z := Y_1024 - 1;
+      P := To_Big_Unsigned("1749371770012783641855406037645123465278605460138458" &
+	   "764551345813409589134750");
+      Q := To_Big_Unsigned("4445232346172534434950653775902724568357389684594867" &
+	   "2547236455");
+      
+      Assert(Gcd(X,Y_1024) = 1, "Greatest Common Divisor failed.");
+      Assert(Gcd(Y_1024,X) = 1, "Greatest Common Divisor failed.");
+      Assert(Gcd(Z,X) = Z, "Greatest Common Divisor failed.");
+      Assert(Gcd(X,Z) = Z, "Greatest Common Divisor failed.");
+      Assert(Gcd(Y_1024,Z) = 1, "Greatest Common Divisor failed.");
+      Assert(Gcd(X,P) = 5, "Greatest Common Divisor failed.");
+      Assert(Gcd(X,Q) = 5, "Greatest Common Divisor failed.");
+      Assert(Gcd(Y_1024,Q) = 1, "Greatest Common Divisor failed.");
+      Assert(Gcd(Y_1024,P) = 2, "Greatest Common Divisor failed.");
+      Assert(Gcd(P,Y_1024) = 2, "Greatest Common Divisor failed.");
+      Assert(Gcd(Q,Y_1024) = 1, "Greatest Common Divisor failed.");
+      Assert(Gcd(P,Q) = 5, "Greatest Common Divisor failed.");
+      Assert(Gcd(Q,P) = 5, "Greatest Common Divisor failed.");
+	   
+      P:= To_Big_Unsigned("0");
+      Q := To_Big_Unsigned("0");
+      Assert(Gcd(P,Q) = 0, "Greatest Common Divisor failed.");
+      Assert(Gcd(Q,P) = 0, "Greatest Common Divisor failed.");
+      Assert(Gcd(X,P) = X, "Greatest Common Divisor failed.");
+      Assert(Gcd(P,X) = X, "Greatest Common Divisor failed.");
+      P:= To_Big_Unsigned("1");
+      Q := To_Big_Unsigned("1");
+      Assert(Gcd(Q,P) = 1, "Greatest Common Divisor failed.");
+      Assert(Gcd(P,Q) = 1, "Greatest Common Divisor failed.");
+      P:= To_Big_Unsigned("2");
+      Q := To_Big_Unsigned("1");
+      Assert(Gcd(Q,P) = 1, "Greatest Common Divisor failed.");
+      Assert(Gcd(P,Q) = 1, "Greatest Common Divisor failed.");
+   end Big_Number_Test_Gcd;
 
 ------------------------------------------------------------------------------------
-------------------------------------- Test 20 --------------------------------------
+-------------------------------- Test To_Bytes -------------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure Big_Number_Test20(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_To_Bytes(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
    begin
-
-   	   S1 := To_String(X);
-   	   
-   	   S2 := "10443888814131525066" &
-   	   "9175271071662438257996424904738378038423348328395390797155745684882681193499" &
-   	   "7558340890106714439262837987573438185793607263236087851365277945956976543709" &
-   	   "9983403615901343837183144280700118559462263763188393977127456723346843445866" &
-   	   "1749680790870580370407128404874011860911446797778359802900668693897688178778" &
-   	   "5946905630190260940599579453432823469303026696443059025015972399867714215541" &
-   	   "6938355598852914863182379144344967340878118726394964751001890413490084170616" &
-   	   "7509366833385055103297208826955076998361636941193301521379682583718809183365" &
-   	   "6751221318492846368125550225998300412344784862595674492194617023806505913245" &
-   	   "6108257318353800876086221028342701976982023131690176780066751954850799216364" &
-   	   "1937028537512478401490715913545998279051339961155179427110683113409058427288" &
-   	   "4279791554849782954323534517065223269061394905987693002122963395687782878948" &
-   	   "4406160074129456749198230505716423771548163213806310459029161369267083428564" &
-   	   "4073044789997190178146576347322385026725305989979599609079946920177462481771" &
-   	   "8449867455659250178329070473119433165550807568221846571746373296884912819520" &
-   	   "3174570024409266169108741483850784119298045229818573389776481031260859030013" &
-   	   "02413467189726673216491511131602920781738033436090243804708340403154190335";
-   	   
-   	   Assert(S1 = S2, "To_String failed.");
-   	   
-	   S4 := "17976931348623159077293051907890247336179769789423065727343008115773" &
-	   "26758055009631327084773224075360211201138798713933576587897688144166224928" &
-	   "47430639474124377767893424865485276302219601246094119453082952085005768838" &
-	   "15068234246288147391311054082723716335051068458629823994724593847971630483" &
-	   "5356329624224137216";
-	   S3 := To_String(Y_1024);
-
-   	   Assert(S3 = S4, "To_String failed.");
-
-   end Big_Number_Test20;
+      B1 := (others => 255);
+      B2 := (others => 255);
+      B := To_Bytes(X);
+      Assert(B = B2, "Convert Big_Unsigned to Bytes failed.");
+      P := To_Big_Unsigned(B1);
+      Assert(P = To_Big_Unsigned("18446744073709551615"), "Convert Big_Unsigned to Bytes failed."); 
+      P := To_Big_Unsigned(B2);
+      Assert(P = X, "Convert Bytes to Big_Unsigned failed.");
+      
+      B3 := To_Bytes(X_851);
+      P := To_Big_Unsigned(B3);
+      Assert(P = X_851, "To_Bytes failed.");
+   end Big_Number_Test_To_Bytes;
 
 ------------------------------------------------------------------------------------
-------------------------------------- Test 21 --------------------------------------
+------------------------------- Test To_Mod_Types ----------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure Big_Number_Test21(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_To_Mod_Types(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
    begin
-      -- TODO
+      M1 := (others => 4294967295);
+      M := To_Mod_Types(X);
+      Assert(M = M1, "To_Mod_Types failed.");
+      
+      M2 := (32 => 1, others => 0);
+      M3 := To_Mod_Types(Y_1024);
+      Assert(M3 = M2, "To_Mod_Types failed.");
+   end Big_Number_Test_To_Mod_Types;
+
+------------------------------------------------------------------------------------
+---------------------------------- Test To_String ----------------------------------
+------------------------------------------------------------------------------------
+
+   procedure Big_Number_Test_To_String(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions; 
+   begin
+      S1 := To_String(X);
+      
+      S2 := "10443888814131525066" &
+	"9175271071662438257996424904738378038423348328395390797155745684882681193499" &
+	"7558340890106714439262837987573438185793607263236087851365277945956976543709" &
+	"9983403615901343837183144280700118559462263763188393977127456723346843445866" &
+	"1749680790870580370407128404874011860911446797778359802900668693897688178778" &
+	"5946905630190260940599579453432823469303026696443059025015972399867714215541" &
+	"6938355598852914863182379144344967340878118726394964751001890413490084170616" &
+	"7509366833385055103297208826955076998361636941193301521379682583718809183365" &
+	"6751221318492846368125550225998300412344784862595674492194617023806505913245" &
+	"6108257318353800876086221028342701976982023131690176780066751954850799216364" &
+	"1937028537512478401490715913545998279051339961155179427110683113409058427288" &
+	"4279791554849782954323534517065223269061394905987693002122963395687782878948" &
+	"4406160074129456749198230505716423771548163213806310459029161369267083428564" &
+	"4073044789997190178146576347322385026725305989979599609079946920177462481771" &
+	"8449867455659250178329070473119433165550807568221846571746373296884912819520" &
+	"3174570024409266169108741483850784119298045229818573389776481031260859030013" &
+	"02413467189726673216491511131602920781738033436090243804708340403154190335";
+   	   
+      Assert(S1 = S2, "To_String failed.");
+      
+      S4 := "17976931348623159077293051907890247336179769789423065727343008115773" &
+	"26758055009631327084773224075360211201138798713933576587897688144166224928" &
+	"47430639474124377767893424865485276302219601246094119453082952085005768838" &
+	"15068234246288147391311054082723716335051068458629823994724593847971630483" &
+	"5356329624224137216";
+      S3 := To_String(Y_1024);
+      
+      Assert(S3 = S4, "To_String failed.");
+
+   end Big_Number_Test_To_String;
+
+------------------------------------------------------------------------------------
+------------------------------------- Test Put--------------------------------------
+------------------------------------------------------------------------------------
+
+   procedure Big_Number_Test_Put(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions; 
+      use Ada.Text_IO;
+      Stdout : constant File_Type := Standard_Output;
+      Put_File_Name : constant String := "big_number_put_test.txt";
+      Result : constant Crypto.Types.W_Block160 := (16#1196_9bec#, 16#4268_a279#, 16#e135_07b4#, 16#486e_cf82#, 16#e3e9_f550#);
+      Put_File : File_Type; 
+   begin
+      Create(Put_File, Out_File, Put_File_Name); 
+      Set_Output(Put_File);
       Put(X, 10);
       Put(X, 2);
       Put_Line(Y_1024, 10);
       Put_Line(Y_1024, 2);
-   end Big_Number_Test21;
+      Set_Output(Stdout);
+      Close(Put_File);
+      Assert( Crypto.Hashfunction_SHA1.F_Hash(Put_File_Name) = Result, "Put failed");
+   end Big_Number_Test_Put;
 
 ------------------------------------------------------------------------------------
-------------------------------------- Test 22 --------------------------------------
+------------------------------------- Big_Div --------------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure Big_Number_Test22(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_Big_Div(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
    begin
       Big_Div(X, Y_1024, P, Q);
@@ -654,13 +631,13 @@ package body Test.Big_Numbers_Utils is
 	   "0057688381506823424628814739131105408272371633505106845862982399472459384797" &
 	   "16304835356329624224137215");
    	   Assert(P = R and Q = Z, "Big_Div failed.");
-   end Big_Number_Test22;
+   end Big_Number_Test_Big_Div;
 
 ------------------------------------------------------------------------------------
-------------------------------------- Test 23 --------------------------------------
+------------------------------------- Short_Div --------------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure Big_Number_Test23(T : in out Test_Cases.Test_Case'Class) is
+   procedure Big_Number_Test_Short_Div(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
    begin
       M4 := 4294967295;
@@ -683,7 +660,7 @@ package body Test.Big_Numbers_Utils is
 	   "9891923980254330059986284722398767190149936667834835577422520260450857758908" &
 	   "22409168877289493727031590913");
       Assert(P = Z and M5 = 0, "Short_Div failed.");
-   end Big_Number_Test23;
+   end Big_Number_Test_Short_Div;
 
 ------------------------------------------------------------------------------------
 

@@ -10,32 +10,30 @@ package Test.Big_Numbers_Utils is
 
    function Name(T: Big_Number_Test) return Test_String;
    
-   procedure Big_Number_Test10(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_Rotate_Left(T: in out Test_Cases.Test_Case'Class);
    
-   procedure Big_Number_Test11(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_Rotate_Right(T: in out Test_Cases.Test_Case'Class);
    
-   procedure Big_Number_Test12(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_Random(T: in out Test_Cases.Test_Case'Class);
    
-   procedure Big_Number_Test13(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_Bit_Length(T: in out Test_Cases.Test_Case'Class);
    
-   procedure Big_Number_Test14(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_LSB(T: in out Test_Cases.Test_Case'Class);
    
-   procedure Big_Number_Test15(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_Length_In_Bytes(T: in out Test_Cases.Test_Case'Class);
    
-   procedure Big_Number_Test16(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_Gcd(T: in out Test_Cases.Test_Case'Class);
 	
-   procedure Big_Number_Test17(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_To_Bytes(T: in out Test_Cases.Test_Case'Class);
    
-   procedure Big_Number_Test18(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_To_Mod_Types(T: in out Test_Cases.Test_Case'Class);
    
-   procedure Big_Number_Test19(T: in out Test_Cases.Test_Case'Class);
-   
-   procedure Big_Number_Test20(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_To_String(T: in out Test_Cases.Test_Case'Class);
 	
-   procedure Big_Number_Test21(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_Put(T: in out Test_Cases.Test_Case'Class);
    
-   procedure Big_Number_Test22(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_Big_Div(T: in out Test_Cases.Test_Case'Class);
    
-   procedure Big_Number_Test23(T: in out Test_Cases.Test_Case'Class);
+   procedure Big_Number_Test_Short_Div(T: in out Test_Cases.Test_Case'Class);
    
 end Test.Big_Numbers_Utils;

@@ -1,16 +1,16 @@
-AUNIT_DIR = aunit-3.4/src
-CC = gnatmake	
-CFLAGS = -W -Werror -ggdb -g -gnat05 -gnato -I../src -I$(AUNIT_DIR) -O3 -gnatn -gnatwrclp
-
 GNATCLEAN=gnatclean
 DEL=rm -f
-
 BB = gnatbind
-BFLAGS = -shared -aO./ -aO/lib/ -I$(AUNIT_DIR) -aO../src -I- -x
-
 LL = gnatlink
+CC = gnatmake	
+GEN_HTML = tools/gen_coverage_page.sh
+AUNIT_DIR = aunit-3.4/src
+
+CFLAGS = -W -Werror -ggdb -g -gnat05 -gnato -I../src -I$(AUNIT_DIR) -O3 -gnatn -gnatwrclp
+BFLAGS = -shared -aO./ -aO/lib/ -I$(AUNIT_DIR) -aO../src -I- -x
 LFLAGS = -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src -lacl
 LFLAGS = -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src
+
 
 all : aunit big_number test asymmetric hash symmetric
 
@@ -63,3 +63,6 @@ aunit-clean:
 test-clean:
 	$(GNATCLEAN) *.o *.ali
 	$(DEL) *.gcno *.gcov *.gcda
+	$(DEL) -r coverage/*
+lcov:
+	$(GEN_HTML) 
