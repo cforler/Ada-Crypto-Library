@@ -63,6 +63,6 @@ aunit-clean:
 test-clean:
 	$(GNATCLEAN) *.o *.ali
 	$(DEL) *.gcno *.gcov *.gcda
-	$(DEL) -r coverage/*
+	$(DEL) -r coverage
 lcov:
 	$(GEN_HTML) 

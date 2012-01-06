@@ -3,6 +3,7 @@ COVERAGE_DIR="coverage/"
 SRC_PATH="../src"
 TEST_PATH=".."
 
+mkdir -p ${COVERAGE_DIR}
 CURRENT=`pwd`
 cd ${SRC_PATH}
 gcov *
