@@ -19,7 +19,6 @@
 -- executable to be covered by the GNU General Public License. This
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
-
 --with Ada.Numerics.Discrete_Random;
 with Interfaces.C_Streams;
 use  Interfaces.C_Streams;
@@ -66,13 +65,10 @@ package body Crypto.Random is
 
 
    procedure Read(Byte_Array : out Bytes) is
-      C : Size_T;
    begin
-      C := Fread( Buffer => Byte_Array'address, Size => 1,
-                  Count => Size_T(Byte_Array'Length),
-                  Stream =>  Random_File);
-
-      if Positive(C) /= Byte_Array'Length then
+      if  Fread( Buffer => Byte_Array'address, Size => 1,
+		 Count => Byte_Array'Length, Stream =>  Random_File) 
+	/= Byte_Array'Length then
          raise  RANDOM_SOURCE_READ_ERROR;
       end if;
    end read;
@@ -86,11 +82,9 @@ package body Crypto.Random is
    ---------------------------------------------------------------------------
 
    procedure Read(W : out Word) is
-      C : Size_T;
    begin
-      C := Fread( Buffer => W'Address, Size => 4,
-                  Count => 1, Stream =>  Random_File);
-      if C /= Word'Size then
+      if Fread( Buffer => W'Address, Size => W'Size/8,
+		Count => 1, Stream =>  Random_File) /= 1 then
          raise  RANDOM_SOURCE_READ_ERROR;
       end if;
    end Read;
@@ -98,11 +92,10 @@ package body Crypto.Random is
    ---------------------------------------------------------------------------
 
    procedure Read(Word_Array : out Words) is
-    C : Size_T;
    begin
-      C := Fread(Buffer => Word_Array'Address, Size => 4,
-                 Count => Word_Array'Length, Stream =>  Random_File);
-      if C /=  Word_Array'Length * Word'Size  then
+      if Fread(Buffer => Word_Array'Address, Size => Word'Size/8 ,
+	       Count => Word_Array'Length, Stream =>  Random_File)
+	/=  Word_Array'Length  then
          raise  RANDOM_SOURCE_READ_ERROR;
       end if;
    end Read;
@@ -111,11 +104,9 @@ package body Crypto.Random is
    ---------------------------------------------------------------------------
 
    procedure Read(D : out DWord) is
-      C : Size_T;
    begin
-      C := Fread( Buffer => D'Address, Size => 8,
-                  Count => 1, Stream =>  Random_File);
-      if C /= DWord'Size then
+      if  Fread( Buffer => D'Address, Size => D'Size/8,
+		 Count => 1, Stream =>  Random_File) /= 1 then
          raise  RANDOM_SOURCE_READ_ERROR;
       end if;
    end Read;
@@ -124,11 +115,10 @@ package body Crypto.Random is
 
 
    procedure Read(DWord_Array : out DWords) is
-      C : Size_T;
    begin
-      C := Fread(Buffer => DWord_Array'Address, Size => 8,
-                 Count => DWord_Array'Length, Stream =>  Random_File);
-      if C /=  DWord_Array'Length * DWord'Size  then
+      if  Fread(Buffer => DWord_Array'Address, Size => DWord'Size/8,
+		Count => DWord_Array'Length, Stream =>  Random_File)
+	/=  DWord_Array'Length  then
          raise  RANDOM_SOURCE_READ_ERROR;
       end if;
    end Read;
@@ -228,8 +218,6 @@ begin
    if Ferror( Random_File) /= 0 then
       raise RANDOM_SOURCE_DOES_NOT_EXISTS_ERROR;
    end if;
-
-   -------------------------------------NEU--------------------------------------
---   Start;
-
+   ----------------------------------NEU--------------------------------------
+   --   Start;
 end Crypto.Random;

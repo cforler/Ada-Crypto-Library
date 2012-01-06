@@ -9,7 +9,7 @@ einsetzen:
 \item Generierung von Zufallszahlen bzw. Zufallsbits
 \end{itemize}
 Der Zweck dieses Paketes ist es die API für Hashfunktionen zu vereintheilichen
-und zu vereinfachen. Aus Sicht der Sicherheit spricht hier nichst dagegen 
+und zu vereinfachen. Aus Sicht der Sicherheit spricht hier nichts dagegen 
 direkt die native API aus \texttt{Crypto.Symmetric.Algorithm} zu verwenden.\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -50,7 +50,7 @@ generic
 \section{API}
 Die API einer generischen Hashfunktion besteht aus einer High- und einer 
 Low-Level-API. Die Low-Level-API sollen sie nur verwenden, wenn sie sich mit
-krptographischen Hashfunktionen auskennen. Wenn dies nicht der Fall ist, dann
+kryptographischen Hashfunktionen auskennen. Wenn dies nicht der Fall ist, dann
 verwenden sie bitte die folgende High-Level-API.
 
 \subsection{High-Level-API}
@@ -75,8 +75,8 @@ den Hashwert von \texttt{/bin/ls}.\\ \ \\
 Die Low-Level-API besteht aus einer Funktion und zwei Prozeduren. 
 
 \begin{itemize}
-\item Die Prozedur \textbf{Init} initialisiert bzw. reinitailisert die 
-  Hashfunktion. Jedesmal wenn eine Nachricht gehashed werde soll muss 
+\item Die Prozedur \textbf{Init} initialisiert bzw. reinitialisiert die 
+  Hashfunktion. Jedes mal wenn eine Nachricht gehashed werde soll muss 
   zunächst diese Prozedure aufgerufen werden.
   \begin{lstlisting}{}
  procedure Init;
