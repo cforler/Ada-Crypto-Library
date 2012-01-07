@@ -1,31 +1,32 @@
-
-with Ada.Text_IO;
-with Crypto.Types;
-with Crypto.Types.Elliptic_Curves.Zp;
-with Crypto.Types.Big_Numbers;
-use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
+with Crypto.Types; use Crypto.Types;
+with Crypto.Random; use Crypto.Random;
+with Crypto.Random_Source.File; use Crypto.Random_Source.File;
 
 procedure Z is
-   package Big is new Crypto.Types.Big_Numbers(128);
-   package EC  is new Crypto.Types.Elliptic_Curves(Big);
-   use Big;
-   use EC;
-
---   A : Big.Big_Unsigned := Big_Unsigned_Four;
---   B : Big.Big_Unsigned := Big_Unsigned_Zero + 20;
---   P : Big.Big_Unsigned := Big_Unsigned_zero + 29;
-
-
---   K : Big.Big_Unsigned;
---   P1 : EC_Point := (Big_Unsigned_One, A+1);
-
-
-   package EC_Zp is new EC.Zp;
-   use EC_Zp;
-
+   package BIO is new Ada.Text_IO.Modular_IO (Byte);
+   package WIO is new Ada.Text_IO.Modular_IO (Word);
+   
+   B : Byte;
+   Bs : Bytes(1..3);
+   W : Word;
+   
+   Dev_Zero : Random_Source_File;
 begin
-   Init(30);
-
-   Put_Line(Is_Elliptic_Curve'Img);
-
+   Dev_Zero.Initialize("/dev/zero");
+   Read(B);
+   Read(Bs);
+   Read(W);
+   
+   Bio.Put(B, Base => 16); New_Line;
+   Wio.Put(W, Base => 16); New_Line;
+   
+   Set(Dev_Zero);
+   Read(B);
+   Read(Bs);
+   Read(W);
+   
+   Bio.Put(B, Base => 16); New_Line;
+   Wio.Put(W, Base => 16); New_Line;
+   
 end Z;

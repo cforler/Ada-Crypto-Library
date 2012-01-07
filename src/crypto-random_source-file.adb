@@ -1,3 +1,5 @@
+with Ada.Text_IO; use Ada.Text_IO;
+
 package body Crypto.Random_Source.File is
    use Interfaces.C_Streams;
    use Ada.Strings.Unbounded;
@@ -7,7 +9,19 @@ package body Crypto.Random_Source.File is
    ------------------------ Initialization -----------------------------------
    ---------------------------------------------------------------------------
    
-   procedure Initialize(This : out Random_Source_File; File_Path : in String) is
+   
+   procedure Initialize(This : in out Random_Source_File) is
+      Cpath : constant String := "/dev/random" & ASCII.NUL;
+      Mode  : constant String := "r";   
+   begin
+      This.Source_File := Fopen(Cpath'address, Mode'address);
+      This.Source_Path := To_Unbounded_String("/dev/random");
+   end Initialize;
+   
+   ---------------------------------------------------------------------------
+   
+   procedure Initialize(This : in out Random_Source_File;
+			File_Path : in String) is
       Cpath : constant String := File_Path & ASCII.NUL;
       Mode  : constant String := "r";   
    begin
@@ -93,9 +107,10 @@ package body Crypto.Random_Source.File is
    ---------------------------------------------------------------------------
    
    procedure Finalize(This : in out  Random_Source_File) is
---      I : Integer;
+      I : Integer;
    begin
-      --      I := Fclose(This.Source_File);
-      null;
-   end Finalize;
+      if Fileno(This.Source_File) >= 0 then 
+     	 I := Fclose(This.Source_File);
+        end if;
+     end Finalize;
 end Crypto.Random_Source.File;

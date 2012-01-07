@@ -69,7 +69,4 @@ package body Crypto.Random is
     begin
        Rnd_Src.Read(DWord_Array);
     end Read;  
-begin
-   Dev_Random.Initialize("/dev/random");
-   Set( Dev_Random);
 end Crypto.Random;

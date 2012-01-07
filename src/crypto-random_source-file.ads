@@ -6,10 +6,12 @@ package Crypto.Random_Source.File is
 
    type Random_Source_File is new Rnd.Random_Source with private;
    
-   procedure Initialize(This : out Random_Source_File; File_Path : in String);
-   
    procedure Finalize(This : in out  Random_Source_File);
    
+   procedure Initialize(This : in out Random_Source_File);
+   procedure Initialize(This : in out Random_Source_File;
+			File_Path : in String);
+
    procedure Read(This : in Random_Source_File; B : out Byte);
    procedure Read(This : in Random_Source_File; Byte_Array : out Bytes);
    procedure Read(This : in Random_Source_File; B : out B_Block128);
