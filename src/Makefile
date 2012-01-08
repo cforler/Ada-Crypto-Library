@@ -10,7 +10,7 @@ CC=gnatmake
 CFLAGS=-c  -shared -gnato -s -O3 -gnatn -gnat12 -W -Wall -Werror
 
 all: types asymmetric symmetric
-gcov: CFLAGS=-f -c -shared -gnat05 -s -O0 -gnatE -gnatf -gnato -W -Wall -Werror -fprofile-arcs -ftest-coverage -fprofile-arcs -fno-inline
+gcov: CFLAGS=-f -c -shared -gnat12 -s -O0 -gnatE -gnatf -gnato -W -Wall -Werror -fprofile-arcs -ftest-coverage -fprofile-arcs -fno-inline
 gcov: all
 symmetric: hashfunction onewaybc mode mac blockcipher
 asymmetric: crypto-asymmetric-dsa crypto-asymmetric-rsa ec

@@ -1,5 +1,3 @@
-with Ada.Text_IO; use Ada.Text_IO;
-
 package body Crypto.Random_Source.File is
    use Interfaces.C_Streams;
    use Ada.Strings.Unbounded;
@@ -107,10 +105,12 @@ package body Crypto.Random_Source.File is
    ---------------------------------------------------------------------------
    
    procedure Finalize(This : in out  Random_Source_File) is
-      I : Integer;
    begin
-      if Fileno(This.Source_File) >= 0 then 
-     	 I := Fclose(This.Source_File);
-        end if;
+      if Fileno(This.Source_File) >= 0 then      	
+	 if  Fclose(This.Source_File) /= 0 then
+	    raise  RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path)
+	      &": can not close file.";
+	 end if;
+      end if;
      end Finalize;
 end Crypto.Random_Source.File;
