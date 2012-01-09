@@ -13,5 +13,4 @@ procedure Test.Tests is
 begin
    Dev_U_Rand.Initialize("/dev/urandom");
    Crypto.Random.Set(Dev_U_Rand);
-   Run_All(Reporter);
-end Test.Tests;
+   Run_All(Reporter); _U_Rand);end Test.Tests;
