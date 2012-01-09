@@ -44,7 +44,8 @@ package body Crypto.Random_Source.File is
    
    ---------------------------------------------------------------------------
       
-   procedure Read(This : in Random_Source'Class; Byte_Array : out Bytes) is
+--   procedure Read(This : in Random_Source'Class; Byte_Array : out Bytes) is
+   procedure Read(This : in Random_Source_File; Byte_Array : out Bytes) is
    begin  
       if  Fread(Buffer => Byte_Array'address, Size => 1, Count => Byte_Array'Length, Stream => This.Source_File) /= Byte_Array'Length then
          raise  RANDOM_SOURCE_READ_ERROR with  To_String(This.Source_Path);
@@ -52,6 +53,7 @@ package body Crypto.Random_Source.File is
    end Read;
    
    ---------------------------------------------------------------------------
+
 
    procedure Read(This : in Random_Source_File; B : out B_Block128) is
    begin   
