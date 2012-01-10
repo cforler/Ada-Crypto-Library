@@ -6,6 +6,7 @@ package Crypto.Random_Source is
   package Fin renames Ada.Finalization;
     
   type Random_Source is abstract new Fin.Controlled with null record;
+  type Random_Source_Access is access Random_Source;
   
   Random_Source_Read_Error : exception;
   

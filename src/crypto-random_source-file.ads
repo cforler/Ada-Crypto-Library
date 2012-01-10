@@ -5,6 +5,7 @@ package Crypto.Random_Source.File is
    package Rnd renames Crypto.Random_Source;
 
    type Random_Source_File is new Rnd.Random_Source with private;
+   type Random_Source_File_Access is access  Random_Source_File;
    
    Overriding
    procedure Finalize(This : in out  Random_Source_File);
