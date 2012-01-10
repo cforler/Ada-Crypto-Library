@@ -6,31 +6,33 @@ package Crypto.Random_Source.File is
 
    type Random_Source_File is new Rnd.Random_Source with private;
    
+   Overriding
    procedure Finalize(This : in out  Random_Source_File);
    
+   Overriding
    procedure Initialize(This : in out Random_Source_File);
+   
    procedure Initialize(This : in out Random_Source_File;
 			File_Path : in String);
-   
-   Overriding 
+   Overriding
    procedure Read(This : in Random_Source_File; B : out Byte);
    
+   Overriding 
    procedure Read(This : in Random_Source_File; Byte_Array : out Bytes);
---   procedure Read(This : in Random_Source_File'Class; Byte_Array : out Bytes);
    
---   Overriding 
+   Overriding
    procedure Read(This : in Random_Source_File; B : out B_Block128);
    
---   Overriding 
+   Overriding
    procedure Read(This : in Random_Source_File; W : out Word);
    
---   Overriding 
-   procedure Read(This : in Random_Source_File; Word_Array : out Words);
+   Overriding
+   Procedure Read(This : in Random_Source_File; Word_Array : out Words);
    
---   Overriding 
+   Overriding
    procedure Read(This : in Random_Source_File; D : out DWord);
    
---   Overriding 
+   Overriding
    procedure Read(This : in Random_Source_File; DWord_Array : out DWords);
 private
    type Random_Source_File is new Rnd.Random_Source with

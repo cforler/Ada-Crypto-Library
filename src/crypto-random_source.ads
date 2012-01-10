@@ -13,13 +13,15 @@ package Crypto.Random_Source is
   
   procedure Read(This : in Random_Source; B : out Byte)  is abstract;
   
-  procedure Read(This : in Random_Source'Class; Byte_Array : out Bytes);
+  procedure Read(This : in Random_Source; Byte_Array : out Bytes);
   
-  procedure Read(This : in Random_Source; B : out B_Block128) is null;-- is abstract;
+  procedure Read(This : in Random_Source; B : out B_Block128);
   
-  procedure Read(This : in Random_Source; W : out Word) is null;--  is abstract;
-  procedure Read(This : in Random_Source; Word_Array : out Words) is null;-- is abstract;
+  procedure Read(This : in Random_Source; W : out Word);
+  procedure Read(This : in Random_Source; Word_Array : out Words);
 
-  procedure Read(This : in Random_Source; D : out DWord) is null;--  is abstract;
-  procedure Read(This : in Random_Source; DWord_Array : out DWords) is null;-- is abstract;
+  procedure Read(This : in Random_Source; D : out DWord);
+  procedure Read(This : in Random_Source; DWord_Array : out DWords);
+  
+  pragma Inline(Read);
 end Crypto.Random_Source;
