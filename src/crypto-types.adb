@@ -346,7 +346,7 @@ package body Crypto.Types is
    function "+"(Left : DWords; Right : Byte) return DWords is
     Result: DWords(Left'Range) := Left;
    begin
-      Result(Left'First) := Left(Left'First) + DWord(Right);
+      Result(Left'Last) := Left(Left'Last) + DWord(Right);
 
       -- overflow?
       if Result(Left'Last) < Left(Left'Last) then
