@@ -97,7 +97,8 @@ package Crypto.Types is
 
    subtype Message_Block_Length512  is Natural range 0 ..  64;
    subtype Message_Block_Length1024 is Natural range 0 .. 128;
-
+   
+   
    ---------------------------------------------------------------------------
    ---------------------------FUNCTIONS---------------------------------------
    ---------------------------------------------------------------------------
@@ -315,20 +316,19 @@ package Crypto.Types is
    ---------------------------------------------------------------------------
 
 private
-   
    pragma Inline (To_B_Block128,To_B_Block192,To_B_Block256);
-   pragma Inline ("xor"); 
+   pragma Inline ("xor","+"); 
    pragma Inline (R_To_Bytes, To_Bytes);
    pragma Inline (To_Word, Byte0, Byte1, Byte2, Byte3);
    pragma Inline (Byte4, Byte5, Byte6, Byte7);
    pragma Inline (To_DWord, R_To_DWord);
    pragma Inline (Is_Zero);
-
+   pragma Inline (Left_Part, Right_Part); 
+   
    pragma Import (Intrinsic, Shift_Left);
    pragma Import (Intrinsic, Shift_Right);
    pragma Import (Intrinsic, Rotate_Left);
    pragma Import (Intrinsic, Rotate_Right);
-
-
+   
    pragma Optimize(Time);
 end Crypto.Types;

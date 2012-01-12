@@ -21,6 +21,8 @@
 -- executable file might be covered by the GNU Public License.
 
 with Ada.Unchecked_Conversion;
+with Crypto.Types_Generic_Mod_Aux;
+pragma Elaborate_All(Crypto.Types_Generic_Mod_Aux);
 
 package body Crypto.Types is
 
@@ -28,9 +30,12 @@ package body Crypto.Types is
    function Cast  is new Ada.Unchecked_Conversion (Word, Byte_Word);
    function DCast is new Ada.Unchecked_Conversion (Byte_DWord, DWord);
    function DCast is new Ada.Unchecked_Conversion (DWord, Byte_DWord);
-
    pragma Inline (Cast, DCast);
-
+   
+   package Aux_Byte is new Crypto.Types_Generic_Mod_Aux(Byte,Bytes);
+   package Aux_Word is new Crypto.Types_Generic_Mod_Aux(Word,Words);
+   package Aux_DWord is new Crypto.Types_Generic_Mod_Aux(Dword,DWords);
+   
    ---------------------------------------------------------------------------
 
    function To_Word(A,B,C,D : Character) return Word is
@@ -191,44 +196,22 @@ package body Crypto.Types is
 
 
    function "xor"(Left, Right : Bytes) return Bytes is
-      Result : Bytes(0..Left'Length-1);
    begin
-      if Left'Length /= Right'Length then
-        raise  Constraint_Bytes_Error;
-      end if;
-      for I in 0..Left'Length-1 loop
-         Result(I) := Left(Left'First+I) xor Right(Right'First+I);
-      end loop;
-      return Result;
+      return Aux_Byte."xor"(Left,Right);
    end "xor";
 
    ---------------------------------------------------------------------------
    
    function "xor"(Left : Bytes; Right : Byte) return Bytes is
-      Result : Bytes := Left;
    begin
-      result(Left'Last):= Result(Left'Last) xor Right;
-      return Result;
+      return Aux_Byte."xor"(Left,Right);
    end "xor";
    
    ---------------------------------------------------------------------------
       
    function "+"(Left : Bytes; Right : Byte) return Bytes is
-      Result: Bytes(Left'Range) := Left;
    begin
-      Result(Left'Last) := Left(Left'Last) + Right;
-
-      -- overflow?
-      if Result(Left'Last) < Left(Left'Last) then
-         for I in reverse Left'First..Left'Last-1 loop
-            Result(I):=Result(I)+1;
-            if Result(I) /= 0 then
-               return  Result;
-            end if;
-         end loop;
-      end if;
-      return Result;
-
+      return Aux_Byte."+"(Left,Right);
    end "+";
 
    ---------------------------------------------------------------------------
@@ -242,35 +225,16 @@ package body Crypto.Types is
    ---------------------------------------------------------------------------
 
    function "xor"(Left, Right : Words) return Words is
-      Result : Words(0..Left'Length-1);
    begin
-      if Left'Length /= Right'Length then
-         raise  Constraint_Words_Error;
-      end if;
-      for I in 0..Left'Length-1 loop
-         Result(I) := Left(Left'First+I) xor Right(Right'First+I);
-      end loop;
-      return Result;
+      return Aux_Word."xor"(Left,Right);
    end "xor";
 
    ---------------------------------------------------------------------------
 
    function "+"(Left : Words; Right : Word) return Words is
-      Result: Words(Left'Range) := Left;
+
    begin
-      Result(Left'Last) := Left(Left'Last) + Right;
-
-      -- overflow?
-      if Result(Left'Last) < Left(Left'Last) then
-         for I in reverse  Left'First..Left'Last-1 loop
-            Result(I):=Result(I)+1;
-            if Result(I) /= 0 then
-               return  Result;
-            end if;
-         end loop;
-      end if;
-      return Result;
-
+      return Aux_Word."+"(Left,Right);
    end "+";
 
    ---------------------------------------------------------------------------
@@ -303,35 +267,15 @@ package body Crypto.Types is
    ---------------------------------------------------------------------------
 
    function "xor"(Left, Right : DWords) return DWords is
-      Result : DWords(0..Left'Length-1);
    begin
-      if Left'Length /= Right'Length then
-         raise  Constraint_DWords_Error;
-      end if;
-      for I in 0..Left'Length-1 loop
-         Result(I) := Left(Left'First+I) xor Right(Right'First+I);
-      end loop;
-      return Result;
+      return Aux_DWord."xor"(Left,Right);
    end "xor";
 
    ---------------------------------------------------------------------------
 
    function "+"(Left : DWords; Right : DWord) return DWords is
-      Result: DWords(Left'Range) := Left;
    begin
-      Result(Left'Last) := Left(Left'Last) + Right;
-
-      -- overflow?
-      if Result(Left'Last) < Left(Left'Last) then
-         for I in reverse Left'First..Left'Last-1 loop
-            Result(I):=Result(I)+1;
-            if Result(I) /= 0 then
-               return  Result;
-            end if;
-         end loop;
-      end if;
-      return Result;
-
+      return Aux_DWord."+"(Left,Right);
    end "+";
 
    ---------------------------------------------------------------------------
@@ -358,7 +302,6 @@ package body Crypto.Types is
          end loop;
       end if;
       return Result;
-
    end "+";
 
    ---------------------------------------------------------------------------
@@ -436,11 +379,7 @@ package body Crypto.Types is
       return B;
    end To_Bytes;
    
-   
-   
-   
    ---------------------------------------------------------------------------
-
 
    function To_Hex(B : Byte) return Hex_Byte is
       S : constant String := "0123456789ABCDEF";
@@ -486,11 +425,7 @@ package body Crypto.Types is
 
    function Is_Zero(Byte_Array : Bytes) return Boolean is
    begin
-      for I in  Byte_Array'Range loop
-         if Byte_Array(I) /= 0 then return False;
-         end if;
-      end loop;
-      return True;
+      return Aux_Byte.Is_Zero(Byte_Array);
    end Is_Zero;
 
    ---------------------------------------------------------------------------
@@ -498,22 +433,14 @@ package body Crypto.Types is
 
    function Is_Zero(Word_Array : Words) return Boolean is
    begin
-      for I in  Word_Array'Range loop
-         if Word_Array(I) /= 0 then return False;
-         end if;
-      end loop;
-      return True;
+      return Aux_Word.Is_Zero(Word_Array);
    end Is_Zero;
 
    ---------------------------------------------------------------------------
 
    function Is_Zero(DWord_Array : Dwords) return Boolean is
    begin
-      for I in  DWord_Array'Range loop
-         if DWord_Array(I) /= 0 then return False;
-         end if;
-      end loop;
-      return True;
+      return Aux_DWord.Is_Zero(DWord_Array);
    end Is_Zero;
 
    ---------------------------------------------------------------------------
@@ -647,19 +574,15 @@ package body Crypto.Types is
    ---------------------------------------------------------------------------
    
    function Left_Part(Block : in Bytes) return Bytes is
-      Len  : constant Natural := ((Block'Length+1)/2)-1;
-      Left : constant Bytes(0..Len) := Block(Block'First..(Block'First+Len));
    begin
-      return Left;
+      return Aux_Byte.Left_Part(Block);
    end Left_Part;
    
    ---------------------------------------------------------------------------
    
    function Right_Part(Block : in Bytes) return Bytes is
-      Len : constant Natural := Block'Length/2;	
-      Right : constant Bytes(0..Len-1) := Block(Block'Last-Len+1..Block'Last);
    begin
-      return Right;
+      return Aux_Byte.Right_Part(Block);
    end Right_Part;
    
    ---------------------------------------------------------------------------
@@ -788,5 +711,4 @@ package body Crypto.Types is
    begin
       return B_Block128(Bytes(Left) + Right);
    end "+";
-      
   end Crypto.Types;
