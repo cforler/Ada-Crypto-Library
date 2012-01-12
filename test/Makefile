@@ -6,7 +6,7 @@ CC = gnatmake
 GEN_HTML = tools/gen_coverage_page.sh
 AUNIT_DIR = aunit-3.4/src
 
-CFLAGS = -W -Werror -ggdb -g -gnat05 -gnato -I../src -I$(AUNIT_DIR) -O3 -gnatn -gnatwrclp
+CFLAGS = -W -Werror -ggdb -g -gnat12 -gnato -I../src -I$(AUNIT_DIR) -O3 -gnatn -gnatwrclp
 BFLAGS = -shared -aO./ -aO/lib/ -I$(AUNIT_DIR) -aO../src -I- -x
 LFLAGS = -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src -lacl
 LFLAGS = -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src
@@ -16,7 +16,7 @@ all : aunit big_number test asymmetric hash symmetric
 
 
 #enable for use of GCOV:
-gcov: CFLAGS = -O0 -gnatwrclp  -I../src  -I../src -I$(AUNIT_DIR) -gnat05 -gnatE -gnatf -gnato -W -Wall -Werror -fprofile-arcs -ftest-coverage -fprofile-arcs -fno-inline
+gcov: CFLAGS = -O0 -gnatwrclp  -I../src  -I../src -I$(AUNIT_DIR) -gnat12 -gnatE -gnatf -gnato -W -Wall -Werror -fprofile-arcs -ftest-coverage -fprofile-arcs -fno-inline
 gcov: all 
 
 .PHONY : clean
