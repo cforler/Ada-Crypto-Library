@@ -102,6 +102,10 @@ package Crypto.Asymmetric.RSA is
    procedure Encrypt(Public_Key : in  Public_Key_RSA;
                      Plaintext  : in  RSA_Number;
                      Ciphertext : out RSA_Number);
+   
+   procedure Encrypt(Public_Key  : in  Public_Key_RSA;
+                     Plaintext   : in  Big_Unsigned;
+                     Ciphertext  : out Big_Unsigned);
 
    procedure Decrypt(Private_Key : in  Private_Key_RSA;
                       Ciphertext  : in  RSA_Number;
