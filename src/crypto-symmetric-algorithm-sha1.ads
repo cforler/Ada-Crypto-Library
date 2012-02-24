@@ -34,7 +34,9 @@ package Crypto.Symmetric.Algorithm.SHA1 is
 
    procedure Round(Message_Block : in     W_Block512;
                    Hash_Value    : in out W_Block160);
-
+   
+   
+   --  Last_Message_Length is the length of the last message block in bytes.
    function Final_Round(Last_Message_Block  : W_Block512;
                         Last_Message_Length : Message_Block_Length512;
                         Hash_Value          : W_Block160)
