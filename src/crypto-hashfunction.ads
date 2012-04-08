@@ -25,7 +25,7 @@ with Crypto.Types; use Crypto.Types;
 generic
    type Hash_Type                 is private;
    type Message_Type              is private;
-   type Message_Block_Length_Type is private;
+   type Message_Block_Length_Type is range <>;
    
    with function Generic_To_Bytes(DWord_Array : Hash_Type) return Bytes is <>;
    

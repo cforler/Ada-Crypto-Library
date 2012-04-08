@@ -66,7 +66,7 @@ package body Crypto.Symmetric.Mac.Hmac is
       Round(K xor Opad);
 
       Copy(Tag,Final);
-      Len :=  M_B_Length(Tag);
+      Len := Tag'Size/8;
 
       Tag :=  Final_Round(Final, Len);
 
@@ -98,7 +98,7 @@ package body Crypto.Symmetric.Mac.Hmac is
       Round(K xor Opad);
 
       Copy(Tag2,Final);
-      Len := M_B_Length(Tag);
+      Len := Tag'Size/8;
 
       Tag2 :=  Final_Round(Final, Len);
 

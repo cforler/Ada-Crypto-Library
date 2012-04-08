@@ -26,13 +26,6 @@ package body  Crypto.Symmetric.Mode is
       return Block;
    end To_Bytes;
    
- ---------------------------------------------------------------------------
-   
-   function Length(Block : Bytes) return Positive is
-   begin    
-      return Block'Length;
-   end Length;
-   
    ---------------------------------------------------------------------------
    
    procedure Set_Zero(Block : out Bytes) is

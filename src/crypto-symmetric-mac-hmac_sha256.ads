@@ -29,8 +29,7 @@ package Crypto.Symmetric.Mac.Hmac_SHA256 is
    new  Crypto.Symmetric.Mac.Hmac(H      => Crypto.Hashfunction_SHA256,
                                   Copy   => Crypto.Symmetric.Mac.Copy,
                                   Fill36 => Crypto.Symmetric.Mac.Fill36,
-                                  Fill5C => Crypto.Symmetric.Mac.Fill5C,
-                                  M_B_Length =>  Crypto.Symmetric.Mac.M_B_Length);
+                                  Fill5C => Crypto.Symmetric.Mac.Fill5C);
 
 
 

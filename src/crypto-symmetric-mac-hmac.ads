@@ -29,13 +29,8 @@ generic
      (Left, Right : H.Message_Type)  return H.Message_Type is <>;
    with procedure Fill36 (Ipad : out  H.Message_Type) is <>;
    with procedure Fill5C (Opad : out  H.Message_Type) is <>;
-
    with procedure Copy
      (Source : in H.Hash_Type; Dest : out H.Message_Type) is <>;
-
-     with function M_B_Length
-       (Z : H.Hash_Type) return H.Message_Block_Length_Type is <>;
-
 
 package Crypto.Symmetric.Mac.Hmac is
    use H;

@@ -47,21 +47,11 @@ package Crypto.Symmetric.Mac is
    procedure Copy(Source : in DW_Block512; Dest : out DW_Block512);
    procedure Copy(Source : in DW_Block512; Dest : out DW_Block1024);
 
-   function M_B_Length(H : Words)  return Natural;
-   function M_B_Length(H : DWords) return Natural;
-   function M_B_Length(H : W_Block160) return Natural;
-   function M_B_Length(H : W_Block256) return Natural;
-   function M_B_Length(H : W_Block512) return Natural;
-   function M_B_Length(H : DW_Block512) return Natural;
-
-
-
    ---------------------------------------------------------------------------
    ------------------------------PRIVATE--------------------------------------
    ---------------------------------------------------------------------------
 
-   pragma Inline(Fill36, Fill5C);
-
+   pragma Inline(Fill36, Fill5C,Copy);
    pragma Optimize (Time);
 
 

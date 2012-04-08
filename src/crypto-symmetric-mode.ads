@@ -31,10 +31,9 @@ use Crypto.Types;
 package Crypto.Symmetric.Mode is
    function To_Block(Input : Bytes; OutLen : Positive) return Bytes;
    function To_Bytes(Block : Bytes) return Bytes;
-   function Length(Block : Bytes) return Positive;
    procedure Set_Zero(Block : out Bytes);
    
 private
-   pragma Inline (To_Block,To_Bytes,Length);
+   pragma Inline (To_Block,To_Bytes);
    pragma Optimize(Time);
 end  Crypto.Symmetric.Mode;

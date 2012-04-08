@@ -154,49 +154,7 @@ package body Crypto.Symmetric.Mac is
    begin
       Copy(DWords(Source), DWords(Dest));
    end Copy;
-   ---------------------------------------------------------------------------
-   
-   function M_B_Length(H : Words) return Natural is
-   begin
-      return Shift_Left(H'Length,2);
-   end M_B_Length;
-
-    ---------------------------------------------------------------------------
-
-   function M_B_Length(H : DWords) return Natural is
-   begin
-      return Shift_Left(H'Length,3);
-   end M_B_Length;
-   
-   ---------------------------------------------------------------------------
-     
-   function M_B_Length(H : W_Block160) return Natural is
-   begin
-      return Shift_Left(H'Length,3);
-   end M_B_Length;
-    
-   ---------------------------------------------------------------------------
-   
-   function M_B_Length(H : W_Block256) return Natural is
-   begin
-      return Shift_Left(H'Length,3);
-   end M_B_Length;
-    
-   ---------------------------------------------------------------------------
-   
-   function M_B_Length(H : W_Block512) return Natural is
-   begin
-      return Shift_Left(H'Length,3);
-   end M_B_Length;
-   
-   ---------------------------------------------------------------------------
-   
-   function M_B_Length(H : DW_Block512) return Natural is
-   begin
-      return Shift_Left(H'Length,3);
-   end M_B_Length;
-   
-
+  
 end Crypto.Symmetric.Mac;
 
 

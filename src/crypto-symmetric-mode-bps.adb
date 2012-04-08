@@ -45,11 +45,9 @@ package body Crypto.Symmetric.Mode.BPS is
       Max_B : Natural;
       Len   : constant Natural :=  Plaintext'Length;
       Rest  : Natural;
-      F : Natural;
    begin
       Set_Zero(Plaintextblock);
-      F := Length(Plaintextblock);
-      Max_B := 2*Natural( Log( 2.0**Long_Float(8*F-32), Long_Float(Radix) ) );
+      Max_B := 2*Natural( Log( 2.0**Long_Float(Plaintextblock'Size-32), Long_Float(Radix) ) );
       Rest := Len mod Max_B;
       if  Len <= Max_B then
 	 Ciphertext := BC_Encrypt(Plaintext);
@@ -97,11 +95,9 @@ end Encrypt ;
       Ciphertextblock : BC.Block; 
       Max_B : Natural;
       Len   : constant Natural :=  Ciphertext'Length;
-      F : Natural;   
    begin
       Set_Zero(Ciphertextblock);
-      F := Length(Ciphertextblock);
-      Max_B := 2*Natural( Log( 2.0**Long_Float(8*F-32), Long_Float(Radix) ) );
+      Max_B := 2*Natural( Log( 2.0**Long_Float(Ciphertextblock'Size-32), Long_Float(Radix) ) );
       if  Len <= Max_B then
 	 Plaintext := BC_Decrypt(Ciphertext);
 	 return;
@@ -157,9 +153,8 @@ end Encrypt ;
       Temp : Big_Unsigned;
    begin
       Set_Zero(Plaintextblock);
-      F := Length(Plaintextblock);
-      C := (F*8)-32;  
-      
+      F := Plaintextblock'Size/8;
+      C := (Plaintextblock'Size)-32;  
       for I in 0..Rounds-1 loop
 	 if((I mod 2)=0) then -- Even
 	    Temp := Shift_Left(To_Big_Unsigned(TR xor Byte(I)),C)+Right;
@@ -173,7 +168,6 @@ end Encrypt ;
 	    BC.Encrypt(Plaintextblock,Ciphertextblock);
 	    Right := Add(Right,To_Big_Unsigned(To_Bytes(Ciphertextblock)),SR);
 	 end if;
-	 
       end loop;
   
       for I in 0..L-1 loop
@@ -187,7 +181,6 @@ end Encrypt ;
 	 Right := (Right - Temp)/S; 
 	 Ciphertext(Ciphertext'First+L+I) := Numeral(To_Bytes(Temp)(0));
       end loop;
-      
       return Ciphertext;
       
    end BC_Encrypt;
@@ -211,8 +204,8 @@ end Encrypt ;
       Temp : Big_Unsigned;
    begin
       Set_Zero(Ciphertextblock);
-      F := Length(Ciphertextblock);
-      C := (F*8)-32;      
+      F := Ciphertextblock'Size/8;
+      C := (Ciphertextblock'Size)-32;      
       for I in reverse 0..Rounds-1 loop
 	 if((I mod 2)=0) then -- Even
 	    Temp := Shift_Left(To_Big_Unsigned(TR xor Byte(I)),C)+Right;

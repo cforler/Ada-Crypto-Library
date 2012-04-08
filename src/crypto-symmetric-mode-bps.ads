@@ -25,7 +25,6 @@ with Crypto.Types.Big_Numbers;
 
 generic
    with package BC is new Crypto.Symmetric.Blockcipher(<>); 
-   with function Length(Block : in BC.Block) return Positive is  <>;
    with function To_Block(Input : in Bytes; OutLen : in Positive ) 
 			 return BC.Block is  <>;
    with function To_Bytes(Input : in BC.Block) return Bytes is  <>;
