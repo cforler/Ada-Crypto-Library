@@ -1,4 +1,4 @@
-with Test.Suite_Big_Num;
+with Test.Suite_Big_Num_All;
 with AUnit.Run;
 with AUnit.Reporter.Text;
 with Crypto.Random;
@@ -6,7 +6,7 @@ with AUnit.Test_Results.ACL;
 with Crypto.Random_Source.File;
 
 procedure Test.Big_Number is
-   procedure Run is new AUnit.Run.Test_Runner_With_Results(Test.Suite_Big_Num.Suite);
+   procedure Run is new AUnit.Run.Test_Runner_With_Results(Test.Suite_Big_Num_All.Suite);
    Reporter : AUnit.Reporter.Text.Text_Reporter;
    Results : AUnit.Test_Results.ACl.ACL_Result;
    
