@@ -16,6 +16,7 @@ package body Test.BPS_Mode is
 --------------------------------------------------------------------------------
 
    package AES128 renames Crypto.Symmetric.Blockcipher_AES128;
+   use Crypto.Symmetric.Mode;
    package BPS is new Crypto.Symmetric.Mode.BPS(AES128);
    use BPS;
 

@@ -13,5 +13,6 @@ package Test.OFB_Oneway_Mode is
 	function Name(T: Mode_Test) return Test_String;
 
 	procedure OFB_Oneway_Mode_Test1(T: in out Test_Cases.Test_Case'Class);
+        procedure OFB_Oneway_Mode_Test2(T: in out Test_Cases.Test_Case'Class);
 
 end Test.OFB_Oneway_Mode;

@@ -12,6 +12,7 @@ package Test.OFB_Mode is
 
 	function Name(T: Mode_Test) return Test_String;
 
-	procedure OFB_Mode_Test1(T: in out Test_Cases.Test_Case'Class);
+        procedure OFB_Mode_Test1(T: in out Test_Cases.Test_Case'Class);
+	procedure OFB_Mode_Test2(T: in out Test_Cases.Test_Case'Class);
 
 end Test.OFB_Mode;

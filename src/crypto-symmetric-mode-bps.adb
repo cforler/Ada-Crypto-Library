@@ -41,13 +41,11 @@ package body Crypto.Symmetric.Mode.BPS is
    procedure Encrypt(Plaintext : in Numerals; Ciphertext : out Numerals) is
       TTL : constant Bytes := TL;
       TTR : constant Bytes := TR; 
-      Plaintextblock : BC.Block; 
       Max_B : Natural;
       Len   : constant Natural :=  Plaintext'Length;
       Rest  : Natural;
    begin
-      Set_Zero(Plaintextblock);
-      Max_B := 2*Natural( Log( 2.0**Long_Float(Plaintextblock'Size-32), Long_Float(Radix) ) );
+      Max_B := 2*Natural( Log( 2.0**Long_Float(BC.Block'Size-32), Long_Float(Radix) ) );
       Rest := Len mod Max_B;
       if  Len <= Max_B then
 	 Ciphertext := BC_Encrypt(Plaintext);
@@ -92,12 +90,10 @@ end Encrypt ;
    procedure Decrypt(Ciphertext : in Numerals; Plaintext : out Numerals) is
       TTL : constant Bytes := TL;
       TTR : constant Bytes := TR;  
-      Ciphertextblock : BC.Block; 
       Max_B : Natural;
       Len   : constant Natural :=  Ciphertext'Length;
    begin
-      Set_Zero(Ciphertextblock);
-      Max_B := 2*Natural( Log( 2.0**Long_Float(Ciphertextblock'Size-32), Long_Float(Radix) ) );
+      Max_B := 2*Natural( Log( 2.0**Long_Float(BC.Block'Size-32), Long_Float(Radix) ) );
       if  Len <= Max_B then
 	 Plaintext := BC_Decrypt(Ciphertext);
 	 return;
@@ -144,31 +140,35 @@ end Encrypt ;
 	To_Big_Unsigned(Plaintext(Plaintext'First..Plaintext'First+L-1));
       Right : Big_Unsigned := 
 	To_Big_Unsigned(Plaintext(Plaintext'First+L..Plaintext'Last));
-      Plaintextblock : BC.Block;
+      Plaintextblock : Bytes(0..BC.Block'Size/8-1) := (others =>0);
       Ciphertextblock : BC.Block;
       SL : constant Big_Unsigned := S**(Big_Unsigned_Zero + Mod_Type(L));
       SR : constant Big_Unsigned := S**(Big_Unsigned_Zero + Mod_Type(R));
-      C : Natural;
-      F : Positive;
+      C : constant Natural := (Plaintextblock'Size)-32;
       Temp : Big_Unsigned;
    begin
-      Set_Zero(Plaintextblock);
-      F := Plaintextblock'Size/8;
-      C := (Plaintextblock'Size)-32;  
       for I in 0..Rounds-1 loop
 	 if((I mod 2)=0) then -- Even
 	    Temp := Shift_Left(To_Big_Unsigned(TR xor Byte(I)),C)+Right;
-	    Plaintextblock := To_Block(To_Bytes(Temp),F);
-	    BC.Encrypt(Plaintextblock,Ciphertextblock);
-	    Temp := To_Big_Unsigned(To_Bytes(Ciphertextblock));
-	    Left := Add(Left,Temp,SL);
+	    declare
+	       Temp2 : constant  Bytes:= To_Bytes(Temp);
+	    begin
+	       Plaintextblock(Temp2'Range) := Temp2;
+		 BC.Encrypt(BC.To_Block(Plaintextblock),Ciphertextblock);
+	       Temp := To_Big_Unsigned(To_Bytes(Ciphertextblock));
+	       Left := Add(Left,Temp,SL);
+	    end;
 	 else --Odd
 	    Temp := Shift_Left(To_Big_Unsigned(TL xor Byte(I)),C)+Left;
-	    Plaintextblock := To_Block(To_Bytes(Temp),F);
-	    BC.Encrypt(Plaintextblock,Ciphertextblock);
-	    Right := Add(Right,To_Big_Unsigned(To_Bytes(Ciphertextblock)),SR);
-	 end if;
-      end loop;
+	    declare
+	       Temp2 : constant  Bytes:= To_Bytes(Temp);
+	    begin
+	       Plaintextblock(Temp2'Range) := Temp2;
+	       BC.Encrypt(BC.To_Block(Plaintextblock),Ciphertextblock);
+	       Right := Add(Right,To_Big_Unsigned(To_Bytes(Ciphertextblock)),SR);
+	    end;
+	    end if;
+	 end loop;
   
       for I in 0..L-1 loop
 	 Temp := Left mod S;
@@ -196,27 +196,31 @@ end Encrypt ;
       Right : Big_Unsigned := 
 	To_Big_Unsigned(Ciphertext(Ciphertext'First+L..Ciphertext'Last));
       Plaintextblock : BC.Block;
-      Ciphertextblock : BC.Block;
+      Ciphertextblock : Bytes(0..BC.Block'Size/8-1) := (others =>0);
       SL : constant Big_Unsigned := S**(Big_Unsigned_Zero + Mod_Type(L));
       SR : constant Big_Unsigned := S**(Big_Unsigned_Zero + Mod_Type(R));
-      C : Natural;
-      F : Positive;
+      C : constant Natural :=  (Ciphertextblock'Size)-32;  
       Temp : Big_Unsigned;
    begin
-      Set_Zero(Ciphertextblock);
-      F := Ciphertextblock'Size/8;
-      C := (Ciphertextblock'Size)-32;      
       for I in reverse 0..Rounds-1 loop
 	 if((I mod 2)=0) then -- Even
 	    Temp := Shift_Left(To_Big_Unsigned(TR xor Byte(I)),C)+Right;
-	    Ciphertextblock := To_Block(To_Bytes(Temp),F);
-	    BC.Encrypt(Ciphertextblock,Plaintextblock);
-	    Left := Sub(Left,To_Big_Unsigned(To_Bytes(Plaintextblock)),SL);
+	     declare
+		Temp2 : constant  Bytes:= To_Bytes(Temp);
+	     begin
+		Ciphertextblock(Temp2'Range) := Temp2;
+		BC.Encrypt(BC.To_Block(Ciphertextblock),Plaintextblock);
+		Left := Sub(Left,To_Big_Unsigned(To_Bytes(Plaintextblock)),SL);
+	     end;
 	 else --Odd
 	    Temp := Shift_Left(To_Big_Unsigned(TL xor Byte(I)),C)+Left;
-	    Ciphertextblock := To_Block(To_Bytes(Temp),F);
-	    BC.Encrypt(Ciphertextblock,Plaintextblock);
-	    Right := Sub(Right,To_Big_Unsigned(To_Bytes(Plaintextblock)),SR);
+	    declare
+	       Temp2 : constant  Bytes:= To_Bytes(Temp);
+	    begin
+	       Ciphertextblock(Temp2'Range) := Temp2;
+	       BC.Encrypt(BC.To_Block(Ciphertextblock),Plaintextblock);
+	       Right := Sub(Right,To_Big_Unsigned(To_Bytes(Plaintextblock)),SR);
+	    end;
 	 end if;
       end loop;
       

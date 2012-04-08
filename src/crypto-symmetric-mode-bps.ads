@@ -20,15 +20,11 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with  Crypto.Symmetric.Blockcipher;
+with Crypto.Symmetric.Blockcipher;
 with Crypto.Types.Big_Numbers;
 
 generic
    with package BC is new Crypto.Symmetric.Blockcipher(<>); 
-   with function To_Block(Input : in Bytes; OutLen : in Positive ) 
-			 return BC.Block is  <>;
-   with function To_Bytes(Input : in BC.Block) return Bytes is  <>;
-   with procedure Set_Zero(Block : out BC.Block) is <>;
 
 package Crypto.Symmetric.Mode.BPS is
    package Big is new Crypto.Types.Big_Numbers(1024);

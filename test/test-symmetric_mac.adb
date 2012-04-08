@@ -73,7 +73,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill36 for Words failed!");
+      Assert(Is_Same,"Symmetric Mac Test Fill36 for Words failed!");
 
    end Mac_Test1;
 ------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill36 for DWords failed!");
+      Assert(Is_Same,"Symmetric Mac Test Fill36 for DWords failed!");
 
    end Mac_Test2;
 ------------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill36 for W_Block512 failed!");
+      Assert(Is_Same,"Symmetric Mac Test Fill36 for W_Block512 failed!");
 
    end Mac_Test3;
 ------------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill36 for DW_Block512 failed!");
+      Assert(Is_Same ,"Symmetric Mac Test Fill36 for DW_Block512 failed!");
 
    end Mac_Test4;
 ------------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill36 for DW_Block1024 failed!");
+      Assert(Is_Same ,"Symmetric Mac Test Fill36 for DW_Block1024 failed!");
 
    end Mac_Test5;
 ------------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill5C for Words failed!");
+      Assert(Is_Same,"Symmetric Mac Test Fill5C for Words failed!");
 
    end Mac_Test6;
 ------------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill5C for DWords failed!");
+      Assert(Is_Same,"Symmetric Mac Test Fill5C for DWords failed!");
 
    end Mac_Test7;
 ------------------------------------------------------------------------------------
@@ -206,7 +206,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill5C for W_Block256 failed!");
+      Assert(Is_Same,"Symmetric Mac Test Fill5C for W_Block256 failed!");
 
    end Mac_Test8;
 ------------------------------------------------------------------------------------
@@ -225,7 +225,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill5C for W_Block512 failed!");
+      Assert(Is_Same,"Symmetric Mac Test Fill5C for W_Block512 failed!");
 
    end Mac_Test9;
 ------------------------------------------------------------------------------------
@@ -244,7 +244,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill5C for DW_Block512 failed!");
+      Assert(Is_Same,"Symmetric Mac Test Fill5C for DW_Block512 failed!");
 
    end Mac_Test10;
 ------------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Fill5C for DW_Block1024 failed!");
+      Assert(Is_Same,"Symmetric Mac Test Fill5C for DW_Block1024 failed!");
 
    end Mac_Test11;
 ------------------------------------------------------------------------------------
@@ -287,7 +287,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Copy for Words failed!");
+      Assert(Is_Same ,"Symmetric Mac Test Copy for Words failed!");
 
    end Mac_Test12;
    
@@ -313,7 +313,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Copy for DWords failed!");
+      Assert(Is_Same,"Symmetric Mac Test Copy for DWords failed!");
 
    end Mac_Test20;
 ------------------------------------------------------------------------------------
@@ -338,7 +338,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Copy for W_Block160 failed!");
+      Assert(Is_Same,"Symmetric Mac Test Copy for W_Block160 failed!");
 
    end Mac_Test21;
 ------------------------------------------------------------------------------------
@@ -363,7 +363,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Copy for W_Block256 failed!");
+      Assert(Is_Same ,"Symmetric Mac Test Copy for W_Block256 failed!");
 
    end Mac_Test22;
 ------------------------------------------------------------------------------------
@@ -388,7 +388,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Copy for DW_Block512 failed!");
+      Assert(Is_Same,"Symmetric Mac Test Copy for DW_Block512 failed!");
 
    end Mac_Test23;
 ------------------------------------------------------------------------------------
@@ -413,7 +413,7 @@ use Crypto.Types;
          end if;
       end loop;
 
-      Assert(Is_Same = True ,"Symmetric Mac Test Copy for DW_Block512 failed!");
+      Assert(Is_Same ,"Symmetric Mac Test Copy for DW_Block512 failed!");
 
    end Mac_Test24;
 ------------------------------------------------------------------------------------

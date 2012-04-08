@@ -13,6 +13,7 @@ with Test.Twofish256;
 with Test.TDES;
 with Test.TDES_Obsolete;
 with Test.Noobcipher;
+with Test.BPS_Mode;
 
 package body Test.Suite_Blockciphers is
    use AUnit.Test_Suites;
@@ -27,6 +28,7 @@ package body Test.Suite_Blockciphers is
    Test_CFB_Mode: 	aliased Test.CFB_Mode.Mode_Test;
    Test_CTR_Mode: 	aliased Test.CTR_Mode.Mode_Test;
    Test_OFB_Mode: 	aliased Test.OFB_Mode.Mode_Test;
+   Test_BPS_Mode:       aliased Test.BPS_Mode.BPS_Mode_Test;
    Test_Twofish128:	aliased Test.Twofish128.Twofish_Test;
    Test_Twofish192:	aliased Test.Twofish192.Twofish_Test;
    Test_Twofish256:	aliased Test.Twofish256.Twofish_Test;
@@ -45,6 +47,7 @@ package body Test.Suite_Blockciphers is
       Add_Test(Result'Access, Test_CFB_Mode'Access);
       Add_Test(Result'Access, Test_CTR_Mode'Access);
       Add_Test(Result'Access, Test_OFB_Mode'Access);
+      Add_Test(Result'Access, Test_BPS_Mode'Access);
       Add_Test(Result'Access, Test_Twofish128'Access);
       Add_Test(Result'Access, Test_Twofish192'Access);
       Add_Test(Result'Access, Test_Twofish256'Access);

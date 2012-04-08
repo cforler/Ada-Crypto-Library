@@ -10,7 +10,8 @@ package Test.Aes_Oneway is
 
    function Name(T: Aes_Oneway_Test) return Test_String;
 
-   procedure Aes_Oneway_Test1(T: in out Test_Cases.Test_Case'Class);
-   procedure Aes_Oneway_Test2(T: in out Test_Cases.Test_Case'Class);
-
+   procedure Aes_Oneway_Test1921(T: in out Test_Cases.Test_Case'Class);
+   procedure Aes_Oneway_Test1922(T: in out Test_Cases.Test_Case'Class);
+   procedure Aes_Oneway_Test2561(T: in out Test_Cases.Test_Case'Class);
+   procedure Aes_Oneway_Test2562(T: in out Test_Cases.Test_Case'Class);   
 end Test.Aes_Oneway;

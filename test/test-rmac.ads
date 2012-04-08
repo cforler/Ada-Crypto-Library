@@ -13,5 +13,6 @@ package Test.RMAC is
 	function Name(T: RMAC_Test) return Test_String;
 
 	procedure RMAC_Test1(T: in out Test_Cases.Test_Case'Class);
+   	procedure RMAC_Test2(T: in out Test_Cases.Test_Case'Class);
 
 end Test.RMAC;

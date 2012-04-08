@@ -18,4 +18,16 @@ package Test.Elliptic_Curves_NSS_BF is
 
 	procedure Elliptic_Curves_Test3(T: in out Test_Cases.Test_Case'Class);
 
+	procedure Elliptic_Curves_Test4(T: in out Test_Cases.Test_Case'Class);
+
+	procedure Elliptic_Curves_Test5(T: in out Test_Cases.Test_Case'Class);
+
+	procedure Elliptic_Curves_Test6(T: in out Test_Cases.Test_Case'Class);
+
+	procedure Elliptic_Curves_Test7(T: in out Test_Cases.Test_Case'Class);
+
+	procedure Elliptic_Curves_Test8(T: in out Test_Cases.Test_Case'Class);
+
+	procedure Elliptic_Curves_Test9(T: in out Test_Cases.Test_Case'Class);
+
 end Test.Elliptic_Curves_NSS_BF;

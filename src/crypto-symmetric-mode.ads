@@ -19,21 +19,8 @@
 -- executable to be covered by the GNU General Public License. This
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
-
---All modes are based on the FIPS PUB 81
-
---with Crypto.Symmetric.Blockcipher;
---with Crypto.Symmetric.Oneway_Blockcipher;
 with Crypto.Types;
-
-use Crypto.Types;
+use  Crypto.Types;
 
 package Crypto.Symmetric.Mode is
-   function To_Block(Input : Bytes; OutLen : Positive) return Bytes;
-   function To_Bytes(Block : Bytes) return Bytes;
-   procedure Set_Zero(Block : out Bytes);
-   
-private
-   pragma Inline (To_Block,To_Bytes);
-   pragma Optimize(Time);
-end  Crypto.Symmetric.Mode;
+end Crypto.Symmetric.Mode;

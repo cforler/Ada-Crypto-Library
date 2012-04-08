@@ -1,7 +1,7 @@
-with AUnit.Assertions; 
+with AUnit.Assertions;
 with Crypto.Asymmetric.RSA;
 with Crypto.Types;
-
+with Ada.Text_IO;
 package body Test.RSA is
 
 ------------------------------------------------------------------------------------
@@ -57,31 +57,62 @@ package body Test.RSA is
       16#16#, 16#4a#, 16#b6#, 16#4e#, 16#20#, 16#b1#, 16#33#, 16#4e#,
       16#3c#, 16#81#, 16#c0#, 16#4c#, 16#2b#, 16#d1#, 16#29#, 16#2c#,
       16#52#, 16#7d#, 16#04#, 16#74#, 16#5b#, 16#e3#, 16#f0#, 16#c9#);
-    
+
+   Mess: RSA_Number :=
+     (16#43#, 16#79#, 16#cf#, 16#00#, 16#3c#, 16#3b#, 16#74#, 16#0d#,
+      16#d6#, 16#34#, 16#00#, 16#0c#, 16#4d#, 16#03#, 16#43#, 16#98#,
+      16#29#, 16#3c#, 16#39#, 16#3e#, 16#9c#, 16#98#, 16#5f#, 16#23#,
+      16#f7#, 16#8e#, 16#00#, 16#49#, 16#cd#, 16#f3#, 16#2f#, 16#ce#,
+      16#24#, 16#9f#, 16#8e#, 16#c3#, 16#2d#, 16#6b#, 16#a3#, 16#f7#,
+      16#16#, 16#4a#, 16#b6#, 16#4e#, 16#00#, 16#b1#, 16#33#, 16#4e#,
+      16#3c#, 16#81#, 16#c0#, 16#4c#, 16#2b#, 16#d1#, 16#29#, 16#2c#,
+      16#00#, 16#7d#, 16#04#, 16#74#, 16#5b#, 16#e3#, 16#f0#, 16#c9#);
+
+   Comp: RSA_Number :=
+     (16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#, 16#49#, 16#96#, 16#02#, 16#d2#);
+
     M: Bytes := (16#D4#, 16#36#, 16#e9#, 16#95#, 16#69#, 16#fd#, 16#32#,
                  16#a7#, 16#c8#, 16#a0#, 16#5b#, 16#bc#, 16#90#, 16#d3#,
                  16#2c#, 16#49#);
-    
+
     A: Public_Key_RSA ;
     B: Private_Key_RSA ;
-     
+
     Public_Key:  Public_Key_RSA;
     Private_Key: Private_Key_RSA;
+   Private_Key_Comp: Private_Key_RSA;
 
+    Plain_Text: RSA_Number :=(others => 0);
+    Cipher_Text, Plain_Text2 : RSA_Number;
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 ------------------------------- Register RSA Test 1 --------------------------------
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
-	
+
 	procedure Register_Tests(T : in out RSA_Test) is
 		use Test_Cases.Registration;
 	begin
 		Register_Routine(T, RSA_Test1'Access,"RSA_Test1.");
 		Register_Routine(T, RSA_Test2'Access,"RSA_Test2.");
 		Register_Routine(T, RSA_Test3'Access,"RSA_Test3.");
-	end Register_Tests;
+      		Register_Routine(T, RSA_Test4'Access,"RSA_Test4.");
+                Register_Routine(T, RSA_Test5'Access,"RSA_Test5.");
+                Register_Routine(T, RSA_Test6'Access,"RSA_Test6.");
+                Register_Routine(T, RSA_Test7'Access,"RSA_Test7.");
+      		Register_Routine(T, RSA_Test8'Access,"RSA_new To_Big_Unsigned Test.");
+      		Register_Routine(T, RSA_Test9'Access,"RSA_new Encrypt/Decrypt Test.");
+      		Register_Routine(T, RSA_Test10'Access,"RSA_new Get Public/Private Key Test.");
+      		Register_Routine(T, RSA_Test11'Access,"RSA_new Set Private Key Test.");
+        end Register_Tests;
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
@@ -102,9 +133,9 @@ package body Test.RSA is
 ------------------------------------------------------------------------------------
 
    procedure RSA_Test1(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions; 
+      use AUnit.Assertions;
    begin
-   	   
+
 --   	   E(E'Last) := 16#11#;
    	   Set_Public_Key(N, E, Public_Key);
    	   Set_Private_Key(N, D, Phi, Private_Key);
@@ -117,9 +148,9 @@ package body Test.RSA is
 ------------------------------------------------------------------------------------
 
    procedure RSA_Test2(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions; 
+      use AUnit.Assertions;
    begin
-   	   
+
    	   declare
    	   	   Ciphertext: Bytes := OAEP_Encrypt(Public_Key, M);
 		   Plaintext: Bytes := OAEP_Decrypt(Private_Key, Ciphertext);
@@ -137,7 +168,7 @@ package body Test.RSA is
 ------------------------------------------------------------------------------------
 
    procedure RSA_Test3(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions; 
+      use AUnit.Assertions;
    begin
 
    	   Gen_Key(A, B);
@@ -146,5 +177,179 @@ package body Test.RSA is
    end RSA_Test3;
 
 ------------------------------------------------------------------------------------
+-------------------------------------- Test 4 --------------------------------------
+------------------------------------------------------------------------------------
+
+   procedure RSA_Test4(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions;
+   begin
+      declare
+         Private_Key_New : Private_Key_RSA;
+         N_New, D_New, Phi_New : RSA_Number;
+      begin
+         Get_Private_Key(Private_Key, N_New, D_New, Phi_New);
+         Set_Private_Key(N_New, D_New, Phi_New, Private_Key_New);
+
+   	 Assert(Verify_Key_Pair(Private_Key_New, Public_Key), "RSA getting private key failed.");
+      end;
+   end RSA_Test4;
+
+------------------------------------------------------------------------------------
+-------------------------------------- Test 5 --------------------------------------
+------------------------------------------------------------------------------------
+
+   procedure RSA_Test5(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions;
+   begin
+      declare
+         Public_Key_New : Public_Key_RSA;
+         N_New, E_New : RSA_Number;
+      begin
+         Get_Public_Key(A, N_New, E_New);
+         Set_Public_Key(N_New, E_New, Public_Key_New);
+
+         Assert(Verify_Key_Pair(B, Public_Key_New), "RSA getting public key failed.");
+      end;
+   end RSA_Test5;
+
+------------------------------------------------------------------------------------
+-------------------------------------- Test 6 --------------------------------------
+------------------------------------------------------------------------------------
+
+   procedure RSA_Test6(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions;
+   begin
+      declare
+         Private_Key_New : Private_Key_RSA;
+         N_Tem, D_Tem, Phi_Tem : RSA_Number;
+         N_New, D_New, Phi_New : RSA.Big.Big_Unsigned;
+      begin
+         Get_Private_Key(Private_Key, N_Tem, D_Tem, Phi_Tem);
+         N_New := RSA.Big.Utils.To_Big_Unsigned(N_Tem);
+         D_New := RSA.Big.Utils.To_Big_Unsigned(D_Tem);
+         Phi_New := RSA.Big.Utils.To_Big_Unsigned(Phi_Tem);
+         Set_Private_Key(N_New, D_New, Phi_New, Private_Key_New);
+
+   	 Assert(Verify_Key_Pair(Private_Key_New, Public_Key), "RSA getting private key failed.");
+      end;
+   end RSA_Test6;
+
+------------------------------------------------------------------------------------
+-------------------------------------- Test 7 --------------------------------------
+------------------------------------------------------------------------------------
+
+   procedure RSA_Test7(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions;
+   begin
+           Encrypt(A ,Plain_Text ,Cipher_Text);
+      --Decrypt(B ,Cipher_Text, Plain_Text2);
+           Ada.Text_IO.Put_Line(Integer'Image(Plain_Text'First));
+           Ada.Text_IO.Put_Line(Integer'Image(Plain_Text'Last));
+           for i in Plain_Text'Range loop
+              Ada.Text_IO.Put(Crypto.Types.Byte'Image(Plain_Text(i)));
+           end loop;
+           Ada.Text_IO.New_Line;
+           Decrypt(B ,Cipher_Text, Plain_Text2);
+           for i in Plain_Text2'Range loop
+              Ada.Text_IO.Put(Crypto.Types.Byte'Image(Plain_Text2(i)));
+           end loop;
+           Ada.Text_IO.Put_Line(Integer'Image(Plain_Text2'First));
+           Ada.Text_IO.Put_Line(Integer'Image(Plain_Text2'Last));
+   	   Assert(Plain_Text = Plain_Text2, "RSA encrypting and decrypting failed.");
+
+   end RSA_Test7;
+
+   ------------------------------------------------------------------------------------
+   -------------------------------------- Test 8 --------------------------------------
+   ------------------------------------------------------------------------------------
+
+   procedure RSA_Test8(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions;
+      use RSA.Big;
+      BigMess, BigCiph, BigDecMess: RSA.Big.Big_Unsigned;
+   begin
+      BigMess := RSA.Big.Utils.To_Big_Unsigned(S => "1234567890");
+      Set_Public_Key(N, E, Public_Key);
+      Set_Private_Key(N, D, Phi, Private_Key);
+      RSA.Encrypt(Public_Key => Public_Key,
+                          Plaintext  => BigMess,
+                          Ciphertext => BigCiph);
+      RSA.Decrypt(Private_Key => Private_Key,
+                          Ciphertext  => BigCiph,
+                          Plaintext   => BigDecMess);
+
+      Assert(BigMess = BigDecMess, "RSA_new Encrypt/Decrypt failed.");
+
+   end RSA_Test8;
+
+   ------------------------------------------------------------------------------------
+   -------------------------------------- Test 9 --------------------------------------
+   ------------------------------------------------------------------------------------
+
+   procedure RSA_Test9(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions;
+
+      Plaintext:RSA_number;
+      Ciphertext:RSA_number;
+
+   begin
+      Set_Public_Key(N, E, Public_Key);
+      Set_Private_Key(N, D, Phi, Private_Key);
+      RSA.Encrypt(Public_Key => Public_Key,
+                          Plaintext  => Mess,
+                          Ciphertext => Ciphertext);
+      RSA.Decrypt(Private_Key => Private_Key,
+                          Ciphertext  => Ciphertext,
+                          Plaintext   => Plaintext);
+
+      Assert(Mess = Plaintext, "RSA_new Encrypt/Decrypt failed.");
+
+
+   end RSA_Test9;
+
+   ------------------------------------------------------------------------------------
+   -------------------------------------- Test 10 -------------------------------------
+   ------------------------------------------------------------------------------------
+
+   procedure RSA_Test10(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions;
+      NComp, EComp, DComp, PhiComp: RSA_Number;
+   begin
+
+      RSA.Get_Public_Key(Public_Key => Public_Key,
+                                 N          => NComp,
+                                 E          => EComp);
+      RSA.Get_Private_Key(Private_Key => Private_Key,
+                                  N           => NComp,
+                                  D           => DComp,
+                                  Phi         => PhiComp);
+      Assert(N=NComp AND E=EComp AND D= DComp AND Phi=PhiComp, "RSA_new Get Public/Private Key failed.");
+
+   end RSA_Test10;
+
+   ------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
+   -------------------------------------- Test 11 -------------------------------------
+   ------------------------------------------------------------------------------------
+
+   procedure RSA_Test11(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions;
+
+   begin
+
+      RSA.Set_Private_Key(N           => N,
+                                  D           => D,
+                                  Phi         => Phi,
+                                  Private_Key => Private_Key_Comp);
+      Assert(Private_Key = Private_Key_Comp, "RSA_new Set Private Key(RSA_Number) failed.");
+
+      RSA.Set_Private_Key(N           => RSA.Big.Utils.To_Big_Unsigned(N),
+                                  D           => RSA.Big.Utils.To_Big_Unsigned(D),
+                                  Phi         => RSA.Big.Utils.To_Big_Unsigned(Phi),
+                                  Private_Key => Private_Key_Comp);
+      Assert(Private_Key = Private_Key_Comp, "RSA_new Set Private Key(Big_Number) failed.");
+
+
+   end RSA_Test11;
 
 end Test.RSA;

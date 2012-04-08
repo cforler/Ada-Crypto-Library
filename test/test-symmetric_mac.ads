@@ -35,21 +35,7 @@ package Test.Symmetric_Mac is
         procedure Mac_Test11(T: in out Test_Cases.Test_Case'Class);
 
         procedure Mac_Test12(T: in out Test_Cases.Test_Case'Class);
-
-      --  procedure Mac_Test13(T: in out Test_Cases.Test_Case'Class);
-
-        procedure Mac_Test14(T: in out Test_Cases.Test_Case'Class);
-
-        procedure Mac_Test15(T: in out Test_Cases.Test_Case'Class);
-
-        procedure Mac_Test16(T: in out Test_Cases.Test_Case'Class);
-
-        procedure Mac_Test17(T: in out Test_Cases.Test_Case'Class);
-
-        procedure Mac_Test18(T: in out Test_Cases.Test_Case'Class);
-
-        procedure Mac_Test19(T: in out Test_Cases.Test_Case'Class);
-
+	
         procedure Mac_Test20(T: in out Test_Cases.Test_Case'Class);
 
         procedure Mac_Test21(T: in out Test_Cases.Test_Case'Class);

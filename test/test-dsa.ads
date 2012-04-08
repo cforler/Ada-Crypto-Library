@@ -16,6 +16,14 @@ package Test.DSA is
 
 	procedure DSA_Test2(T: in out Test_Cases.Test_Case'Class);
 
-	procedure DSA_Test3(T: in out Test_Cases.Test_Case'Class);
+   	procedure DSA_Test3(T: in out Test_Cases.Test_Case'Class);
+
+        procedure DSA_Test4(T: in out Test_Cases.Test_Case'Class);
+
+   	procedure DSA_Test5(T: in out Test_Cases.Test_Case'Class);
+
+        procedure DSA_Test6(T: in out Test_Cases.Test_Case'Class);
+
+   	procedure DSA_Test7(T: in out Test_Cases.Test_Case'Class);
 
 end Test.DSA;
