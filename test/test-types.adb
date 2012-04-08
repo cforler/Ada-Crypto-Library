@@ -45,9 +45,9 @@ package body Test.Types is
       Register_Routine(T, Types_Test28'Access,"Bytes to B_Block128");
       Register_Routine(T, Types_Test29'Access,"Bytes to B_Block192");
       Register_Routine(T, Types_Test30'Access,"Bytes to B_Block256");
-      Register_Routine(T, Types_Test31'Access,"Words xor Words Constraint_Words_Error Test");
-      Register_Routine(T, Types_Test32'Access,"Bytes xor Bytes Constraint_Bytes_Error Test");
-      Register_Routine(T, Types_Test33'Access,"DWords xor DWords Constraint_DWords_Error Test");
+      Register_Routine(T, Types_Test31'Access,"Words xor Words Constraint_Error Test");
+      Register_Routine(T, Types_Test32'Access,"Bytes xor Bytes Constraint_Error Test");
+      Register_Routine(T, Types_Test33'Access,"DWords xor DWords Constraint_Error Test");
       Register_Routine(T, Types_Test34'Access,"Byte to Hex");
    end Register_Tests;
 
@@ -196,10 +196,10 @@ package body Test.Types is
       use AUnit.Assertions;
       I : Crypto.Types.Words(0..1);
       O : Crypto.Types.Bytes(0..7);
-      I_W256 : Crypto.Types.W_Block256;
+      I_W256 : Crypto.Types.W_Block256 := (others => 0);
       O_W256 : Crypto.Types.Bytes(0..31);
       O2_W256 : Crypto.Types.Bytes(0..31);
-      I_W512 : Crypto.Types.W_Block512;
+      I_W512 : Crypto.Types.W_Block512 := (others => 0);
       O_W512 : Crypto.Types.Bytes(0..63);
       O2_W512 : Crypto.Types.Bytes(0..63);
    begin
@@ -234,7 +234,7 @@ package body Test.Types is
       O1 := Crypto.Types.Is_Zero(I1);
       O2 := Crypto.Types.Is_Zero(I2);
 
-      Assert(O1 = True and O2 = False, "Is_Zero Test failed");
+      Assert(O1 and (O2 = False), "Is_Zero Test failed");
    end Types_Test9;
 
    -----------------------------------------------------------------------------
@@ -398,7 +398,7 @@ package body Test.Types is
       Padding(I3, 8, I4);
       Padding(I5, 9, I6);
 
-      Assert(I1 = (2,4,6,8,9,0,0,0,3) and Is_Zero(I2) = True and I3 = (2,4,6,8,9,1,1,1,0) and I4 = (0,0,0,0,0,0,0,0,I4'Length) and I5 = (2,4,6,8,9,1,1,1,1) and I6 = (0,0,0,0,0,0,0,0,I6'Length-1), "Zero Padding Bytes failed");
+      Assert(I1 = (2,4,6,8,9,0,0,0,3) and Is_Zero(I2) and I3 = (2,4,6,8,9,1,1,1,0) and I4 = (0,0,0,0,0,0,0,0,I4'Length) and I5 = (2,4,6,8,9,1,1,1,1) and I6 = (0,0,0,0,0,0,0,0,I6'Length-1), "Zero Padding Bytes failed");
    end Types_Test18;
 
    -----------------------------------------------------------------------------
@@ -418,7 +418,7 @@ package body Test.Types is
       Padding(I3, 8, I4);
       Padding(I5, 9, I6);
 
-      Assert(I1 = (2,4,6,8,9,0,0,0,3) and Is_Zero(I2) = True and I3 = (2,4,6,8,9,1,1,1,0) and I4 = (0,0,0,0,0,0,0,0,I4'Length) and I5 = (2,4,6,8,9,1,1,1,1) and I6 = (0,0,0,0,0,0,0,0,I6'Length-1), "Zero Padding Bytes failed");
+      Assert(I1 = (2,4,6,8,9,0,0,0,3) and Is_Zero(I2) and I3 = (2,4,6,8,9,1,1,1,0) and I4 = (0,0,0,0,0,0,0,0,I4'Length) and I5 = (2,4,6,8,9,1,1,1,1) and I6 = (0,0,0,0,0,0,0,0,I6'Length-1), "Zero Padding Bytes failed");
    end Types_Test19;
 
    -----------------------------------------------------------------------------
@@ -438,7 +438,7 @@ package body Test.Types is
       Padding(I3, 8, I4);
       Padding(I5, 9, I6);
 
-      Assert(I1 = (2,4,6,8,9,0,0,0,3) and Is_Zero(I2) = True and I3 = (2,4,6,8,9,1,1,1,0) and I4 = (0,0,0,0,0,0,0,0,I4'Length) and I5 = (2,4,6,8,9,1,1,1,1) and I6 = (0,0,0,0,0,0,0,0,I6'Length-1), "Zero Padding Bytes failed");
+      Assert(I1 = (2,4,6,8,9,0,0,0,3) and Is_Zero(I2)  and I3 = (2,4,6,8,9,1,1,1,0) and I4 = (0,0,0,0,0,0,0,0,I4'Length) and I5 = (2,4,6,8,9,1,1,1,1) and I6 = (0,0,0,0,0,0,0,0,I6'Length-1), "Zero Padding Bytes failed");
    end Types_Test20;
 
    -----------------------------------------------------------------------------
@@ -615,9 +615,9 @@ package body Test.Types is
    begin
       O := I2 xor I1;
 
-      Assert(False, "Constraint_Words_Error was expected but did not occur");
+      Assert(False, "Constraint_Error was expected but did not occur");
    exception
-      when Constraint_Words_Error => Assert(True, "");
+      when Constraint_Error => Assert(True, "");
       when Error : others => Assert(False, "Constraint_Words_Error was expected but another (unexpected) exception occured");
    end Types_Test31;
 
@@ -633,10 +633,10 @@ package body Test.Types is
    begin
       O := I2 xor I1;
 
-      Assert(False, "Constraint_Bytes_Error was expected but did not occur");
+      Assert(False, "Constraint_Error was expected but did not occur");
    exception
-      when Constraint_Bytes_Error => Assert(True, "");
-      when Error : others => Assert(False, "Constraint_Bytes_Error was expected but another (unexpected) exception occured");
+      when Constraint_Error => Assert(True, "");
+      when Error : others => Assert(False, "Constraint_Error was expected but another (unexpected) exception occured");
    end Types_Test32;
 
    -----------------------------------------------------------------------------
@@ -651,10 +651,10 @@ package body Test.Types is
    begin
       O := I2 xor I1;
 
-      Assert(False, "Constraint_DWords_Error was expected but did not occur");
+      Assert(False, "Constraint_Error was expected but did not occur");
    exception
-      when Constraint_DWords_Error => Assert(True, "");
-      when Error : others => Assert(False, "Constraint_DWords_Error was expected but another (unexpected) exception occured");
+      when Constraint_Error => Assert(True, "");
+      when Error : others => Assert(False, "Constraint_Error was expected but another (unexpected) exception occured");
    end Types_Test33;
 
    -----------------------------------------------------------------------------
@@ -671,7 +671,7 @@ package body Test.Types is
       O1 := Crypto.Types.To_Hex(I1);
       O2 := Crypto.Types.To_Hex(I2);
 
-      Assert(O1 = "00" and O2 = "25", "Constraint_DWords_Error was expected but did not occur");
+      Assert(O1 = "00" and O2 = "25", "Constraint_Error was expected but did not occur");
    end Types_Test34;
 
 end Test.Types;

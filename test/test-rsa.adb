@@ -242,7 +242,6 @@ package body Test.RSA is
       use AUnit.Assertions;
    begin
            Encrypt(A ,Plain_Text ,Cipher_Text);
-      --Decrypt(B ,Cipher_Text, Plain_Text2);
            Ada.Text_IO.Put_Line(Integer'Image(Plain_Text'First));
            Ada.Text_IO.Put_Line(Integer'Image(Plain_Text'Last));
            for i in Plain_Text'Range loop

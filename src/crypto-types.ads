@@ -304,11 +304,7 @@ package Crypto.Types is
    -------------------------------EXCEPTIONS----------------------------------
    ---------------------------------------------------------------------------
 
-   Constraint_Bytes_Error  : exception;
-   Constraint_Words_Error  : exception;
-   Constraint_DWords_Error : exception;
-
-   Constraint_Length_Error : exception;
+   Constraint_Length_Error         : exception;
    Constraint_Message_Length_Error : exception;
 
    ---------------------------------------------------------------------------

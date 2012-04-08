@@ -41,7 +41,7 @@ package body Crypto.Symmetric.Algorithm.MMH is
       Utmp : DWord;
    begin
       if Key'Length /= Message'Length then
-         raise  Constraint_Words_Error;
+         raise  Constraint_Error;
       else
          for I in 0..Key'Length-1 loop
             Sum := Sum +

@@ -42,9 +42,9 @@ package body Crypto.Asymmetric.RSA is
 
    function To_RSA_Number(X : Big_Unsigned) return RSA_Number is
       R : RSA_Number := (others=> 0);
-      N : constant Natural := Length_In_Bytes(X)-1;
+      N : constant Integer := Length_In_Bytes(X)-1;
    begin
-      if N /= 0 then R(R'Last-N..R'Last) := To_Bytes(X);
+      if N > 0 then R(R'Last-N..R'Last) := To_Bytes(X);
       end if;
       return R;
    end To_RSA_Number;
