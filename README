@@ -18,7 +18,7 @@ For the specifics of this license, see file 'COPYING', included in
 this distribution.
 
 
-Welcome to the ADA Crypto Library (ACL) aka libadacrypt-0.2
+Welcome to the ADA Crypto Library (ACL) aka libadacrypt-0.4.1
 ============================================================
 
 About ACL:
@@ -35,10 +35,12 @@ are legally entitled to do so.
 Implemented Features
 ---------------------
  -- Symmetric Cryptography
-   - Block Ciphers: AES, Twofish, 3DES, Serpent
+   - Blockciphers: AES, Twofish, 3DES, Serpent
    - Modes of Operation : BPS, CFB, Ctr, OFB 
+   - Tweakable Blockcipher Modes:  CMT, XT
    - Hash functions: SHA-1 (broken), SHA-256, (SHA-384), SHA-512, Whirlpool
-   - MACs: RMAC, HMAC
+   - MACs: RMAC, HMAC, CMAC
+   - Authenticated Encryption schemes: OCB, SIV and McOE
 
 -- Big (unsigned) number library
   -- Primary cyclic group arithmetic  (Z_p)
@@ -54,14 +56,12 @@ Implemented Features
   -- OEAP-RSA 
   -- ECDSA, ECDH
 
--- AUnit-3.4 based Test suite
+ -- Nonce Generator Support: Random, Counter, Mixed
+ -- AUnit-3.4 based Test suite
  
 
 Planned Feature
 -----------------
- -- Authenticated Encryption (AE) schemes like OCB and SIV
- -- Nonce Generator Support
- -- Data and information flow analysis (SPARK).
  -- Pseudo Random Number Generators (PRNG)
  -- X509 support (ASN.1 library is in process)
  -- Heap and Stack burning
