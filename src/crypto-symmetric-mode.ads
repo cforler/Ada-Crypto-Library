@@ -19,8 +19,10 @@
 -- executable to be covered by the GNU General Public License. This
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
-with Crypto.Types;
-use  Crypto.Types;
-
-package Crypto.Symmetric.Mode is
-end Crypto.Symmetric.Mode;
+ pragma Warnings (Off);
+ with Crypto.Types;
+ use  Crypto.Types;
+ pragma Warnings (On);
+ 
+ package Crypto.Symmetric.Mode is
+ end Crypto.Symmetric.Mode;

@@ -12,8 +12,8 @@ CFLAGS=-c  -shared -gnato -s -O3 -gnatn -gnat12 -W -Wall -Werror
 all: types asymmetric symmetric
 gcov: CFLAGS=-f -c -shared -gnat12 -s -O0 -gnatE -gnatf -gnato -W -Wall -Werror -fprofile-arcs -ftest-coverage -fprofile-arcs -fno-inline
 gcov: all
-symmetric: hashfunction onewaybc mode mac blockcipher
-asymmetric: crypto-asymmetric-dsa crypto-asymmetric-rsa ec
+symmetric: hashfunction onewaybc mode mac blockcipher ae tweakable-blockcipher crypto-symmetric-utils
+asymmetric: crypto-asymmetric-dsa crypto-asymmetric-rsa ec 
 certificate: crypto-certificate
 ec:  crypto-asymmetric-ecdsa crypto-symmetric-algorithm-ecdh crypto-symmetric-algorithm-ecies
 hashfunction: crypto-hashfunction_sha256 crypto-hashfunction_sha512 crypto-hashfunction_whirlpool
@@ -21,7 +21,9 @@ onewaybc: crypto-symmetric-oneway_blockcipher_whirlpool crypto-symmetric-oneway_
 mode: crypto-symmetric-mode-oneway_ofb crypto-symmetric-mode-oneway_ctr crypto-symmetric-mode-oneway_cfb crypto-symmetric-mode-ofb crypto-symmetric-mode-ctr crypto-symmetric-mode-cfb crypto-symmetric-mode-cbc crypto-symmetric-mode-bps
 mac: crypto-symmetric-mac-rmac crypto-symmetric-mac-hmac_whirlpool crypto-symmetric-mac-hmac_sha512 crypto-symmetric-mac-hmac_sha256 crypto-symmetric-mac-hmac_sha1
 blockcipher:  crypto-symmetric-blockcipher_twofish256 crypto-symmetric-blockcipher_twofish192 crypto-symmetric-blockcipher_twofish128 crypto-symmetric-blockcipher_tripledes crypto-symmetric-blockcipher_serpent256 crypto-symmetric-blockcipher_obsolete_tripledes crypto-symmetric-blockcipher_blowfish128 crypto-symmetric-blockcipher_aes256 crypto-symmetric-blockcipher_aes192 crypto-symmetric-blockcipher_aes128
-types: crypto-types-big_numbers crypto-types-elliptic_curves-ss_bf crypto-types-elliptic_curves-nss_bf crypto-types-mutexes crypto-types-nonces-nonces_ctr crypto-types-nonces-nonces_mixed_1 crypto-types-nonces-nonces_mixed_2  crypto-types-nonces-nonces_random crypto-types-nonces-nonces_randomized_counter
+tweakable-blockcipher: crypto-symmetric-tweakable_blockcipher_cmt crypto-symmetric-tweakable_blockcipher_tx
+types: crypto-types-big_numbers crypto-types-elliptic_curves-ss_bf crypto-types-elliptic_curves-nss_bf crypto-types-mutexes crypto-types-nonces-nonces_ctr crypto-types-nonces-nonces_mixed_1 crypto-types-nonces-nonces_mixed_2  crypto-types-nonces-nonces_random crypto-types-nonces-nonces_randomized_counter 
+ae: crypto-symmetric-aead_mcoe crypto-symmetric-aead_siv.adb crypto-symmetric-ae_ocb.adb
 
 crypto-symmetric-algorithm-ecies:
 	$(CC) $(CFLAGS) $@
@@ -186,6 +188,24 @@ crypto-asymmetric-dsa:
 	$(CC) $(CFLAGS) $@
 
 crypto-asymmetric-ecdsa:
+	$(CC) $(CFLAGS) $@
+
+crypto-symmetric-aead_mcoe:
+	$(CC) $(CFLAGS) $@
+
+crypto-symmetric-aead_siv:
+	$(CC) $(CFLAGS) $@
+
+crypto-symmetric-ae_ocb:
+	$(CC) $(CFLAGS) $@
+
+crypto-symmetric-tweakable_blockcipher_cmt:
+	$(CC) $(CFLAGS) $@
+
+crypto-symmetric-tweakable_blockcipher_tx:
+	$(CC) $(CFLAGS) $@
+
+crypto-symmetric-utils:
 	$(CC) $(CFLAGS) $@
 
 .PHONY : clean

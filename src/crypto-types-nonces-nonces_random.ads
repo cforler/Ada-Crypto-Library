@@ -1,5 +1,4 @@
 with Crypto.Types;
-with Crypto.Types.Nonces;
 
 generic
    with function To_Block_Type(B: in Crypto.Types.Bytes) return Crypto.Types.Nonces.Block;

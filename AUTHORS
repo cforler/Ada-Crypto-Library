@@ -1,6 +1,10 @@
-Nonces            : Thomas Knapke
-Anne 'Yu' Barshun : AUnit-Tests
-Markus G. Kuhn    : Serpent256
-Maxim Reznik      : Blowfish
-Alexander Böhm    : Partial Translation (german -> english)
-Christian Forler  : Rest
+Thomas Knapke      : Nonces, Tweakable Blockciphers, AE Schemes, AEAD, Schemes,
+       		         CMAC, Symmetric Utils
+Bastian Weber      : AUnit-Tests
+Heinrich Schilling : AUnit-Tests
+Anne 'Yu' Barshun  : AUnit-Tests
+Hui Xue            : AUnit-Tests
+Markus G. Kuhn     : Serpent256
+Maxim Reznik       : Blowfish
+Alexander Böhm     : Partial Translation (german -> english)
+Christian Forler   : Rest
