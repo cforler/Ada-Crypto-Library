@@ -1,23 +1,23 @@
 \chapter{ACL.Test.Suite}
 \section{AUnit} 
-AUnit  3.4.0  ist ein Test-Framework, das f"ur Ada entwickelt worden ist.
-Um AUnit innerhalb von GPS benutzen zu k"onnen, muss die
-{\tt ADA\_PROJECT\_PATH}-Variable in der {\tt .bashrc} gesetzt werden
-und auf den Pfad zeigen, wo die {\tt aunit.gpr}-Datei installiert
-worden ist.  Im Normalfall d"urfte dieser Pfad auf einem Debian
-''Squeeze'' (6.0) und im Allgemeinen Linux folgenderma"sen aussehen:
-\\{\tt /usr/share/ada/adainclude}.  Dort wird standardm"a"sig auch die
-  {\tt libaunit1-dev} von dem Paketmanager installiert.
+AUnit 3.4.0 ist ein Test-Framework, das f"ur Ada entwickelt worden
+ist.  Um AUnit innerhalb von GPS benutzen zu k"onnen, muss die {\tt
+  ADA\_PROJECT\_PATH}-Variable in der {\tt .bashrc} gesetzt werden und
+auf den Pfad zeigen, wo die {\tt aunit.gpr}-Datei installiert worden
+ist.  Im Normalfall d"urfte dieser Pfad auf einem Debian ''Squeeze''
+(6.0) und im Allgemeinen Linux folgenderma"sen aussehen: \\{\tt
+  /usr/share/ada/adainclude}.  Dort wird standardm"a"sig auch die {\tt
+  libaunit1-dev} von dem Paketmanager installiert.
 
 Um sich in AUnit einzuarbeiten, gibt es eine Dokumentation und
 Einf"uhrung ebenfalls von AdaCore namens AUnit
 Cookbook\footnote{http://libre.adacore.com/wp-content/files/auto\_update/aunit-docs/aunit.html}.
 Dort wird die Version 3.4.0 vorgestellt.  Des Weiteren gibt es ein
-Videotutorial von Daniel
-Bigelow \footnote{http://www.adacore.com/2010/05/11/aunit-tutorials/},
-das in 7 Kapitel eingeteilt ist. Diese ist meiner Meinung nach nicht
-sehr empfehlenswert, da es von schlechter Audioqualit"at ist, was das
-Durcharbeiten stark erschwert.\\
+Videotutorial von Daniel Bigelow
+\footnote{http://www.adacore.com/2010/05/11/aunit-tutorials/}, das in
+7 Kapitel eingeteilt ist. Diese ist meiner Meinung nach nicht sehr
+empfehlenswert, da es von schlechter Audioqualit"at ist, was das
+Durcharbeiten stark erschwert.
 
 Um die AUnit Library benutzen zu k"onnen, m"ussen folgende
 Headerdateien eingebunden werden:
@@ -25,9 +25,9 @@ Headerdateien eingebunden werden:
 with AUnit-Assertions; 
 \end{lstlisting}
 Der Aufbau von AUnit-1 f"ur Regressionstests ist folgenderma"sen gegliedert:
-\begin{figure}[htp]
+\begin{figure}[t]
   \centering
-  \includegraphics[scale=0.5,bb=0 0 385 567]{de/graph_aunit.pdf}
+  \includegraphics[width=\textwidth]{./images/graph_aunit}
   \caption{Baumstruktur von AUnit}
 \end{figure}
 Es gibt eine Test-Case-Datei, in der die Tests f"ur eine
@@ -38,12 +38,12 @@ Test-Cases f"ur die Subtraktion wie auch die Addition angelegt.
 Test-Suites enthalten einen Verbund an Test-Cases.  Die Test-Suites
 werden wiederum in einem Test-Runner geb"undelt.  Dies ist die zu
 kompilierende Datei und das daraus entstandene Programm vollf"uhrt
-alle eingebeundenen Tests.  Dieses Verfahren macht es m"oglich, nur
+alle eingebundenen Tests.  Dieses Verfahren macht es m"oglich, nur
 die zu dem ver"anderten Quellcode zugeh"origen Regressionstests laufen
 zu lassen.
 
 Die Test-Cases innerhalb einer zu testenden Operation werden alle in
-einer Prozedur namens {\tt Register\_Tests} eingtragen.  Beim Eintritt
+einer Prozedur namens {\tt Register\_Tests} eingetragen.  Beim Eintritt
 in die Prozedur und beim Auftreten eines Fehlers innerhalb dieser kann
 somit detailliert festgestellt werden, wo der Fehler aufgetreten ist
 und mit welchen Testzahlen.
@@ -56,7 +56,7 @@ procedure Register_Tests(T : in out Template_Test) is
  end Register_Tests;
 \end{lstlisting}
 
-Des Weiteren enthalten die Test-Case-Dateien eine namensgebende
+Des Weiteren enthalten die Test-Case-Dateien eine namens gebende
 Prozedur, welche f"ur die "ubergeordnete Struktur der Test-Case-Datei
 eine Rolle spielt.  Der in folgender Prozedur eingetragene Name
 
@@ -122,7 +122,7 @@ Lines executed:65.36\% of 179\\
 ../src/crypto-asymmetric-rsa.adb:creating\\ 'crypto-asymmetric-rsa.adb.gcov'\\}
 
 Die erste Zeile zeigt die durchlaufene Datei, die zweite Zeile die
-Prozentabdeckung der Datei und danach die Menge der ausfuehrbaren
+Prozentabdeckung der Datei und danach die Menge der ausführbaren
 Zeilen der Datei. Die letzte Zeile ist nur ein Hinweis, dass die
 log-Datei mit der Endung {\tt .gcov} angelegt wird.  Eine log-Datei
 kann folgenderma"sen aussehen:
@@ -145,9 +145,9 @@ Die momentane Codeabdeckung ist teilweise aus der folgenden Tabelle zu
 entnehmen:
 \begin{figure}[htp]
 \centering
-\includegraphics[scale=0.5,bb=0 0 385 567]{tabelle_gcov.png}
+\includegraphics[width=\textwidth]{./images/tabelle_gcov}
 \caption{}
-\label{}
+\label{fig:gcov}
 \end{figure}
 
 F"ur weitere Informationen, siehe http://gcc.gnu.org/onlinedocs/gcc/Gcov.html.
@@ -192,7 +192,7 @@ Die Variablen X\_4096 bis X\_582 bezeichnen die einzelnen Konstanten, die in der
 {\tt X\_768} und {\tt X\_582} sind ebenfalls per Zafall generierte Testzahlen wischen 1024 und 0 Bit.
 Als weitere Testzahlen wurden 1 und 0 Bit verwendet.
 
-Die Konstanten werden folgenderma"sen instanziiert:
+Die Konstanten werden folgenderma"sen instantiiert:
 
 \begin{lstlisting}
 procedure Constants is
@@ -239,9 +239,9 @@ Abh"angigkeit zu erkennen:
 
 \begin{figure}[htp]
 \centering
-\includegraphics[scale=0.5,bb=0 0 385 567]{graph_suites.pdf}
+\includegraphics[width=\textwidth]{./images/graph_suites}
 \caption{Baumstruktur der Test-Suites}
-\label{}
+\label{fig:test-tree}
 \end{figure}
 
 Um die Test-Runner zu "andern, muss das Makefile ge"andert werden.
@@ -257,3 +257,4 @@ Test-Runner und Test-Cases.\\ Die Dokumentation der ACL
 verbessern.\\ Die Regressionstests von AUnit-1 in AUnit-3.4
 "ubersetzen.\\ Mit AUnit-3.4 Exceptiontests schreiben und
 einf"ugen.\\ Die Pfadabdeckung analysieren.\\
+
