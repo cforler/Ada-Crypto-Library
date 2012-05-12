@@ -1,5 +1,5 @@
 with AUnit.Assertions; 
-with Crypto.Hashfunction_SHA256;
+with Crypto.Symmetric.Hashfunction_SHA256;
 with Crypto.Types;
 
 package body Test.SHA256 is 
@@ -53,7 +53,7 @@ package body Test.SHA256 is
    
 	procedure SHA256_Test1(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions; 
-		use Crypto.Hashfunction_SHA256;
+		use Crypto.Symmetric.Hashfunction_SHA256;
 		use Crypto.Types;	
 	begin
 		
@@ -70,7 +70,7 @@ package body Test.SHA256 is
 	
 	procedure SHA256_Test2(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions; 
-		use Crypto.Hashfunction_SHA256;
+		use Crypto.Symmetric.Hashfunction_SHA256;
 		use Crypto.Types;	
 	begin
 		
@@ -87,7 +87,7 @@ package body Test.SHA256 is
 	
 	procedure SHA256_Test3(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions; 
-		use Crypto.Hashfunction_SHA256;
+		use Crypto.Symmetric.Hashfunction_SHA256;
 		use Crypto.Types;	
 	begin
 		

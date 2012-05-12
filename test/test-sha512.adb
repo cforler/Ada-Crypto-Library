@@ -1,5 +1,5 @@
 with AUnit.Assertions; 
-with Crypto.Hashfunction_SHA512;
+with Crypto.Symmetric.Hashfunction_SHA512;
 with Crypto.Types;
 
 package body Test.SHA512 is
@@ -54,7 +54,7 @@ package body Test.SHA512 is
 	
 	procedure SHA512_Test1(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions;
-		use Crypto.Hashfunction_SHA512;
+		use Crypto.Symmetric.Hashfunction_SHA512;
 		use Crypto.Types;
 	
 	begin
@@ -74,7 +74,7 @@ package body Test.SHA512 is
 	
 	procedure SHA512_Test2(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions;
-		use Crypto.Hashfunction_SHA512;
+		use Crypto.Symmetric.Hashfunction_SHA512;
 		use Crypto.Types;
 	
 	begin
@@ -94,7 +94,7 @@ package body Test.SHA512 is
 	
 	procedure SHA512_Test3(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions;
-		use Crypto.Hashfunction_SHA512;
+		use Crypto.Symmetric.Hashfunction_SHA512;
 		use Crypto.Types;
 	
 	begin

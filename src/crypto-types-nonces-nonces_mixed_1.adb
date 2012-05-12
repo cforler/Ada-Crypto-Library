@@ -1,5 +1,5 @@
 with Crypto.Types;
-with Crypto.Random;
+with Crypto.Types.Random;
 
 package body Crypto.Types.Nonces.Nonces_Mixed_1 is
 
@@ -35,7 +35,7 @@ package body Crypto.Types.Nonces.Nonces_Mixed_1 is
       Counter_Array := To_Bytes(Counter);
 
       -- get random numbers
-      Crypto.Random.Read(Rand_Array);
+      Crypto.Types.Random.Read(Rand_Array);
 
       -- fill result array (half counter and half random is default)
       Result_Array (0..CS-1)           := Rand_Array;

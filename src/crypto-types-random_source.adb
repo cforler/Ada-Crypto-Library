@@ -1,4 +1,4 @@
-package body Crypto.Random_Source is
+package body Crypto.Types.Random_Source is
    
    procedure Read(This : in Random_Source; Byte_Array : out Bytes) is
    begin
@@ -52,4 +52,4 @@ package body Crypto.Random_Source is
       end loop;
    end Read;
    
-end Crypto.Random_Source;
+end Crypto.Types.Random_Source;

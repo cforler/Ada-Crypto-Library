@@ -43,7 +43,6 @@ package Crypto.Types is
    type DWord is mod 2 ** 64;
    for DWord'Size use 64;
 
-   -- chose CPU-Word-Size as Mod_Type'Size
    type Mod_Type is mod 2**32;
    for Mod_Type'Size use 32;
 
@@ -249,64 +248,7 @@ package Crypto.Types is
    -- ceiling(n/2) and a right part of length floor(n/2).
    function Left_Part(Block : in Bytes)  return Bytes;
    function Right_Part(Block : in Bytes) return Bytes;
-     
-   -- Padding
-   -- precondition:
-   -- Data2'Length = Data'Length
-   -- Message_Length <= Data'Length
-
-   -- This padding function append k zero Bytes|Words|Dwords to the end of the
-   -- Message follow by the number l of added Zero  Bytes|Words|Dwords.
-   -- When no outlier occure then Is_Zero(Data2) = true. In this case you can
-   -- ignore Data2.
-   -- outlier:
-   -- (I)
-   -- Let m the message, Data the array who contains m and
-   -- m'length+1=Data'length
-   -- In this case the following Problem occure. After we append a zero
-   -- Byte|Word|DWord to m we have no space left to write the number of added
-   -- zero Byte|Word|DWord (B|W|D) into Data.
-   -- Now it's time for our second data array (Data2).
-   -- First we set all elements of Data2 to 0.
-   -- Then we set Data2'Last to Data2'Length.
-   -- Now Data2'Last contains the number of our added B|W|D zeros.
-   -- (II)
-   -- Let m the message, Data the array who contains m and m'length=Data'length
-   -- Same behaviour as in (I) with following exceptions:
-   -- No zero element will append to m (Data)
-   -- Data2'Last= Data2'Length-1
-
-   -- precondition:
-   --  a) Message_Length <= Data'Length
-   --  b) Message begins at Data(Data'First) and ends at
-   -- Data(Data'First+Message_Length-1)
-   -- c) If  Data : Bytes => Data'Length <= Byte'Last
-   -- d) Data'Length = Data2'Length
-
-   -- Exceptions:
-   -- violation of a)    : Constraint_Message_Length_Error
-   -- violation of d) c) : Constraint_Length_Error
-
-   procedure Padding(Data           : in  out Bytes;
-                     Message_Length : in  Word;
-                     Data2          : out Bytes);
-
-   procedure Padding(Data           : in  out Words;
-                     Message_Length : in  Word;
-                     Data2          : out Words);
-
-   procedure Padding(Data           : in  out DWords;
-                     Message_Length : in  Word;
-                     Data2          : out DWords);
-   
-   
-   ---------------------------------------------------------------------------
-   -------------------------------EXCEPTIONS----------------------------------
-   ---------------------------------------------------------------------------
-
-   Constraint_Length_Error         : exception;
-   Constraint_Message_Length_Error : exception;
-
+  
    ---------------------------------------------------------------------------
    -------------------------------PRIVATE-------------------------------------
    ---------------------------------------------------------------------------

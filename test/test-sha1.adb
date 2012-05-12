@@ -1,5 +1,5 @@
 with AUnit.Assertions; 
-with Crypto.Hashfunction_SHA1;
+with Crypto.Symmetric.Hashfunction_SHA1;
 with Crypto.Types;
 
 package body Test.SHA1 is 
@@ -60,7 +60,7 @@ package body Test.SHA1 is
    
    procedure SHA_Test1(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
-      use Crypto.Hashfunction_SHA1;
+      use Crypto.Symmetric.Hashfunction_SHA1;
    begin
 
 	  Result := (16#a9993e36#, 16#4706816a#, 16#ba3e2571#, 16#7850c26c#, 16#9cd0d89d#);
@@ -75,7 +75,7 @@ package body Test.SHA1 is
 
    procedure SHA_Test2(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
-      use Crypto.Hashfunction_SHA1;
+      use Crypto.Symmetric.Hashfunction_SHA1;
     begin
 
 	  Result := (16#84983e44#, 16#1c3bd26e#, 16#baae4aa1#, 16#f95129e5#, 16#e54670f1#);
@@ -90,7 +90,7 @@ package body Test.SHA1 is
    
 	procedure SHA_Test3(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
-      use Crypto.Hashfunction_SHA1;
+      use Crypto.Symmetric.Hashfunction_SHA1;
 	  use Crypto.Types; 
     begin
 	  Result := (16#34aa973c#, 16#d4c4daa4#, 16#f61eeb2b#, 16#dbad2731#, 16#6534016f#);
@@ -105,7 +105,7 @@ package body Test.SHA1 is
    
    	procedure SHA_Test4(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
-      use Crypto.Hashfunction_SHA1;
+      use Crypto.Symmetric.Hashfunction_SHA1;
 	  use Crypto.Types; 
    begin
 	  Result := (16#0098ba82#, 16#4b5c1642#, 16#7bd7a112#, 16#2a5a442a#, 16#25ec644d#);
@@ -120,7 +120,7 @@ package body Test.SHA1 is
 
    	procedure SHA_Test5(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
-      use Crypto.Hashfunction_SHA1;
+      use Crypto.Symmetric.Hashfunction_SHA1;
 	  use Crypto.Types; 
    begin
 	  Result := (16#da39a3ee#, 16#5e6b4b0d#, 16#3255bfef#, 16#95601890#, 16#afd80709#);

@@ -1,4 +1,4 @@
-with Crypto.Random;
+with Crypto.Types.Random;
 
 package body Crypto.Types.Nonces.Nonces_Random is
 
@@ -6,7 +6,7 @@ package body Crypto.Types.Nonces.Nonces_Random is
       Byte_Array: Crypto.Types.Bytes(0..(Block'Size / 8)-1);
    begin
       This.Mutex.Seize;
-      Crypto.Random.Read(Byte_Array);
+      Crypto.Types.Random.Read(Byte_Array);
       This.Value := To_Block_Type(Byte_Array);
       This.Mutex.Release;
       return This.Value;

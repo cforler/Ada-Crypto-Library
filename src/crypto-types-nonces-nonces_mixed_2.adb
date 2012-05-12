@@ -1,4 +1,4 @@
-with Crypto.Random;
+with Crypto.Types.Random;
 
 package body Crypto.Types.Nonces.Nonces_Mixed_2 is
    package CT renames Crypto.Types;
@@ -43,7 +43,7 @@ package body Crypto.Types.Nonces.Nonces_Mixed_2 is
       Result_Array  :            Crypto.Types.Bytes(0..End_of_Block);
 
    begin
-      Crypto.Random.Read(Rand_Array);
+      Crypto.Types.Random.Read(Rand_Array);
 
       Result_Array (0..CS-1)                 := Rand_Array;
       Result_Array (CS..End_of_Block)  := Counter_Array(CS..End_of_Block);

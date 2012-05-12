@@ -1,7 +1,7 @@
 with AUnit.Assertions;
 with Crypto.Symmetric.Algorithm.Whirlpool.Oneway;
 with Crypto.Types;
-with Crypto.Random;
+with Crypto.Types.Random;
 with Text_IO;
 
 package body Test.Whirlpool_Oneway is

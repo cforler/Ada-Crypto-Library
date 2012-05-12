@@ -50,7 +50,7 @@ generic
                          Hash_Value : out  Hash_Type) is <>;
    
 
-package Crypto.Hashfunction is
+package Crypto.Symmetric.Hashfunction is
    function Hash  (Message  : Bytes)  return Hash_Type;
    function Hash  (Message  : String) return Hash_Type;
    function F_Hash(Filename : String) return Hash_Type;
@@ -67,5 +67,5 @@ package Crypto.Hashfunction is
 private
    pragma Inline(Init, Round, Final_Round, Hash, F_Hash);
    pragma Optimize (Time);
-end Crypto.Hashfunction;
+end Crypto.Symmetric.Hashfunction;
 

@@ -2,14 +2,14 @@ with AUnit.Assertions;
 with Crypto.Symmetric.MAC.RMAC;
 with Crypto.Symmetric.Oneway_Blockcipher_AES128;
 with Crypto.Types;
-with Crypto.Random;
+with Crypto.Types.Random;
 
 pragma Elaborate_All(Crypto.Symmetric.Mac.Rmac);
 pragma Elaborate_All(Crypto.Types);
 
 package body Test.RMAC is
 use Crypto.Types;
-use Crypto.Random;
+use Crypto.Types.Random;
 -----------------------------------------------------------------------------
    -----------------------------------------------------------------------------
    ---------------------------- Type - Declaration -----------------------------

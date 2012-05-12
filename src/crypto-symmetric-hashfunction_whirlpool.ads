@@ -22,15 +22,15 @@
 
 with Crypto.Types;
 with Crypto.Symmetric.Algorithm.Whirlpool;
-with Crypto.Hashfunction;
+with Crypto.Symmetric.Hashfunction;
 
 use Crypto.Types;
 use Crypto.Symmetric.Algorithm.Whirlpool;
 
-pragma Elaborate_All (Crypto.Hashfunction);
+pragma Elaborate_All (Crypto.Symmetric.Hashfunction);
 
-package Crypto.Hashfunction_Whirlpool is
-   new Crypto.Hashfunction(Hash_Type    => DW_Block512,
+package Crypto.Symmetric.Hashfunction_Whirlpool is
+   new Crypto.Symmetric.Hashfunction(Hash_Type    => DW_Block512,
                            Message_Type => DW_Block512,
                            Message_Block_Length_Type =>
                              Crypto.Types.Message_Block_Length512,

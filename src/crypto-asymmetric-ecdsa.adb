@@ -20,10 +20,10 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Crypto.Hashfunction_SHA1; 
+with Crypto.Symmetric.Hashfunction_SHA1; 
 
 package body Crypto.Asymmetric.ECDSA is
-   package SHA1 renames Crypto.Hashfunction_SHA1;
+   package SHA1 renames Crypto.Symmetric.Hashfunction_SHA1;
    use Big.Mod_Utils;
    use Big.Utils;
 

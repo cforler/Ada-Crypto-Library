@@ -20,10 +20,10 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with  Crypto.Hashfunction;
+with  Crypto.Symmetric.Hashfunction;
 
 generic
-   with package H is new Crypto.Hashfunction(<>);
+   with package H is new Crypto.Symmetric.Hashfunction(<>);
 
    with function "xor"
      (Left, Right : H.Message_Type)  return H.Message_Type is <>;

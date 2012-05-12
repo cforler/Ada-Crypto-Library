@@ -1,8 +1,8 @@
 with Interfaces.C_Streams;
 with Ada.Strings.Unbounded;
 
-package Crypto.Random_Source.File is
-   package Rnd renames Crypto.Random_Source;
+package Crypto.Types.Random_Source.File is
+   package Rnd renames Crypto.Types.Random_Source;
 
    type Random_Source_File is new Rnd.Random_Source with private;
    type Random_Source_File_Access is access  Random_Source_File;
@@ -41,4 +41,4 @@ private
 	 Source_Path : Ada.Strings.Unbounded.Unbounded_String;
 	 Source_File : Interfaces.C_Streams.Files;
       end record;
-end Crypto.Random_Source.File;
+end Crypto.Types.Random_Source.File;

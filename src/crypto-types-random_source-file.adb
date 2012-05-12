@@ -1,4 +1,4 @@
-package body Crypto.Random_Source.File is
+package body Crypto.Types.Random_Source.File is
    use Interfaces.C_Streams;
    use Ada.Strings.Unbounded;
    use type Interfaces.C_Streams.Size_T;
@@ -55,7 +55,7 @@ package body Crypto.Random_Source.File is
 
    procedure Read(This : in Random_Source_File; B : out B_Block128) is
    begin   
-      Crypto.Random_Source.File.Read(This,Bytes(B));
+      Crypto.Types.Random_Source.File.Read(This,Bytes(B));
    end Read;  
    
    ---------------------------------------------------------------------------
@@ -113,4 +113,4 @@ package body Crypto.Random_Source.File is
 	 end if;
       end if;
      end Finalize;
-end Crypto.Random_Source.File;
+end Crypto.Types.Random_Source.File;

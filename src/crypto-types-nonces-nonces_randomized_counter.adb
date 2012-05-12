@@ -1,5 +1,5 @@
 with Crypto.Types;
-with Crypto.Random;
+with Crypto.Types.Random;
 with Ada.IO_Exceptions;
 
 package body Crypto.Types.Nonces.Nonces_Randomized_Counter is
@@ -36,7 +36,7 @@ package body Crypto.Types.Nonces.Nonces_Randomized_Counter is
       Counter_Array := To_Bytes(Counter);
 
       -- get random numbers
-      Crypto.Random.Read(Rand_Array);
+      Crypto.Types.Random.Read(Rand_Array);
 
       -- fill result array (half counter, half random)
       Result_Array (0..CS-1)                 := Rand_Array;

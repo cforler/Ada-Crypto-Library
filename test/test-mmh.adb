@@ -1,7 +1,7 @@
 with AUnit.Assertions;
 with Crypto.Symmetric.Algorithm.MMH;
 with Crypto.Types;
-with Crypto.Random;
+with Crypto.Types.Random;
 with Text_IO;
 use Crypto.Types;
 

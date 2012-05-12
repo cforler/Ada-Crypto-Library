@@ -21,13 +21,13 @@
 -- executable file might be covered by the GNU Public License.
 
 with Ada.Text_IO;
-with Crypto.Random;
-with Crypto.Hashfunction_SHA1;
+with Crypto.Types.Random;
+with Crypto.Symmetric.Hashfunction_SHA1;
 --with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body Crypto.Asymmetric.RSA is
 --   use Big;
-   package SHA1 renames Crypto.Hashfunction_SHA1;
+   package SHA1 renames Crypto.Symmetric.Hashfunction_SHA1;
    use Big.Utils;
    use Ada.Text_IO;
    use Big.Mod_Utils;
@@ -381,7 +381,7 @@ package body Crypto.Asymmetric.RSA is
      DB(DB'Last-Plaintext'Length+1..DB'Last) := Plaintext;
 
      -- 2d
-     Crypto.Random.Read( Bytes(Seed) );
+     Crypto.Types.Random.Read( Bytes(Seed) );
 
      --2e
      DB_Mask := MGF_SHA1(Bytes(Seed), K-Hlen-1);

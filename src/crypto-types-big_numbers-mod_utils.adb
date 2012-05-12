@@ -20,7 +20,7 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Crypto.Random;
+with Crypto.Types.Random;
 with Crypto.Asymmetric.Prime_Tables;
 --with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Text_IO;
@@ -146,7 +146,7 @@ package body Mod_Utils is
    begin
       for I in 0..N.Last_Index loop
          for J in 0..(Shift_Right(Mod_Type(Mod_Type'Size),K)-1) loop
-            Crypto.Random.Read(B);
+            Crypto.Types.Random.Read(B);
             Result.Number(I) := Result.Number(I) or
               Shift_Left(Mod_Type(B),Natural(Shift_Left(J,K)));
          end loop;

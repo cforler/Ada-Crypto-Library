@@ -20,14 +20,14 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Crypto.Hashfunction_SHA1, Ada.Text_Io;
+with Crypto.Symmetric.Hashfunction_SHA1, Ada.Text_Io;
 use  Ada.Text_Io;
   
 --with Ada.Text_IO; use Ada.Text_IO;
 --with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body Crypto.Asymmetric.DSA is
-   package SHA1 renames Crypto.Hashfunction_SHA1;
+   package SHA1 renames Crypto.Symmetric.Hashfunction_SHA1;
    use Big.Mod_Utils;
    use Big.Utils;
    --   use Big;

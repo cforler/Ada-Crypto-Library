@@ -21,13 +21,13 @@
 -- executable file might be covered by the GNU Public License.
 
 with Crypto.Symmetric.MAC.HMAC;
-with Crypto.Hashfunction_Whirlpool;
+with Crypto.Symmetric.Hashfunction_Whirlpool;
 
 
 pragma Elaborate_All (Crypto.Symmetric.Mac.Hmac);
 
 package Crypto.Symmetric.Mac.Hmac_Whirlpool is
-   new  Crypto.Symmetric.Mac.Hmac(H      => Crypto.Hashfunction_Whirlpool,
+   new  Crypto.Symmetric.Mac.Hmac(H      => Crypto.Symmetric.Hashfunction_Whirlpool,
                                   Copy   => Crypto.Symmetric.Mac.Copy,
                                   Fill36 => Crypto.Symmetric.Mac.Fill36,
                                   Fill5C => Crypto.Symmetric.Mac.Fill5C);

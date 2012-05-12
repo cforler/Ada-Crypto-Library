@@ -1,10 +1,10 @@
 with Crypto.Types;
-with Crypto.Hashfunction;
+with Crypto.Symmetric.Hashfunction;
 
 use Crypto.Types;
 
 generic
-   with package Hashfunction is new Crypto.Hashfunction(<>);
+   with package Hashfunction is new Crypto.Symmetric.Hashfunction(<>);
    type Key_Type is private;
    with function To_Key(B : in Bytes) return Key_Type is <>;
 

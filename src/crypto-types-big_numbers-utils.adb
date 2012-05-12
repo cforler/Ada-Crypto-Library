@@ -22,7 +22,7 @@
 
 --with Ada.Integer_Text_IO;
 --with Ada.Strings.Unbounded.Text_IO;
-with Crypto.Random;
+with Crypto.Types.Random;
 
 SEPARATE(Crypto.Types.Big_Numbers)
 
@@ -300,7 +300,7 @@ package body Utils is
    begin
       for I in 0..Max_Length loop
          for J in 0..(Mod_Type'Size/8)-1 loop
-            Crypto.Random.Read(B);
+            Crypto.Types.Random.Read(B);
             Result.Number(I) :=
               Result.Number(I) or Shift_Left(Mod_Type(B),J*8);
          end loop;

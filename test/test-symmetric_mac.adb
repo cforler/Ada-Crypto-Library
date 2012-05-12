@@ -1,7 +1,7 @@
 with AUnit.Assertions;
 with Crypto.Symmetric.Mac;
 with Crypto.Types;
-with Crypto.Random;
+with Crypto.Types.Random;
 with Ada.Text_IO;
 
 package body Test.Symmetric_Mac is
@@ -276,7 +276,7 @@ use Crypto.Types;
       Is_Same : Boolean := True;
    begin
       for i in Source_Words'Range loop
-         Crypto.Random.Read(Source_Words(i));
+         Crypto.Types.Random.Read(Source_Words(i));
       end loop;
 
       Crypto.Symmetric.Mac.Copy(Source_Words, Dest_Words);
@@ -302,7 +302,7 @@ use Crypto.Types;
       Is_Same : Boolean := True;
    begin
       for i in Source_DWords'Range loop
-         Crypto.Random.Read(Source_DWords(i));
+         Crypto.Types.Random.Read(Source_DWords(i));
       end loop;
 
       Crypto.Symmetric.Mac.Copy(Source_DWords, Dest_DWords);
@@ -327,7 +327,7 @@ use Crypto.Types;
       Is_Same : Boolean := True;
    begin
       for i in Source_Block160'Range loop
-         Crypto.Random.Read(Source_Block160(i));
+         Crypto.Types.Random.Read(Source_Block160(i));
       end loop;
 
       Crypto.Symmetric.Mac.Copy(Source_Block160, Dest_Block512);
@@ -352,7 +352,7 @@ use Crypto.Types;
       Is_Same : Boolean := True;
    begin
       for i in Source_Block256'Range loop
-         Crypto.Random.Read(Source_Block256(i));
+         Crypto.Types.Random.Read(Source_Block256(i));
       end loop;
 
       Crypto.Symmetric.Mac.Copy(Source_Block256, Dest_Block512);
@@ -377,7 +377,7 @@ use Crypto.Types;
       Is_Same : Boolean := True;
    begin
       for i in Source_Block512'Range loop
-         Crypto.Random.Read(Source_Block512(i));
+         Crypto.Types.Random.Read(Source_Block512(i));
       end loop;
 
       Crypto.Symmetric.Mac.Copy(Source_Block512, Dest_Block512);
@@ -402,7 +402,7 @@ use Crypto.Types;
       Is_Same : Boolean := True;
    begin
       for i in Source_Block512'Range loop
-         Crypto.Random.Read(Source_Block512(i));
+         Crypto.Types.Random.Read(Source_Block512(i));
       end loop;
 
       Crypto.Symmetric.Mac.Copy(Source_Block512, Dest_Block1024);

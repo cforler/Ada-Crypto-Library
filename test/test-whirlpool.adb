@@ -1,5 +1,5 @@
 with AUnit.Assertions; 
-with Crypto.Hashfunction_Whirlpool;
+with Crypto.Symmetric.Hashfunction_Whirlpool;
 with Crypto.Types;
 
 package body Test.Whirlpool is 
@@ -53,7 +53,7 @@ package body Test.Whirlpool is
    
    procedure Whirlpool_Test1(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
-      use Crypto.Hashfunction_Whirlpool;
+      use Crypto.Symmetric.Hashfunction_Whirlpool;
 	  use Crypto.Types; 
    begin
    	   
@@ -73,7 +73,7 @@ package body Test.Whirlpool is
 
    procedure Whirlpool_Test2(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
-      use Crypto.Hashfunction_Whirlpool;
+      use Crypto.Symmetric.Hashfunction_Whirlpool;
 	  use Crypto.Types; 
     begin
     	
@@ -94,7 +94,7 @@ package body Test.Whirlpool is
    
 	procedure Whirlpool_Test3(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
-      use Crypto.Hashfunction_Whirlpool;
+      use Crypto.Symmetric.Hashfunction_Whirlpool;
 	  use Crypto.Types; 
     begin
     	

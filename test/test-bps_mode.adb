@@ -2,7 +2,7 @@ with AUnit.Assertions;
 with Crypto.Symmetric.Mode.BPS;
 with Crypto.Symmetric.Blockcipher_AES128;
 with Crypto.Types;
-with Crypto.Random;
+with Crypto.Types.Random;
 
 pragma Elaborate_All(Crypto.Types);
 pragma Elaborate_All(Crypto.Symmetric.Mode.BPS);
@@ -59,10 +59,10 @@ package body Test.BPS_Mode is
       BPS_Ciphertext, P : BPS.Numerals(1..5);
    begin
       for i in B_Block128'Range loop
-         Crypto.Random.Read(BPS_Key(i));
+         Crypto.Types.Random.Read(BPS_Key(i));
       end loop;
       for j in B_Block64'Range loop
-         Crypto.Random.Read(BPS_IV(j));
+         Crypto.Types.Random.Read(BPS_IV(j));
       end loop;
 
       Init(BPS_Key, BPS_IV);
@@ -83,10 +83,10 @@ package body Test.BPS_Mode is
       BPS_Ciphertext, P : BPS.Numerals(1..10);
    begin
       for i in B_Block128'Range loop
-         Crypto.Random.Read(BPS_Key(i));
+         Crypto.Types.Random.Read(BPS_Key(i));
       end loop;
       for j in B_Block64'Range loop
-         Crypto.Random.Read(BPS_IV(j));
+         Crypto.Types.Random.Read(BPS_IV(j));
       end loop;
 
       Init(BPS_Key, BPS_IV);

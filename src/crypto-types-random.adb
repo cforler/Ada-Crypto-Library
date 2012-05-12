@@ -22,15 +22,15 @@
 --with Ada.Numerics.Discrete_Random;
 
 with Crypto;
-with Crypto.Random_Source.File;
+with Crypto.Types.Random_Source.File;
 
-package body Crypto.Random is
-   Dev_Random :  Crypto.Random_Source.File.Random_Source_File; 
+package body Crypto.Types.Random is
+   Dev_Random :  Crypto.Types.Random_Source.File.Random_Source_File; 
    
-    Rnd_Src : aliased Crypto.Random_Source.Random_Source'Class
-      :=  Crypto.Random_Source.Random_Source'Class(Dev_Random);   
+    Rnd_Src : aliased Crypto.Types.Random_Source.Random_Source'Class
+      :=  Crypto.Types.Random_Source.Random_Source'Class(Dev_Random);   
     
-    procedure Set(Source : in Crypto.Random_Source.Random_Source'Class) is
+    procedure Set(Source : in Crypto.Types.Random_Source.Random_Source'Class) is
     begin
        Rnd_Src := Source;
     end Set;
@@ -69,4 +69,4 @@ package body Crypto.Random is
     begin
        Rnd_Src.Read(DWord_Array);
     end Read;  
-end Crypto.Random;
+end Crypto.Types.Random;

@@ -1,6 +1,6 @@
 with AUnit.Assertions;
-with Crypto.Random;
-with Crypto.Random_Source.File;
+with Crypto.Types.Random;
+with Crypto.Types.Random_Source.File;
 with Crypto.Types;
 
 package body Test.Random is
@@ -45,7 +45,7 @@ package body Test.Random is
       B : Crypto.Types.Byte;
    begin
       for i in B_Array'Range loop
-         Crypto.Random.Read(B);
+         Crypto.Types.Random.Read(B);
          B_Array(i) := B;
       end loop;
 
@@ -62,7 +62,7 @@ package body Test.Random is
       W : Crypto.Types.Word;
    begin
       for i in W_Array'Range loop
-         Crypto.Random.Read(W);
+         Crypto.Types.Random.Read(W);
          W_Array(i) := W;
       end loop;
 
@@ -79,7 +79,7 @@ package body Test.Random is
       DW : Crypto.Types.DWord;
    begin
       for i in DW_Array'Range loop
-         Crypto.Random.Read(DW);
+         Crypto.Types.Random.Read(DW);
          DW_Array(i) := DW;
       end loop;
 
@@ -94,7 +94,7 @@ package body Test.Random is
       use AUnit.Assertions;
       W_Array : Crypto.Types.Words(0..256);
    begin
-      Crypto.Random.Read(W_Array);
+      Crypto.Types.Random.Read(W_Array);
 
       Assert(True, "Random Read Words (Array) Failed");
    end Random_Test4;
@@ -107,7 +107,7 @@ package body Test.Random is
       use AUnit.Assertions;
       DW_Array : Crypto.Types.DWords(0..256);
    begin
-      Crypto.Random.Read(DW_Array);
+      Crypto.Types.Random.Read(DW_Array);
 
       Assert(True, "Random Read DWords (Array) Failed");
    end Random_Test5;

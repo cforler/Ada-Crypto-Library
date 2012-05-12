@@ -1,7 +1,7 @@
 with AUnit.Assertions;
 with Crypto.Symmetric.Algorithm.SHA256.Oneway;
 with Crypto.Types;
-with Crypto.Random;
+with Crypto.Types.Random;
 with Text_IO;
 use Crypto.Types;
 
@@ -55,18 +55,18 @@ package body Test.SHA256_Oneway is
       for k in 0..100 loop
 
       	for i in One_Way_Key'Range loop
-            Crypto.Random.Read(random_byte1);
-            Crypto.Random.Read(random_byte2);
-            Crypto.Random.Read(random_byte3);
-            Crypto.Random.Read(random_byte4);
+            Crypto.Types.Random.Read(random_byte1);
+            Crypto.Types.Random.Read(random_byte2);
+            Crypto.Types.Random.Read(random_byte3);
+            Crypto.Types.Random.Read(random_byte4);
             One_Way_Key(i):=To_Word((random_byte1, random_byte2, random_byte3, random_byte4));
       	end loop;
 
       	for i in One_Way_Plaintext'Range loop
-           Crypto.Random.Read(random_byte1);
-            Crypto.Random.Read(random_byte2);
-            Crypto.Random.Read(random_byte3);
-            Crypto.Random.Read(random_byte4);
+           Crypto.Types.Random.Read(random_byte1);
+            Crypto.Types.Random.Read(random_byte2);
+            Crypto.Types.Random.Read(random_byte3);
+            Crypto.Types.Random.Read(random_byte4);
             One_Way_Plaintext(i):=To_Word((random_byte1, random_byte2, random_byte3, random_byte4));
       	end loop;
       	Prepare_Key(One_Way_Key, One_Way_Cipherkey);

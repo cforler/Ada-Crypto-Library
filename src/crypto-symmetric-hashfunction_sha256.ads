@@ -22,14 +22,14 @@
 
 with Crypto.Types;
 with Crypto.Symmetric.Algorithm.SHA256;
-with Crypto.Hashfunction;
+with Crypto.Symmetric.Hashfunction;
 
 use Crypto.Symmetric.Algorithm.SHA256;
 
-pragma Elaborate_All (Crypto.Hashfunction);
+pragma Elaborate_All (Crypto.Symmetric.Hashfunction);
 
-package Crypto.Hashfunction_SHA256 is
-   new Crypto.Hashfunction(Hash_Type    => Crypto.Types.W_Block256,
+package Crypto.Symmetric.Hashfunction_SHA256 is
+   new Crypto.Symmetric.Hashfunction(Hash_Type    => Crypto.Types.W_Block256,
                            Message_Type => Crypto.Types.W_Block512,
                            Message_Block_Length_Type =>
                              Crypto.Types.Message_Block_Length512,

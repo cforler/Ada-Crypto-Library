@@ -21,12 +21,12 @@
 -- executable file might be covered by the GNU Public License.
 
 with Crypto.Symmetric.MAC.HMAC;
-with Crypto.Hashfunction_SHA512;
+with Crypto.Symmetric.Hashfunction_SHA512;
 
 pragma Elaborate_All (Crypto.Symmetric.Mac.Hmac);
 
 package Crypto.Symmetric.Mac.Hmac_SHA512 is
-   new  Crypto.Symmetric.Mac.Hmac(H      => Crypto.Hashfunction_SHA512,
+   new  Crypto.Symmetric.Mac.Hmac(H      => Crypto.Symmetric.Hashfunction_SHA512,
                                   Copy   => Crypto.Symmetric.Mac.Copy,
                                   Fill36 => Crypto.Symmetric.Mac.Fill36,
                                   Fill5C => Crypto.Symmetric.Mac.Fill5C);

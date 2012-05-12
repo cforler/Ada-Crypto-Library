@@ -1,7 +1,7 @@
 with AUnit.Assertions;
 with Crypto.Symmetric.Algorithm.Blowfish.Oneway;
 with Crypto.Types;
-with Crypto.Random;
+with Crypto.Types.Random;
 with Text_IO;
 use Crypto.Types;
 
@@ -51,11 +51,11 @@ package body Test.Blowfish_Oneway is
       for k in 0..100 loop
 
       	for i in One_Way_Key'Range loop
-          Crypto.Random.Read(One_Way_Key(i));
+          Crypto.Types.Random.Read(One_Way_Key(i));
       	end loop;
 
       	for i in One_Way_Plaintext'Range loop
-          Crypto.Random.Read(One_Way_Plaintext(i));
+          Crypto.Types.Random.Read(One_Way_Plaintext(i));
       	end loop;
 
       	Prepare_Oneway_Key128(One_Way_Key, One_Way_Cipherkey);

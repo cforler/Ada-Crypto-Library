@@ -1,4 +1,4 @@
-VER=0.1.3
+VER=`head -n 1 ../VERSION`
 LIBDIR=/usr/local/lib
 INSTDIR=/usr/local/lib/libadacrypt-dev-$(VER)
 
@@ -16,7 +16,7 @@ symmetric: hashfunction onewaybc mode mac blockcipher ae tweakable-blockcipher c
 asymmetric: crypto-asymmetric-dsa crypto-asymmetric-rsa ec 
 certificate: crypto-certificate
 ec:  crypto-asymmetric-ecdsa crypto-symmetric-algorithm-ecdh crypto-symmetric-algorithm-ecies
-hashfunction: crypto-hashfunction_sha256 crypto-hashfunction_sha512 crypto-hashfunction_whirlpool
+hashfunction: crypto-symmetric-hashfunction_sha256 crypto-symmetric-hashfunction_sha512 crypto-symmetric-hashfunction_whirlpool
 onewaybc: crypto-symmetric-oneway_blockcipher_whirlpool crypto-symmetric-oneway_blockcipher_twofish256 crypto-symmetric-oneway_blockcipher_twofish192  crypto-symmetric-oneway_blockcipher_twofish128 crypto-symmetric-oneway_blockcipher_tripledes crypto-symmetric-oneway_blockcipher_sha512 crypto-symmetric-oneway_blockcipher_sha384 crypto-symmetric-oneway_blockcipher_sha256 crypto-symmetric-oneway_blockcipher_sha1 crypto-symmetric-oneway_blockcipher_serpent256 crypto-symmetric-oneway_blockcipher_blowfish128 crypto-symmetric-oneway_blockcipher_aes256 crypto-symmetric-oneway_blockcipher_aes192 crypto-symmetric-oneway_blockcipher_aes128
 mode: crypto-symmetric-mode-oneway_ofb crypto-symmetric-mode-oneway_ctr crypto-symmetric-mode-oneway_cfb crypto-symmetric-mode-ofb crypto-symmetric-mode-ctr crypto-symmetric-mode-cfb crypto-symmetric-mode-cbc crypto-symmetric-mode-bps
 mac: crypto-symmetric-mac-rmac crypto-symmetric-mac-hmac_whirlpool crypto-symmetric-mac-hmac_sha512 crypto-symmetric-mac-hmac_sha256 crypto-symmetric-mac-hmac_sha1
@@ -169,13 +169,13 @@ crypto-types-nonces-nonces_random:
 crypto-types-nonces-nonces_randomized_counter:
 	$(CC) $(CFLAGS) $@
 
-crypto-hashfunction_whirlpool:
+crypto-symmetric-hashfunction_whirlpool:
 	$(CC) $(CFLAGS) $@
 
-crypto-hashfunction_sha512:
+crypto-symmetric-hashfunction_sha512:
 	$(CC) $(CFLAGS) $@
 
-crypto-hashfunction_sha256:
+crypto-symmetric-hashfunction_sha256:
 	$(CC) $(CFLAGS) $@
 
 crypto-certificate:

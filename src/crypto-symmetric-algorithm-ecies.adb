@@ -20,7 +20,7 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Crypto.Hashfunction_SHA256; use Crypto.Hashfunction_SHA256;
+with Crypto.Symmetric.Hashfunction_SHA256; use Crypto.Symmetric.Hashfunction_SHA256;
 with Crypto.Symmetric.Blockcipher_AES256; 
 use Crypto.Symmetric.Blockcipher_AES256;
 with Crypto.Symmetric.Mac.Hmac_SHA256; use Crypto.Symmetric.Mac.Hmac_SHA256;

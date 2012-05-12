@@ -1,6 +1,6 @@
 with AUnit.Assertions;
 with Crypto.Types;
-with Crypto.Random;
+with Crypto.Types.Random;
 with Text_IO;
 with Crypto.Types.Big_Numbers;
 with Crypto.Types;

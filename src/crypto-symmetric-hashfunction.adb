@@ -21,7 +21,7 @@
 -- executable file might be covered by the GNU Public License.
 
 
-package body  Crypto.Hashfunction is
+package body  Crypto.Symmetric.Hashfunction is
 
    H : Hash_Type;
 
@@ -82,4 +82,4 @@ package body  Crypto.Hashfunction is
    end To_Bytes;
      
       
-   end Crypto.Hashfunction;
+   end Crypto.Symmetric.Hashfunction;

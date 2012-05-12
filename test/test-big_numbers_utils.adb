@@ -1,7 +1,7 @@
 with AUnit.Assertions; 
 with Crypto.Types.Big_Numbers;
 with Ada.Text_IO; 
-with Crypto.Hashfunction_SHA1;
+with Crypto.Symmetric.Hashfunction_SHA1;
 
 pragma Elaborate_All(Crypto.Types.Big_Numbers);
 pragma Optimize(Time);
@@ -601,7 +601,7 @@ package body Test.Big_Numbers_Utils is
       Put_Line(Y_1024, 2);
       Set_Output(Stdout);
       Close(Put_File);
-      Assert( Crypto.Hashfunction_SHA1.F_Hash(Put_File_Name) = Result, "Put failed");
+      Assert( Crypto.Symmetric.Hashfunction_SHA1.F_Hash(Put_File_Name) = Result, "Put failed");
    end Big_Number_Test_Put;
 
 ------------------------------------------------------------------------------------

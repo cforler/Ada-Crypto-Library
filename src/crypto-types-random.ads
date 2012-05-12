@@ -20,11 +20,11 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Crypto.Types; use Crypto.Types;
-with Crypto.Random_Source;
+with Crypto.Types.Random_Source;
+use Crypto.Types;
 
-package Crypto.Random is
-   procedure Set(Source : in Crypto.Random_Source.Random_Source'Class);
+package Crypto.Types.Random is
+   procedure Set(Source : in Crypto.Types.Random_Source.Random_Source'Class);
    
    procedure Read(B : out Byte);
    procedure Read(Byte_Array : out Bytes);
@@ -38,4 +38,4 @@ package Crypto.Random is
 
    pragma Inline (Read);
    pragma Optimize (Time);
-end Crypto.Random;
+end Crypto.Types.Random;

@@ -1,7 +1,6 @@
 with Ada.Finalization;
-with Crypto.Types;
 
-package Crypto.Random_Source is
+package Crypto.Types.Random_Source is
   use Crypto.Types;
   package Fin renames Ada.Finalization;
     
@@ -25,4 +24,4 @@ package Crypto.Random_Source is
   procedure Read(This : in Random_Source; DWord_Array : out DWords);
   
   pragma Inline(Read);
-end Crypto.Random_Source;
+end Crypto.Types.Random_Source;
