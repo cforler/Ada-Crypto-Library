@@ -44,12 +44,6 @@ package Test.Types is
 
    procedure Types_Test17(T: in out Test_Cases.Test_Case'Class);
 
-   procedure Types_Test18(T: in out Test_Cases.Test_Case'Class);
-
-   procedure Types_Test19(T: in out Test_Cases.Test_Case'Class);
-
-   procedure Types_Test20(T: in out Test_Cases.Test_Case'Class);
-
    procedure Types_Test21(T: in out Test_Cases.Test_Case'Class);
 
    procedure Types_Test22(T: in out Test_Cases.Test_Case'Class);

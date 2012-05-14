@@ -31,10 +31,7 @@ package body Test.Types is
       Register_Routine(T, Types_Test14'Access,"+ Operator: DWords and Byte");
       Register_Routine(T, Types_Test15'Access,"Characters to Word");
       Register_Routine(T, Types_Test16'Access,"DWord to Byte_DWord");
-      Register_Routine(T, Types_Test17'Access,"Words xor Words");
-      Register_Routine(T, Types_Test18'Access,"Zero Padding Bytes");
-      Register_Routine(T, Types_Test19'Access,"Zero Padding Words");
-      Register_Routine(T, Types_Test20'Access,"Zero Padding DWords");
+      Register_Routine(T, Types_Test17'Access,"Words xor Words");      
       Register_Routine(T, Types_Test21'Access,"DWords to Bytes");
       Register_Routine(T, Types_Test22'Access,"Word to Hex (String)");
       Register_Routine(T, Types_Test23'Access,"DWord to Hex (String)");
@@ -380,66 +377,6 @@ package body Test.Types is
 
       Assert(O(0) = 2#00000000_00000000_00000000_00000100# and O(1) = 2#00000000_00000000_00000000_00000111#, "Words xor Words failed");
    end Types_Test17;
-
-   -----------------------------------------------------------------------------
-   ----------------------------------- Test 18 ----------------------------------
-   -----------------------------------------------------------------------------
-
-   procedure Types_Test18(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions;
-      I1 : Crypto.Types.Bytes(1..9) := (1 => 2 , 2 => 4 , 3 => 6 , 4 => 8 , 5 => 9 , others =>1);
-      I2 : Crypto.Types.Bytes(1..9);
-      I3 : Crypto.Types.Bytes(1..9) := (1 => 2 , 2 => 4 , 3 => 6 , 4 => 8 , 5 => 9 , others =>1);
-      I4 : Crypto.Types.Bytes(1..9);
-      I5 : Crypto.Types.Bytes(1..9) := (1 => 2 , 2 => 4 , 3 => 6 , 4 => 8 , 5 => 9 , others =>1);
-      I6 : Crypto.Types.Bytes(1..9);
-   begin
-      Padding(I1, 5, I2);
-      Padding(I3, 8, I4);
-      Padding(I5, 9, I6);
-
-      Assert(I1 = (2,4,6,8,9,0,0,0,3) and Is_Zero(I2) and I3 = (2,4,6,8,9,1,1,1,0) and I4 = (0,0,0,0,0,0,0,0,I4'Length) and I5 = (2,4,6,8,9,1,1,1,1) and I6 = (0,0,0,0,0,0,0,0,I6'Length-1), "Zero Padding Bytes failed");
-   end Types_Test18;
-
-   -----------------------------------------------------------------------------
-   ----------------------------------- Test 19 ----------------------------------
-   -----------------------------------------------------------------------------
-
-   procedure Types_Test19(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions;
-      I1 : Crypto.Types.Words(1..9) := (1 => 2 , 2 => 4 , 3 => 6 , 4 => 8 , 5 => 9 , others =>1);
-      I2 : Crypto.Types.Words(1..9);
-      I3 : Crypto.Types.Words(1..9) := (1 => 2 , 2 => 4 , 3 => 6 , 4 => 8 , 5 => 9 , others =>1);
-      I4 : Crypto.Types.Words(1..9);
-      I5 : Crypto.Types.Words(1..9) := (1 => 2 , 2 => 4 , 3 => 6 , 4 => 8 , 5 => 9 , others =>1);
-      I6 : Crypto.Types.Words(1..9);
-   begin
-      Padding(I1, 5, I2);
-      Padding(I3, 8, I4);
-      Padding(I5, 9, I6);
-
-      Assert(I1 = (2,4,6,8,9,0,0,0,3) and Is_Zero(I2) and I3 = (2,4,6,8,9,1,1,1,0) and I4 = (0,0,0,0,0,0,0,0,I4'Length) and I5 = (2,4,6,8,9,1,1,1,1) and I6 = (0,0,0,0,0,0,0,0,I6'Length-1), "Zero Padding Bytes failed");
-   end Types_Test19;
-
-   -----------------------------------------------------------------------------
-   ----------------------------------- Test 20 ----------------------------------
-   -----------------------------------------------------------------------------
-
-   procedure Types_Test20(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions;
-      I1 : Crypto.Types.DWords(1..9) := (1 => 2 , 2 => 4 , 3 => 6 , 4 => 8 , 5 => 9 , others =>1);
-      I2 : Crypto.Types.DWords(1..9);
-      I3 : Crypto.Types.DWords(1..9) := (1 => 2 , 2 => 4 , 3 => 6 , 4 => 8 , 5 => 9 , others =>1);
-      I4 : Crypto.Types.DWords(1..9);
-      I5 : Crypto.Types.DWords(1..9) := (1 => 2 , 2 => 4 , 3 => 6 , 4 => 8 , 5 => 9 , others =>1);
-      I6 : Crypto.Types.DWords(1..9);
-   begin
-      Padding(I1, 5, I2);
-      Padding(I3, 8, I4);
-      Padding(I5, 9, I6);
-
-      Assert(I1 = (2,4,6,8,9,0,0,0,3) and Is_Zero(I2)  and I3 = (2,4,6,8,9,1,1,1,0) and I4 = (0,0,0,0,0,0,0,0,I4'Length) and I5 = (2,4,6,8,9,1,1,1,1) and I6 = (0,0,0,0,0,0,0,0,I6'Length-1), "Zero Padding Bytes failed");
-   end Types_Test20;
 
    -----------------------------------------------------------------------------
    ----------------------------------- Test 21 ----------------------------------
