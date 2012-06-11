@@ -19,6 +19,7 @@ package body Crypto.Types.Nonces.Nonces_Mixed_2 is
    -------------------------------------------------------------------------------
 
    function Update(This : in out Nonce_Mixed_2) return N.Block is
+      Return_Value  : Block;
    begin
       This.Mutex.Seize;
       This.Value := Inc(This.Value);
@@ -30,7 +31,7 @@ package body Crypto.Types.Nonces.Nonces_Mixed_2 is
             Set_Random(This.Value);
          end if;
       end;
-
+      Return_Value := This.Value;
       This.Mutex.Release;
       return This.Value;
    end Update;

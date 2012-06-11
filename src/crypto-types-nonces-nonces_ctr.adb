@@ -3,16 +3,18 @@ with Ada.IO_Exceptions;
 package body Crypto.Types.Nonces.Nonces_Ctr is
 
    function Update(This : in out Nonce_Ctr) return N.Block is
+      Return_Value : N.Block;
    begin
       This.Mutex.Seize;
       This.Value := Inc(This.Value);
       ADIO.Write(This.File,This.Value);
       ADIO.Set_Index(This.File,1);
+      Return_Value := This.Value;
       This.Mutex.Release;
-      return This.Value;
-   end Update;
-
--------------------------------------------------------------------------------
+      return Return_Value;
+   end Update;  
+   
+   ----------------------------------------------------------------------------
 
    procedure Aux_Init(This : in out Nonce_Ctr; IV: in N.Block) is
    begin

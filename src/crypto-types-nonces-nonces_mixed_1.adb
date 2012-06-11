@@ -42,9 +42,10 @@ package body Crypto.Types.Nonces.Nonces_Mixed_1 is
       Result_Array (CS..End_of_Block)  := Counter_Array(CS..End_of_Block);
 
       This.Value := To_Block_Type(Result_Array);
+      Counter := This.Value;
       This.Mutex.Release;
-
-      return This.Value;
+      
+      return Counter;
    end Update;
 
    -------------------------------------------------------------------------------
