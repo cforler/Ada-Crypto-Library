@@ -263,26 +263,25 @@ package body Crypto.Symmetric.Algorithm.Whirlpool is
 
    procedure Hash(Message : in Bytes; Hash_Value : out DW_Block512) is
       -- K == |Message| mod 512 == number of full message blocks
-      K : constant Natural :=  Shift_Right(Message'Length,6);
+      K : constant Natural :=  Message'Length/64;
       -- L = length of the last message
       L : constant Natural :=  Message'Length mod 64;
-      LM : Natural;
+      LM : Natural := Message'First;
       M : DWords(DW_Block512'Range) := (others=>0);
-
    begin
       Init(Hash_Value);
 
       for I in 1..K loop
 	 declare
-	    T : constant DWords :=  To_DWords(Message(1+Shift_left(I-1,6)..
-							Shift_Left(I,6)));
+	    T : constant DWords :=  To_DWords(Message(LM..LM+63));
 	 begin
 	    Round(DW_Block512(T), Hash_Value);
 	 end;
+	 LM := LM+64;
       end loop;
 
       if L /=  0 then
-         LM := Shift_Right(L,3);
+         LM := L/8;
          if (L mod 8) = 0 then
             LM := LM-1;
          end if;

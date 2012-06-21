@@ -617,9 +617,9 @@ package body Crypto.Types.Big_Numbers is
          knuth_2(2) := knuth_2(1) - knuth_1(2);
          knuth_3(1) :=       Z(3) - knuth_2(1);
 
-         Result := Shift_Left(      Z(0), Shift_Left(N,2))
-                 + Shift_Left(knuth_1(3), Shift_Left(N,1)+N)
-                 + Shift_Left(knuth_2(2), Shift_Left(N,1))
+         Result := Shift_Left(      Z(0), DN*2)
+                 + Shift_Left(knuth_1(3), DN+N)
+                 + Shift_Left(knuth_2(2), DN)
                  + Shift_Left(knuth_3(1), N)
                  + Z(4);
          end;
@@ -730,9 +730,9 @@ package body Crypto.Types.Big_Numbers is
             knuth_2(2) := knuth_2(1) - knuth_1(2);
             knuth_3(1) :=       Z(3) - knuth_2(1);
 
-            Result := Shift_Left(      Z(0), Shift_Left(N,2))
-                    + Shift_Left(knuth_1(3), Shift_Left(N,1)+N)
-                    + Shift_Left(knuth_2(2), Shift_Left(N,1))
+            Result := Shift_Left(      Z(0), DN*2)
+                    + Shift_Left(knuth_1(3), DN+N)
+                    + Shift_Left(knuth_2(2), DN)
                     + Shift_Left(knuth_3(1), N)
                     + Z(4);
             end;

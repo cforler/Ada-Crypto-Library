@@ -102,9 +102,6 @@ package Crypto.Types is
    ---------------------------FUNCTIONS---------------------------------------
    ---------------------------------------------------------------------------
 
-   function Shift_Left  (Value : Natural; Amount : Natural) return Natural;
-   function Shift_Right (Value : Natural; Amount : Natural) return Natural;
-
    function Shift_Left   (Value : Byte; Amount : Natural) return Byte;
    function Shift_Right  (Value : Byte; Amount : Natural) return Byte;
    function Rotate_Left  (Value : Byte; Amount : Natural) return Byte;

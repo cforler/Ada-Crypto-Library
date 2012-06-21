@@ -65,7 +65,7 @@ package body  Crypto.Symmetric.Algorithm.SHA384 is
    procedure Hash(Message : in Bytes; Hash_Value : out DW_Block384) is
       K : constant Natural :=  Message'Length/128;
       L : constant Natural :=  Message'Length mod 128;
-      LM : Natural;
+      LM : Natural := Message'First;
       H : DW_Block512;
       M : DWords(DW_Block1024'Range) := (others=>0);
 
@@ -74,14 +74,15 @@ package body  Crypto.Symmetric.Algorithm.SHA384 is
 
       for I in 1..K loop
 	 declare 
-	    T : constant DWords := To_DWords(Message(1+Shift_Left(I-1,7)..Shift_Left(I,7)));
+	    T : constant DWords := To_DWords(Message(LM .. LM+127));
 	    begin
 	       Round_SHA2(DW_Block1024(T),H);
 	    end;
+	 LM := LM+128;
       end loop;
 
       if L /=  0 then
-         LM := Shift_Right(L,3);
+         LM := L/8;
          if L mod 8 = 0 then
             LM := LM-1;
          end if;

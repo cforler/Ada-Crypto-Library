@@ -210,22 +210,21 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
 
    procedure Hash(Message : in Bytes; Hash_Value : out W_Block160) is
       -- K == |Message| mod 512 == number of full message blocks
-      K : constant Natural :=  Shift_Right(Message'Length,6);
+      K : constant Word :=  Shift_Right(Message'Length,6);
       -- L = length of the last message
       L : constant Natural :=  Message'Length mod 64;
-      LM : Natural;
+      LM : Natural := Message'First;
       M : Words(W_Block512'Range)  := (others=>0);
 
    begin
       Init(Hash_Value);
-
       for I in 1..K loop
-         Round(W_Block512(To_Words(Message(1+Shift_left(I-1,6)..
-					     Shift_Left(I,6) ) ) ),Hash_Value);
+         Round(W_Block512(To_Words(Message(LM..LM+63))),Hash_Value);
+	 LM := LM+64;
       end loop;
 
       if L /=  0 then
-         LM := Shift_Right(L,2);
+         LM := L/4;
          if (L mod 4) = 0 then
             LM := LM-1;
          end if;

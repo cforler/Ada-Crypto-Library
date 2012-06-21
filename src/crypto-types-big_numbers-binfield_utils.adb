@@ -155,8 +155,8 @@ package body Binfield_Utils is
    -- Algorithm 2.39: Polynominal squaring (with word length W=n*8 for n=>0)
    -- compute a(z)**2 mod f(z)
    function B_Square(A, F : Big_Unsigned) return Big_Unsigned is
-      K : constant Natural := Shift_Right(Mod_Type'Size,3);
-      N : constant Natural := Shift_Right(K,1)-1;
+      K : constant Natural := Mod_Type'Size*8;
+      N : constant Natural := K*2-1;
       --M : constant Natural := Bit_Length(F);
       L : Natural;
       C : D_Big_Unsigned;

@@ -68,21 +68,22 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
    procedure Hash(Message : in Bytes; Hash_Value : out DW_Block512) is
       K : constant Natural :=  Message'Length/128;
       L : constant Natural :=  Message'Length mod 128;
-      LM : Natural;
+      LM : Natural := Message'First;
       M : DWords(DW_Block1024'Range) := (others=>0);
    begin
       Init(Hash_Value);
 
       for I in 1..K loop
 	 declare
-	    T : constant DWords :=  To_DWords(Message(1+Shift_Left(I-1,7)..Shift_Left(I,7)));
-	    begin
+	    T : constant DWords :=  To_DWords(Message(LM..LM+127));
+	 begin
 	       Round(DW_Block1024(T), Hash_Value);
-	    end;
+	 end;
+	 LM := LM+128;	 
       end loop;
 
       if L /=  0 then
-         LM := Shift_Right(L,3);
+         LM := L/8;
          if L mod 8 = 0 then
             LM := LM-1;
          end if;
