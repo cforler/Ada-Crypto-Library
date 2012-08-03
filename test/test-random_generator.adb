@@ -35,7 +35,7 @@ package body Test.Random_Generator is
                end if;
                end loop;
          end loop;
-      Assert(Distinct = True ,"Random Generator failed!");
+      Assert(Distinct,"Random Generator failed!");
    end Random_Generator_Test1;
 
 end Test.Random_Generator;

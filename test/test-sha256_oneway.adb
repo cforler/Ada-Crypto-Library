@@ -78,7 +78,7 @@ package body Test.SHA256_Oneway is
 
       end loop;
 
-      Assert(Is_distinct = true, "SHA256 Oneway Determinism Test failed");
+      Assert(Is_distinct, "SHA256 Oneway Determinism Test failed");
    end SHA256_Oneway_Test1;
 
    ------------------------------------------------------------------------------------
@@ -90,7 +90,6 @@ package body Test.SHA256_Oneway is
    procedure SHA256_Oneway_Test2(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       use Crypto.Symmetric.Algorithm.SHA256.Oneway;
-      use Crypto.Types;
 
       One_Way_Plaintext: W_Block256 := (16#01_02_A1_A2#, 16#01_02_A1_A2#, 16#01_02_A1_A2#, 16#01_02_A1_A2#,
                                        16#01_02_A1_A2#, 16#01_02_A1_A2#, 16#01_02_A1_A2#, 16#01_02_A1_A2#);

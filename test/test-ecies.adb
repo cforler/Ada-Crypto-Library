@@ -3,6 +3,9 @@ with Crypto.Symmetric.Algorithm.ECIES;
 with Ada.Text_IO; use Ada.Text_IO;
 with Crypto.Types;
 
+
+pragma Elaborate_All(Crypto.Symmetric.Algorithm.ECIES);
+
 package body Test.ECIES is
 
 ------------------------------------------------------------------------------------

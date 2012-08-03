@@ -2,6 +2,8 @@ with AUnit.Assertions;
 with Crypto.Symmetric.Algorithm.ECDH;
 with Crypto.Types;
 
+pragma Elaborate_All (Crypto.Symmetric.Algorithm.ECDH);
+
 package body Test.ECDH is
 use Crypto.Types;
 ------------------------------------------------------------------------------------
@@ -10,8 +12,8 @@ use Crypto.Types;
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 	
-	package ECDH is new  Crypto.Symmetric.Algorithm.ECDH(544);
-	use ECDH;
+package ECDH is new  Crypto.Symmetric.Algorithm.ECDH(544);
+use ECDH;
     
     Public_Key_A  : Public_Key_ECDH;
     Public_Key_B  : Public_Key_ECDH;
@@ -54,21 +56,17 @@ use Crypto.Types;
 
    procedure ECDH_Test1(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
-	  use Crypto.Types; 
-   
    begin
+      Gen_Public_Key(Public_Key_A, 256);
+      Gen_Public_Key(Public_Key_B, 256);
+      
+      Gen_Single_Private_Key(Public_Key_A, Private_Key_A);
+      Gen_Single_Private_Key(Public_Key_B, Private_Key_B);
    	   
-   	   Gen_Public_Key(Public_Key_A, 256);
-   	   Gen_Public_Key(Public_Key_B, 256);
-   	   
-   	   Gen_Single_Private_Key(Public_Key_A, Private_Key_A);
-   	   Gen_Single_Private_Key(Public_Key_B, Private_Key_B);
-   	   
-   	   Gen_Shared_Private_Key(Public_Key_B, Private_Key_A, Shared_Key_A);
-   	   Gen_Shared_Private_Key(Public_Key_A, Private_Key_B, Shared_Key_B);
-   	   
+      Gen_Shared_Private_Key(Public_Key_B, Private_Key_A, Shared_Key_A);
+      Gen_Shared_Private_Key(Public_Key_A, Private_Key_B, Shared_Key_B);
+      
       Assert(Verify(Public_Key_A, Public_Key_B, Private_Key_A, Private_Key_B, Shared_Key_A, Shared_Key_B), "Verifying ECDH Key failed.");
-
    end ECDH_Test1;
 
 ------------------------------------------------------------------------------------

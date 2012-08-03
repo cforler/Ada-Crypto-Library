@@ -50,32 +50,30 @@ package body Test.AES256 is
 ------------------------------------------------------------------------------------
    
 	procedure AES256_Test1(T: in out Test_Cases.Test_Case'Class) is
-		use AUnit.Assertions; 
-		use Crypto.Types;
-		use Crypto.Symmetric.Blockcipher_AES256;
+	   use AUnit.Assertions; 
+	   use Crypto.Symmetric.Blockcipher_AES256;
 	begin
-		
-		Ciphertext := (16#8e#, 16#a2#, 16#b7#, 16#ca#, 16#51#, 16#67#,
-                      16#45#, 16#bf#, 16#ea#, 16#fc#, 16#49#, 16#90#,
-                      16#4b#, 16#49#, 16#60#, 16#89#);
-        
-        Key:= (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#,
-                           16#06#, 16#07#, 16#08#, 16#09#, 16#0a#, 16#0b#,
-                           16#0c#, 16#0d#, 16#0e#, 16#0f#, 16#10#, 16#11#,
-                           16#12#, 16#13#, 16#14#, 16#15#, 16#16#, 16#17#,
-                           16#18#, 16#19#, 16#1a#, 16#1b#, 16#1c#, 16#1d#,
-                           16#1e#, 16#1f#);
-		
-		Prepare_Key(Key);
+	   Ciphertext := (16#8e#, 16#a2#, 16#b7#, 16#ca#, 16#51#, 16#67#,
+			  16#45#, 16#bf#, 16#ea#, 16#fc#, 16#49#, 16#90#,
+			  16#4b#, 16#49#, 16#60#, 16#89#);
+	   
+	   Key:= (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#,
+		  16#06#, 16#07#, 16#08#, 16#09#, 16#0a#, 16#0b#,
+		  16#0c#, 16#0d#, 16#0e#, 16#0f#, 16#10#, 16#11#,
+		  16#12#, 16#13#, 16#14#, 16#15#, 16#16#, 16#17#,
+		  16#18#, 16#19#, 16#1a#, 16#1b#, 16#1c#, 16#1d#,
+		  16#1e#, 16#1f#);
+	   
+	   Prepare_Key(Key);
+	   
+	   Encrypt(Plaintext, Temp);
+	   
+	   Assert(Temp = Ciphertext, "AES-Encryption failed.");
 
-		Encrypt(Plaintext, Temp);
-
-		Assert(Temp = Ciphertext, "AES-Encryption failed.");
-
-		Decrypt(Ciphertext, Temp);
-
-		Assert(Temp = Plaintext, "AES-Decryption failed.");
-
+	   Decrypt(Ciphertext, Temp);
+	   
+	   Assert(Temp = Plaintext, "AES-Decryption failed.");
+	   
 	end AES256_Test1;
 
 ------------------------------------------------------------------------------------

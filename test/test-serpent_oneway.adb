@@ -2,8 +2,9 @@ with AUnit.Assertions;
 with Crypto.Symmetric.Algorithm.Serpent.Oneway;
 with Crypto.Types;
 with Crypto.Types.Random;
-use Crypto.Types;
 with Text_IO;
+
+use Crypto.Types;
 
 package body Test.Serpent_Oneway is
 
@@ -67,7 +68,7 @@ package body Test.Serpent_Oneway is
 
       end loop;
 
-      Assert(Is_distinct = true, "Serpent Oneway Determinism Test failed");
+      Assert(Is_distinct, "Serpent Oneway Determinism Test failed");
    end Serpent_Oneway_Test1;
 
    ------------------------------------------------------------------------------------
@@ -79,9 +80,6 @@ package body Test.Serpent_Oneway is
    procedure Serpent_Oneway_Test2(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       use Crypto.Symmetric.Algorithm.Serpent.Oneway;
-      use Crypto.Types;
-
-
 
       One_Way_Plaintext: B_Block128 := (16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
    	   				 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,

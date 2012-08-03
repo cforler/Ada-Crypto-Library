@@ -8,7 +8,6 @@ with Test.Suite_Hash_Function;
 with Test.Suite_Nonces;
 with Test.Suite_Misc;
 with AUnit.Tests;
-with AUnit.Tests;
 
 package body Test.Suite_All is  
    function Suite return Test_Suites.Access_Test_Suite is

@@ -2,6 +2,7 @@ with AUnit.Assertions;
 with Crypto.Symmetric.Algorithm.SHA384;
 with Crypto.Types;
 
+use Crypto.Types;
 package body Test.SHA384 is
 
 ------------------------------------------------------------------------------------
@@ -56,8 +57,6 @@ package body Test.SHA384 is
 	procedure SHA384_Test1(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions;
 		use Crypto.Symmetric.Algorithm.SHA384;
-		use Crypto.Types;
-	
 	begin
 
 		Result_SHA384 := (16#cb00753f45a35e8b#, 16#b5a03d699ac65007#, 
@@ -79,8 +78,6 @@ package body Test.SHA384 is
 	procedure SHA384_Test2(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions;
 		use Crypto.Symmetric.Algorithm.SHA384;
-		use Crypto.Types;
-	
 	begin
 
         Result_SHA384 := (16#09330c33f71147e8#, 16#3d192fc782cd1b47#,
@@ -102,8 +99,6 @@ package body Test.SHA384 is
 	procedure SHA384_Test3(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions;
 		use Crypto.Symmetric.Algorithm.SHA384;
-		use Crypto.Types;
-	
 	begin
 		
 		Result_SHA384 := (16#9d0e1809716474cb#, 16#086e834e310a4a1c#,

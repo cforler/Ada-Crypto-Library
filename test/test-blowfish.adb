@@ -4,6 +4,7 @@ with Crypto.Symmetric.Mode.CBC;
 with Ada.Text_IO;
 with Crypto.Types;
 
+pragma Elaborate_All (Crypto.Symmetric.Mode.CBC);
 package body Test.Blowfish is
    use Crypto.Types;
    -----------------------------------------------------------------------------

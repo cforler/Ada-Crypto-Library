@@ -2,6 +2,9 @@ with AUnit.Assertions;
 with Crypto.Types.Big_Numbers;
 with Crypto.Types.Elliptic_Curves.NSS_BF;
 
+pragma Elaborate_All (Crypto.Types.Big_Numbers);
+pragma Elaborate_All (Crypto.Types.Elliptic_Curves.NSS_BF);
+
 package body Test.Elliptic_Curves_NSS_BF is
 
 ------------------------------------------------------------------------------------

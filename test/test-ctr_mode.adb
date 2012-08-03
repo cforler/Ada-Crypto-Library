@@ -4,6 +4,7 @@ with Crypto.Symmetric.Blockcipher_AES128;
 with Crypto.Types;
 
 pragma Elaborate_All(Crypto.Symmetric.Mode.CTR);
+pragma Elaborate_All(Crypto.Types);
 
 package body Test.CTR_Mode is
 use Crypto.Types;

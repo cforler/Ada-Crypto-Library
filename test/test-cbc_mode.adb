@@ -5,6 +5,7 @@ with Crypto.Types;
 
 
 pragma Elaborate_All(Crypto.Types);
+pragma Elaborate_All(Crypto.Symmetric.Mode.CBC);
 
 package body Test.CBC_Mode is
 use Crypto.Types;

@@ -2,6 +2,9 @@ with AUnit.Assertions;
 with Crypto.Asymmetric.RSA;
 with Crypto.Types;
 with Ada.Text_IO;
+
+pragma Elaborate_All (Crypto.Asymmetric.RSA);
+
 package body Test.RSA is
 
 ------------------------------------------------------------------------------------
@@ -87,7 +90,7 @@ package body Test.RSA is
 
     Public_Key:  Public_Key_RSA;
     Private_Key: Private_Key_RSA;
-   Private_Key_Comp: Private_Key_RSA;
+    Private_Key_Comp: Private_Key_RSA;
 
     Plain_Text: RSA_Number :=(others => 0);
     Cipher_Text, Plain_Text2 : RSA_Number;
@@ -242,18 +245,7 @@ package body Test.RSA is
       use AUnit.Assertions;
    begin
            Encrypt(A ,Plain_Text ,Cipher_Text);
-           Ada.Text_IO.Put_Line(Integer'Image(Plain_Text'First));
-           Ada.Text_IO.Put_Line(Integer'Image(Plain_Text'Last));
-           for i in Plain_Text'Range loop
-              Ada.Text_IO.Put(Crypto.Types.Byte'Image(Plain_Text(i)));
-           end loop;
-           Ada.Text_IO.New_Line;
            Decrypt(B ,Cipher_Text, Plain_Text2);
-           for i in Plain_Text2'Range loop
-              Ada.Text_IO.Put(Crypto.Types.Byte'Image(Plain_Text2(i)));
-           end loop;
-           Ada.Text_IO.Put_Line(Integer'Image(Plain_Text2'First));
-           Ada.Text_IO.Put_Line(Integer'Image(Plain_Text2'Last));
    	   Assert(Plain_Text = Plain_Text2, "RSA encrypting and decrypting failed.");
 
    end RSA_Test7;

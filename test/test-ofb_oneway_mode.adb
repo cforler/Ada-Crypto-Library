@@ -3,6 +3,9 @@ with Crypto.Symmetric.Oneway_Blockcipher_AES128;
 with Crypto.Symmetric.Mode.Oneway_OFB;
 with Crypto.Types;
 
+pragma Elaborate_All (Crypto.Symmetric.Mode.Oneway_OFB);
+pragma Elaborate_All (Crypto.Types);
+  
 package body Test.OFB_Oneway_Mode is
 use Crypto.Types;
    -----------------------------------------------------------------------------

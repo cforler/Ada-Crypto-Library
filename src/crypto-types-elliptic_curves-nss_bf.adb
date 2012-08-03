@@ -153,7 +153,7 @@ package body Crypto.Types.Elliptic_Curves.NSS_BF is
       end loop;
 
       declare
-         L : Natural;
+         L : Natural := 0;
          Y : constant Mod_Type := K(K'Last);
       begin
          for I  in reverse 0..Mod_Type'Size-1 loop

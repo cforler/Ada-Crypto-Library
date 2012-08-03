@@ -11,26 +11,25 @@ package body Test.AES192 is
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
    
-	Plaintext: Crypto.Types.B_Block128 := (16#00#, 16#11#, 16#22#, 16#33#, 16#44#,
-                              16#55#, 16#66#, 16#77#, 16#88#, 16#99#,
-                              16#aa#, 16#bb#, 16#cc#, 16#dd#, 16#ee#,
-                              16#ff#);
-    
-    Ciphertext: Crypto.Types.B_Block128;
-    
-    Temp: Crypto.Types.B_Block128;
-
-	Key: Crypto.Types.B_Block192;
-------------------------------------------------------------------------------------
+   Plaintext: B_Block128 := (16#00#, 16#11#, 16#22#, 16#33#, 16#44#,
+			     16#55#, 16#66#, 16#77#, 16#88#, 16#99#,
+			     16#aa#, 16#bb#, 16#cc#, 16#dd#, 16#ee#,
+			     16#ff#);
+   
+   Ciphertext: Crypto.Types.B_Block128;
+   Temp: Crypto.Types.B_Block128;
+   
+   Key: Crypto.Types.B_Block192;
+   ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 ------------------------------- Register AES192 Test -------------------------------
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 
 	procedure Register_Tests(T : in out AES_Test) is
-		use Test_Cases.Registration;
+	   use Test_Cases.Registration;
 	begin
-		Register_Routine(T, AES192_Test1'Access,"AES192_Test.");
+	   Register_Routine(T, AES192_Test1'Access,"AES192_Test.");
 	end Register_Tests;
 
 ------------------------------------------------------------------------------------
@@ -41,7 +40,7 @@ package body Test.AES192 is
 
 	function Name(T : AES_Test) return Test_String is
 	begin
-		return new String'("AES192 Test");
+	   return new String'("AES192 Test");
 	end Name;
    
 ------------------------------------------------------------------------------------
@@ -52,27 +51,26 @@ package body Test.AES192 is
    
 	procedure AES192_Test1(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions; 
-		use Crypto.Types;
 		use Crypto.Symmetric.Blockcipher_AES192;
 	begin
 		
-		Ciphertext := (16#dd#, 16#a9#, 16#7c#, 16#a4#, 16#86#, 16#4c#, 16#df#, 16#e0#, 16#6e#, 16#af#, 16#70#, 16#a0#, 16#ec#, 16#0d#, 16#71#, 16#91#);
+	   Ciphertext := (16#dd#, 16#a9#, 16#7c#, 16#a4#, 16#86#, 16#4c#, 16#df#, 16#e0#, 
+			  16#6e#, 16#af#, 16#70#, 16#a0#, 16#ec#, 16#0d#, 16#71#, 16#91#);
 		
-		Key := (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#,
-                           16#06#, 16#07#, 16#08#, 16#09#, 16#0a#, 16#0b#,
-                           16#0c#, 16#0d#, 16#0e#, 16#0f#, 16#10#, 16#11#,
-                           16#12#, 16#13#, 16#14#, 16#15#, 16#16#, 16#17#);
-		
-		Prepare_Key(Key);
-
-		Encrypt(Plaintext, Temp);
-
-		Assert(Temp = Ciphertext, "AES-Encryption failed.");
-
-		Decrypt(Ciphertext, Temp);
-
-		Assert(Temp = Plaintext, "AES-Decryption failed.");
-
+	   Key := (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#,
+		   16#06#, 16#07#, 16#08#, 16#09#, 16#0a#, 16#0b#,
+		   16#0c#, 16#0d#, 16#0e#, 16#0f#, 16#10#, 16#11#,
+		   16#12#, 16#13#, 16#14#, 16#15#, 16#16#, 16#17#);
+	   
+	   Prepare_Key(Key);
+	   
+	   Encrypt(Plaintext, Temp);
+	   
+	   Assert(Temp = Ciphertext, "AES-Encryption failed.");
+	   
+	   Decrypt(Ciphertext, Temp);
+	   
+	   Assert(Temp = Plaintext, "AES-Decryption failed.");
 	end AES192_Test1;
 
 ------------------------------------------------------------------------------------

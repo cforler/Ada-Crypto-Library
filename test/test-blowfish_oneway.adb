@@ -67,7 +67,7 @@ package body Test.Blowfish_Oneway is
 
       end loop;
 
-      Assert(Is_distinct = true, "Blowfish128 Oneway Determinism Test failed");
+      Assert(Is_Distinct, "Blowfish128 Oneway Determinism Test failed");
    end Blowfish_Oneway_Test1;
 
    ------------------------------------------------------------------------------------
@@ -79,9 +79,6 @@ package body Test.Blowfish_Oneway is
    procedure Blowfish_Oneway_Test2(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       use Crypto.Symmetric.Algorithm.Blowfish.Oneway;
-      use Crypto.Types;
-
-
 
       One_Way_Plaintext: B_Block64 := (16#00#, 16#00#, 16#00#, 16#00#,
                                         16#00#, 16#00#, 16#00#, 16#000#);

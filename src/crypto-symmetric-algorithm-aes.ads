@@ -23,8 +23,9 @@
 -- This AES implemaentation is based on Daemen's and and Rijman's
 -- "AES Proposal: Rijndael" and the fips-197
 
-package Crypto.Symmetric.Algorithm.AES is
 
+
+package Crypto.Symmetric.Algorithm.AES is
    type Cipherkey_AES128 is private;
    type Cipherkey_AES192 is private;
    type Cipherkey_AES256 is private;
@@ -93,9 +94,13 @@ private
 
 
    -- Roundkeys for 128-bit blocks
-   type Roundkey_AES128 is array(0..Nr_Key128) of Word;
-   type Roundkey_AES192 is array(0..Nr_Key192) of Word;
-   type Roundkey_AES256 is array(0..Nr_Key256) of Word;
+   subtype Key_Range128 is Integer range  0..Nr_Key128;
+   subtype Key_Range192 is Integer range  0..Nr_Key192;
+   subtype Key_Range256 is Integer range  0..Nr_Key256;
+   
+   type Roundkey_AES128 is array(Key_Range128) of Word;
+   type Roundkey_AES192 is array(Key_Range192) of Word;
+   type Roundkey_AES256 is array(Key_Range256) of Word;
 
 
    -- Cipherkeys

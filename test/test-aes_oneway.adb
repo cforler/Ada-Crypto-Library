@@ -69,7 +69,7 @@ package body Test.Aes_Oneway is
 
       end loop;
 
-      Assert(Is_distinct = true, "AES192 Oneway Known Answer Test failed");
+      Assert(Is_Distinct, "AES192 Oneway Known Answer Test failed");
    end Aes_Oneway_Test1921;
 
    ------------------------------------------------------------------------------------
@@ -81,9 +81,6 @@ package body Test.Aes_Oneway is
    procedure Aes_Oneway_Test1922(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       use Crypto.Symmetric.Algorithm.AES.Oneway;
-      use Crypto.Types;
-
-
 
       One_Way_Plaintext: B_Block128 := (16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
                               16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
@@ -102,9 +99,7 @@ package body Test.Aes_Oneway is
 
       One_Way_Cipherkey: Cipherkey_Oneway_AES192;
       One_Way_Ciphertext: B_Block128;
-
    begin
-
       Prepare_Oneway_Key192(Key       => One_Way_Key,
                             Cipherkey => One_Way_Cipherkey);
       Encrypt_OneWay192(One_Way_Cipherkey, One_Way_Plaintext, One_Way_Ciphertext);
@@ -122,13 +117,13 @@ package body Test.Aes_Oneway is
  procedure Aes_Oneway_Test2561(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       use Crypto.Symmetric.Algorithm.AES.Oneway;
+      
       One_Way_Key : Crypto.Types.B_Block256;
       One_Way_Plaintext : Crypto.Types.B_Block128;
       One_Way_Ciphertext : Crypto.Types.B_Block128;
       One_Way_Ciphertext2 : Crypto.Types.B_Block128;
       One_Way_Cipherkey : Crypto.Symmetric.Algorithm.AES.Oneway.Cipherkey_Oneway_AES256;
       Is_distinct : Boolean := true;
-
    begin
       for k in 0..100 loop
 
@@ -143,13 +138,13 @@ package body Test.Aes_Oneway is
       	Prepare_Oneway_Key256(One_Way_Key, One_Way_Cipherkey);
       	Encrypt_OneWay256(One_Way_Cipherkey, One_Way_Plaintext, One_Way_Ciphertext);
       	Encrypt_OneWay256(One_Way_Cipherkey, One_Way_Plaintext, One_Way_Ciphertext2);
-         if One_Way_Ciphertext /= One_Way_Ciphertext2 then
-            Is_distinct := false;
-         end if;
-
+	if One_Way_Ciphertext /= One_Way_Ciphertext2 then
+	   Is_distinct := false;
+	end if;
+	
       end loop;
 
-      Assert(Is_distinct = true, "AES256 Oneway Determinism Test failed");
+      Assert(Is_distinct, "AES256 Oneway Determinism Test failed");
    end Aes_Oneway_Test2561;
 
    -----------------------------------------------------------------------------
@@ -160,9 +155,6 @@ package body Test.Aes_Oneway is
    procedure Aes_Oneway_Test2562(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       use Crypto.Symmetric.Algorithm.AES.Oneway;
-      use Crypto.Types;
-
-
 
       One_Way_Plaintext: B_Block128 := (16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
                               16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
@@ -184,11 +176,10 @@ package body Test.Aes_Oneway is
       One_Way_Ciphertext: B_Block128;
 
    begin
-
       Prepare_Oneway_Key256(Key       => One_Way_Key,
                             Cipherkey => One_Way_Cipherkey);
       Encrypt_OneWay256(One_Way_Cipherkey, One_Way_Plaintext, One_Way_Ciphertext);
-
+      
       Assert(One_Way_Ciphertext = One_Way_Test_Ciphertext, "AES256 Oneway Known Answer Test failed");
    end Aes_Oneway_Test2562;
 

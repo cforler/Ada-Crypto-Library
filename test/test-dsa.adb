@@ -196,7 +196,7 @@ package body Test.DSA is
          Is_same := True;
       end if;
 
-      Assert(Is_same = True , "DSA Get Public Key failed.");
+      Assert(Is_same , "DSA Get Public Key failed.");
 
    end DSA_Test4;
 ------------------------------------------------------------------------------------
@@ -225,7 +225,7 @@ package body Test.DSA is
          Is_same := True;
       end if;
 
-      Assert(Is_same = True , "DSA Get Private Key failed.");
+      Assert(Is_same, "DSA Get Private Key failed.");
 
    end DSA_Test5;
 

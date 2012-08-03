@@ -56,7 +56,7 @@ package body Test.Counter_Generator is
                end loop;
          end loop;
       Ada.Directories.Delete_File("last_nonce.txt");
-      Assert(Distinct = True ,"Counter Generator failed!");
+      Assert(Distinct,"Counter Generator failed!");
    end Counter_Generator_Test1;
 
 end Test.Counter_Generator;

@@ -133,53 +133,48 @@ package body Binfield_Utils is
 
    -- Algorithm 2.39: Polynominal squaring (with wordlength W=8)
    -- compute a(z)**2 mod f(z) on a 8 bit processor
-   function B_Square8(A, F : Big_Unsigned) return Big_Unsigned is
-      C : D_Big_Unsigned;
-      L : Natural;
-   begin
-      for I in 0..A.Last_Index loop
-         L := 2*I;
-         C.Number(L) := Mod_Type(T8(Natural(A.Number(I) and 15)));
-         L:= L+1;
-         C.Number(L) :=
-           Mod_Type(T8(Natural(Shift_Right(A.Number(I),4) and 15)));
-      end loop;
+   --  function B_Square8(A, F : Big_Unsigned) return Big_Unsigned is
+   --     C : D_Big_Unsigned;
+   --     L : Natural;
+   --  begin
+   --     for I in 0..A.Last_Index loop
+   --        L := 2*I;
+   --        C.Number(L) := Mod_Type(T8(Natural(A.Number(I) and 15)));
+   --        L:= L+1;
+   --        C.Number(L) :=
+   --          Mod_Type(T8(Natural(Shift_Right(A.Number(I),4) and 15)));
+   --     end loop;
 
-      Set_Last_Index(C);
+   --     Set_Last_Index(C);
 
-      return B_Mod(C,F);
-   end  B_Square8;
+   --     return B_Mod(C,F);
+   --  end  B_Square8;
 
    -------------------------------------------------------------------------
 
    -- Algorithm 2.39: Polynominal squaring (with word length W=n*8 for n=>0)
    -- compute a(z)**2 mod f(z)
    function B_Square(A, F : Big_Unsigned) return Big_Unsigned is
-      K : constant Natural := Mod_Type'Size*8;
-      N : constant Natural := K*2-1;
+      K : constant Natural := Mod_Type'Size/8;
+      N : constant Natural := K/2-1;
       --M : constant Natural := Bit_Length(F);
       L : Natural;
       C : D_Big_Unsigned;
    begin
-      if K = 1 then
-         return B_Square8(A,F);
-      else
-         for I in 0..A.Last_Index loop
-            L := 2*I;
-            for J in reverse 0..N loop
-               C.Number(L) := Shift_Left(C.Number(L),16) xor
-                 Mod_Type(T16(Byte(Shift_Right(A.Number(I),8*J) and 255)));
+      for I in 0..A.Last_Index loop
+	 L := 2*I;
+	 for J in reverse 0..N loop
+	    C.Number(L) := Shift_Left(C.Number(L),16) xor
+	      Mod_Type(T16(Byte(Shift_Right(A.Number(I),8*J) and 255)));
             end loop;
             L:= L+1;
             for J  in reverse K/2..K-1 loop
                C.Number(L) := Shift_Left(C.Number(L),16) xor
                  Mod_Type(T16(Byte(Shift_Right(A.Number(I),8*J) and 255)));
             end loop;
-         end loop;
-      end if;
-
+      end loop;
       Set_Last_Index(C);
-
+      
       return B_Mod(C,F);
    end B_Square;
 

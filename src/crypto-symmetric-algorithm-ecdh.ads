@@ -38,8 +38,8 @@ package Crypto.Symmetric.Algorithm.ECDH is
    use EC;
    package Zp is new EC.Zp;
    use Zp;
-	package DB is new Zp.Database;
-	use DB;
+   package DB is new Zp.Database;
+   use DB;
 
 
    type Private_Key_ECDH is private;

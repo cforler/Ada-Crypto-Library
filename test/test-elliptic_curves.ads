@@ -12,7 +12,6 @@ package Test.Elliptic_curves is
 
    procedure Elliptic_curves_Test1(T: in out Test_Cases.Test_Case'Class);
    procedure Elliptic_curves_Test5(T: in out Test_Cases.Test_Case'Class);
-   procedure Elliptic_curves_Put_Line(T: in out Test_Cases.Test_Case'Class);
-   procedure Elliptic_curves_Put(T: in out Test_Cases.Test_Case'Class);
+     procedure Elliptic_curves_Put(T: in out Test_Cases.Test_Case'Class);
 
 end Test.Elliptic_curves;

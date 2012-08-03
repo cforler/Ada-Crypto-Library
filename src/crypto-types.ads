@@ -58,40 +58,71 @@ package Crypto.Types is
    type DWords is array (Integer range <>) of DWord;
 
    type Mod_Types  is array (Natural range <>) of Mod_type;
-
-   subtype Byte_Word is Bytes (0 .. 3);
-   subtype Byte_DWord is Bytes (0 .. 7);
-
+   
+   
+   subtype Byte_Word_Range  is Natural range 0..3;
+   subtype Byte_DWord_Range is Natural range 0..7;
+     
+   subtype Byte_Word  is Bytes (Byte_Word_Range);
+   subtype Byte_DWord is Bytes (Byte_DWord_Range);
 
    -- N :  #bits
    -- byte-blocks (B_BlockN): array of N/8 bytes
-   type B_Block32  is new Bytes (0 ..  3);
-   type B_Block48  is new Bytes (0 ..  5);
-   type B_Block56  is new Bytes (0 ..  6);
-   type B_Block64  is new Bytes (0 ..  7);
-   type B_Block128 is new Bytes (0 .. 15);
-   type B_Block160 is new Bytes (0 .. 19);
-   type B_Block192 is new Bytes (0 .. 23);
-   type B_Block256 is new Bytes (0 .. 31);
+   subtype B_Block32_Range  is Natural range 0..3;
+   subtype B_Block48_Range  is Natural range 0..5;
+   subtype B_Block56_Range  is Natural range 0..6;
+   subtype B_Block64_Range  is Natural range 0..7;
+   subtype B_Block128_Range is Natural range 0..15;
+   subtype B_Block160_Range is Natural range 0..19;
+   subtype B_Block192_Range is Natural range 0..23;
+   subtype B_Block256_Range is Natural range 0..31;
+   
+   type B_Block32  is array(B_Block32_Range)  of Byte;
+   type B_Block48  is array(B_Block48_Range)  of Byte;
+   type B_Block56  is array(B_Block56_Range)  of Byte;
+   type B_Block64  is array(B_Block64_Range)  of Byte;
+   type B_Block128 is array(B_Block128_Range) of Byte;
+   type B_Block160 is array(B_Block160_Range) of Byte;
+   type B_Block192 is array(B_Block192_Range) of Byte;
+   type B_Block256 is array(B_Block256_Range) of Byte;
 
+   
    -- word blocks (W_BlockN): array of N/32 Words
-   type W_Block128  is new Words(0 .. 3);
-   type W_Block160  is new Words(0 .. 4);
-   type W_Block192  is new Words(0 .. 5);
-   type W_Block256  is new Words(0 .. 7);
-   type W_Block512  is new Words(0 .. 15);
+   subtype W_Block128_Range is Natural range 0..3;
+   subtype W_Block160_Range is Natural range 0..4;
+   subtype W_Block192_Range is Natural range 0..5;
+   subtype W_Block256_Range is Natural range 0..7;
+   subtype W_Block512_Range is Natural range 0..15;
+   
+   type W_Block128 is array(W_Block128_Range) of Word;
+   type W_Block160 is array(W_Block160_Range) of Word;
+   type W_Block192 is array(W_Block192_Range) of Word;
+   type W_Block256 is array(W_Block256_Range) of Word;
+   type W_Block512 is array(W_Block512_Range) of Word;
+
 
    -- double wordblocks (DW_BlockN): array of N/64 Words
-   type DW_Block128   is new DWords(0 ..  1);
-   type DW_Block256   is new DWords(0 ..  3);
-   type DW_Block384   is new DWords(0 ..  5);
-   type DW_Block512   is new DWords(0 ..  7);
-   type DW_Block1024  is new DWords(0 .. 15);
-
-
-   subtype Hex_Byte  is String (1..2);
-   subtype Hex_Word  is String (1..8);
-   subtype Hex_DWord is String(1..16);
+   subtype DW_Block128_Range  is Natural range 0..1;
+   subtype DW_Block256_Range  is Natural range 0..3;
+   subtype DW_Block384_Range  is Natural range 0..5;
+   subtype DW_Block512_Range  is Natural range 0..7;
+   subtype DW_Block1024_Range is Natural range 0..15;
+   
+   type DW_Block128   is array(DW_Block128_Range) of DWord;
+   type DW_Block256   is array(DW_Block256_Range)  of DWord;
+   type DW_Block384   is array(DW_Block384_Range)  of DWord;
+   type DW_Block512   is array(DW_Block512_Range)  of DWord;
+   type DW_Block1024  is array(DW_Block1024_Range) of DWord;
+   
+   
+   subtype Hex_Byte_Range   is Natural range 1..2;
+   subtype Hex_Word_Range   is Natural range 1..8;
+   subtype Hex_DWord_Range  is Natural range 1..16;
+   
+   
+   subtype Hex_Byte  is String (Hex_Byte_Range);
+   subtype Hex_Word  is String (Hex_Word_Range);
+   subtype Hex_DWord is String (Hex_DWord_Range);
 
 
    subtype Message_Block_Length512  is Natural range 0 ..  64;
@@ -132,8 +163,9 @@ package Crypto.Types is
    --Operations for Bytes
    function "xor"(Left, Right : Bytes)        return Bytes;
    function "xor"(Left : Bytes; Right : Byte) return Bytes;
-   function "+"(Left : Bytes; Right : Byte)   return Bytes;
+   function "+"(Left : Bytes; Right : Byte)   return Bytes; 
    function "+"(Left : Byte; Right  : Bytes)  return Bytes;
+   
    
    -- Operations for Words
    function "xor"(Left, Right : Words)       return Words;
@@ -245,6 +277,27 @@ package Crypto.Types is
    -- ceiling(n/2) and a right part of length floor(n/2).
    function Left_Part(Block : in Bytes)  return Bytes;
    function Right_Part(Block : in Bytes) return Bytes;
+   
+   -- Nested generic package 
+   generic
+      type T is mod <>;
+      type T_A is array (Integer range <>) of T;
+   
+   package Generic_Mod_Aux is
+      function "xor"(Left, Right : T_A)      return T_A;
+      function "xor"(Left : T_A; Right  : T) return T_A;
+      function "xor"(Left : T; Right : T_A)  return T_A;
+      
+      function "+"(Left : T_A; Right : T) return T_A;
+      function "+"(Left : T; Right : T_A) return T_A;
+      
+      function Is_Zero(Item : T_A) return Boolean;
+      
+      function Left_Part (Block : in T_A) return T_A;
+      function Right_Part(Block : in T_A) return T_A;
+   end Generic_Mod_Aux;
+   
+   
   
    ---------------------------------------------------------------------------
    -------------------------------PRIVATE-------------------------------------

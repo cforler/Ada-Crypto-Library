@@ -33,7 +33,7 @@ package body Crypto.Types.Nonces.Nonces_Mixed_2 is
       end;
       Return_Value := This.Value;
       This.Mutex.Release;
-      return This.Value;
+      return Return_Value;
    end Update;
 
    -------------------------------------------------------------------------------

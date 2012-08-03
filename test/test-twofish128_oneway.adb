@@ -1,6 +1,5 @@
 with AUnit.Assertions;
 with Crypto.Symmetric.Oneway_Blockcipher_Twofish128;
-with Crypto.Symmetric.Oneway_Blockcipher_Twofish128;
 with Crypto.Types;
 
 package body Test.Twofish128_Oneway is

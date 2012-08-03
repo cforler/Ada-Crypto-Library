@@ -1,12 +1,17 @@
-with AUnit.Assertions;
 with Crypto.Types.Elliptic_Curves.Zp.Database;
-with Crypto.Types;
-with Crypto.Types.Random;
-with Text_IO;
+with Crypto.Symmetric.Hashfunction_SHA1;
 with Crypto.Types.Big_Numbers;
+with Crypto.Types.Random;
+with AUnit.Assertions;
 with Crypto.Types;
+with Ada.Text_IO; 
+with Text_IO;
 
-
+pragma Elaborate_All (Crypto.Types.Big_Numbers);
+pragma Elaborate_All (Crypto.Types.Elliptic_Curves);
+pragma Elaborate_All (Crypto.Types.Elliptic_Curves.Zp);
+pragma Elaborate_All (Crypto.Types.Elliptic_Curves.Zp.Database);
+  
 package body Test.Elliptic_curves is
 
    -----------------------------------------------------------------------------
@@ -20,8 +25,7 @@ package body Test.Elliptic_curves is
    package ZP is new EC.ZP;
    use ZP;
    package DB is new ZP.Database;
-   --package UT is new Crypto.Types.Big_Numbers.Utils(64);
-   -----------------------------------------------------------------------------
+  -----------------------------------------------------------------------------
    ------------------------ Register Elliptic_curves Tests -------------------------
    -----------------------------------------------------------------------------
 
@@ -31,7 +35,6 @@ package body Test.Elliptic_curves is
       Register_Routine(T, Elliptic_curves_Test1'Access,"Elliptic_curves Known Answer Test 1");
       Register_Routine(T, Elliptic_curves_Test5'Access,"Elliptic_curves Known Answer Test 5");
       Register_Routine(T, Elliptic_curves_Put'Access,"Elliptic_curves Put Line Test");
-      Register_Routine(T, Elliptic_curves_Put_Line'Access,"Elliptic_curves Put Test");
    end Register_Tests;
 
    -----------------------------------------------------------------------------
@@ -104,56 +107,30 @@ package body Test.Elliptic_curves is
       Assert(true, "Elliptic_curves Exception Test failed");
    end Elliptic_curves_Test5;
 
-   -----------------------------------------------------------------------------
-   -----------------------------------------------------------------------------
-   -----------------------------------------------------------------------------
-   ----------------------------------- Put_Line ----------------------------------
-   -----------------------------------------------------------------------------
-
-   procedure Elliptic_curves_Put_Line(T : in out Test_Cases.Test_Case'Class) is
-
-      use AUnit.Assertions;
-      use Crypto.Types;
-
-      	A: Big.Big_Unsigned;
-	B: Big.Big_Unsigned;
-	Z: Big.Big_Unsigned;
-
-	P1:   EC_Point;
-
-   begin
-      A := A + 4;
-      B := B + 20;
-      Z := Z + 29;
-
-      P1 := (X => (A+1),Y => (B+2));
-
-      Init(A,B,Z);
-
-      EC.Put_Line(Item => P1,
-                  Base => 10);
-
-
-      Assert(true, "Elliptic_curves Put_Line Test failed");
-   end Elliptic_curves_Put_Line;
-
-   -----------------------------------------------------------------------------
-   -----------------------------------------------------------------------------
+ 
    -----------------------------------------------------------------------------
    ----------------------------------- Put ----------------------------------
    -----------------------------------------------------------------------------
 
    procedure Elliptic_curves_Put(T : in out Test_Cases.Test_Case'Class) is
-
+      use Crypto.Symmetric.Hashfunction_SHA1;
       use AUnit.Assertions;
       use Crypto.Types;
-
+      use Ada.Text_IO;
+      
       	A: Big.Big_Unsigned;
 	B: Big.Big_Unsigned;
 	Z: Big.Big_Unsigned;
 
 	P1:   EC_Point;
-
+	Put_File : File_Type; 
+	
+	Stdout : constant File_Type := Standard_Output;
+	Put_File_Name : constant String := "ec_put_test.txt";
+	
+	Result : constant Crypto.Types.W_Block160 := 
+	  (16#3469_619f#, 16#6f3e_f428#, 16#924b_be5a#, 16#2c85_1ef2#,
+	   16#c5d6_1c7e#);
    begin
       A := A + 4;
       B := B + 20;
@@ -162,12 +139,18 @@ package body Test.Elliptic_curves is
       P1 := (X => (A+1),Y => (B+2));
 
       Init(A,B,Z);
-
-      EC.Put(Item => P1,
-             Base => 10);
-
-
-      Assert(true, "Elliptic_curves Put_Line Test failed");
+      Create(Put_File, Out_File, Put_File_Name); 
+      Set_Output(Put_File);
+      
+      EC.Put(Item => P1, Base => 10);
+      EC.Put_Line(Item => P1, Base => 10);
+      EC.Put_Line(Item => P1, Base => 16);
+      EC.Put(Item => P1, Base => 16);
+      
+      Set_Output(Stdout);
+      Close(Put_File);
+      
+      Assert(F_Hash(Put_File_Name) = Result, "Elliptic_curves Put Test failed");
    end Elliptic_curves_Put;
 
    -----------------------------------------------------------------------------

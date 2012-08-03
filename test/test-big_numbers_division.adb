@@ -3,9 +3,8 @@ with Crypto.Types;
 with Crypto.Types.Random;
 with Text_IO;
 with Crypto.Types.Big_Numbers;
-with Crypto.Types;
 
-
+pragma Elaborate_All (Crypto.Types.Big_Numbers);
 package body Test.Big_numbers_division is
 
    -----------------------------------------------------------------------------
@@ -18,10 +17,10 @@ package body Test.Big_numbers_division is
     use Big.Mod_Utils;
     use Crypto.Types;
 
-   -----------------------------------------------------------------------------
-   ------------------------ Register Big_numbers_division Tests -------------------------
-   -----------------------------------------------------------------------------
-
+    ------------------------------------------------------------------------- 
+    ------------------- Register Big_numbers_division Tests -----------------
+    -------------------------------------------------------------------------
+    
    procedure Register_Tests(T : in out Big_numbers_division_Test) is
       use Test_Cases.Registration;
    begin
@@ -45,14 +44,10 @@ package body Test.Big_numbers_division is
    -----------------------------------------------------------------------------
 
    procedure Big_numbers_division_Test1(T : in out Test_Cases.Test_Case'Class) is
-
       use AUnit.Assertions;
-      use Crypto.Types;
-
+      
        A: Mod_Type;
        B, C, D: Big_Unsigned;
-
-
    begin
       A := 222222;
       B := To_Big_Unsigned("111111");
@@ -60,8 +55,5 @@ package body Test.Big_numbers_division is
       D := A/B;
       Assert(D = C , "Big_numbers_division Known Answer Test 1 failed");
    end Big_numbers_division_Test1;
-
-   -----------------------------------------------------------------------------
-
-
+   
 end Test.Big_numbers_division;

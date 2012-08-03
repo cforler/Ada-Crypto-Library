@@ -80,7 +80,7 @@ package body Test.SHA512_Oneway is
 
       end loop;
 
-      Assert(Is_distinct = true, "SHA512 Oneway Determinism Test failed");
+      Assert(Is_distinct, "SHA512 Oneway Determinism Test failed");
    end SHA512_Oneway_Test1;
 
    ------------------------------------------------------------------------------------
@@ -92,7 +92,6 @@ package body Test.SHA512_Oneway is
    procedure SHA512_Oneway_Test2(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       use Crypto.Symmetric.Algorithm.SHA512.Oneway;
-      use Crypto.Types;
 
       One_Way_Plaintext: DW_Block512 := (16#01_02_A1_A2_1_02_A1_A2#, 16#01_02_A1_A2_1_02_A1_A2#,
                                          16#01_02_A1_A2_1_02_A1_A2#, 16#01_02_A1_A2_1_02_A1_A2#,

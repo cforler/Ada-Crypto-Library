@@ -23,9 +23,10 @@
 --with Ada.IO_Exceptions; use Ada.IO_Exceptions;
 --with Gnat.Os_Lib; use Gnat.Os_Lib;
 with Crypto.Types; use Crypto.Types;
+--#inherit Crypto.Types;
+
 
 package Crypto.Symmetric.Algorithm is
-
    type Message_Length64  is private;
    type Message_Length128 is private;
    type Message_Length256 is private;
@@ -33,7 +34,7 @@ package Crypto.Symmetric.Algorithm is
     ---------------------------------------------------------------------------
    ----------------------------EXCEPTIONS------------------------------------
    ---------------------------------------------------------------------------
-
+   
    File_Open_Error : exception;
    File_Read_Error : exception;
 
@@ -42,20 +43,21 @@ package Crypto.Symmetric.Algorithm is
    ---------------------------------------------------------------------------
 
 
-   private
-      type Direction_type is (Encrypt, Decrypt);
-
-          -- length of message must  < 2^64
+private
+   type Direction_type is (Encrypt, Decrypt);
+  
+   -- length of message must  < 2^64
    type Message_Length64 is new DWord;
-
+   
    -- length of message must < 2^128
    type Message_Length128 is record
       M1 : DWord;
       M2 : Dword;
    end record;
-
-   type Message_Length256 is new  DWords(0..3);
-
+   
+   subtype Message_Length256_Range is Integer range 0..3;
+   type Message_Length256 is array(Message_Length256_Range) of DWord;
+   
    type Message_Counter_Type is mod 16;
    type To_Word_Counter_Type is mod 4;
    type To_DWord_Counter_Type is mod 8;
