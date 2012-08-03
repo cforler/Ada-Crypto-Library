@@ -11,7 +11,6 @@ with Test.Twofish128;
 with Test.Twofish192;
 with Test.Twofish256;
 with Test.TDES;
-with Test.TDES_Obsolete;
 with Test.Noobcipher;
 with Test.BPS_Mode;
 
@@ -33,7 +32,6 @@ package body Test.Suite_Blockciphers is
    Test_Twofish192:	aliased Test.Twofish192.Twofish_Test;
    Test_Twofish256:	aliased Test.Twofish256.Twofish_Test;
    Test_TDES:		aliased Test.TDES.TDES_Test;
-   Test_TDES_Obsolete:	aliased Test.TDES_Obsolete.TDES_Test;
    Test_Noobcipher:     aliased Test.Noobcipher.Noobcipher_Test;
 
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
@@ -52,7 +50,6 @@ package body Test.Suite_Blockciphers is
       Add_Test(Result'Access, Test_Twofish192'Access);
       Add_Test(Result'Access, Test_Twofish256'Access);
       Add_Test(Result'Access, Test_TDES'Access);
-      Add_Test(Result'Access, Test_TDES_Obsolete'Access);
       Add_Test(Result'Access, Test_Noobcipher'Access);
 
       return Result'Access;

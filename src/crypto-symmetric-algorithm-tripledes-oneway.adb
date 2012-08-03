@@ -43,30 +43,4 @@ package body Crypto.Symmetric.Algorithm.Tripledes.Oneway is
                            Des(Cipherkey(1), Des(Cipherkey(0), Plaintext)));
       end Encrypt_Oneway;
 
-      --------------------------Obsolete-----------------------------------
-
-      procedure Obsolete_Prepare_Oneway_Key
-        (Key : in B_Block192;
-         Cipherkey : out Obsolete_Cipherkey_Oneway_TDES) is
-      begin
-         Obsolete_Build_Encrypt_Key(B_Block64(Key( 0.. 7)), Cipherkey(0));
-         Obsolete_Build_Encrypt_Key(B_Block64(Key( 8..15)), Cipherkey(1));
-         Obsolete_Build_Encrypt_Key(B_Block64(Key(16..23)), Cipherkey(2));
-
-         -- Switch Cipherkey(1) to get an EDE-Key
-         Obsolete_Build_Decrypt_Key(Cipherkey(1), Cipherkey(1));
-      end Obsolete_Prepare_Oneway_Key;
-
-
-      procedure Obsolete_Encrypt_Oneway
-        (Cipherkey  : in  Obsolete_Cipherkey_Oneway_TDES;
-         Plaintext  : in  B_Block64;
-         Ciphertext : out B_Block64) is
-      begin
-         Ciphertext := Obsolete_Des
-           (Cipherkey(2),
-            Obsolete_Des(Cipherkey(1),
-                          Obsolete_Des(Cipherkey(0), Plaintext)));
-      end Obsolete_Encrypt_Oneway;
-
 end Crypto.Symmetric.Algorithm.Tripledes.Oneway;

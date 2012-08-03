@@ -34,34 +34,13 @@ package Crypto.Symmetric.Algorithm.Tripledes.Oneway is
                             Ciphertext : out B_Block64);
 
 
-   ----------------------------Obsolete--------------------------------------
-
-   type Obsolete_Cipherkey_Oneway_TDES is private;
-
-   procedure Obsolete_Prepare_Oneway_Key
-     (Key       : in B_Block192;
-      Cipherkey : out Obsolete_Cipherkey_Oneway_TDES);
-
-   procedure Obsolete_Encrypt_Oneway
-     (Cipherkey  : in  Obsolete_Cipherkey_Oneway_TDES;
-      Plaintext  : in  B_Block64;
-      Ciphertext : out B_Block64);
-
-
-
    ---------------------------------------------------------------------------
    -------------------------------PRIVATE-------------------------------------
    ---------------------------------------------------------------------------
 
 private
-
    type Cipherkey_Oneway_TDES is array(0..2) of Roundkey_DES;
 
-   type Obsolete_Cipherkey_Oneway_TDES is array(0..2) of Obsolete_Roundkey_DES;
-
    pragma Inline(Prepare_Oneway_Key, Encrypt_Oneway);
-   pragma Inline(Obsolete_Prepare_Oneway_Key, Obsolete_Encrypt_Oneway);
    pragma Optimize (Time);
-
-
 end Crypto.Symmetric.Algorithm.Tripledes.Oneway;

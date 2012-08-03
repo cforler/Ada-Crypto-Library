@@ -1,6 +1,5 @@
 with AUnit.Assertions;
 with Crypto.Symmetric.Oneway_Blockcipher_tripledes;
-with Crypto.Symmetric.Oneway_Blockcipher_Obsolete_Tripledes;
 with Crypto.Types;
 
 package body Test.TDES_Oneway is
