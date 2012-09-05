@@ -89,7 +89,6 @@ package body Crypto.Types is
       return True;
    end Is_Zero;
    
-   ------------------------------------------------------------------------
 ------------------------------------------------------------------------
    
    function Left_Part(Block : in T_A) return T_A is
@@ -110,9 +109,26 @@ package body Crypto.Types is
    
    ------------------------------------------------------------------------
    
-   end Generic_Mod_Aux;
+   function Shift_Left(Value : T_A;  Amount : Natural) return T_A  is
+      Result : T_A(Value'Range) := (others => 0);
+      L : constant Natural := Amount mod T'Size;
+      M : constant Natural := Value'First+(Amount/T'Size);
+   begin
+      if Amount >= Value'Size then
+	 return Result;
+      elsif Amount = 0 then
+	 return Value;
+      end if;      
+      Result(Value'Last-M) := Shift_Left(Value(Value'Last),L);      
+      
+      for I in reverse Value'First..Value'Last-(M+1) loop
+	 Result(I) := Shift_Left(Value(I),L)
+	   xor Shift_Right(Value(I+1),T'Size-L);
+      end loop;
+      return Result;
+   end Shift_Left; 
 
-   
+   end Generic_Mod_Aux;
    
    
    function Cast  is new Ada.Unchecked_Conversion (Byte_Word, Word);
@@ -121,8 +137,7 @@ package body Crypto.Types is
    function DCast is new Ada.Unchecked_Conversion (DWord, Byte_DWord);
    pragma Inline (Cast, DCast);
   
-   
-   
+      
    package Aux_Byte is new Generic_Mod_Aux(Byte,Bytes);
    package Aux_Word is new Generic_Mod_Aux(Word,Words);
    package Aux_DWord is new Generic_Mod_Aux(Dword,DWords);
@@ -626,6 +641,20 @@ package body Crypto.Types is
    
    ---------------------------------------------------------------------------
    
+   function To_Bytes(D : DW_Block256) return Bytes is
+   begin
+      return To_Bytes(DWords(D));
+   end To_Bytes;
+   
+   ---------------------------------------------------------------------------
+   
+   function To_Bytes(D : DW_Block384) return Bytes is
+   begin
+      return To_Bytes(DWords(D));
+   end To_Bytes;
+   
+   ---------------------------------------------------------------------------
+   
    function To_Bytes(D : DW_Block512) return Bytes is
    begin
       return To_Bytes(DWords(D));
@@ -654,10 +683,45 @@ package body Crypto.Types is
    
       ---------------------------------------------------------------------------
       
-   function To_B_block256(B : Bytes) return B_Block256 is
+   function To_B_Block256(B : Bytes) return B_Block256 is
    begin
       return B_Block256(B);
    end To_B_Block256;
+   
+   ---------------------------------------------------------------------------
+   
+   function To_W_Block160(B : Bytes) return W_Block160 is
+   begin
+     return W_Block160(To_Words(B));
+   end To_W_Block160;
+   
+    ---------------------------------------------------------------------------
+   
+   function To_W_Block256(B : Bytes) return W_Block256 is
+   begin
+     return W_Block256(To_Words(B));
+   end To_W_Block256;
+   
+   ---------------------------------------------------------------------------
+      
+   function To_DW_Block256(B : Bytes) return DW_Block256 is
+   begin
+     return DW_Block256(To_DWords(B));
+   end To_DW_Block256;
+   
+   ---------------------------------------------------------------------------
+   
+   function To_DW_Block384(B : Bytes) return DW_Block384 is
+   begin
+     return DW_Block384(To_DWords(B));
+   end To_DW_Block384;
+   
+   ---------------------------------------------------------------------------
+     
+   function To_DW_Block512(B : Bytes) return DW_Block512 is
+   begin
+     return DW_Block512(To_DWords(B));
+   end To_DW_Block512;
    
    ---------------------------------------------------------------------------
    
@@ -700,4 +764,12 @@ package body Crypto.Types is
    begin
       return B_Block128(Bytes(Left) + Right);
    end "+";
+   
+   ---------------------------------------------------------------------------
+   
+   function Shift_Left(Value : Bytes; Amount : Natural) return Bytes is
+   begin
+      return Aux_Byte.Shift_Left(Value,Amount);
+   end Shift_Left;
+   
   end Crypto.Types;

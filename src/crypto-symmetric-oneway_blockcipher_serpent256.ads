@@ -34,4 +34,7 @@ package Crypto.Symmetric.Oneway_Blockcipher_Serpent256 is
    Key_Type       => B_Block256,
    Cipherkey_Type => Cipherkey_Oneway_Serpent256,
    Prepare_Key    => Prepare_Oneway_Key256,
-   Encrypt        => Encrypt_Oneway256);
+   Encrypt        => Encrypt_Oneway256,
+   To_Block_Type  => To_B_Block128,
+   Block_To_Bytes => To_Bytes);
+

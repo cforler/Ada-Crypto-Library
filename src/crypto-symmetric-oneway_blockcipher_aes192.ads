@@ -34,4 +34,6 @@ package Crypto.Symmetric.Oneway_Blockcipher_AES192 is
    Key_Type       => B_Block192,
    Cipherkey_Type => Cipherkey_Oneway_AES192,
    Prepare_Key    => Prepare_Oneway_Key192,
-   Encrypt        => Encrypt_Oneway192);
+   Encrypt        => Encrypt_Oneway192,
+   To_Block_Type  => To_B_Block128,
+   Block_To_Bytes => To_Bytes);

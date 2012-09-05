@@ -2,9 +2,6 @@ with Crypto.Symmetric.Oneway_Blockcipher;
 
 generic
    with package C is new Crypto.Symmetric.Oneway_Blockcipher(<>);
-
-   with function To_Block_Type (B : Bytes) return C.Block;
-   with function To_Bytes (B : C.Block) return Bytes;
    with function Shift_Left (Value: C.Block; Amount: Natural) return C.Block;
    with function "xor" (Left, Right : C.Block)    return C.Block is <>;
 

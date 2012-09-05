@@ -133,7 +133,7 @@ package Crypto.Types is
    ---------------------------FUNCTIONS---------------------------------------
    ---------------------------------------------------------------------------
 
-   function Shift_Left   (Value : Byte; Amount : Natural) return Byte;
+   function Shift_Left   (Value : Byte; Amount : Natural) return Byte; 
    function Shift_Right  (Value : Byte; Amount : Natural) return Byte;
    function Rotate_Left  (Value : Byte; Amount : Natural) return Byte;
    function Rotate_Right (Value : Byte; Amount : Natural) return Byte;
@@ -157,8 +157,9 @@ package Crypto.Types is
    function Shift_Right  (Value : Mod_Type; Amount : Natural) return Mod_Type;
    function Rotate_Left  (Value : Mod_Type; Amount : Natural) return Mod_type;
    function Rotate_Right (Value : Mod_Type; Amount : Natural) return Mod_Type;
-
-
+   pragma Import (Intrinsic, Shift_Left);
+   
+   function Shift_Left   (Value : Bytes; Amount : Natural) return Bytes;  
 
    --Operations for Bytes
    function "xor"(Left, Right : Bytes)        return Bytes;
@@ -202,7 +203,7 @@ package Crypto.Types is
    function To_DWord    (X : Byte_DWord) return DWord;
    function R_To_DWord  (X : Byte_DWord) return DWord;
    function To_DWords   (Byte_Array : Bytes) return DWords;
-
+      
    -- DWord to Bytes
    function To_Bytes   (X : DWord)            return Byte_DWord;
    function R_To_Bytes (X : DWord)            return Byte_DWord;
@@ -251,9 +252,10 @@ package Crypto.Types is
    function To_Bytes(W : W_Block160) return Bytes;
    function To_Bytes(W : W_Block256) return Bytes;
    function To_Bytes(W : W_Block512) return Bytes;
+   function To_Bytes(D : DW_Block256) return Bytes;
+   function To_Bytes(D : DW_Block384) return Bytes;
    function To_Bytes(D : DW_Block512) return Bytes;
-   
-   
+
    
    -- Bytes To block of Bytes.
    -- Needed for generic packages to convert a specific byte block.
@@ -262,6 +264,18 @@ package Crypto.Types is
    function To_B_Block192(B : Bytes) return B_Block192;
    function To_B_Block256(B : Bytes) return B_Block256;
    
+   
+   -- Bytes To block of words.
+   -- Needed for generic packages to convert a specific byte block.
+   function To_W_Block160(B : Bytes) return W_Block160;
+   function To_W_Block256(B : Bytes) return W_Block256;
+   
+   
+   -- Bytes To block of double words.
+   -- Needed for generic packages to convert a specific byte block.
+   function To_DW_Block256(B : Bytes) return DW_Block256;
+   function To_DW_Block384(B : Bytes) return DW_Block384;
+   function To_DW_Block512(B : Bytes) return DW_Block512;
    
    -- Needed for generic packages to convert a specific byte block.
    function "xor"(Left, Right : B_Block64)    return   B_Block64;
@@ -282,7 +296,9 @@ package Crypto.Types is
    generic
       type T is mod <>;
       type T_A is array (Integer range <>) of T;
-   
+      with function Shift_Left  (Value : T; Amount : Natural) return T is <>;
+      with function Shift_Right (Value : T; Amount : Natural) return T is <>;
+      
    package Generic_Mod_Aux is
       function "xor"(Left, Right : T_A)      return T_A;
       function "xor"(Left : T_A; Right  : T) return T_A;
@@ -294,7 +310,9 @@ package Crypto.Types is
       function Is_Zero(Item : T_A) return Boolean;
       
       function Left_Part (Block : in T_A) return T_A;
-      function Right_Part(Block : in T_A) return T_A;
+      function Right_Part(Block : in T_A) return T_A;      
+      
+      function Shift_Left(Value : T_A;  Amount : Natural) return T_A;
    end Generic_Mod_Aux;
    
    
@@ -312,8 +330,6 @@ private
    pragma Inline (To_DWord, R_To_DWord);
    pragma Inline (Is_Zero);
    pragma Inline (Left_Part, Right_Part); 
-   
-   pragma Import (Intrinsic, Shift_Left);
    pragma Import (Intrinsic, Shift_Right);
    pragma Import (Intrinsic, Rotate_Left);
    pragma Import (Intrinsic, Rotate_Right);

@@ -20,6 +20,7 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
+with Crypto.Types;
 
 generic
    type Block is private;
@@ -33,6 +34,8 @@ generic
                           Plaintext  : in Block;
                           Ciphertext : out Block);
 
+   with function To_Block_Type (B : Crypto.Types.Bytes) return Block is <>;
+   with function Block_To_Bytes(B : Block) return Crypto.Types.Bytes is <>;
 
    ---------------------------------------------------------------------------
    ----------------------------PUBLIC-----------------------------------------
@@ -43,6 +46,11 @@ package Crypto.Symmetric.Oneway_Blockcipher is
    procedure Prepare_Key(Key    : in Key_Type);
 
    procedure Encrypt(Plaintext  : in Block; Ciphertext : out Block);
+   
+   -- Function raise Constraint Error if Byte_array'Size /= Block'Size
+   function To_Block(Byte_Array : Crypto.Types.Bytes) return Block;
+   
+   function To_Bytes(B : Block) return Crypto.Types.Bytes;
 
    ---------------------------------------------------------------------------
    ------------------------------PRIVATE--------------------------------------

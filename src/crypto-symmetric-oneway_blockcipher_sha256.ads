@@ -36,4 +36,7 @@ package Crypto.Symmetric.Oneway_Blockcipher_SHA256 is
    Key_Type       => W_Block256,
    Cipherkey_Type => Cipherkey_SHA256,
    Prepare_Key    => Prepare_Key,
-   Encrypt        => Encrypt);
+   Encrypt        => Encrypt,
+   To_Block_Type  => To_W_Block256,
+   Block_To_Bytes => To_Bytes);
+

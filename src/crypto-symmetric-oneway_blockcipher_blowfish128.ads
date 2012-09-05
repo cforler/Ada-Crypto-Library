@@ -36,4 +36,6 @@ package Crypto.Symmetric.Oneway_Blockcipher_Blowfish128 is
    Key_Type       => B_Block128,
    Cipherkey_Type => Cipherkey_Oneway_Blowfish128,
    Prepare_Key    => Prepare_Oneway_Key128,
-   Encrypt        => Encrypt_Oneway128);
+   Encrypt        => Encrypt_Oneway128,
+   To_Block_Type  => To_B_Block64,
+   Block_To_Bytes => To_Bytes);

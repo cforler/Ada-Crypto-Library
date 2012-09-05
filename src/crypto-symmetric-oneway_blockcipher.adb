@@ -42,6 +42,22 @@ package body Crypto.Symmetric.Oneway_Blockcipher is
    end Encrypt;
 
    ---------------------------------------------------------------------------
+ 
+   function To_Block(Byte_Array : Crypto.Types.Bytes) return Block is
+   begin
+      if Byte_Array'Size  /= Block'Size then
+         raise Constraint_Error with "Key length doesn't match.";
+      end if;
+      return To_Block_Type(Byte_Array);
+   end To_Block; 
+   
+   ---------------------------------------------------------------------------
+   
+   function To_Bytes(B : Block) return Crypto.Types.Bytes is
+   begin
+      return Block_To_Bytes(B);
+   end To_Bytes;
+   ---------------------------------------------------------------------------
 
 end Crypto.Symmetric.Oneway_Blockcipher;
 

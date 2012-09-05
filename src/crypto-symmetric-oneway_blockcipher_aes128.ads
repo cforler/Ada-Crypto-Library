@@ -35,5 +35,7 @@ package Crypto.Symmetric.Oneway_Blockcipher_AES128 is
    Key_Type       => B_Block128,
    Cipherkey_Type => Cipherkey_Oneway_AES128,
    Prepare_Key    => Prepare_Oneway_Key128,
-   Encrypt        => Encrypt_Oneway128);
+   Encrypt        => Encrypt_Oneway128,
+   To_Block_Type  => To_B_Block128,
+   Block_To_Bytes => To_Bytes);
 

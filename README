@@ -18,13 +18,13 @@ For the specifics of this license, see file 'COPYING', included in
 this distribution.
 
 
-Welcome to the ADA Crypto Library (ACL) aka libadacrypt-0.6.x
+Welcome to the Ada Crypto Library (ACL) aka libadacrypt-0.6.x
 =============================================================
 
 About ACL:
 ---------
 This library is an ongoing project with the goal
-to provide "strong" and clean coded cryptography
+to provide a "strong" and clean coded cryptography
 library for Ada.
 
 Note, that depending on where you are, the use of cryptography may be

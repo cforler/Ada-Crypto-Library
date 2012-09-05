@@ -36,5 +36,7 @@ package Crypto.Symmetric.Oneway_Blockcipher_SHA384 is
    Key_Type       => DW_Block256,
    Cipherkey_Type => Cipherkey_SHA384,
    Prepare_Key    => Prepare_Key,
-   Encrypt        => Encrypt);
+   Encrypt        => Encrypt,
+   To_Block_Type  => To_DW_Block384,
+   Block_To_Bytes => To_Bytes);
 

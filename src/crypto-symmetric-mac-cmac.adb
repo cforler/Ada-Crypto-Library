@@ -8,17 +8,17 @@ package body Crypto.Symmetric.MAC.CMAC is
       Bytes_Per_Block: constant Positive := Block'Size/8;
    begin
       if (Value(Value'First) and 16#80#) = 0 then -- is MSB of L / L.u zero?
-         return Shift_Left(To_Block_Type(Value), 1); -- change Shift_Left in- and output to Bytes?
+         return To_Block(Shift_Left(Value, 1)); -- change Shift_Left in- and output to Bytes?
       else
          declare
             Const: Bytes(0..Bytes_Per_Block-1) := (others => 0);
          begin
             if Bytes_Per_Block = 8 then -- message blocksize n = 64 bit
                Const(Const'Last) := 16#1b#;
-               return Shift_Left(To_Block_Type(Value), 1) xor To_Block_Type(Const);
+               return  C.To_Block(Shift_Left(Value, 1) xor Const);
             elsif Bytes_Per_Block = 16 then -- n = 128 bit
                Const(Const'Last) := 16#87#;
-               return Shift_Left(To_Block_Type(Value), 1) xor To_Block_Type(Const);
+               return  C.To_Block(Shift_Left(Value, 1) xor Const);
             else
                raise Blocklength_Not_Supported;
             end if;
@@ -35,8 +35,8 @@ package body Crypto.Symmetric.MAC.CMAC is
    begin
       C.Prepare_Key(Key);
       C.Encrypt(To_Block_Type(IV), L);
-      U := Generate_Constants(To_Bytes(L));
-      U2 := Generate_Constants(To_Bytes(U));
+      U := Generate_Constants(C.To_Bytes(L));
+      U2 := Generate_Constants(C.To_Bytes(U));
 
       T := T xor T; -- Reset CMAC
    end Init;
@@ -59,10 +59,10 @@ package body Crypto.Symmetric.MAC.CMAC is
          X := Final_Message_Block xor T xor U;
       else -- padding
          declare
-            M: Bytes := To_Bytes(Final_Message_Block);
+            M: Bytes := C.To_Bytes(Final_Message_Block);
          begin
             M(Bytes_Read) := 16#80#;
-            X := To_Block_Type(M) xor T xor U2;
+            X := C.To_Block(M) xor T xor U2;
          end;
       end if;
 
@@ -90,10 +90,10 @@ package body Crypto.Symmetric.MAC.CMAC is
          X := Final_Message_Block xor T xor U;
       else -- padding
          declare
-            M: Bytes := To_Bytes(Final_Message_Block);
+            M: Bytes := C.To_Bytes(Final_Message_Block);
          begin
             M(Bytes_Read) := 16#80#;
-            X := To_Block_Type(M) xor T xor U2;
+            X := C.To_Block(M) xor T xor U2;
          end;
       end if;
 
@@ -108,7 +108,7 @@ package body Crypto.Symmetric.MAC.CMAC is
    procedure Sign(Message : in  Blocks;
                   Key     : in  Key_Type;
                   Tag     : out Block) is
-      Final_Message_Block: constant Bytes := To_Bytes(Message(Message'Last));
+      Final_Message_Block: constant Bytes := C.To_Bytes(Message(Message'Last));
       Bytes_Read: Natural := Final_Message_Block'Length;
    begin
       Init(Key);
@@ -133,7 +133,7 @@ package body Crypto.Symmetric.MAC.CMAC is
                    Key     : in Key_Type;
                    Tag     : in Block) return Boolean is
       Result : Boolean;
-      Final_Message_Block: constant Bytes := To_Bytes(Message(Message'Last));
+      Final_Message_Block: constant Bytes := C.To_Bytes(Message(Message'Last));
       Bytes_Read: Natural := Final_Message_Block'Length;
    begin
       Init(Key);

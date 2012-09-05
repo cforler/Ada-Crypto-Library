@@ -34,4 +34,6 @@ package Crypto.Symmetric.Oneway_Blockcipher_tripledes is
    Key_Type       => B_Block192,
    Cipherkey_Type => Cipherkey_Oneway_TDES,
    Prepare_Key    => Prepare_Oneway_Key,
-   Encrypt        => Encrypt_Oneway);
+   Encrypt        => Encrypt_Oneway,
+   To_Block_Type  => To_B_Block64,
+   Block_To_Bytes => To_Bytes);

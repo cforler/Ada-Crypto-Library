@@ -35,4 +35,6 @@ package Crypto.Symmetric.Oneway_Blockcipher_SHA512 is
    Key_Type       => DW_Block256,
    Cipherkey_Type => Cipherkey_SHA512,
    Prepare_Key    => Prepare_Key,
-   Encrypt        => Encrypt);
+   Encrypt        => Encrypt,
+   To_Block_Type  => To_DW_Block512,
+   Block_To_Bytes => To_Bytes);
