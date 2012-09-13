@@ -11,8 +11,9 @@ package Crypto.Symmetric.Tweakable_Blockcipher_CMT is
                                                                                  Key_Type   => BC.Key_Type,
                                                                                  Tweak_Type => BC.Block);
 
-   type CMT is new Tweakable_Blockciphers.TB_Interface with null record;
-
+   --type CMT is new Tweakable_Blockciphers.TB_Interface with null record;
+   type CMT is new is limited inteface;
+   
    overriding
    procedure Key_Setup(This : in out CMT;
                        Key  : in     BC.Key_Type);

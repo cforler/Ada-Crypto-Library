@@ -12,7 +12,6 @@ package Crypto.Symmetric.MAC.CMAC is
 
    -- low level
    procedure Init(Key : in Key_Type);
-
    procedure Sign(Message_Block : in Block);
    procedure Final_Sign(Final_Message_Block : in  Block;
                         Bytes_Read          : in  Natural;
