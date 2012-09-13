@@ -40,22 +40,22 @@ Getting started
 
 
 ### To build and test:
-   make
-   make acltest
-   cd test  
-   ./test-tests
+    make
+    make acltest
+    cd test  
+    ./test-tests
 	
 
 ### To generate LCOV code coverage report (location: test/coverage/):
-   make gcov
-   cd test  
-   ./test-tests
-   make lcov
+    make gcov
+    cd test  
+    ./test-tests
+    make lcov
 
 
 ### To build the PDF documentation (location: doc/):
     make docu
-
+    
 
 Other stuff
 -----------
