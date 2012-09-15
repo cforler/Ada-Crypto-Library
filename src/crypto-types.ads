@@ -159,7 +159,8 @@ package Crypto.Types is
    function Rotate_Right (Value : Mod_Type; Amount : Natural) return Mod_Type;
    pragma Import (Intrinsic, Shift_Left);
    
-   function Shift_Left   (Value : Bytes; Amount : Natural) return Bytes;  
+   function Shift_Left (Value : Bytes; Amount : Natural) return Bytes;  
+   function Shift_Left (Value : B_Block128 ; Amount : Natural) return B_Block128;  
 
    --Operations for Bytes
    function "xor"(Left, Right : Bytes)        return Bytes;

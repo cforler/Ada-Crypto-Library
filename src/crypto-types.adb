@@ -772,4 +772,13 @@ package body Crypto.Types is
       return Aux_Byte.Shift_Left(Value,Amount);
    end Shift_Left;
    
+   ---------------------------------------------------------------------------
+   
+   function Shift_Left(Value : B_Block128; Amount : Natural) return B_Block128 is
+   begin
+      return  B_Block128(Aux_Byte.Shift_Left(Bytes(Value),Amount));
+   end Shift_Left;
+   
+   
+   
   end Crypto.Types;
