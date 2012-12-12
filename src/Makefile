@@ -233,10 +233,10 @@ install-shared :
 	mkdir -p $(INSTDIR)
 	mkdir -p $(LIBDIR)
 	cp crypto*.ads crypto*.ali $(INSTDIR)/
-	cp libadacrypt.so $(LIBDIR)/
+	cp libadacrypt.so.$(VER) $(LIBDIR)/
 	$(DEL) $(LIBDIR)/libadacrypt.so
 	ln -s  $(LIBDIR)/libadacrypt.so.$(VER) $(LIBDIR)/libadacrypt.so
-	ldconfig
+	ldconfig 
 
 uninstall-shared: 
 	$(DEL) $(LIBDIR)/libadacrypt.so
