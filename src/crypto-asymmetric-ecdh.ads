@@ -30,7 +30,7 @@ generic
    Size : Positive;
 
 
-package Crypto.Symmetric.Algorithm.ECDH is
+package Crypto.Asymmetric.ECDH is
 
    package Big is new Crypto.Types.Big_Numbers(Size);
    use Big;
@@ -98,4 +98,4 @@ private
    pragma Optimize (Time);
 
 
-end Crypto.Symmetric.Algorithm.ECDH;
+end Crypto.Asymmetric.ECDH;

@@ -315,19 +315,15 @@ package Crypto.Types.Big_Numbers is
    ---------------------------------------------------------------------------
 
 private
-
-   type D_Mod_Type is mod 2**64;
-   for D_Mod_Type'Size  use (64);
-
    type Largest_Unsigned is mod System.Max_Binary_Modulus;
 
    Max_Length : Natural := (Size/Mod_Type'Size)-1;
    D_Max_Length : Positive := 2*Max_Length+1;
 
-   subtype D_Mod_Types  is Mod_Types(0..Max_Length);
-   subtype DD_Mod_Types is Mod_Types(0..D_Max_Length);
+   subtype DWords  is Mod_Types(0..Max_Length);
+   subtype DDWords is Mod_Types(0..D_Max_Length);
 
-   subtype M_Len is Natural range D_Mod_Types'Range;
+   subtype M_Len is Natural range DWords'Range;
 
    -- This is our Big_Unsigned
    -- It represents a Size*Mod_Type'Size-bit number
@@ -342,12 +338,12 @@ private
 
    type Big_Unsigned is record
       Last_Index : Natural:=0;
-      Number : D_Mod_Types:=(others => 0);
+      Number : DWords:=(others => 0);
    end record;
 
    type D_Big_Unsigned is record
       Last_Index : Natural:=0;
-      Number : DD_Mod_Types:=(others => 0);
+      Number : DDWords:=(others => 0);
    end record;
 
    -- prime test
@@ -384,20 +380,11 @@ private
 
    -- Shifting
 
-   function Shift_Left  (Value : Mod_Type; Amount : Natural) return Mod_Type;
-   function Shift_Right (Value : Mod_Type; Amount : Natural) return Mod_type;
-
    function Shift_Left  (Value : Largest_Unsigned; Amount : Natural)
                         return Largest_Unsigned;
    function Shift_Right (Value : Largest_Unsigned; Amount : Natural)
                         return Largest_Unsigned;
-
-
-   function Shift_Left  (Value : D_Mod_Type; Amount : Natural)
-                        return D_Mod_Type;
-   function Shift_Right (Value : D_Mod_Type; Amount : Natural)
-                        return D_Mod_Type;
-
+   
 
 
    --pragma Inline("-",  "/", "**", "mod", "xor", "and", "or");

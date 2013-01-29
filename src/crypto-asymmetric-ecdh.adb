@@ -20,7 +20,7 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-package body Crypto.Symmetric.Algorithm.ECDH is
+package body Crypto.Asymmetric.ECDH is
 
    use Big.Mod_Utils;
    use Big.Utils;
@@ -128,4 +128,4 @@ package body Crypto.Symmetric.Algorithm.ECDH is
 	end equal_Public_Key_Curve;
 -------------------------------------------------------------------------------
 
-end Crypto.Symmetric.Algorithm.ECDH;
+end Crypto.Asymmetric.ECDH;

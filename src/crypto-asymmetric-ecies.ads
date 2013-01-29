@@ -23,7 +23,7 @@
 with Ada.Containers.Ordered_Maps;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-with Crypto.Symmetric.Algorithm.ECDH;
+with Crypto.Asymmetric.ECDH;
 with Crypto.Types;
 
 use Crypto.Types;
@@ -31,9 +31,9 @@ use Crypto.Types;
 generic
    Size : Positive;
 
-package Crypto.Symmetric.Algorithm.ECIES is
+package Crypto.Asymmetric.ECIES is
 
-	package ECDH is new Crypto.Symmetric.Algorithm.ECDH(Size);
+	package ECDH is new Crypto.Asymmetric.ECDH(Size);
 	use ECDH;
 	use Big;
 	use Big.Utils;
@@ -115,4 +115,4 @@ private
 
    pragma Optimize (Time);
 
-end Crypto.Symmetric.Algorithm.ECIES;
+end Crypto.Asymmetric.ECIES;

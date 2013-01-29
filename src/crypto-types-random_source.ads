@@ -11,17 +11,17 @@ package Crypto.Types.Random_Source is
   
   procedure Initialize (This: in out Random_Source) is abstract;
   
-  procedure Read(This : in Random_Source; B : out Byte)  is abstract;
+  procedure Read(This : in out Random_Source; B : out Byte)  is abstract;
   
-  procedure Read(This : in Random_Source; Byte_Array : out Bytes);
+  procedure Read(This : in out Random_Source; Byte_Array : out Bytes);
   
-  procedure Read(This : in Random_Source; B : out B_Block128);
+  procedure Read(This : in out Random_Source; B : out B_Block128);
   
-  procedure Read(This : in Random_Source; W : out Word);
-  procedure Read(This : in Random_Source; Word_Array : out Words);
+  procedure Read(This : in out Random_Source; W : out Word);
+  procedure Read(This : in out Random_Source; Word_Array : out Words);
 
-  procedure Read(This : in Random_Source; D : out DWord);
-  procedure Read(This : in Random_Source; DWord_Array : out DWords);
+  procedure Read(This : in out Random_Source; D : out DWord);
+  procedure Read(This : in out Random_Source; DWord_Array : out DWords);
   
   pragma Inline(Read);
 end Crypto.Types.Random_Source;

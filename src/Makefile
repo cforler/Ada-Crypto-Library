@@ -15,7 +15,7 @@ gcov: all
 symmetric: hashfunction onewaybc mode mac blockcipher ae tweakable-blockcipher crypto-symmetric-utils
 asymmetric: crypto-asymmetric-dsa crypto-asymmetric-rsa ec 
 certificate: crypto-certificate
-ec:  crypto-asymmetric-ecdsa crypto-symmetric-algorithm-ecdh crypto-symmetric-algorithm-ecies
+ec:  crypto-asymmetric-ecdsa crypto-asymmetric-ecdh crypto-asymmetric-ecies
 hashfunction: crypto-symmetric-hashfunction_sha256 crypto-symmetric-hashfunction_sha512 crypto-symmetric-hashfunction_whirlpool
 onewaybc: crypto-symmetric-oneway_blockcipher_whirlpool crypto-symmetric-oneway_blockcipher_twofish256 crypto-symmetric-oneway_blockcipher_twofish192  crypto-symmetric-oneway_blockcipher_twofish128 crypto-symmetric-oneway_blockcipher_tripledes crypto-symmetric-oneway_blockcipher_sha512 crypto-symmetric-oneway_blockcipher_sha384 crypto-symmetric-oneway_blockcipher_sha256 crypto-symmetric-oneway_blockcipher_sha1 crypto-symmetric-oneway_blockcipher_serpent256 crypto-symmetric-oneway_blockcipher_blowfish128 crypto-symmetric-oneway_blockcipher_aes256 crypto-symmetric-oneway_blockcipher_aes192 crypto-symmetric-oneway_blockcipher_aes128
 mode: crypto-symmetric-mode-oneway_ofb crypto-symmetric-mode-oneway_ctr crypto-symmetric-mode-oneway_cfb crypto-symmetric-mode-ofb crypto-symmetric-mode-ctr crypto-symmetric-mode-cfb crypto-symmetric-mode-cbc crypto-symmetric-mode-bps
@@ -25,10 +25,10 @@ tweakable-blockcipher: crypto-symmetric-tweakable_blockcipher_cmt crypto-symmetr
 types: crypto-types-big_numbers crypto-types-elliptic_curves-ss_bf crypto-types-elliptic_curves-nss_bf crypto-types-mutexes crypto-types-nonces-nonces_ctr crypto-types-nonces-nonces_mixed_1 crypto-types-nonces-nonces_mixed_2  crypto-types-nonces-nonces_random crypto-types-nonces-nonces_randomized_counter 
 ae: crypto-symmetric-aead_mcoe crypto-symmetric-aead_siv.adb crypto-symmetric-ae_ocb.adb
 
-crypto-symmetric-algorithm-ecies:
+crypto-asymmetric-ecies:
 	$(CC) $(CFLAGS) $@
 
-crypto-symmetric-algorithm-ecdh:
+crypto-asymmetric-ecdh:
 	$(CC) $(CFLAGS) $@
 
 crypto-symmetric-blockcipher_twofish256:

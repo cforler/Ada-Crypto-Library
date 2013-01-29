@@ -374,11 +374,6 @@ package body Crypto.Types.Big_Numbers is
       elsif L > 3600 then
          Result := Toom_Cook_P(Left, Right);
       else
-
---      if L <= Mod_Type'Size then
---         Result.Number(0) := Left.Number(0) + Right.Number(0);
---      else
-
          declare
             Temp   : Big_Unsigned;
          begin
@@ -389,41 +384,8 @@ package body Crypto.Types.Big_Numbers is
             end loop;
          end;
       end if;
---------------------------------------------------------------------------------
---      T : D_Mod_Type;
---      Carry : Mod_Type := 0;
---      R : D_Big_Unsigned;
---      Result : Big_Unsigned;
---      N : constant Natural :=
---        Natural'Min(Left.Last_Index + Right.Last_Index + 1, Max_Length);
---   begin
---      for I in 0..Left.Last_Index loop
---         for J in 0..Right.Last_Index loop
---            T := D_Mod_Type(Left.Number(I)) *  D_Mod_Type(Right.Number(J))
---              + D_Mod_Type(R.Number(I+J)) + D_Mod_Type(Carry);
-
---            R.Number(I+J) := Mod_Type(T);
-
---            Carry:= Mod_Type(Shift_Right(T,Mod_Type'Size));
---         end loop;
---         R.Number(I+Right.Last_Index+1) := Carry +
---           R.Number(I+Right.Last_Index+1);
---         Carry := 0;
---      end loop;
-
---      for I in 0..N loop
---         Result.Number(I) := R.Number(I);
---      end loop;
-
---      for I in reverse 0..N loop
---         if Result.Number(I) /= 0 then
---            Result.Last_Index := I;
---            exit;
---         end if;
---      end loop;
       return Result;
    end "*";
-
 --------------------------------------------------------------------------------
 
    function Russ (Left,Right : Big_Unsigned)return Big_Unsigned is

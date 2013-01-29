@@ -29,7 +29,7 @@ with Crypto.Symmetric.Mac.Hmac_SHA256; use Crypto.Symmetric.Mac.Hmac_SHA256;
 -- with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 
-package body Crypto.Symmetric.Algorithm.ECIES is
+package body Crypto.Asymmetric.ECIES is
 
 -------------------------------------------------------------------------------
 
@@ -282,4 +282,4 @@ package body Crypto.Symmetric.Algorithm.ECIES is
 
    ---------------------------------------------------------------------------
 
-end Crypto.Symmetric.Algorithm.ECIES;
+end Crypto.Asymmetric.ECIES;

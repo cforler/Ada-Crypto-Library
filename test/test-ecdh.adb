@@ -1,8 +1,8 @@
 with AUnit.Assertions; 
-with Crypto.Symmetric.Algorithm.ECDH;
+with Crypto.Asymmetric.ECDH;
 with Crypto.Types;
 
-pragma Elaborate_All (Crypto.Symmetric.Algorithm.ECDH);
+pragma Elaborate_All (Crypto.Asymmetric.ECDH);
 
 package body Test.ECDH is
 use Crypto.Types;
@@ -12,7 +12,7 @@ use Crypto.Types;
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 	
-package ECDH is new  Crypto.Symmetric.Algorithm.ECDH(544);
+package ECDH is new  Crypto.Asymmetric.ECDH(544);
 use ECDH;
     
     Public_Key_A  : Public_Key_ECDH;

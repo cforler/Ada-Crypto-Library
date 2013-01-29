@@ -1,6 +1,6 @@
 package body Crypto.Types.Random_Source is
    
-   procedure Read(This : in Random_Source; Byte_Array : out Bytes) is
+   procedure Read(This : in out Random_Source; Byte_Array : out Bytes) is
    begin
       for I in Byte_Array'Range loop
 	 Read(Random_Source'class(This),Byte_Array(I));
@@ -9,7 +9,7 @@ package body Crypto.Types.Random_Source is
    
    ----------------------------------------------------------------------
    
-   procedure Read(This : in Random_Source; B : out B_Block128) is 
+   procedure Read(This : in out Random_Source; B : out B_Block128) is 
    begin
       for I in B'Range loop
 	 Read(Random_Source'class(This),B(I));
@@ -18,7 +18,7 @@ package body Crypto.Types.Random_Source is
    
    ----------------------------------------------------------------------
    
-   procedure Read(This : in Random_Source; W : out Word) is
+   procedure Read(This : in out Random_Source; W : out Word) is
       B : Byte_Word;
    begin
       This.Read(Bytes(B));
@@ -27,7 +27,7 @@ package body Crypto.Types.Random_Source is
    
    ----------------------------------------------------------------------
    
-   procedure Read(This : in Random_Source; Word_Array : out Words) is
+   procedure Read(This : in out Random_Source; Word_Array : out Words) is
    begin
       for I in Word_Array'Range loop
 	 This.Read(Word_Array(I));
@@ -36,7 +36,7 @@ package body Crypto.Types.Random_Source is
    
    ----------------------------------------------------------------------
    
-  procedure Read(This : in Random_Source; D : out DWord) is
+  procedure Read(This : in out Random_Source; D : out DWord) is
       B : Byte_DWord;
    begin
       This.Read(Bytes(B));
@@ -45,7 +45,7 @@ package body Crypto.Types.Random_Source is
    
    ----------------------------------------------------------------------
    
-   procedure Read(This : in Random_Source; DWord_Array : out DWords) is
+   procedure Read(This : in out Random_Source; DWord_Array : out DWords) is
    begin
       for I in DWord_Array'Range loop
 	 This.Read(DWord_Array(I));

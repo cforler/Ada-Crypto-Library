@@ -1,10 +1,10 @@
 with AUnit.Assertions; 
-with Crypto.Symmetric.Algorithm.ECIES;
+with Crypto.Asymmetric.ECIES;
 with Ada.Text_IO; use Ada.Text_IO;
 with Crypto.Types;
 
 
-pragma Elaborate_All(Crypto.Symmetric.Algorithm.ECIES);
+pragma Elaborate_All(Crypto.Asymmetric.ECIES);
 
 package body Test.ECIES is
 
@@ -14,7 +14,7 @@ package body Test.ECIES is
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 	
-	package ECIES is new  Crypto.Symmetric.Algorithm.ECIES(544);
+	package ECIES is new  Crypto.Asymmetric.ECIES(544);
 	use ECIES;
 
     Public_Key_A  : ECDH.Public_Key_ECDH;

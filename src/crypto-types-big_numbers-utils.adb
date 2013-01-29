@@ -169,7 +169,7 @@ package body Utils is
 
       declare
          Result : Big_Unsigned;
-         Temp : D_Mod_Types:=(others => 0);
+         Temp : DWords:=(others => 0);
          L : constant Natural := Amount mod Mod_Type'Size;
          R : constant Natural := Mod_Type'Size-L;
          M : constant Natural := Amount/Mod_Type'Size;
@@ -218,7 +218,7 @@ package body Utils is
 
       declare
          Result : Big_Unsigned:=Big_Unsigned_Zero;
-         Temp : D_Mod_Types:=(others => 0);
+         Temp : DWords:=(others => 0);
          R : constant Natural := Amount mod Mod_Type'Size;
          L : constant Natural := Mod_Type'Size-R;
          M : constant Natural := Amount/Mod_Type'Size;

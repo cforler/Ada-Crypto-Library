@@ -394,16 +394,16 @@ package body Mod_Utils is
 
    -- Result = Left * Right (mod N)
    function Mult(Left, Right, N : Big_Unsigned) return Big_Unsigned is
-      T : D_Mod_Type;
+      T : DWord;
       Carry : Mod_Type := 0;
       R : D_Big_Unsigned;
    begin
       for I in 0..Left.Last_Index loop
          for J in 0..Right.Last_Index loop
-            T := D_Mod_Type(Left.Number(I)) *  D_Mod_Type(Right.Number(J))
-               + D_Mod_Type(R.Number(I+J)) + D_Mod_Type(Carry);
+            T := DWord(Left.Number(I)) *  DWord(Right.Number(J))
+               + DWord(R.Number(I+J)) + DWord(Carry);
 
-            R.Number(I+J) := Mod_Type(T and D_Mod_Type(Mod_Type'Last));
+            R.Number(I+J) := Mod_Type(T and DWord(Mod_Type'Last));
 
             Carry:= Mod_Type(Shift_Right(T,Mod_Type'Size));
          end loop;
@@ -420,66 +420,6 @@ package body Mod_Utils is
       end loop;
      return R mod N;
    end Mult;
-
-	--------------------------------------------------------------------------
-
---   function Mult_School(Left, Right, N : Big_Unsigned) return Big_Unsigned is
---   begin
---      return (Left * Right) mod N;
---   end Mult_School;
-
-	--------------------------------------------------------------------------
--- funktioniert nicht
-
---	   function Barrett(Left, Right, M : Big_Unsigned) return Big_Unsigned is
---      Result : Big_Unsigned;
---      S      : Big_Unsigned;
---		  N      : Natural :=  Bit_Length(Left) ;
---   begin
---      S      := Left * Right;
---      Result := Shift_Right(Shift_Right(S, N) * (2**(Shift_Left(N,1)) / M),N) ;
---      Result := S - (Result * M);
---      return Result;
---   end Barrett;
-
-  ---------------------------------------------------------------------------
--- funktioniert nicht
-
---   function Montgomery(Left, Right, M : Big_Unsigned) return Big_Unsigned is
---      Result : Big_Unsigned;
---      N      : Natural := Bit_Length(Left);
---      Xi     : Big_Unsigned ;  -- immer null oder eins
---      Leftint : Big_Unsigned := Shift_Left(Left,1);
-      
---   begin
-   
---      for I in 0..N-1 loop
---        Leftint := Shift_Right(Leftint,1);
---         Xi := Big_Unsigned_One and Leftint;
---         Result := Result + Xi * Right;
---         if (Result.Number(Result.Last_Index) mod 2) = 1 then Result := Result+M; end if;
---         Result := Shift_Right(Result,1) ;
---      end loop; 
---     Result := Montgomery_Helper(Result, (Big_Unsigned_Two**(Shift_Left(N,1)) mod M) , M);
---      return Result;
---   end Montgomery;
-
---   function Montgomery_Helper(Left, Right, M : Big_Unsigned) return Big_Unsigned is
---      Result : Big_Unsigned;
---      N      : Natural := Bit_Length(Left);
---      Xi     : Big_Unsigned ;  -- immer null oder eins
---      Leftint : Big_Unsigned := Shift_Left(Left,1);
---   begin
---      for I in 0..N-1 loop
---        Leftint := Shift_Right(Leftint,1);
---         Xi := Big_Unsigned_One and Leftint;
---         Result := Result + Xi * Right;
---         if (Result.Number(Result.Last_Index) mod 2) = 1 then Result := Result+M; end if;
---         Result := Shift_Right(Result,1) ;
---      end loop; 
---      return Result;
---   end Montgomery_Helper;
-  ---------------------------------------------------------------------------
 
  ---------------------------------------------------------------------------
 
@@ -596,7 +536,7 @@ package body Mod_Utils is
 
       declare
          Result : D_Big_Unsigned;
-         Temp : DD_Mod_Types:=(others => 0);
+         Temp : DDWords :=(others => 0);
          L : constant Natural := Amount mod Mod_Type'Size;
          R : constant Natural := Mod_Type'Size-L;
          M : constant Natural := Amount/Mod_Type'Size;
