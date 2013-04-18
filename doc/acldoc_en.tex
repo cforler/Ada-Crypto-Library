@@ -1,50 +1,96 @@
-\documentclass[11pt,a4paper]{report}
+\documentclass[a4paper, 11pt, parskip=half]{report}
 
-\usepackage{a4}
-\usepackage{latexsym}
-\usepackage[latin1]{inputenc}
-\usepackage{pstricks, pst-node, pst-tree}
-\usepackage{listings}
-\usepackage{graphics}
-\usepackage{wrapfig}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amstext}
+\usepackage{url}
+\usepackage[colorlinks=false, pdfborder={0 0 0}]{hyperref}
+\usepackage{listings, color}
+\usepackage{subfigure}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{booktabs}
 
-\lstset{language=[95]Ada}
+\lstdefinestyle{BashInputStyle}{
+  language=Ada,
+  basicstyle=\small\sffamily,
+  %numbers=left,
+  numberstyle=\tiny,
+  numbersep=3pt,
+  frame=tb,
+  columns=fullflexible,
+  backgroundcolor=\color{yellow!20},
+  linewidth=0.9\linewidth,
+  xleftmargin=0.1\linewidth
+}% for the comment line
 
-\linespread{1.1}
+\newcommand{\hhline}{\noindent\makebox[\linewidth]{\rule{\textwidth}{0.25pt}}\ \\}
 
-\title{Ada Crypto Library (ACL) aka libadacrypt-dev\\ Documentation v. 0.1.0 }
-\author{Christian Forler}
-\date{\today}
+
+%\linespread{1.1}
+
+%\title{Ada Crypto Library (ACL) aka libadacrypt-dev\\ Documentation v. 0.1.0 }
+%\author{Christian Forler}
+%\date{\today}
 
 %Hyphenation
 \hyphenation{dev Gathering Ciphertext Message libacl Byte Word DWord Arrays}
 \hyphenation{Crypto Ferguson Initial Private}
 
 \begin{document}
-
-\maketitle
+	\renewcommand{\familydefault}{\sfdefault}
+	\normalfont
+	\linespread {1.2}\selectfont
+	%\linespread {1.6}\selectfont	
+	\definecolor{light-gray}{rgb}{0.97,0.97,0.97}
+	\lstset{language=Ada, keywordstyle=\color{blue}, stringstyle=\color{red}, breaklines=true, basicstyle=\small, backgroundcolor=\color{light-gray}, tabsize=3}
+	\begin{titlepage}
+		\vspace*{12em}
+		\linespread {3}\selectfont
+		\center\textbf{\huge Ada Crypto Lib (ACL)\\ Version 0.5.6\\
+		 Programmers' Guide}\\
+		\linespread {1.66}\selectfont
+		\vspace{5em}
+		\large
+		Hui Xue, 91375\\
+		Bauhaus-Universita\"t Weimar\\
+		\vspace{5em}
+		1st Reviewer: Prof. Dr. Stefan Lucks\\
+		2nd Reviewer: Prof. Dr. Benno Stein\\
+		\quad Dipl.-Wirt.-Inf. Christian Forler
+	\end{titlepage}
+\pagebreak
+%\maketitle
 \tableofcontents
 
-  \include{./en/aclintro_en}
-  \include{./en/acl.crypto}
-  \include{./en/acl.crypto.types}
-  \include{./en/acl.crypto.random}
-  \include{./en/acl.crypto.symmetric}
-  \include{./en/acl.crypto.symmetric.algorithm} 
-%  \include{acl.crypto.symmetric.algorithm.oneway}
-%  \include{acl.crypto.symmetric.blockcipher}
-%  \include{acl.crypto.symmetric.oneway_blockcipher}
-%  \include{acl.crypto.symmetric.mode}
-%  \include{acl.crypto.symmetric.mode.oneway}
-%  \include{acl.crypto.hashfunction}
-%  \include{acl.crypto.types.big-numbers}
-%  \include{acl.crypto.asymmetric}
-%  \include{acl.crypto.asymmetric.dsa}
-%  \include{acl.crypto.asymmetric.rsa}
-
+\include{./en/acl.introduction}
+\include{./en/acl.crypto.types}
+%\include{./en/acl.crypto.types.random}
+%\include{./en/acl.crypto.types.big_numbers}
+\include{./en/acl.crypto.types.elliptic_curves}
+%\include{./en/acl.crypto.types.nonces}
+%\include{./en/acl.crypto.symmetric}
+%\include{./en/acl.crypto.symmetric.algorithm}
+%\include{./en/acl.crypto.symmetric.algorithm.oneway}
+%\include{./en/acl.crypto.symmetric.blockcipher}
+%\include{./en/acl.crypto.symmetric.blockcipher.oneway}
+%\include{./en/acl.crypto.symmetric.tweakable_blockcipher}
+%\include{./en/acl.crypto.symmetric.mode}
+%\include{./en/acl.crypto.symmetric.mode.oneway}
+%\include{./en/acl.crypto.symmetric.mac}
+%\include{./en/acl.crypto.symmetric.hashfunction}
+%\include{./en/acl.crypto.symmetric.ae}
+%\include{./en/acl.crypto.asymmetric}
+%\include{./en/acl.crypto.asymmetric.dsa}
+%\include{./en/acl.crypto.asymmetric.rsa}
+%\include{./en/acl.crypto.asymmetric.ecdsa}
+%\include{./en/acl.crypto.asymmetric.ecdh}
+%\include{./en/acl.tests}
+%\include{./en/acl.regression.test}
 
 %literature
-\bibliographystyle{plain} 
+\bibliographystyle{plain}
 \bibliography{crypto}
 
 \end{document}

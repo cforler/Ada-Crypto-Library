@@ -33,7 +33,7 @@ package Crypto.Symmetric.AE is
                                Write_Plaintext        : in     Callback_Writer)
                                return Boolean is abstract;
 
-   Invalid_Ciphertext_Error   : exception;
+  -- Invalid_Ciphertext_Error   : exception;
    Invalid_Header_Error       : exception;
    Invalid_Key_Length         : exception;
 
