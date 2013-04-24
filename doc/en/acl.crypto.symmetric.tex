@@ -4,7 +4,8 @@ This is the root package of the symmetric part. It provides direct access to the
 
 In the ACL, modes of operation, message authentication codes (MACs) and authenticated encryption (AE) schemes are provided. MACs (Chapter \ref{MAC}) concentrate on the sender authentication and the message integrity, while AE (Chapter \ref{AE}) schemes put a big value on message integrity and privacy.
 The ACL provides solutions based on the situation for selection.
-\section{Logical Setup}
+
+\section*{Logical Setup}
 The ACL uses a three-layered structure as shown in Figure \ref{scheme}, with which one can instantiate a scheme with any primitive. An application programmer should solely use the API of the third layer. Only with this API, a secure application of a block cipher can be guaranteed.
 \begin{figure}
   \begin{center}
