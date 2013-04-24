@@ -1,0 +1,37 @@
+\chapter{Crypto.Symmetric.Algorithm.Oneway}\label{OnewayAlgo}
+Each symmetric cipher and hash function has a corresponding one-way algorithm. A oneway algorithm works only in one
+direction, that is, only for encryption or decryption. In the ACL we use it for encryption. Even in working with one-way algorithms you should also pay attention to use only the existing API.
+\subsubsection*{API}
+A one-way package provides the following procedures for users.
+\begin{itemize} 
+%\item One private type \texttt{Cipherkey\_Oneway}; it is generated deterministically from a key. With cipherkey we can call encryption functions.
+\item One procedure \texttt{Prepare\_Oneway\_Key()}; it prepares an associated cipherkey based on the delivered parameter.\\
+\textbf{Example:}
+\begin{lstlisting}{}
+  procedure Prepare_Oneway_Key128
+            		(Key       : in  B_Block128;
+             	 	 Cipherkey : out Cipherkey_Oneway_AES128);
+\end{lstlisting}
+\item One procedure \texttt{Encrypt\_Oneway()}; the procedure encrypts a plaintext to a ciphertext.\\
+\textbf{Example:}
+\begin{lstlisting}{}
+  procedure Encrypt_Oneway128
+            		(Cipherkey  : in  Cipherkey_Oneway_AES128;
+            		 Plaintext  : in  B_Block128;
+             		 Ciphertext : out B_Block128);
+\end{lstlisting}
+\end{itemize}
+\subsubsection*{File List}
+The ACL provides the following symmetric oneway algorithms for users.
+\begin{itemize}
+\item \texttt{Crypto.Symmetric.Algorithm.Aes.Oneway}
+\item \texttt{Crypto.Symmetric.Algorithm.Blowfish.Oneway}
+\item \texttt{Crypto.Symmetric.Algorithm.Serpent.Oneway}
+\item \texttt{Crypto.Symmetric.Algorithm.SHA1.Oneway}
+\item \texttt{Crypto.Symmetric.Algorithm.SHA256.Oneway}
+\item \texttt{Crypto.Symmetric.Algorithm.SHA384.Oneway}
+\item \texttt{Crypto.Symmetric.Algorithm.SHA512.Oneway}
+\item \texttt{Crypto.Symmetric.Algorithm.Tripledes.Oneway}
+\item \texttt{Crypto.Symmetric.Algorithm.Twofish.Oneway}
+\item \texttt{Crypto.Symmetric.Algorithm.Whirlpool.Oneway}
+\end{itemize}

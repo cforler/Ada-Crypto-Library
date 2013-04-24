@@ -1,0 +1,45 @@
+\part{Advanced}
+\chapter{Crypto.Symmetric}
+This is the root package of the symmetric part. It provides direct access to the basic part of the ACL \texttt{Crypto.Types}, which contains fundamental and derived types with corresponding functionalities.
+
+In the ACL, modes of operation, message authentication codes (MACs) and authenticated encryption (AE) schemes are provided. MACs (Chapter \ref{MAC}) concentrate on the sender authentication and the message integrity, while AE (Chapter \ref{AE}) schemes put a big value on message integrity and privacy.
+The ACL provides solutions based on the situation for selection.
+\section{Logical Setup}
+The ACL uses a three-layered structure as shown in Figure \ref{scheme}, with which one can instantiate a scheme with any primitive. An application programmer should solely use the API of the third layer. Only with this API, a secure application of a block cipher can be guaranteed.
+\begin{figure}
+  \begin{center}
+    \huge
+    \begin{tabular}{|c @{\ } c|}\hline
+      III. &Schemes/Mode\\
+      \hline
+      II. & Building Blocks\\
+      \hline
+      I. & Algorithms\\
+    \hline
+    \end{tabular}
+  \end{center}
+\caption{The three-layered structure in the ACL.}\label{scheme}
+\end{figure}
+\subsubsection{Layer 1: Algorithms; e.g. AES, Blowfish, etc.}
+This layer contains the pure algorithms. The API of different algorithms is identical and provides as an interface for the building blocks layer.
+For each algorithm, the corresponding source (e.g. a paper) is provided as a reference. 
+Additional information regarding particular algorithms and ciphers can be found in next chapter. \\ 
+\textbf{Remarks:}\\
+The API of this layer should only be used to generate a building block.
+It should by no means be used for any other purpose. There is no scenario where this would make any sense. This API only serves as an interface for the next layer.
+
+\subsubsection{Layer 2: Building Blocks; e.g. Hash Function, Block Cipher}
+In this layer, a block cipher is generated out of the algorithms. Users should only use this API when they are familiar with the symmetric block ciphers. Actually, this API serves as an interface for the third layer.
+Hash functions are designed similarly to the building blocks.
+
+\subsubsection{Layer 3: Mode/Schemes; e.g. AE, MAC, etc.}
+This layer transforms a block cipher into a reasonable mode. Users should \textbf{only} apply the API of the third layer. With this API, a secure application can be ensured. 
+There are different modes/schemes, which can be used for different purposes.\\
+\textbf{Remarks:}\\
+Using this three-layered architecture, it is also possible to process
+stream ciphers. In order to do this, you have to provide the first layer with
+a procedure to receive the next n bits of the key stream. Afterwards, you
+can construct an one-way block cipher and transform
+it to one-way OFB or one-way counter mode. The ACL currently does not provide
+any stream cipher. However, there are plans to implement the stream cipher
+Helix in the future.

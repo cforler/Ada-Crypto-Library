@@ -1,0 +1,80 @@
+%\documentclass[a4paper, 10pt, parskip=half]{report}
+\documentclass[a4paper, 11pt, parskip=half]{report}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath,amssymb,amstext}
+\usepackage{url}
+\usepackage[colorlinks=false, pdfborder={0 0 0}]{hyperref}
+\usepackage{xcolor}
+\usepackage{listings, color}
+\usepackage{subfigure}
+\usepackage{geometry}
+\usepackage[font=footnotesize]{caption}
+%\geometry{a4paper} 
+\bibliographystyle{alpha}
+\lstdefinestyle{BashInputStyle}{
+  language=Ada,
+  basicstyle=\small\sffamily,
+  %numbers=left,
+  numberstyle=\tiny,
+  numbersep=3pt,
+  frame=tb,
+  columns=fullflexible,
+  backgroundcolor=\color{yellow!20},
+  linewidth=0.9\linewidth,
+  xleftmargin=0.1\linewidth
+}% for the comment line
+\newcommand*{\Package}[1]{\texttt{#1}}%
+\begin{document}
+	\renewcommand{\familydefault}{\sfdefault}
+	\normalfont
+	\linespread {1.2}\selectfont
+	%\linespread {1.6}\selectfont	
+	\definecolor{light-gray}{rgb}{0.97,0.97,0.97}
+	\lstset{language=Ada, keywordstyle=\color{blue}, stringstyle=\color{red}, breaklines=true, basicstyle=\small, backgroundcolor=\color{light-gray}, tabsize=3}
+	\begin{titlepage}
+		\vspace*{12em}
+		\linespread {3}\selectfont
+		\center\textbf{\huge Ada Crypto Lib (ACL)\\ Version 0.5.6\\
+		 Programmers' Guide}\\
+		\linespread {1.66}\selectfont	
+		\vspace{5em}
+		\large
+		Hui Xue, 91375\\
+		Bauhaus-Universita\"t Weimar\\
+		\vspace{5em}
+		1st Reviewer: Prof. Dr. Stefan Lucks\\
+		2nd Reviewer: Prof. Dr. Benno Stein\\
+		\quad Dipl.-Wirt.-Inf. Christian Forler
+	\end{titlepage}
+\pagebreak
+\pagenumbering{arabic}
+%\setcounter{page}{51}
+\tableofcontents
+\include{acl.introduction}
+\include{acl.crypto.types}
+\include{acl.crypto.types.random}
+\include{acl.crypto.types.elliptic_curves}
+\include{acl.crypto.types.big_numbers}
+\include{acl.crypto.types.nonces}
+\include{acl.crypto.symmetric}
+\include{acl.crypto.symmetric.algorithm}
+\include{acl.crypto.symmetric.algorithm.oneway}
+\include{acl.crypto.symmetric.blockcipher}
+\include{acl.crypto.symmetric.blockcipher.oneway}
+\include{acl.crypto.symmetric.tweakable_blockcipher}
+\include{acl.crypto.symmetric.mode}
+\include{acl.crypto.symmetric.mode.oneway}
+\include{acl.crypto.symmetric.hashfunction}
+\include{acl.crypto.symmetric.mac}
+\include{acl.crypto.symmetric.ae}
+\include{acl.crypto.asymmetric}
+\include{acl.crypto.asymmetric.rsa}
+\include{acl.crypto.asymmetric.dsa}
+\include{acl.crypto.asymmetric.ecdsa}
+\include{acl.crypto.asymmetric.ecdh}
+\include{acl.tests}
+\include{acl.regression.test}
+\bibliography{literature}
+\end{document}

@@ -3,8 +3,7 @@ Thomas Knapke      : Nonces, Tweakable Blockciphers, AE Schemes, AEAD, Schemes,
 Bastian Weber      : AUnit-Tests
 Heinrich Schilling : AUnit-Tests
 Anne 'Yu' Barshun  : AUnit-Tests
-Hui Xue            : AUnit-Tests
+Hui Xue            : AUnit-Tests, english documentation
 Markus G. Kuhn     : Serpent256
 Maxim Reznik       : Blowfish
-Alexander Böhm     : Partial Translation (german -> english)
 Christian Forler   : Rest

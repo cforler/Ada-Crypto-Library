@@ -1,0 +1,526 @@
+\part{Basics}
+\chapter{Crypto.Types}
+This package provides the fundamental and derived types with their
+basic functionalities for the ACL.
+
+\paragraph{IMPORTANT.} Applying in the ACL by importing the package:
+\begin{lstlisting}
+  with Crypto.Types;
+\end{lstlisting}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Elemental Types}
+The elemental or primary types here are only for modular types, i.e.,
+overflow or underflow of a variable does not cause an exception. If
+the result of an operation is not in the value range of the modular
+type, then as long as $n:=2**$ Type'Size = Type'Last+1, the value will
+be added or subtracted until the result is again in the range.
+\begin{lstlisting}{}
+  type Bit is mod 2;
+  for  Bit'Size use 1;
+
+  type Byte  is mod 2 ** 8;
+  for  Byte'Size use 8;
+
+  type DByte  is mod 2 ** 16;
+  for  DByte'Size use 16;
+
+  type Word is mod 2 ** 32;
+  for  Word'Size use 32;
+  type DWord is mod 2 ** 64;
+  for  DWord'Size use 64;
+
+  type Mod_Type is mod 2**32;
+  for  Mod_Type'Size use 32;
+\end{lstlisting}
+The type \texttt{Mod\_Type} has the size of a CPU-word, in the ACL it
+is 32 bits.
+
+\subsubsection*{Example}
+\begin{lstlisting}{Example}
+  with Crypto.Types;
+  with Ada.Text_IO;
+  use Crypto.Types;
+  procedure Example_Types is
+    A, B : Byte;  -- Byte has a value range from 0 to 255;
+  begin
+    A := 100;
+    B := A + 250; -- Overflow
+    A := A - 250; -- Underflow
+    Ada.Text_IO.Put_Line("A: " &  A'IMG);
+    Ada.Text_IO.Put_Line("B: " &  B'IMG);
+  end Example_Types;
+\end{lstlisting}
+Result of the program:
+\begin{lstlisting}{Example}
+A:  106
+B:  94
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Derived Types}
+Derived types are types, which are derived from the elementary
+types. Regularly, these are arrays, consisting of elementary
+types. \textbf{All non-private arrays consisting of elementary types
+  are interpreted as n-bit numbers within the ACL}, where the first
+element ('First) is considered to be the most significant and the last
+element ('Last) the least significant element of the number. This is a
+fundamental characteristic of the ACL.
+\subsubsection*{Bit}
+\begin{lstlisting}{Bits}
+  type Bits is array (Integer range <>) of Bit;
+\end{lstlisting}
+\subsubsection*{Bytes}
+\begin{lstlisting}{Bytes}
+  type Bytes is array (Integer range <>) of Byte;
+  subtype Byte_Word  is Bytes (0 .. 3);
+  subtype Byte_DWord is Bytes (0 .. 7);
+
+  type B_Block32  is Bytes (0 ..  3);
+  type B_Block48  is Bytes (0 ..  5);
+  type B_Block56  is Bytes (0 ..  6);
+  type B_Block64  is Bytes (0 ..  7);
+  type B_Block128 is Bytes (0 .. 15);
+  type B_Block160 is Bytes (0 .. 19);
+  type B_Block192 is Bytes (0 .. 23);
+  type B_Block256 is Bytes (0 .. 31);
+\end{lstlisting}
+The type B\_BlockN consists of a n-bit array, separated into n/8
+bytes, e.g., the type \texttt{B\_Block256} is a 256-bit string,
+separated into an array of 32 bytes. In Ada, it can be also
+represented as a byte array consisting of 32 elements.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Words}
+\begin{lstlisting}{Words}
+  type Words is array (Integer range <>) of Word;
+  
+  type W_Block128  is Words(0 ..  3);
+  type W_Block160  is Words(0 ..  4);
+  type W_Block192  is Words(0 ..  5);
+  type W_Block256  is Words(0 ..  7);
+  type W_Block512  is Words(0 .. 15);
+\end{lstlisting}
+The type W\_BlockN consists of a n-bit array, separated into n/32
+words, e.g., the type \texttt{W\_Block256} is a 256-bit string,
+separated into an array of 8 words. In Ada, it can be also represented
+as a word array consisting of 8 elements.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{DWords}
+\begin{lstlisting}{DWords}
+  type DWords is array (Integer range <>) of DWord;
+  
+  type DW_Block128   is DWords(0 ..  1);
+  type DW_Block256   is DWords(0 ..  3);
+  type DW_Block384   is DWords(0 ..  5);
+  type DW_Block512   is DWords(0 ..  7);
+  type DW_Block1024  is DWords(0 .. 15);
+\end{lstlisting}
+The type DW\_BlockN consists of a n-bit array, separated into n/64
+DWords, e.g., the type \texttt{DW\_Block256} is a 256-bit string,
+separated into 4 DWords. In Ada, it can be represented as a DWord
+array of 4 elements.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Strings}
+\begin{lstlisting}{Strings}
+  subtype Hex_Byte  is String (1..  2);
+  subtype Hex_Word  is String (1..  8);
+  subtype Hex_DWord is String (1.. 16);
+\end{lstlisting}
+The subtype \texttt{Hex\_Byte} is a string, which consists of 2
+characters. It can be used to convert a byte to a string in
+hexadecimal. The subtype \texttt{Hex\_Word} is used to convert a word
+to a string in hexadecimal, and \texttt{Hex\_DWord} is used for a
+dword.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Message Block Length}
+\begin{lstlisting}{Message blocks}
+  subtype Message_Block_Length512  is Natural range 0 ..  64;
+  subtype Message_Block_Length1024 is Natural range 0 .. 128;
+\end{lstlisting}
+The two Message\_Block\_Length types indicate the length of the actual
+message stored within a message block in bytes. For example, splitting
+a 1152-bit message by 512-bit blocks results in three 512-bit
+blocks. The actual message length of the last block is 16 ($1152 - 2
+\cdot 512 = 128$ bits $= 16$ bytes).  The remaining 384 bits of the
+last message block are ''empty'', which means that they do not contain
+any part of the original message. These two types are used for message
+block padding.  More information about padding can be found in Chapter
+\ref{Hash}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Functions and Procedures}
+\subsubsection{Bit-Shifting Functions}
+\begin{lstlisting}{}
+   function Shift_Left  (Value : Natural;
+                		    Amount: Natural) return Natural;
+   function Shift_Right (Value : Natural;
+   						    Amount: Natural) return Natural;
+   function Shift_Left  (Value : Byte; Amount : Natural) return Byte;
+   function Shift_Right (Value : Byte; Amount : Natural) return Byte;
+   function Rotate_Left (Value : Byte; Amount : Natural) return Byte;
+   function Rotate_Right(Value : Byte; Amount : Natural) return Byte;
+\end{lstlisting}
+These functions are intrinsic. They are used to make a transformation
+of the value. They can be also applied on values of type
+\texttt{DByte, Word, DWord} and \texttt{Mod\_Type}.
+
+The transformations are made on bit positions. For example, calling
+the function \texttt{Shift\_Left()} on a value of type \texttt{Word}
+with amount 2 causes the value being shifted two bit positions to left
+and padded with two zeros at the end.\\
+\begin{lstlisting}{}
+   function Shift_Block_Left (B_Block: B_Block128; Amount : Natural) return B_Block128;
+   function Shift_Block_Right(B_Block: B_Block128; Amount : Natural) return B_Block128;
+\end{lstlisting}
+The two functions are used to shift a 128-bit block in a bit position
+specified by the \texttt{Amount}.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{XOR}
+\begin{lstlisting}{}
+  function "xor" (Left, Right : Bytes)        return Bytes;
+  function "xor" (Left: Bytes ; Right : Byte) return Bytes;
+  function "xor" (Left, Right : Words)        return Words;
+  function "xor" (Left, Right : DWords)       return DWords;
+\end{lstlisting}
+These functions perform a field-wise concatenation of the two input
+fields by using the XOR operation. Left(Left'First) is XORed with
+Right(Right'First) till Left(Left'Last) with Right(Right'Last). Note,
+in the second function the Right is XORed with Left(Left'Last).\\
+
+\paragraph{Exceptions.} If the lengths of the two values are not
+equal, except the second function:\quad\texttt{Constraint\_Bytes\_Error}\,,
+\texttt{Constraint\_Words\_Error} or \texttt{Constraint\_DWords\_Error}.
+
+\begin{lstlisting}{}
+  function "xor"(Left, Right : B_Block64)    return   B_Block64;
+  function "xor"(Left, Right : B_Block128)   return   B_Block128;
+  function "xor"(Left, Right : W_Block512)   return   W_Block512;
+  function "xor"(Left, Right : DW_Block512)  return   DW_Block512;
+  function "xor"(Left, Right : DW_Block1024) return   DW_Block1024;
+\end{lstlisting}
+The XOR operations on blocks are needed for generic packages to
+convert a specific block.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{AND}
+\begin{lstlisting}{}
+ function "and"(Left, Right : Bytes) return Bytes;
+\end{lstlisting}
+The function is applied to make bit-wise AND of two values of equal
+length.\\
+
+\paragraph{Exception.} If the lengths of the two values are not
+equal:\quad\texttt{Constraint\_Bytes\_Error}.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{+}
+\begin{lstlisting}{}
+  function "+" (Left : Bytes;      Right : Byte)   return Bytes;
+  function "+" (Left : Byte;       Right : Bytes)  return Bytes;
+  function "+" (Left : Words;      Right : Word)   return Words;
+  function "+" (Left : Word;       Right : Words)  return Words;
+  function "+" (Left : Words;      Right : Byte)   return Words;
+  function "+" (Left : DWords;     Right : DWord)  return DWords;
+  function "+" (Left : DWord;      Right : DWords) return DWords;
+  function "+" (Left : DWords;     Right : Byte)   return DWords;
+  function "+" (Left : B_Block128; Right : Byte)   return B_Block128;
+\end{lstlisting}
+The "+" function adds values in byte positions.  It calculates from
+the least significant ('Last) value to the most significant ('First)
+value, i.e., from right to left.\\ \textbf{Example:}
+\begin{lstlisting}{}
+  procedure Example_Add is
+ 	  A : Byte := 200;
+ 	  B : Bytes(0..1) := (0 => 100, 1 => 116);
+  begin
+  	  B := A + B;  -- B   := 2#11001000# + 2#01100100_01110100#
+                  -- B(0) = 2#01100100# = 100
+                  -- B(1) = 2#00111100# = 60 -- Overflow
+  end Example_Add;
+\end{lstlisting}
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{ByteN}
+\begin{lstlisting}{}
+  function Byte0 (W : Word)  return Byte;
+  function Byte1 (W : Word)  return Byte;
+  function Byte2 (W : Word)  return Byte;
+  function Byte3 (W : Word)  return Byte;
+
+  function Byte0 (D : DWord) return Byte;
+  function Byte1 (D : DWord) return Byte;
+  function Byte2 (D : DWord) return Byte;
+  function Byte3 (D : DWord) return Byte;
+  function Byte4 (D : DWord) return Byte;
+  function Byte5 (D : DWord) return Byte;
+  function Byte6 (D : DWord) return Byte;
+  function Byte7 (D : DWord) return Byte;
+\end{lstlisting}
+Let W $\mathtt{: Word  := B0||B1||B2||B3}$,\\
+and D $\mathtt{: DWord := B0||B1||B2||B3||B4||B5||B6||B7}$.\\
+Then, \texttt{B0} is the most significant byte, and \texttt{B3} of W
+and \texttt{B7} of D are the least significant bytes, respectively.
+The first function returns B0 of W, the second B1 of W and so on.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{To\_Bytes}
+\begin{lstlisting}{}
+  function To_Bytes(X           : Word)   return Byte_Word;
+  function To_Bytes(X           : DWord)  return Byte_DWord;
+  function To_Bytes(Word_Array  : Words)  return Bytes;
+  function To_Bytes(DWord_Array : DWords) return Bytes;
+  function To_Bytes(Message     : String) return Bytes;
+\end{lstlisting}
+These functions convert the input value of different types into a byte
+array. The most significant byte of the first element of the input
+array becomes the first byte of the returned byte array und the least
+significant byte of the last element becomes the last byte of the
+returned byte array. For a message in string, it is converted as ASCII
+codes stored in a byte array.
+
+\paragraph{Example:}
+\begin{lstlisting}{}
+  D : DWord      := 16#AA_BB_CC_DD_EE_FF_11_22#;
+  B : Byte_DWord := To_Bytes(D);
+      -- B(0) := 16#AA#; B(1) := 16#BB#; B(2) := 16#CC#;
+      -- B(3) := 16#DD#; B(4) := 16#EE#; B(5) := 16#FF#;
+      -- B(6) := 16#11#; B(7) := 16#22#;
+\end{lstlisting}
+\begin{lstlisting}
+  function To_Bytes(B : B_Block64)   return Bytes;
+  function To_Bytes(B : B_Block128)  return Bytes;
+  function To_Bytes(B : B_Block192)  return Bytes;
+  function To_Bytes(B : B_Block256)  return Bytes;
+  function To_Bytes(W : W_Block160)  return Bytes;
+  function To_Bytes(W : W_Block256)  return Bytes;
+  function To_Bytes(W : W_Block512)  return Bytes;
+  function To_Bytes(D : DW_Block512) return Bytes;
+\end{lstlisting}
+These functions convert blocks to bytes in the same principle, they
+are needed for generic packages to convert a specific block.
+
+\hhline
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{R\_To\_Bytes}
+\begin{lstlisting}{}
+  function R_To_Bytes (X : Word)  return Byte_Word;
+  function R_To_Bytes (X : DWord) return Byte_DWord;
+\end{lstlisting}
+It transforms a Word resp. DWord into a Byte\_Word resp. Byte\_DWord
+in reverse order. The most significant byte of X becomes the last
+element in the returned byte array and the least significant byte of X
+becomes the first element in the returned byte array.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{To\_Word vs. R\_To\_Word}
+\begin{lstlisting}{}
+  function To_Word (X       : Byte_Word) return Word;
+  function To_Word (A,B,C,D : Byte)      return Word;
+  function To_Word (A,B,C,D : Character) return Word;
+
+  function R_To_Word (X : Byte_Word)     return Word;
+\end{lstlisting}
+The first function converts a Byte\_Word into a Word. X'First becomes
+the most significant byte of the Word, and X'Last is the least
+significant one.  It can transform four bytes (A, B, C, D) to make a
+word. Then, A becomes the most significant byte of the word, and D the
+least significant byte.  It can also transform four characters (A, B,
+C, D) to make a word. The first character (A'Pos) becomes the most
+significant byte of the resulted word, and the last character (D'Pos)
+the least significant one.
+
+The function \texttt{R\_To\_Word()} makes a word from the Byte\_Word
+in reverse order. X'First becomes the least significant byte of the
+word, and X'Last becomes the most significant byte of the
+word.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{To\_Words}
+\begin{lstlisting}{}
+  function To_Words(Byte_Array : Bytes) return Words;
+\end{lstlisting}
+This function converts a byte array into a word array
+(Word\_Array). Byte\_Array'First becomes the most significant byte of
+Word\_Array'First and Byte\_Array'Last becomes the least significant
+byte of Word\_Array'Last.
+
+\paragraph{Example:}
+\begin{lstlisting}{}
+  B : Bytes(1..6):= (16#0A#, 16#14#, 16#1E#, 16#28#, 16#32#, 16#3C#);
+  W : Words := To_Words(B);
+      -- W(D'First) = 16#0A_14_1E_28#
+      -- W(D'Last)  = 16#32_3C_00_00# Zero padding
+\end{lstlisting}
+Input: B $:=\underbrace{B(1)||B(2)||B(3)||B(4)}_{W(0)}
+                    \underbrace{B(5)||B(6)}_{W(1)}$\,,\\ \ \\
+Output: W $:=W(0)||W(1)$.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{To\_DWord vs. R\_To\_DWord}
+\begin{lstlisting}{}
+  function To_DWord   (X : Byte_DWord) return DWord;
+  function R_To_DWord (X : Byte_DWord) return DWord;
+\end{lstlisting}
+The function \texttt{To\_DWord()} transforms a value of Byte\_DWord
+into a DWord.  X'First becomes the most significant byte of the
+resulted DWord, X'Last becomes the least significant byte.  While the
+function \texttt{R\_To\_DWord()} transforms a Byte\_DWord into a DWord
+in reverse order. X'First becomes the least significant byte of the
+resulted DWord, and X'Last becomes the most significant byte.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{To\_DWords}
+\begin{lstlisting}{}
+  function To_DWords (Byte_Array : Bytes) return DWords;
+\end{lstlisting}
+It transforms a byte array into a DWord array
+(DWord\_Array). Byte\_Array'First becomes the most significant byte of
+the DWord\_Array'First, and Byte\_Array'Last becomes the least
+significant byte of DWord\_Array'Last.
+
+\paragraph{Example:}
+\begin{lstlisting}{}
+  B : Bytes(1..10) := (16#0A#, 16#14#, 16#1E#, 16#28#, 16#32#,
+                       16#3C#, 16#46#, 16#50#, 16#5A#, 16#64#);
+  D : DWords := To_DWords(B);
+      -- D(D'First) = 16#0A_14_1E_28_32_3C_46_50#
+      -- D(D'Last)  = 16#5A_64_00_00_00_00_00_00#
+\end{lstlisting}
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{To\_String}
+\begin{lstlisting}{}
+  function To_String(ASCII : Bytes) return String;
+\end{lstlisting}
+It transforms a byte array to a string. Thereby every element of the
+byte array will be interpreted as an ASCII-Code.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{To\_Hex}
+\begin{lstlisting}{}
+  function To_Hex(B : Byte)  return Hex_Byte;
+  function To_Hex(W : Word)  return Hex_Word;
+  function To_Hex(D : DWord) return Hex_DWord;
+\end{lstlisting}
+These functions transform values of Byte, Word or DWord to strings,
+which display in hex form.
+
+\paragraph{Example:}
+\begin{lstlisting}{}
+  B : Word  := 0;
+  W : DWord := 16#AA_BB_CC_DD_EE_FF#;
+  HB:Hex_Word :=To_Hex(B);  -- HB="00_00_00_00"
+  HW:Hex_DWord:=To_Hex(W);  -- HW="00_00_AA_BB_CC_DD_EE_FF"
+\end{lstlisting}
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{To\_Block}
+\begin{lstlisting}{}
+  function To_B_Block64 (B : Bytes) return B_Block64;
+  function To_B_Block128(B : Bytes) return B_Block128;
+  function To_B_Block192(B : Bytes) return B_Block192;
+  function To_B_Block256(B : Bytes) return B_Block256;
+\end{lstlisting}
+These functions transform bytes to certain block types.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Is\_Zero}
+\begin{lstlisting}{}
+  function Is_Zero(Byte_Array  : Bytes)  return Boolean;
+  function Is_Zero(Word_Array  : Words)  return Boolean;
+  function Is_Zero(DWord_Array : DWords) return Boolean;
+\end{lstlisting}
+These functions return ''True'' if all fields of the array parameter
+contain value ''0'', otherwise, ''False'' is returned.
+
+\hhline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Padding}
+\begin{lstlisting}{}
+   procedure Padding(Data           : in  out Bytes;
+                     Message_Length : in      Word;
+                     Data2          : out     Bytes);
+   procedure Padding(Data           : in  out Words;
+                     Message_Length : in      Word;
+                     Data2          : out     Words);
+   procedure Padding(Data           : in  out DWords;
+                     Message_Length : in      Word;
+                     Data2          : out     DWords);
+\end{lstlisting}
+The padding procedures fill the data with zero bytes/words/dwords,
+together with a counter of the padded zero bytes/words/dwor
+ds. \texttt{Data} is the message to be padded, and the term
+\texttt{Message\_Length} specifies the actual length of the
+message. The message corresponds to the following range of
+\texttt{Data}: \texttt{Data(Data'First)..Data(Data'First+Message\_Length-1)}. \\
+\texttt{Data2} is used in special situations, normally \texttt{Is\_Zero(Data2)} = True.
+
+\paragraph{Exceptions:}
+\texttt{Message\_Length} is greater than the length of
+\texttt{Data}:\quad\texttt{Constraint\_Message\_Length\-\_Error}.\\ If
+the lengths of \texttt{Data} and \texttt{Data2} are not
+equal:\quad\texttt{Constraint\_Length\_Error}.\\ \ \\ 
+\texttt{Data2} is used in the following two situations:
+\begin{itemize}
+\item Message\_Length = Data'Length:\quad no zero bytes/words/dwords
+  will be padded to \texttt{Data}, and Data2'Last := Data'Length-1\,;
+\item Message\_Length+1 = Data'Length:\quad only one zero
+  byte/word/dword is padded, and there is no more space for the
+  counter. To solve the problem, Data2 is initialized with zero
+  bytes/words/dwords, and Data2'Last := Data'Length.
+\end{itemize}
+\textbf{Example:}
+\begin{lstlisting}{}
+  procedure Example_Padding is
+    X: Bytes(1..9) := (1=>2, 2=>4, 3=>6, 4=>8, 5=>9, others=>1);
+    Y: Bytes(1..9);
+  begin
+    Padding(X,5,Y);
+    for I in X'Range loop
+        Put(X(I)'Img);
+    end loop;
+    New_Line;
+    for I in Y'Range loop
+        Put(Y(I)'Img);
+    end loop;
+  end Example_Padding;
+\end{lstlisting}
+\begin{itemize}
+\item N = 5\\
+\qquad X: 2 4 6 8 9 0 0 0 3
+\item N = 8\\
+\qquad X: 2 4 6 8 9 1 1 1 0\\
+\qquad Y: 0 0 0 0 0 0 0 0 9
+\item N = 9\\
+\qquad X: 2 4 6 8 9 1 1 1 1\\
+\qquad Y: 0 0 0 0 0 0 0 0 8
+\end{itemize}

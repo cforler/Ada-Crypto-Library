@@ -1,0 +1,559 @@
+\chapter{Crypto.Types.Big\_Numbers}
+The package provides a generic type \texttt{Big\_Unsigned} with a set
+of procedures and functions. This type uses internally an array, which
+consists of 32-bit words. And this array is as a modular type
+interpreted. For this reason, it is only possible to generate
+variables of type \texttt{Big\_Unsigned} with that, their bit length
+is a multiple of 32 bits. Since the package works without pointer and
+inline assembler, it is much slower than e.g. for efficiency optimized
+MPI (multi-precision-integers) of
+GnuPG\footnote{http://www.gnupg.org/documentation/manuals/gcrypt/MPI-library.html,
+  November 2012}. This big number package is originally based on the
+Big Number library\footnote{http://bignumber.chez.com/, November 2012}
+by Jerome Delcourt, which should be used here. But it turned out that
+the library didn't meet some desired requirements. So this package
+would be completely rewritten. A significant contribution to the
+current code is the analysis of the source code from
+\texttt{java.math.BigInteger}
+\footnote{http://docs.oracle.com/javase/1.4.2/docs/api/java/math/BigInteger.html,
+  November 2012} and
+BeeCrypt\footnote{http://sourceforge.net/projects/beecrypt/, November
+  2012} library by Bob Deblier.% and also the following codes.  The
+package is specified in Crypto.Types.Big\_Numbers.
+
+\section{API}
+\subsubsection*{Generic Part}
+\begin{lstlisting}{}
+  generic
+    Size : Positive;
+\end{lstlisting}
+\paragraph{Exception:} If Size $\not= k \cdot 32,\; k \in N$:\quad
+\texttt{Constraint\_Size\_Error}.
+\newpage
+
+\subsubsection*{Types}
+\begin{lstlisting}{}
+  type Big_Unsigned is private;
+\end{lstlisting}
+It is the basic type in the package. \texttt{Big\_Unsigned} represents
+a modular number of n ($n = k \cdot 32$) bits. A variable of this type
+will be always initialized with a constant named
+\texttt{Big\_Unsigned\_Zero}.
+
+\hhline
+\begin{lstlisting}{}
+  subtype Number_Base is Integer range 2 .. 16;
+\end{lstlisting}
+The type will be needed later for the conversion from a
+\texttt{Big\_Unsigned} to a string. A \texttt{Big\_Unsigned} variable
+can be represented as a number based on a base from this
+subtype.
+
+\hhline
+\subsubsection*{Constants}
+\begin{lstlisting}{}
+  Big_Unsigned_Zero   : constant Big_Unsigned; -- 0
+  Big_Unsigned_One    : constant Big_Unsigned; -- 1
+  Big_Unsigned_Two    : constant Big_Unsigned; -- 2
+  Big_Unsigned_Three  : constant Big_Unsigned; -- 3
+  Big_Unsigned_Four   : constant Big_Unsigned; -- 4
+  Big_Unsigned_Ten    : constant Big_Unsigned; -- 10
+  Big_Unsigned_Sixteen: constant Big_Unsigned; -- 16
+  Big_Unsigned_First  : constant Big_Unsigned; -- 0
+  Big_Unsigned_Last   : constant Big_Unsigned; -- "Big_Unsigned'Last"
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Comparison Operations}
+\begin{itemize}
+\item Between two values of the same type \texttt{Big\_Unsigned}:
+\end{itemize}
+\begin{lstlisting}{}
+  function "=" (Left, Right : Big_Unsigned) return Boolean;
+  function "<" (Left, Right : Big_Unsigned) return Boolean;
+  function ">" (Left, Right : Big_Unsigned) return Boolean;
+  function "<="(Left, Right : Big_Unsigned) return Boolean;
+  function ">="(Left, Right : Big_Unsigned) return Boolean;
+
+  function Min(X, Y : in Big_Unsigned) return Big_Unsigned;
+  function Max(X, Y : in Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+\begin{itemize}
+\item Between one value of type \texttt{Big\_Unsigned} and one value
+  of type \texttt{Mod\_Type}, also vice versa.
+\end{itemize}
+\begin{lstlisting}{}
+  function "="(Left : Big_Unsigned; Right : Mod_Type) return Boolean;
+  function "<"(Left : Big_Unsigned; Right : Mod_Type) return Boolean;
+  function ">"(Left : Big_Unsigned; Right : Mod_Type) return Boolean;
+  function "<="(Left: Big_Unsigned; Right : Mod_Type) return Boolean;
+  function ">="(Left: Big_Unsigned; Right : Mod_Type) return Boolean;
+\end{lstlisting}
+\subsubsection*{Basic Operations}
+The basic functions can be used to operate values of
+\texttt{Big\_Unsigned} and \texttt{Mod\_Type}. Additionally, the
+functions $"+","-","*","/"$ can be applied on two values, which are
+both of type \texttt{Big\_Unsigned}.
+
+\begin{lstlisting}{}
+  function "+"(Left:Big_Unsigned;Right:Mod_Type) return Big_Unsigned;
+  function "-"(Left:Mod_Type;Right:Big_Unsigned) return Big_Unsigned;
+  function "*"(Left:Big_Unsigned;Right:Mod_Type) return Big_Unsigned;
+  function "/"(Left:Mod_Type;Right:Big_Unsigned) return Big_Unsigned;
+
+  function "xor"(Left, Right : Big_Unsigned) return Big_Unsigned;
+  function "or" (Left, Right : Big_Unsigned) return Big_Unsigned;
+  function "and"(Left, Right : Big_Unsigned) return Big_Unsigned;
+  function "and"(Left  : Big_Unsigned;
+  					  Right : Mod_Type) return Big_Unsigned;
+  function "and"(Left  : Mod_Type;
+  					  Right : Big_Unsigned) return Big_Unsigned;
+  function "**" (Left, Right : Big_Unsigned) return Big_Unsigned;
+  function "mod"(Left, Right : Big_Unsigned) return Big_Unsigned;
+  function "mod"(Left  : Big_Unsigned;
+  					  Right : Mod_Type) return Big_Unsigned;
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Multiplication}
+In addition to the elementary multiplication functions, further
+multiplication algorithms are implemented to develop their potentials
+in \texttt{Big\_Unsigned}.\\
+
+\begin{lstlisting}{}
+  function Russ(Left, Right: Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+The Russian multiplication is a systematic method, which does not
+require the multiplication table, only the ability to multiply and
+divide by 2, and to add, details can be found in \cite{Russ}.
+
+\hhline
+
+\begin{lstlisting}{}
+  function Karatsuba(Left, Right : Big_Unsigned) return Big_Unsigned;
+  function Karatsuba_P(Left,Right: Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+The Karatsuba algorithm can reduce the multiplication of two n-digit
+numbers to at most $3 n^{\log_2 3}\approx 3 n^{1.585}$ single-digit
+multiplications usually (and exactly $n^{\log_2 3}$ when n is a power
+of 2) \cite{DBLP:reference/crypt/2011}. In parallel Karatsuba
+function, the product is calculated in tasks.
+
+\hhline
+\begin{lstlisting}{}
+  function Toom_Cook(Left, Right : Big_Unsigned) return Big_Unsigned;
+  function Toom_Cook_P(Left,Right: Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+The Toom-Cook multiplication splits up two large integers $a$ and $b$
+into $k$ smaller parts (each of length $l$ ), and performs operations
+on the parts. As $k$ grows, the multiplication sub-operations may be
+combined, thus the overall complexity can be reduced, and the
+multiplication sub-operations can be computed recursively using
+Toom-Cook multiplication again, and so on
+\cite{DBLP:reference/crypt/2011}.
+
+\paragraph{Remarks.} All algorithms can be called explicitly and used
+for multiplication of two \texttt{Big\_Unsigned} values.  A
+performance improvement can then be achieved by combining different
+algorithms, which contain different strengths. In the ACL, by calling
+the elementary multiplication (function $'*'$) the sum of two
+parameters' bit length is compared to the length of
+\texttt{Mod\_Type}. The elementary multiplication is used for small
+factors, for large bit length (between 2800 bits and 3600 bits) the
+parallel Karatsuba (function \texttt{Karatsuba\_P()}) will be called,
+and for the length, which is longer than 3600 bits, the parallel
+Toom\_Cook algorithm (function \texttt{Toom\_Cook\_P()}) will come in
+use.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Utils}
+\texttt{Crypto.Types.Big\_Numbers.Utils} is a separate body of
+\texttt{Crypto.Types.Big\_Numbers}. Many useful functions and
+procedures are provided.
+\begin{lstlisting}{}
+  procedure Swap(X, Y : in out Big_Unsigned);
+\end{lstlisting}
+The two parameters are exchanged.
+
+\hhline
+\begin{lstlisting}{}
+  procedure Set_Least_Significant_Bit(X : in out Big_Unsigned);
+  procedure Set_Most_Significant_Bit (X : in out Big_Unsigned);
+\end{lstlisting}
+The first procedure sets the least significant (the most right) bit of
+X to 1. Then, X is after calling this procedure always odd. The second
+procedure sets the most significant (the most left) bit of X to
+1. This procedure ensures that X has always n bits.
+
+\hhline
+\begin{lstlisting}{}
+  function Is_Odd (X : Big_Unsigned) return Boolean;
+  function Is_Even(X : Big_Unsigned) return Boolean;
+\end{lstlisting}
+The function \texttt{Is\_Odd()} returns true if X is odd, and the
+function \texttt{Is\_Even()} returns true if X is even.
+
+\hhline
+\begin{lstlisting}{}
+  procedure Inc(X : in out Big_Unsigned);
+  procedure Dec(X : in out Big_Unsigned);
+\end{lstlisting}
+The procedure \texttt{Inc()} increases X by 1, and the procedure
+\texttt{Dec()} decreases X by 1.x
+
+\hhline
+\begin{lstlisting}{}
+  function Shift_Left (Value  : Big_Unsigned;
+                       Amount : Natural) return Big_Unsigned;
+
+  function Shift_Right(Value  : Big_Unsigned;
+                       Amount : Natural) return Big_Unsigned;
+\end{lstlisting}
+The function \texttt{Shift\_Left()} calculates
+$Value\,*\,2^{Amount}$. And the function \texttt{Shift\_Right()}
+calculates $\lfloor Value\, /\,
+2^{Amount}\rfloor$.\\
+
+\noindent\textbf{Example:}
+\begin{lstlisting}{}
+    X : Big_Unsigned := 2#101011#;
+  begin
+    X := Shift_Right(X, 2);  -- X := 2#001010#
+  end;
+\end{lstlisting}
+X is originally assigned by $2\#101011\#$, decimally equals 43. After
+calling the function \texttt{Shift\_Right()}, X is shifted to right
+for 2 positions and becomes $2\#001010\#$, decimally equals $\lfloor
+43\,/\,2^2 \rfloor$ = 10.
+
+\hhline
+\begin{lstlisting}{}
+  function Rotate_Left (Value  : Big_Unsigned;
+  							   Amount : Natural) return Big_Unsigned;
+  function Rotate_Right(Value  : Big_Unsigned; 
+  							   Amount : Natural) return Big_Unsigned;
+\end{lstlisting}
+The function \texttt{Rotate\_Left()} makes rotation of a value to the
+left. It mathematically calculates $((Value * 2^{Amount})\; \oplus\;
+(\lfloor Value\, /\, 2^{Size - Amount}\rfloor))$ $\bmod\; 2^{Size}$.
+The parameter \texttt{Amount} will be calculated through:
+
+\begin{lstlisting}{}
+  L : constant Natural := Amount mod Size;
+\end{lstlisting}
+then, rotation is made by combining function \texttt{Shift\_Left()}
+and \texttt{Shift\_Right()}:
+
+\begin{lstlisting}{}
+  return Shift_Left(Value,L) xor Shift_Right(Value, Size-L);
+\end{lstlisting}
+The function \texttt{Rotate\_Right()} makes rotation of a value to the
+right. It mathematically calculates $((Value * 2^{Size - Amount})\;
+\oplus\; (\lfloor Value / 2^{Amount}\rfloor))$ $\bmod\; 2^{Size}$, as
+shown in the following:
+\begin{lstlisting}{}
+  R : constant Natural := Amount mod Size;
+  return Shift_Right(Value,R) xor Shift_Left(Value, Size-R);
+\end{lstlisting}
+
+\hhline
+\begin{lstlisting}{}
+  function Get_Random return Big_Unsigned;
+\end{lstlisting}
+This function generates a random number in the interval [
+  $0\ldots$\texttt{Big\_Unsigned\_Last} ].
+
+\hhline
+\begin{lstlisting}{}
+  function Lowest_Set_Bit(X : Big_Unsigned) return Natural;
+\end{lstlisting}
+This function returns the position of the least significant bit in X,
+which has the value "1".\\
+
+\noindent\textbf{Exception:} If X = 0
+(\texttt{Big\_Unsigned\_Zero}):\quad \texttt{Is\_Zero\_Error}.
+
+\hhline
+\begin{lstlisting}{}
+  function Gcd(Left, Right : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+The function calculates the greatest common divisor of the two values.\\
+
+\hhline
+\begin{lstlisting}{}
+  function Length_In_Bytes(X : Big_Unsigned) return Natural;
+  function Bit_Length     (X : Big_Unsigned) return Natural;
+\end{lstlisting}
+The function \texttt{Length\_In\_Bytes()} calculates the number of
+bytes which are required to output X as a byte array. The function
+\texttt{Bit\_Length()} returns the bit length of X.
+
+\hhline
+\begin{lstlisting}{}
+  function To_Big_Unsigned(X : Bytes)        return Big_Unsigned;
+  function To_Bytes       (X : Big_Unsigned) return Bytes;
+\end{lstlisting}
+The two functions provide conversion between values of
+\texttt{Big\_Unsigned} and bytes.  The function
+\texttt{To\_Big\_Unsigned()} converts X of bytes to a
+\texttt{Big\_Unsigned} value B. The function \texttt{To\_Bytes()}
+converts a variable X of the type \texttt{Big\_Unsigned} to a byte
+array B.\\
+
+\noindent\textbf{Exception:} If the bit length of X is greater than
+\texttt{Size}:\quad \texttt{Constraint\_Error}.
+
+\hhline
+\begin{lstlisting}{}
+  function To_Mod_Types   (X : Big_Unsigned) return Mod_Types;
+  function To_Big_Unsigned(X : Mod_Types)    return Big_Unsigned;
+\end{lstlisting}
+The two functions make conversion between values of
+\texttt{Mod\_Types} and \texttt{Big\_Unsigned}.\\
+
+\noindent\textbf{Exception:}
+In the function \texttt{To\_Big\_Unsigned()}, if
+the bit length of X is greater than \texttt{Size}:\quad
+\texttt{Constraint\_Error}.
+
+\hhline
+\begin{lstlisting}{}
+  function To_String(Item : Big_Unsigned;
+                     Base : Number_Base := 10) return String;
+  function To_Big_Unsigned(S : String)         return Big_Unsigned;
+\end{lstlisting}
+The function \texttt{To\_String()} converts \texttt{Item} to a
+string. The conversion can be done with a Base (Base $\in \{2,\ldots
+,16\}$). The output string has the following structures:
+\begin{itemize}
+\item \textbf{Base  = 10: } a number with the base 10 (e.g.''1325553'')
+\item \textbf{Base /= 10: } a number with the base B\# (e.g.''12\#AB45623A3402\#'')
+\end{itemize}
+The function \texttt{To\_Big\_Unsigned()} makes transformation of a
+string S to a \texttt{Big\_Unsigned} value. The string will be
+displayed as a number of decimal notation or with a base (Base $\in
+\{2,\ldots ,16\})$ and should have the following structures:
+\begin{itemize}
+\item a number with base B\# (e.g.''16\#FF340A12B1\#'')
+\item a number with base 10 (e.g.''333665'')
+\end{itemize}
+
+\noindent\textbf{Exceptions:}
+\begin{itemize}
+\item If S is a null string:\quad \texttt{Conversion\_Error}.
+\item If S has an invalid base:\quad \texttt{Conversion\_Error}.
+\item If S has invalid characters:\quad \texttt{Conversion\_Error}.
+\end{itemize}
+
+\hhline
+\begin{lstlisting}{}
+  procedure Put(Item : in Big_Unsigned;
+                Base : in Number_Base := 10);
+
+  procedure Put_Line(Item : in Big_Unsigned;
+                     Base : in Number_Base := 10);
+\end{lstlisting}
+The procedure \texttt{Put()} outputs the \texttt{Big\_Unsigned}
+variable in standard format with a Base (Base $\in \{2,\ldots
+,16\})$. The procedure \texttt{Put\_Line()} outputs the value in
+standard format including a line break.
+
+\hhline
+\begin{lstlisting}{}
+  procedure Big_Div(Dividend, Divisor   : in  Big_Unsigned;
+                    Quotient, Remainder : out Big_Unsigned);
+
+  procedure Short_Div(Dividend  : in  Big_Unsigned;
+                      Divisor   : in  Mod_Type;
+                      Quotient  : out Big_Unsigned;
+                      Remainder : out Mod_Type);
+\end{lstlisting}
+The procedure \texttt{Big\_Div()} calculates the quotient
+(\texttt{Quotient}) and the rest (\texttt{Remainder}) of two
+\texttt{Big\_Unsigned} variables, meanwhile the procedure
+\texttt{Short\_Div()} makes the same calculation between a
+\texttt{Big\_Unsigned} variable and a \texttt{Mod\_Type} variable. The
+following rules are applied:
+\begin{itemize}
+\item Quotient := $\lfloor \frac{Dividend}{Divisor} \rfloor$
+\item Remainder :=  $Dividend\; \bmod\; Divisor$
+\end{itemize}
+\textbf{Exception:} If $Divisor$ = 0:\quad \texttt{Division\_By\_Zero}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Mod\_Utils}
+The \texttt{Crypto.Types.Big\_Numbers.Mod\_Utils} is another separate
+body of \texttt{Crypto.Types.\-Big\_Numbers}. Functions and
+procedures, which are needed for Public-Key-Cryptography, will be
+introduced. All the operations in this package are mod N.
+\begin{lstlisting}{}
+  function Add (Left, Right, N : Big_Unsigned) return Big_Unsigned;
+  function Sub (Left, Right, N : Big_Unsigned) return Big_Unsigned;
+  function Div (Left, Right, N : Big_Unsigned) return Big_Unsigned;
+  function Mult(Left, Right, N : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+These are the four basic functions for two values, the result should be mod N.\\
+
+\noindent\textbf{Exception in \texttt{Div()}:} If Right = 0
+(\texttt{Big\_Unsigned\_Zero}): \texttt{Division\_By\_Zero}.
+
+
+\hhline
+\begin{lstlisting}{}
+  function Pow(Base, Exponent, N : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+It calculates $Base^{Exponent}$ (mod N).
+
+\hhline
+\begin{lstlisting}{}
+  function Get_Random (N : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+It returns a random \texttt{Big\_Unsigned} variable (mod N).
+
+\hhline
+\begin{lstlisting}{}
+  function Inverse (X,N: Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+It returns the inverse (with respect of multiplication) of X (mod
+N). If no inverse of X exists, \texttt{Big\_Unsigned\_Zero} will be
+returned.
+
+\hhline
+\begin{lstlisting}{}
+  function Get_Prime  (N : Big_Unsigned) return Big_Unsigned;
+  function Get_N_Bit_Prime(N : Positive) return Big_Unsigned;
+\end{lstlisting}
+The function \texttt{Get\_Prime()} calculates with an overwhelming
+probability a prime variable P (mod N), while the function
+\texttt{Get\_N\_Bit\_Prime()} calculates a N-bit prime result.\\
+
+\noindent\textbf{Exception:}
+\begin{itemize}
+\item In the function \texttt{Get\_Prime()}, if N $<=$ 2:\quad\texttt{Constraint\_Error}.
+\item In the function \texttt{Get\_N\_Bit\_Prime()}, if N = 1 or\; N $>$ \texttt{Size}:\quad\texttt{Constraint\_Error}.
+\end{itemize}
+
+\hhline
+\begin{lstlisting}{}
+  function Is_Prime(X : Big_Unsigned) return Boolean;
+\end{lstlisting}
+This function returns true if X is prime or false if X is not prime
+with an overwhelming probability. An internal function
+\texttt{Pass\_Prime\_Test()} is called to check X.\\
+
+\paragraph{How it  works.}
+\begin{enumerate}
+\item Test if a one digit prime (2,3,5,7) divides $X$.
+\item Test if a two digit prime number divides $X$.
+\item Test if a three digit prime number divides $X$.
+\item Test if X is a "Lucas-Lehmer" prime\footnote{http://en.wikipedia.org/wiki/Lucas-Lehmer\_primality\_test, November 2012.}.
+\item Compute N random \texttt{Big\_Unsigned} values and test if one
+  of those is an Miller-Rabin
+  wittness\footnote{http://en.wikipedia.org/wiki/Miller-Rabin\_primality\_test,
+    November 2012.} ($\,1<N<51$, where N depends on the bit length of X).
+\end{enumerate}
+
+\hhline
+\begin{lstlisting}{}
+  function Looks_Like_A_Prime(X : Big_Unsigned) return Boolean;
+\end{lstlisting}
+It's a weaker but faster prime test than function
+\texttt{Is\_Prime()}. It returns false with high probability if $X$ is
+not prime. An internal function \texttt{Pass\_Prime\_Test()} is called
+to check X.
+
+\paragraph{How it works.} This function acts much the same as the
+function \texttt{Is\_Prime()}, with the difference that the
+Miller-Rabin-Test is replaced by a simpler but unreliable prime number
+test, which runs 2-50 times to generate random numbers and test if it
+is a divisor of X (while Miller-Rabin-Test tests if it is a
+Miller-Rabin wittness). When the divisor of X doesn't exist, the
+function returns true.
+
+\hhline
+\begin{lstlisting}{}
+  function Passed_Miller_Rabin_Test(X : Big_Unsigned;
+                                   S : Positive) return Boolean;
+\end{lstlisting}
+It returns true only when X passes a certain number of Miller-Rabin
+tests (S iterations). The probability that a pseudo prime number
+passes this test is smaller than $\frac{1}{2^{2S}}$.
+
+\hhline
+\begin{lstlisting}{}
+  function Jacobi(X, N : Big_Unsigned) return Integer;
+\end{lstlisting}
+This function computes the Jacobi-symbol of X from $Z_N$.\\
+
+\noindent\textbf{Precondition:} N must be odd.\\
+
+\noindent\textbf{Returned values:} \\
+\begin{tabular}{p{\textwidth}}
+\quad 0 : if X mod N = 0\\
+\quad 1 : if X is a quadratic resuide mod N (for some integer b, $X=b^2$ mod N)\\
+\quad -1 : if X is a quadratic non-resuide mod N (there is no such b)
+\end{tabular}\ \\
+
+\noindent\textbf{Exception:} If X is even:\quad \texttt{Constraint\_Error}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Binfield\_Utils}
+It's also a separate body of
+\texttt{Crypto.Types.Big\_Numbers}. Functions and procedures in this
+package receive variables of type \texttt{Big\_Unsigned} from the
+field $GF(2^m)$ as parameters. This package is specified in
+\texttt{Crypto.Types.Big\_Numbers.Binfield\_Utils}.\\
+
+\noindent\textbf{Example:}
+\begin{lstlisting}{}
+  -- The 1st, 2nd and 6th bit of A are to be set.
+  -- After calculation A is equal to z^5 + z + 1
+  A := Big_Unsigned_One;
+  A := A xor Shift_left(Big_Unsigned_One,1);
+  A := A xor Shift_left(Big_Unsigned_One,5);
+\end{lstlisting}
+In the following functions, the variable F of type
+\texttt{Big\_Unsigned} is an irreducible polynom f(z) of a degree
+$m$.
+
+\begin{lstlisting}{}
+  function B_Add(Left, Right :Big_Unsigned) return Big_Unsigned;
+  function B_Sub(Left, Right :Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+The two functions calculate \texttt{Left} xor \texttt{Right}, which
+corresponds to addition or subtraction in $GF(2^m)$.
+
+
+\hhline
+\begin{lstlisting}{}
+  function B_Mult(Left, Right, F :Big_Unsigned) return Big_Unsigned;
+  function B_Div (Left, Right, F :Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+The function \texttt{B\_Mult()} computes $Left*Right$ mod F. In the
+function \texttt{B\_Div()} it uses \texttt{B\_Mult()} with the inverse
+of the value \texttt{Right}.
+
+\hhline
+\begin{lstlisting}{}
+  function B_Square(A, F : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+It computes $A^2$ mod F.
+
+\hhline
+\begin{lstlisting}{}
+  function B_Mod(Left, Right : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+It computes \texttt{Left} mod \texttt{Right}.
+
+\hhline
+\begin{lstlisting}{}
+  function B_Inverse(X, F : Big_Unsigned) return Big_Unsigned;
+\end{lstlisting}
+It returns $X^{(-1)}$ mod F.

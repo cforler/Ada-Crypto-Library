@@ -1,0 +1,57 @@
+\chapter{Crypto.Symmetric.Blockcipher}\label{Blockcipher}
+In this generic package a block cipher is generated based on the symmetric algorithms (Chapter \ref{Algorithm}). Users should always use the API of the package, where a secure application can be ensured.
+%because this package implements a block cipher in insecure ECB-Mode (Electronic Code Book Mode). 
+When one encrypts two identical plaintext blocks $P_1=P_2$ with the same key, then two identical ciphertext blocks $C_1=C_2$ will be produced. Thus the ciphertext can provide information about the structure of the plaintext.
+\section{API}
+The API of a block cipher is mainly made of the following parts:
+\begin{itemize} 
+\item One procedure \texttt{Prepare\_Key()}: it assigns a value as the cipher key.
+\begin{lstlisting}{}
+  procedure Prepare_Key(Key : in Key_Type);
+\end{lstlisting}
+\item One procedure \texttt{Encrypt()}: the procedure encrypts a plaintext block (with a key) to a ciphertext block.
+\begin{lstlisting}{}
+  procedure Encrypt(Plaintext: in Block; Ciphertext : out Block);
+\end{lstlisting}
+\item One procedure \texttt{Decrypt()}: the procedure recovers a ciphertext block (with a key) to a plaintext block.
+\begin{lstlisting}{}
+  procedure Decrypt(Ciphertext: in Block; Plaintext : out Block);
+\end{lstlisting}
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Generic Part}
+\begin{lstlisting}{}
+  type Block is private;
+  type Key_Type is private;
+  type Cipherkey_Type is private;
+  with procedure Prepare_Key(Key       : in  Key_Type;
+                             Cipherkey : out Cipherkey_Type) is <>;
+  with procedure Encrypt(Cipherkey  : in  Cipherkey_Type;
+                         Plaintext  : in  Block;
+                         Ciphertext : out Block) is <>;
+  with procedure Decrypt(Cipherkey  : in  Cipherkey_Type;
+                         Ciphertext : in  Block;
+                         Plaintext  : out Block) is <>;   
+  with function To_Key_Type   
+                (B : Crypto.Types.Bytes) return Key_Type is <>;
+  with function To_Block_Type 
+                (B : Crypto.Types.Bytes) return Block is <>;
+  with function Block_To_Bytes
+                (B : Block) return Crypto.Types.Bytes is <>;
+\end{lstlisting}
+Since they are generic, they should be specified at first.\\
+\textbf{Exceptions:}\\
+In the function \texttt{To\_Key\_Type()}, if the size of the data does not match the size of the key type:\quad\texttt{Constraint\_Error}.\\ 
+In the function \texttt{To\_Block\_Type()}, if the size of the data does not match the size of the block:\quad\texttt{Constraint\_Error}.\\ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Remarks:}\\
+Users don't need to generate block ciphers from the symmetric algorithms every time. They can use the following already built blockciphers in the ACL.
+\begin{itemize}
+\item \texttt{Crypto.Symmetric.Blockcipher\_AES128/AES192/AES256}
+\item \texttt{Crypto.Symmetric.Blockcipher\_Blowfish128}
+\item \texttt{Crypto.Symmetric.Blockcipher\_Noob64}
+\item \texttt{Crypto.Symmetric.Blockcipher\_Serpent256}
+\item \texttt{Crypto.Symmetric.Blockcipher\_TripleDES}
+\item \texttt{Crypto.Symmetric.Blockcipher\_Twofish128/Twofish192/Twofish256}
+\end{itemize}

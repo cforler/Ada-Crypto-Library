@@ -1,0 +1,55 @@
+\chapter{Crypto.Symmetric.Mode.Oneway}
+This generic package works with one-way blockciphers in one-way modes. It integrates a one-way block cipher with a feedback and also some easy operations ($+,xor$). A one-way mode will be initialized with a random start value (Initial Value (IV)). The ciphertext is therefore not only dependent on the used mode, plaintext and key, but also on the random start value. When users encrypt a plaintext twice with the same key in the same mode but different IVs, then they will get different ciphertexts, i.e. a oneway mode encrypts two plaintext blocks $P_1$ and $P_2$ with $P_1=P_2$ to two ciphertext blocks $C_1$ and $C_2$ with overwhelming probability that $C_1\neq C_2$. So that it is now possible to encrypt more messages with the same key.\\
+\textbf{Notice: To decrypt a ciphertext the key and start value by encryption are required.} For this reason the start value should be always kept together with the related ciphertext. \textbf{The security of a mode is independent from the familarity of the start value.} Hense, man multiplies usually the start value with the ciphertext as the final output by attaching the ciphertext to the start value ($C'=IV||C$).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Remarks}
+\begin{itemize}
+\item In a oneway mode it goes similarly as in a normal mode. If a normal mode can be used also as a oneway mode, then you should still prefer oneway mode, because it's nimbler.  
+\item The API of this package is the same as in normal modes (\ref{API-Mode}).
+\item Supported oneway modes:
+\begin{itemize}
+\item Cipher Feedback Mode (CFB) (\ref{CipherFeedbackMode})
+\item Counter Mode (CTR) (\ref{CounterMode})
+\item Output Feedback Mode (OFB) (\ref{OutputFeedbackMode})
+\end{itemize}
+\end{itemize}
+\subsubsection*{Example}
+\begin{lstlisting}{}
+  with Crypto.Types;
+  with Ada.Text_IO;
+  with Crypto.Symmetric.Oneway_Blockcipher_Twofish128;
+  with Crypto.Symmetric.Mode.Oneway_CTR;
+  procedure Example_Mode_Oneway is
+	 use Ada.Text_IO; use Crypto.Types;
+    package TF128 renames 
+                  Crypto.Symmetric.Oneway_Blockcipher_Twofish128;
+    package Twofish128 is new
+                  Crypto.Symmetric.Mode.Oneway_CTR(TF128);
+ 	 use Twofish128;
+    Key: B_Block128 := (16#2b#, 16#7e#, 16#15#, 16#16#, 16#28#,
+                        16#ae#, 16#d2#, 16#a6#, 16#ab#, 16#f7#,
+                        16#15#, 16#88#, 16#09#, 16#cf#, 16#4f#,
+                        16#3c#);
+    IV: B_Block128 := (15 => 1, others => 0);
+     --Plaintext
+    P_String: String :="All your base are belong to us! ";
+     --Plaintext will be divided in 2*64 bit blocks.
+    P: array(1..2) of B_Block128 := 
+			(To_B_Block128(To_Bytes(P_String(1..16))),
+			 To_B_Block128(To_Bytes(P_String(17..32))));
+    C: array(0..2) of B_Block128;      --Ciphertext
+  begin
+    Init(Key, IV);         --Initialization
+    C(0):= IV;             --1. Ciphertext block = start value
+    for I in P'Range loop
+	    Encrypt(P(I),C(I));   --Encryption
+    end loop;
+     --For decryption the start value will be reinitialized.
+    Set_IV(C(0));
+    for I in P'Range loop
+	    Decrypt(C(I),P(I));     --Decryption
+       Put(To_String(To_Bytes(P(I))));
+    end loop;
+  end Example_Mode_Oneway;
+\end{lstlisting}
