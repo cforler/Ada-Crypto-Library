@@ -1,36 +1,57 @@
 \chapter{Crypto.Symmetric.Algorithm}\label{Algorithm}
-All child packages of the package \texttt{Crypto.Symmetric.Algorithm} are symmetric ciphers or hash functions. They have direct access to individual operations, which use a cipher or a hash function. However users should use the existing API.
+All child packages of the package \texttt{Crypto.Symmetric.Algorithm}
+are symmetric ciphers or hash functions. They have direct access to
+individual operations, which use a cipher or a hash function. However
+users should use the existing API.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Symmetric Ciphers}
 \subsubsection*{General}
-The following procedures are defined and used within symmetric ciphers of the ACL.
-\begin{itemize} 
-\item One procedure \texttt{Prepare\_Key()}; it generates a cipher key from the delivered value.\\
-\textbf{Example:}
+The following procedures are defined and used within symmetric ciphers
+of the ACL.
+\begin{itemize}
+\item One procedure \texttt{Prepare\_Key()}; it generates a cipher key
+  from the delivered value.\\ \textbf{Example:}
 \begin{lstlisting}{}
   procedure Prepare_Key(Key       : in  B_Block128;
                         Cipherkey : out Cipherkey_Type);
 \end{lstlisting}
-\item One procedure \texttt{Encrypt()}; it converts the input plaintext into a output ciphertext.\\
-\textbf{Example:}
+\item One procedure \texttt{Encrypt()}; it converts the input
+  plaintext into a output ciphertext.\\
+
+\noindent\textbf{Example:}
 \begin{lstlisting}{}
   procedure Encrypt(Cipherkey  : in  Cipherkey_Type;
                     Plaintext  : in  B_Block128;
                     Ciphertext : out B_Block128);
 \end{lstlisting}
-\item One procedure \texttt{Decrypt()}; it recovers the input ciphertext to associated plaintext.\\
-\textbf{Example:}
+\item One procedure \texttt{Decrypt()}; it recovers the input
+ ciphertext to associated plaintext.\\
+
+\noindent\textbf{Example:}
 \begin{lstlisting}{}
   procedure Decrypt(Cipherkey  : in  Cipherkey_Type;
                     Ciphertext : in  B_Block128;
                     Plaintext  : out B_Block128);
 \end{lstlisting}
 \end{itemize}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{AES}\label{AES}
-Advanced Encryption Standard (AES) is one of the best-known ciphers which was officially standardized by the U.S. National Institute of Standards and Technology (NIST) in 2001 \cite{AES-FIPS}.
-Originally it was called Rijndael, the name was a combination of the names of the two inventors, Joan Daemen and Vincent Rijmen. The AES algorithm has a fixed block size of 128 bits and a key size of 128, 192, or 256 bits.
-During the AES algorithm, the input plaintext will be transformed through a round transformation function 10, 12 or 14 times depending on its key length, and the final output is the ciphertext \cite{AES-FIPS}. The number of cycles of repetition are as follows:
+Advanced Encryption Standard (AES) is one of the best-known ciphers
+which was officially standardized by the U.S. National Institute of
+Standards and Technology (NIST) in 2001 \cite{AES-FIPS}.  Originally
+it was called Rijndael, the name was a combination of the names of the
+two inventors, Joan Daemen and Vincent Rijmen. The AES algorithm has a
+fixed block size of 128 bits and a key size of 128, 192, or 256 bits.
+During the AES algorithm, the input plaintext will be transformed
+through a round transformation function 10, 12 or 14 times depending
+on its key length, and the final output is the ciphertext
+\cite{AES-FIPS}. The number of cycles of repetition are as follows:
 \begin{itemize}
 \item 10 rounds of repetition for 128 bit keys.
 \item 12 rounds of repetition for 192 bit keys.
@@ -40,10 +61,10 @@ During the AES algorithm, the input plaintext will be transformed through a roun
 \begin{lstlisting}{}
   type Cipherkey_AES128 is private;
   procedure Prepare_key128(Key       : in  B_Block128;
-                           Cipherkey : out Cipherkey_AES128);                           
+                           Cipherkey : out Cipherkey_AES128);
   procedure Encrypt128(Cipherkey  : in  Cipherkey_AES128;
                        Plaintext  : in  B_Block128;
-                       Ciphertext : out B_Block128);                        
+                       Ciphertext : out B_Block128);
   procedure Decrypt128(Cipherkey  : in  Cipherkey_AES128;
                        Ciphertext : in  B_Block128;
                        Plaintext  : out B_Block128);
@@ -60,7 +81,7 @@ During the AES algorithm, the input plaintext will be transformed through a roun
                        Ciphertext : in  B_Block128;
                        Plaintext  : out B_Block128);
 \end{lstlisting}
-\newpage
+
 \subsubsection*{API of AES with 256 bit keys:}
 \begin{lstlisting}{}
   type Cipherkey_AES256 is private;
@@ -72,11 +93,16 @@ During the AES algorithm, the input plaintext will be transformed through a roun
   procedure Decrypt256(Cipherkey  : in  Cipherkey_AES256;
                        Ciphertext : in  B_Block128;
                        Plaintext  : out B_Block128);
-\end{lstlisting}\\ \ \\
+\end{lstlisting}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Blowfish}
-Blowfish was designed in 1993 by Bruce Schneier. It uses a key of variable length (here the length 128-bit is used) and a 64-bit block cipher. Blowfish has a key-expansion part and a part of 16-round Feistel network for data encryption \cite{DBLP:conf/fse/Schneier93}.
+Blowfish was designed in 1993 by Bruce Schneier. It uses a key of
+variable length (here the length 128-bit is used) and a 64-bit block
+cipher. Blowfish has a key-expansion part and a part of 16-round
+Feistel network for data encryption \cite{DBLP:conf/fse/Schneier93}.
 \subsubsection*{API of Blowfish:}
 \begin{lstlisting}{}
   type Cipherkey_Blowfish128 is private;
@@ -89,27 +115,46 @@ Blowfish was designed in 1993 by Bruce Schneier. It uses a key of variable lengt
   procedure Decrypt128 (Cipherkey  : in  Cipherkey_Blowfish128;
                         Ciphertext : in  B_Block64;
                         Plaintext  : out B_Block64);
-\end{lstlisting}\\
+\end{lstlisting}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Serpent}
-Serpent is designed for 128-bit block ciphers, and was one of the five finalists in the Advanced Encryption Standard (AES) contest. If you put a high value on security and not such a high value on performance, then you can try this block cipher. The implementation is based on the Ada-Reference-Implementation by Markus G. Kuhn. Temporarily there is only API for 256-bit cipher key. API for 128-bit and 192-bit keys is in planning.
+Serpent is designed for 128-bit block ciphers, and was one of the five
+finalists in the Advanced Encryption Standard (AES) contest. If you
+put a high value on security and not such a high value on performance,
+then you can try this block cipher. The implementation is based on the
+Ada-Reference-Implementation by Markus G. Kuhn. Temporarily there is
+only API for 256-bit cipher key. API for 128-bit and 192-bit keys is
+in planning.
 \subsubsection*{API of Serpent:}
 \begin{lstlisting}{}
   type Cipherkey_Serpent256 is private;
   procedure Prepare_Key256(Key       : in  B_Block256;
-                           Cipherkey : out Cipherkey_Serpent256);   
+                           Cipherkey : out Cipherkey_Serpent256);
   procedure Encrypt256(Cipherkey  : in  Cipherkey_Serpent256;
                        Plaintext  : in  B_Block128;
-                       Ciphertext : out B_Block128); 
+                       Ciphertext : out B_Block128);
   procedure Decrypt256(Cipherkey  : in  Cipherkey_Serpent256;
                        Ciphertext : in  B_Block128;
                        Plaintext  : out B_Block128);
-\end{lstlisting}\\ \ \\
+\end{lstlisting}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Triple DES(3DES, TDES, TDEA)}
-Triple DES is the common name for the Triple Data Encryption Algorithm (TDEA or Triple DEA), which applies the Data Encryption Standard (DES) algorithm to each data block three times, and a TDES key is made of three DES keys \cite{DES-FIPS}. The 192-bit key is decomposed before encryption in three 64-bit keys. Due to that DES is software-relative slow, TDES is the slowest block cipher. It is assumed that this cipher can not be broken, because DES is over 20 years studied by the best cryptoanalysts on its weakness. The idea comes from the book \texttt{Applied Cryptography} by Burce Scheier\footnote{http://www.schneier.com/book-applied.html, Dec 2012.}.
+Triple DES is the common name for the Triple Data Encryption Algorithm
+(TDEA or Triple DEA), which applies the Data Encryption Standard (DES)
+algorithm to each data block three times, and a TDES key is made of
+three DES keys \cite{DES-FIPS}. The 192-bit key is decomposed before
+encryption in three 64-bit keys. Due to that DES is software-relative
+slow, TDES is the slowest block cipher. It is assumed that this cipher
+can not be broken, because DES is over 20 years studied by the best
+cryptoanalysts on its weakness. The idea comes from the book
+\texttt{Applied Cryptography} by Burce
+Scheier\footnote{http://www.schneier.com/book-applied.html, Dec
+  2012.}.
 \subsubsection*{API of Triple DES:}
 \begin{lstlisting}{}
   type Cipherkey_TDES is private;
@@ -126,7 +171,14 @@ Triple DES is the common name for the Triple Data Encryption Algorithm (TDEA or 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Twofish}
-Twofish is one of the five finalists of the Advanced Encryption Standard contest, with a block size of 128 bits and a key of length up to 256 bits. It uses the 16-round Feistel network with a bijective F function, a transform, a bitwise rotation and a key schedule \cite{Twofish}. The implementation is based on the C-Reference implementation by Niels Ferguson and the twofish specification\footnote{http://www.schneier.com/twofish.html}. In the ACL it is implemented with 128, 192 or 256 bit keys.
+Twofish is one of the five finalists of the Advanced Encryption
+Standard contest, with a block size of 128 bits and a key of length up
+to 256 bits. It uses the 16-round Feistel network with a bijective F
+function, a transform, a bitwise rotation and a key schedule
+\cite{Twofish}. The implementation is based on the C-Reference
+implementation by Niels Ferguson and the twofish
+specification\footnote{http://www.schneier.com/twofish.html}. In the
+ACL it is implemented with 128, 192 or 256 bit keys.
 \subsubsection*{API of Twofish with 128 bit keys:}
 \begin{lstlisting}{}
   type Cipherkey_Twofish is private;
@@ -163,26 +215,41 @@ Twofish is one of the five finalists of the Advanced Encryption Standard contest
   procedure Decrypt256(Cipherkey    : in  Cipherkey_Twofish256;
                        Ciphertext   : in  B_Block128;
                        Plaintext    : out B_Block128);
-\end{lstlisting} \\ \ \\
+\end{lstlisting}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Hash Functions}\label{AlgorithmHash}
-The iterative hash functions in the ACL can be called through a Low-Level-API or High-Level-API.
+The iterative hash functions in the ACL can be called through a
+Low-Level-API or High-Level-API.
 \subsubsection*{Excursion: Iterative Hash Functions}
-An iterative hash function $H$ decomposes a message $M$ into $r$ message blocks $m_i$ ($1\leq i \leq r$) of length $n$. All message blocks will be hashed sequentially. To generate a hash value $h$ for the complete message $M$, the intermediate outputs are also inputs for the next round. %That means, hash value of the $i$-th message block is dependent on $h_1,\cdots,h_{i-1}$. 
-In general there exists: $h_i:= H(m_i,h_{i-1})$. For $i=1$, $h_1:=H(M_1,h_0)$ will be applied, hereby $h_0$ is an initial value, and will be initialized at the beginning. Messages whose length is not multiple of $n$ will be inflated by a function \texttt{Padding()} before encryption until the length is multiple of $n$.%, appended by a block, which indicate the message length.
-%That is, the message which has a length of $j\cdot n$ will be inflated to a length of $(j+1)\cdot n$.
+An iterative hash function $H$ decomposes a message $M$ into $r$
+message blocks $m_i$ ($1\leq i \leq r$) of length $n$. All message
+blocks will be hashed sequentially. To generate a hash value $h$ for
+the complete message $M$, the intermediate outputs are also inputs for
+the next round.  In general there exists: $h_i:= H(m_i,h_{i-1})$. For
+$i=1$, $h_1:=H(M_1,h_0)$ will be applied, hereby $h_0$ is an initial
+value, and will be initialized at the beginning. Messages whose length
+is not multiple of $n$ will be inflated by a function
+\texttt{Padding()} before encryption until the length is multiple of
+$n$.
+
 \subsubsection*{High-Level-API}
-The High-Level-API is made of 3 procedures, which calculate hash value of messages in string, bytes or file names in string.\\
-\textbf{Example:}
+The High-Level-API is made of 3 procedures, which calculate hash value
+of messages in string, bytes or file names in
+string.\\
+
+\noindent\textbf{Example:}
 \begin{lstlisting}{}
   procedure Hash  (Message  : in String; Hash_Value: out W_Block160);
   procedure Hash  (Message  : in Bytes;  Hash_Value: out W_Block160);
   procedure F_Hash(Filename : in String; Hash_Value: out W_Block160);
 \end{lstlisting}
+
 \subsubsection*{Low-Level-API}
 The Low-Level-API of a hash function has:
-\begin{itemize} 
+\begin{itemize}
 \item One procedure \texttt{Init()}; it initializes the hash value (\texttt{Hash\_Value}).\\
 \textbf{Example:}
 \begin{lstlisting}{}
@@ -194,8 +261,13 @@ The Low-Level-API of a hash function has:
   procedure Round(Message_Block : in     W_Block512;
                   Hash_Value    : in out W_Block160);
 \end{lstlisting}
-\item One function \texttt{Final\_Round()}; the last message block (\texttt{Last\_Message\_Block}) will be inflated and the final hash value is returned. Because of the \texttt{Padding()} function, the length of the last message block in byte (Last\_Message\_Length) should be passed as a parameter.\\
-\textbf{Example:}
+\item One function \texttt{Final\_Round()}; the last message block
+  (\texttt{Last\_Message\_Block}) will be inflated and the final hash
+  value is returned. Because of the \texttt{Padding()} function, the
+  length of the last message block in byte (Last\_Message\_Length)
+  should be passed as a parameter.\\
+
+\noindent\textbf{Example:}
 \begin{lstlisting}{}
   function Final_Round
            (Last_Message_Block  : W_Block512;
@@ -203,19 +275,26 @@ The Low-Level-API of a hash function has:
             Hash_Value          : W_Block160) return W_Block160;
 \end{lstlisting}
 \end{itemize}
-%\textbf{Exceptions:}\\ 
-%If there is an error in opening a to be hashed data: \texttt{File\_Open\_Error};\\
-%If there is an error in reading a to be hashed data: \texttt{File\_Read\_Error}.
+
 \subsection{SHA-1}\label{SHA-1}
-SHA-1 is a cryptographic hash function for 160-bit message blocks. SHA stands for "Secure Hash Algorithm". SHA-1 was one of the most widely used hash functions. In 2005, security flaws were identified in SHA-1 by X. Wang, Y.L. Yin und H.Yu, namely that a mathematical weakness might exist \cite{DBLP:conf/crypto/WangYY05a}. Due to this new discovery, it is now not advisable to use this hash function. The only reason why the ACL supports this kind of hash function is its tremendous degree of process in standard protocols such as digital signature standard. But this hash function is expected to be no more supported by the ACL, so you'd better use other hash functions if possible.  \\
-\textbf{Remark:}\\
-The performance of SHA-1 is slower than SHA-256.
+SHA-1 is a cryptographic hash function for 160-bit message blocks. SHA
+stands for "Secure Hash Algorithm". SHA-1 was one of the most widely
+used hash functions. In 2005, security flaws were identified in SHA-1
+by X. Wang, Y.L. Yin und H.Yu, namely that a mathematical weakness
+might exist \cite{DBLP:conf/crypto/WangYY05a}. Due to this new
+discovery, it is now not advisable to use this hash function. The only
+reason why the ACL supports this kind of hash function is its
+tremendous degree of process in standard protocols such as digital
+signature standard. But this hash function is expected to be no more
+supported by the ACL, so you'd better use other hash functions if
+possible. \\ \textbf{Remark:}\\ The performance of SHA-1 is slower
+than SHA-256.
 \subsubsection*{API}
 \begin{lstlisting}{}
   -- high level API
   procedure Hash(Message : in String ; Hash_Value : out W_Block160);
   procedure Hash(Message : in Bytes  ; Hash_Value : out W_Block160);
-  procedure F_Hash(Filename: in String; Hash_Value : out W_Block160); 
+  procedure F_Hash(Filename: in String; Hash_Value : out W_Block160);
   -- low level API
   procedure Init(Hash_Value     : out    W_Block160);
   procedure Round(Message_Block : in     W_Block512;
@@ -224,37 +303,64 @@ The performance of SHA-1 is slower than SHA-256.
            (Last_Message_Block  : W_Block512;
             Last_Message_Length : Message_Block_Length512;
             Hash_Value          : W_Block160) return W_Block160;
-\end{lstlisting}\\
-\textbf{Exceptions:}\\
-If the message length is greater than $2^{64}-1024$:\quad \texttt{SHA1\_Constraint\_Error}.\\ 
-In the procedure \texttt{F\_Hash()}, if the file can not be opened:\quad\texttt{File\_Open\_Error}.\\
-In the procedure \texttt{F\_Hash()}, if the size of the read data is smaller than 0:\quad\texttt{File\_Read\_Error}.\\
+\end{lstlisting}
+\textbf{Exceptions:}
+\begin{itemize}
+\item If the message length is greater than $2^{64}-1024$:\quad
+  \texttt{SHA1\_Constraint\_Error}.
+\item In the procedure \texttt{F\_Hash()}, if the file can not be
+  opened:\quad\texttt{File\_Open\_Error}.
+ \item In the procedure \texttt{F\_Hash()}, if the size of the read
+   data is smaller than 0:\quad\texttt{File\_Read\_Error}.
+\end{itemize}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{SHA-256}
-SHA-256 is a cryptographic hash function with a 256-bit output (hash value), and it is a member of SHA-2 family, which is based on SHA-1. This hash family has a hash value in sufficient length and makes significant changes in security compared to the SHA-1 hash function. Since this hash family works with 8*32-bit words, its use in 32-bit processors worths a consideration. If possible, SHA-1 should be replaced by this new generation of SHA-2 hash family.
+SHA-256 is a cryptographic hash function with a 256-bit output (hash
+value), and it is a member of SHA-2 family, which is based on
+SHA-1. This hash family has a hash value in sufficient length and
+makes significant changes in security compared to the SHA-1 hash
+function. Since this hash family works with 8*32-bit words, its use in
+32-bit processors worths a consideration. If possible, SHA-1 should be
+replaced by this new generation of SHA-2 hash family.
 \subsubsection*{API}
 \begin{lstlisting}{}
   -- high level API
   procedure Hash(Message : in Bytes ; Hash_Value : out W_Block256);
-  procedure Hash(Message : in String; Hash_Value : out W_Block256); 
+  procedure Hash(Message : in String; Hash_Value : out W_Block256);
   procedure F_Hash(Filename: in String; Hash_Value : out W_Block256);
   -- low level API
-  procedure Init(Hash_Value     : out    W_Block256); 
+  procedure Init(Hash_Value     : out    W_Block256);
   procedure Round(Message_Block : in     W_Block512;
                   Hash_Value    : in out W_Block256);
   function Final_Round
            (Last_Message_Block : W_Block512;
             Last_Message_Length: Message_Block_Length512;
             Hash_Value         : W_Block256) return W_Block256;
-\end{lstlisting}\\ 
-%If a message, which is longer than $2^{64}-1024$ bits (about 2 million TB), is hashed using SHA-256: \texttt{SHA256\_Constraint\_Error}.\\
-\textbf{Exceptions:}\\
-If the message length is greater than $2^{64}-1024$:\quad \texttt{SHA256\_Constraint\_Error}.\\ 
-In the procedure \texttt{F\_Hash()}, if the file can not be opened:\quad\texttt{File\_Open\_Error}.\\
-In the procedure \texttt{F\_Hash()}, if the size of the read data is smaller than 0:\quad\texttt{File\_Read\_Error}.\\
+\end{lstlisting}
+\textbf{Exceptions:}
+\begin{itemize}
+\item If the message length is greater than $2^{64}-1024$:\quad
+  \texttt{SHA256\_Constraint\_Error}.
+\item In the procedure \texttt{F\_Hash()}, if the file can not be
+  opened:\quad\texttt{File\_Open\_Error}.
+\item In the procedure \texttt{F\_Hash()}, if the size of the read
+  data is smaller than 0:\quad\texttt{File\_Read\_Error}.
+\end{itemize}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{SHA-512}
-SHA-512 is the safest member in SHA-2 hash family, which is defined in Secure Hash Standard\footnote{http://www.itl.nist.gov/fipspubs/fip180-1.htm}. It works with 8*64-bit dwords and is therefore particularly suitable for 64-bit architectures. If you are searching for a very safe and standardized hash function, then this hash function is probably the one.
+SHA-512 is the safest member in SHA-2 hash family, which is defined in
+Secure Hash
+Standard\footnote{http://www.itl.nist.gov/fipspubs/fip180-1.htm}. It
+works with 8*64-bit dwords and is therefore particularly suitable for
+64-bit architectures. If you are searching for a very safe and
+standardized hash function, then this hash function is probably the
+one.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection*{API}
 \begin{lstlisting}{}
   -- high level API
@@ -269,19 +375,31 @@ SHA-512 is the safest member in SHA-2 hash family, which is defined in Secure Ha
            (Last_Message_Block  : DW_Block1024;
             Last_Message_Length : Message_Block_Length1024;
             Hash_Value          : DW_Block512) return DW_Block512;
-\end{lstlisting}\\
-\textbf{Exceptions:}\\
-If the message length is greater than $2^{128}-1024$:\quad\texttt{SHA2\_Constraint\_Error}.\\
-In the procedure \texttt{F\_Hash()}, if the file can not be opened:\quad\texttt{File\_Open\_Error}.\\
-In the procedure \texttt{F\_Hash()}, if the size of the read data is smaller than 0:\quad\texttt{File\_Read\_Error}.\\
+\end{lstlisting}
+\textbf{Exceptions:}
+\begin{itemize}
+\item If the message length is greater than
+  $2^{128}-1024$:\quad\texttt{SHA2\_Constraint\_Error}.
+\item In the procedure \texttt{F\_Hash()}, if the file can not be
+  opened:\quad\texttt{File\_Open\_Error}.
+\item In the procedure \texttt{F\_Hash()}, if the size of the read
+  data is smaller than 0:\quad\texttt{File\_Read\_Error}.
+\end{itemize}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{SHA-384}
-The SHA-384 hash function looks like SHA-512. The difference between SHA-384 and SHA-512 comes in 2 points:
+The SHA-384 hash function looks like SHA-512. The difference between
+SHA-384 and SHA-512 comes in 2 points:
 \begin{enumerate}
 \item SHA-384 uses different initial values.
 \item In the last round of SHA-384 the returned hash value will be  cut to 384 bits.
 \end{enumerate}
-Since this hash function uses internally a 512-bit hash value, it's not compatible to the general API in \texttt{Crypto.Symmetric.Hashfunction}. Hense this hash function should be avoided using.
+Since this hash function uses internally a 512-bit hash value, it's
+not compatible to the general API in
+\texttt{Crypto.Symmetric.Hashfunction}. Hense this hash function
+should be avoided using.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection*{API}
 \begin{lstlisting}{}
   -- high level API
@@ -296,19 +414,34 @@ Since this hash function uses internally a 512-bit hash value, it's not compatib
            (Last_Message_Block  : DW_Block1024;
             Last_Message_Length : Message_Block_Length1024;
             Hash_Value          : DW_Block512) return DW_Block384;
-\end{lstlisting}\\
-\textbf{Exceptions:}\\
-If the message length is greater than $2^{128}-1024$:\quad\texttt{SHA2\_Constraint\_Error}.\\
-In the procedure \texttt{F\_Hash()}, if the file can not be opened:\quad\texttt{File\_Open\_Error}.\\
-In the procedure \texttt{F\_Hash()}, if the size of the read data is smaller than 0:\quad\texttt{File\_Read\_Error}.\\
+\end{lstlisting}
+\textbf{Exceptions:}
+\begin{itemize}
+\item If the message length is greater than
+  $2^{128}-1024$:\quad\texttt{SHA2\_Constraint\_Error}.
+\item In the procedure \texttt{F\_Hash()}, if the file can not be
+  opened:\quad\texttt{File\_Open\_Error}.
+\item In the procedure \texttt{F\_Hash()}, if the size of the read
+  data is smaller than 0:\quad\texttt{File\_Read\_Error}.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Whirlpool}
-Whirlpool is a 512-bit hash function which operates on messages less than $2^{256}$ bits in length. Whirlpool isn't developed as the SHA-2 hash family by NSA (National Security Agency) but by two free cryptographers, Vincent Rijmen and Paulo Barreto \cite{Whirlpool}. Whirlpool is based on a substantially modified AES, cause Vincent Rijmen is one of the AES (\ref{AES}) designers. If you want a safer hash function and don't care about compatibility with the american crypto-standard, then you should consider using Whirlpool.
+Whirlpool is a 512-bit hash function which operates on messages less
+than $2^{256}$ bits in length. Whirlpool isn't developed as the SHA-2
+hash family by NSA (National Security Agency) but by two free
+cryptographers, Vincent Rijmen and Paulo Barreto
+\cite{Whirlpool}. Whirlpool is based on a substantially modified AES,
+cause Vincent Rijmen is one of the AES (\ref{AES}) designers. If you
+want a safer hash function and don't care about compatibility with the
+american crypto-standard, then you should consider using Whirlpool.
 \subsubsection*{API}
 \begin{lstlisting}{}
   -- high level API
   procedure Hash(Message : in Bytes;  Hash_Value : out DW_Block512);
   procedure Hash(Message : in String; Hash_Value : out DW_Block512);
-  procedure F_Hash(Filename   :in  String; 
+  procedure F_Hash(Filename   :in  String;
                    Hash_Value :out DW_Block512);
   -- low level API
   procedure Init(Hash_Value     : out    DW_Block512);
@@ -318,9 +451,13 @@ Whirlpool is a 512-bit hash function which operates on messages less than $2^{25
            (Last_Message_Block : DW_Block512;
             Last_Message_Length: Message_Block_Length512;
             Hash_Value         : DW_Block512) return DW_Block512;
-\end{lstlisting}\\
-%If a message, which is longer than $2^{256}-1024$ bits (about $2^{80}$ TB), is hashed using \texttt{Whirlpool}: \texttt{Whirlpool\_Constraint\_Error}.\\
-\textbf{Exceptions:}\\
-If the message length is greater than $2^{256}-1024$:\quad \texttt{Whirlpool\_Constraint\_Error}.\\ 
-In the procedure \texttt{F\_Hash()}, if the file can not be opened:\quad\texttt{File\_Open\_Error}.\\
-In the procedure \texttt{F\_Hash()}, if the size of the read data is smaller than 0:\quad\texttt{File\_Read\_Error}.\\
+\end{lstlisting}
+\textbf{Exceptions:}
+\begin{itemize}
+\item If the message length is greater than $2^{256}-1024$:\quad
+  \texttt{Whirlpool\_Constraint\_Error}.
+\item In the procedure \texttt{F\_Hash()}, if the file can not be
+  opened:\quad\texttt{File\_Open\_Error}.
+\item In the procedure \texttt{F\_Hash()}, if the size of the read
+  data is smaller than 0:\quad\texttt{File\_Read\_Error}.
+\end{itemize}

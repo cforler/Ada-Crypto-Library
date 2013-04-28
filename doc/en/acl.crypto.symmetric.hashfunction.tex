@@ -1,20 +1,23 @@
 \chapter{Crypto.Symmetric.Hashfunction}\label{Hash}
-In this generic package a cryptographic hash function is generated from the algorithm of a cryptographic hash function (Chapter \ref{AlgorithmHash}), which is used for the following purposes:
+In this generic package a cryptographic hash function is generated
+from the algorithm of a cryptographic hash function (Chapter
+\ref{AlgorithmHash}), which is used for the following purposes:
 \begin{itemize}
 \item Integrity testing of messages
 \item Creation and verification of digital signatures
 \item Creation of random numbers or random bits
 \end{itemize}
-The purpose of this package is to standardize and simplify the API for hash functions. 
+The purpose of this package is to standardize and simplify the API for
+hash functions.
 \section{API}
 \subsubsection*{Generic Part}
 \begin{lstlisting}{}
   generic
    type Hash_Type                 is private;
    type Message_Type              is private;
-   type Message_Block_Length_Type is range <>;  
-   with function Generic_To_Bytes(DWord_Array : Hash_Type) 
-   								      return Bytes is <>;   
+   type Message_Block_Length_Type is range <>;
+   with function Generic_To_Bytes(DWord_Array : Hash_Type)
+   								      return Bytes is <>;
    with procedure Init(Hash_Value : out Hash_Type) is <>;
    with procedure Round(Message_Block: in     Message_Type;
                         Hash_Value   : in out Hash_Type) is <>;
@@ -28,36 +31,52 @@ The purpose of this package is to standardize and simplify the API for hash func
    with procedure F_Hash(Filename   : in   String;
                          Hash_Value : out  Hash_Type) is <>;
 \end{lstlisting}
-\\ \ \\
-The API of a generic hashfunction is made of a High- and a Low-Level-API. The Low-Level-API should be only used when the user is familiar with the cryptographic hashfunction. If it's not in this situation, then please only use the High-Level-API.
+The API of a generic hashfunction is made of a High- and a
+Low-Level-API. The Low-Level-API should be only used when the user is
+familiar with the cryptographic hashfunction. If it's not in this
+situation, then please only use the High-Level-API.
+
 \subsubsection*{High-Level-API}
 \begin{lstlisting}{}
   function Hash  (Message  : Bytes)  return Hash_Type;
   function Hash  (Message  : String) return Hash_Type;
   function F_Hash(Filename : String) return Hash_Type;
 \end{lstlisting}
-The function \texttt{Hash()} returns a hash value of a message. The type of the message can either be bytes or a string. The function \texttt{F\_Hash()} works on a file. For example:
+The function \texttt{Hash()} returns a hash value of a message. The
+type of the message can either be bytes or a string. The function
+\texttt{F\_Hash()} works on a file. For example:
+$H:=F\_Hash("/bin/ls")$; returns a hash value of "$/bin/ls$".
 
-$H:=F\_Hash("/bin/ls")$;\\
-returns a hash value of "$/bin/ls$".
 \subsubsection*{Low-Level-API}
 The Low-Level-API consists of the following operations.
 \begin{itemize}
-\item One procedure \texttt{Init()} initializes or reinitializes the hash function. Every time before a message is to be hashed, this procedure should be called.
+\item One procedure \texttt{Init()} initializes or reinitializes the
+  hash function. Every time before a message is to be hashed, this
+  procedure should be called.
 \begin{lstlisting}{}
   procedure Init;
 \end{lstlisting}
-\item One procedure \texttt{Round()} can be called iteratively to hash message blocks.
+\item One procedure \texttt{Round()} can be called iteratively to hash
+  message blocks.
 \begin{lstlisting}{}
   procedure Round(Message_Block : in Message_Type);
 \end{lstlisting}
-\item Function \texttt{Final\_Round()} pads and hashs a message block \texttt{Last\_Message\_Block}. Because of padding, the length of the exact message content \texttt{Message\_Block\_Length\_Type} should be specified in byte. Usually a message is shorter than a message block of type \texttt{Message\_Type}. The returning value of the function is corresponding to the final hash value of the message.
+\item Function \texttt{Final\_Round()} pads and hashs a message block
+  \texttt{Last\_Message\_Block}. Because of padding, the length of the
+  exact message content \texttt{Message\_Block\_Length\_Type} should
+  be specified in byte. Usually a message is shorter than a message
+  block of type \texttt{Message\_Type}. The returning value of the
+  function is corresponding to the final hash value of the message.
 \begin{lstlisting}{}
  function Final_Round(Last_Message_Block:Message_Type;
-        	    Last_Message_Length:Message_Block_Length_Type) 
+        	    Last_Message_Length:Message_Block_Length_Type)
         			 	  			 			return Hash_Type;
 \end{lstlisting}
 \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Example}
 \subsubsection*{High-Level-API}
 This example gives the SHA-256 hash value of $/bin/ls$.
@@ -65,9 +84,9 @@ This example gives the SHA-256 hash value of $/bin/ls$.
   with Ada.Text_IO; use Ada.Text_IO;
   with Crypto.Types; use Crypto.Types;
   with Crypto.Symmetric.Hashfunction_SHA256;
-  
+
   procedure Example_Hash_HL is
-    package SHA256 renames 
+    package SHA256 renames
     							Crypto.Symmetric.Hashfunction_SHA256;
     Hash : W_Block256 := SHA256.F_Hash("/bin/ls");
   begin
@@ -85,7 +104,7 @@ This example gives the SHA-256 hash value of $/bin/ls$.
   with Crypto.Symmetric.Algorithm.SHA256;
   use Crypto.Symmetric.Algorithm.SHA256;
   pragma Elaborate_All(Crypto.Symmetric.Hashfunction);
-  
+
   procedure Example_Hash_LL is
     package WIO is new Ada.Text_IO.Modular_IO(Word);
     package SHA256 is new Crypto.Symmetric.Hashfunction
@@ -112,7 +131,8 @@ This example gives the SHA-256 hash value of $/bin/ls$.
   end Example_Hash_LL;
 \end{lstlisting}
 \subsection*{Remark:}
-Users don't need to generate every time a new hash function. There are already hash functions defined in the ACL.
+Users don't need to generate every time a new hash function. There are
+already hash functions defined in the ACL.
 \begin{itemize}
 \item \texttt{Crypto.Symmetric.Hashfunction\_SHA1}
 \item \texttt{Crypto.Symmetric.Hashfunction\_SHA256}
