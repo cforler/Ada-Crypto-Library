@@ -1,9 +1,18 @@
 \chapter{Crypto.Asymmetric.RSA}
-RSA is an algorithm for public-key cryptography that is based on the presumed difficulty of factoring large integers. RSA stands for Ron Rivest, Adi Shamir and Leonard Adleman, who first publicly described it in \cite{PKCS} in 1978. Plaintext(-blocks) or ciphertext(-blocks) are encrypted or decrypted in OAEP (Optimal Asymmetric Encryption Padding), which is recommended in PKCS1-v2-1 (Public-Key Cryptography Standards) \cite{PKCS}.
+RSA is an algorithm for public-key cryptography that is based on the
+presumed difficulty of factoring large integers. RSA stands for Ron
+Rivest, Adi Shamir and Leonard Adleman, who first publicly described
+it in \cite{PKCS} in 1978. Plaintext(-blocks) or ciphertext(-blocks)
+are encrypted or decrypted in OAEP (Optimal Asymmetric Encryption
+Padding), which is recommended in PKCS1-v2-1 (Public-Key Cryptography
+Standards) \cite{PKCS}.
 \subsubsection*{OEAP Details}
 \begin{itemize}
-\item The implementation uses SHA1 inside MGF (Mask Generation Function: a function generating an arbitrary number of bits for a given input)
-\item The implementation doesn't support the optional label L, i.e. L is always an empty string.
+\item The implementation uses SHA1 inside MGF (Mask Generation
+  Function: a function generating an arbitrary number of bits for a
+  given input)
+\item The implementation doesn't support the optional label L, i.e. L
+  is always an empty string.
 \end{itemize}
 \subsubsection*{Generic Part}
 \begin{lstlisting}{}
@@ -18,7 +27,10 @@ RSA is an algorithm for public-key cryptography that is based on the presumed di
   type Public_Key_RSA is private;
   type Private_Key_RSA is private;
 \end{lstlisting}
-The \texttt{RSA\_Number} is a byte array which interprets a number. Its first element ($'First$) corresponds the most significant byte and the last element ($'Last$) corresponds the least significant byte of the array.\\
+The \texttt{RSA\_Number} is a byte array which interprets a
+number. Its first element ($'First$) corresponds the most significant
+byte and the last element ($'Last$) corresponds the least significant
+byte of the array.\\
 \begin{lstlisting}{}
   type Public_Key_RSA is record
     N : Big_Unsigned;
@@ -30,87 +42,126 @@ The \texttt{RSA\_Number} is a byte array which interprets a number. Its first el
     Phi : Big_Unsigned;
   end record;
 \end{lstlisting}
-The term \texttt{Public\_Key\_RSA} has two components, and \texttt{Private\_Key\_RSA} has three components. They are used in internal functions to generate key pairs.\\
+The term \texttt{Public\_Key\_RSA} has two components, and
+\texttt{Private\_Key\_RSA} has three components. They are used in
+internal functions to generate key pairs.\\
 \subsubsection*{High-Level-API}
 \begin{lstlisting}{}
   procedure Gen_Key(Public_Key  : out Public_Key_RSA;
                     Private_Key : out Private_Key_RSA);
 \end{lstlisting}
-This procedure generates randomly a pair of keys, which are a public key (\texttt{Public\_Key}) and a private key (\texttt{Private\_Key}), by calculating all components of the key pair.\\
+This procedure generates randomly a pair of keys, which are a public
+key (\texttt{Public\_Key}) and a private key (\texttt{Private\_Key}),
+by calculating all components of the key pair.\\
 \begin{lstlisting}{}
   function Verify_Key_Pair(Private_Key : Private_Key_RSA;
-                           Public_Key  : Public_Key_RSA) 
+                           Public_Key  : Public_Key_RSA)
                            return Boolean;
 \end{lstlisting}
-This function returns true if the two keys, \texttt{Private\_Key} and \texttt{Public\_Key}, are a pair, if not, then false is returned.\\
-\hline \\ \ \\
+This function returns true if the two keys, \texttt{Private\_Key} and
+\texttt{Public\_Key}, are a pair, if not, then false is
+returned.
+
+\hhline
 \begin{lstlisting}{}
   function OAEP_Encrypt(Public_Key : in  Public_Key_RSA;
-                        Plaintext  : in  Bytes) 
+                        Plaintext  : in  Bytes)
                         return RSA_Number;
 \end{lstlisting}
-The function \texttt{OAEP\_Encrypt()} encrypts a plaintext(-block) (\texttt{Plaintext}) in the OEAP-Process and returns a ciphertext. 
-The plaintext $M$ is encoded as a part of a data block $DB$, where the $lHash$ is a 160-bit hash value of an empty string. The data block $DB$ of length $k$ can be formed as:
+The function \texttt{OAEP\_Encrypt()} encrypts a plaintext(-block)
+(\texttt{Plaintext}) in the OEAP-Process and returns a ciphertext.
+The plaintext $M$ is encoded as a part of a data block $DB$, where the
+$lHash$ is a 160-bit hash value of an empty string. The data block
+$DB$ of length $k$ can be formed as:
 \begin{equation*}
 DB=lHash||PS||0\mbox{x}01||M\,,
 \end{equation*}
-where the string $PS$ consists of $k-160-8-|M|$ zero bits, its length may be zero, and 0x01 is a hexadecimal value. The data block is encoded (to a message $EM$) and encrypted to the ciphertext.
-Detailed information about the \texttt{OAEP\_Encrypt()} can be found in \cite{PKCS}. The length limitation of the plaintext is defined as:
+where the string $PS$ consists of $k-160-8-|M|$ zero bits, its length
+may be zero, and 0x01 is a hexadecimal value. The data block is
+encoded (to a message $EM$) and encrypted to the ciphertext.  Detailed
+information about the \texttt{OAEP\_Encrypt()} can be found in
+\cite{PKCS}. The length limitation of the plaintext is defined as:
 \texttt{Size/8}$-42\;(42=2*20+2)$.\\
-\textbf{Exception:}\\
-If the length of the plaintext is greater than the limitation:\quad \texttt{Plaintext\_Too\_Long\_Error};\\
-\hline \\ \ \\
+
+\noindent\textbf{Exception:}\\
+If the length of the plaintext is greater than the limitation:\quad
+\texttt{Plaintext\_Too\_Long\_Error};
+
+\hhline
 \begin{lstlisting}{}
   function OAEP_Decrypt(Private_Key : in  Private_Key_RSA;
-                        Ciphertext  : in  RSA_Number) 
+                        Ciphertext  : in  RSA_Number)
                         return Bytes;
 \end{lstlisting}
-This function decrypts a ciphertext(-block) (\texttt{Ciphertext}) under the private key. If the used private key and its related public key are a pair generated by \texttt{Gen\_Key()}, then the ciphertext is recovered to a data block as the structure shown in \texttt{OAEP\_Encrypt()}, and the plaintext is separated. Detailed information about the \texttt{OAEP\_Decrypt()} can be found in \cite{PKCS}.\\
-\textbf{Exception:}\\
-If one of the following conditions is met, then a  \texttt{Decrypt\_Error} is raised:\\
-1) the ciphertext is greater than the RSA-Modulus $N$\,,\\
-2) the first value of the $EM$ (\texttt{OAEP\_Encrypt()}) is not zero\,,\\
-3) the term $lHash'$ of the new data block is not equal $lHash$ in \texttt{OAEP\_Encrypt()}.\\
-\hline \\ \ \\
+This function decrypts a ciphertext(-block) (\texttt{Ciphertext})
+under the private key. If the used private key and its related public
+key are a pair generated by \texttt{Gen\_Key()}, then the ciphertext
+is recovered to a data block as the structure shown in
+\texttt{OAEP\_Encrypt()}, and the plaintext is separated. Detailed
+information about the \texttt{OAEP\_Decrypt()} can be found in
+\cite{PKCS}.\\
+
+\noindent\textbf{Exception:}\\
+If one of the following conditions is
+met, then a \texttt{Decrypt\_Error} is raised.
+\begin{enumerate}
+\item the ciphertext is greater
+ than the RSA-Modulus $N$\,,
+\item the first value of the $EM$
+ (\texttt{OAEP\_Encrypt()}) is not zero\,,
+\item the term $lHash'$ of the new data block is not equal $lHash$ in
+  \texttt{OAEP\_Encrypt()}.
+\end{enumerate}
+
+\hhline
 \begin{lstlisting}{}
   procedure Get_Public_Key(Public_Key : in Public_Key_RSA;
                            N          : out RSA_Number;
                            E          : out RSA_Number);
 \end{lstlisting}
-The procedure decomposes a public key (\texttt{Public\_Key}) into two components:
+The procedure decomposes a public key (\texttt{Public\_Key}) into two
+components:
 \begin{itemize}
 \item One size-bit RSA modulus $N$ where $N=PQ$, where $P,Q$ are prime numbers
 \item One public RSA exponent $E$
 \end{itemize}
-The public key can be reconstructed later with those two components.\\
-\hline \\ \ \\
+The public key can be reconstructed later with those two components.
+
+\hhline
 \begin{lstlisting}{}
   procedure Get_Private_Key(Private_Key : in Private_Key_RSA;
                             N           : out RSA_Number;
                             D           : out RSA_Number;
                             Phi         : out RSA_Number);
 \end{lstlisting}
-The procedure decomposes a private key (\texttt{Private\_Key}) into the following components:
+The procedure decomposes a private key (\texttt{Private\_Key}) into
+the following components:
 \begin{itemize}
 \item One size-bit RSA modulus $N$ where $N=PQ$, $P,Q$ are prime numbers
 \item One private RSA exponent $D$
 \item $\phi(N)=(P-1)(Q-1)$
 \end{itemize}
-The private key can be reconstructed later with those components.\\
-\hline \\ \ \\
+The private key can be reconstructed later with those components.
+
+\hhline
 \begin{lstlisting}{}
   procedure Set_Public_Key(N          : in RSA_Number;
                            E          : in RSA_Number;
                            Public_Key : out Public_Key_RSA);
 \end{lstlisting}
-During the procedure a public key \texttt{Public\_Key} can be (re-)constructed. The following values are needed:
+During the procedure a public key \texttt{Public\_Key} can be
+(re-)constructed. The following values are needed:
 \begin{itemize}
 \item One size-bit RSA modulus $N$
 \item One public RSA exponent $E$
 \end{itemize}
 \textbf{Exception:}\\
-If the public key is invalid, where the length of $N$ is not equal the \texttt{Size}, or the term $E$ is even or smaller than 3 :\quad \texttt{Constraint\_Error}.\\
-\hline \\ \ \\
+ If the public key is invalid, where the length
+of $N$ is not equal the \texttt{Size}, or the term $E$ is even or
+smaller than 3 :\quad \texttt{Constraint\_Error}.
+
+
+\hhline
 \begin{lstlisting}{}
   procedure Set_Private_Key(N           : in RSA_Number;
                             D           : in RSA_Number;
@@ -121,31 +172,44 @@ If the public key is invalid, where the length of $N$ is not equal the \texttt{S
                             Phi         : in Big_Unsigned;
                             Private_Key : out Private_Key_RSA);
 \end{lstlisting}
-The two procedures can both be used to (re-)construct a private key. The following values are required as parameters:
+The two procedures can both be used to (re-)construct a private
+key. The following values are required as parameters:
 \begin{itemize}
 \item One size-bit RSA modulus $N$ where $N=PQ$, $P,Q$ prime numbers
 \item One private RSA exponent $D$
 \item $\phi(N)=(P-1)(Q-1)$
 \end{itemize}
-\textbf{Exception:}\\ If one of the following conditions about the private key is met, then a \texttt{Constraint\_Error} is raised:\\
-1) the length of $N$ is not equal the \texttt{Size}\,,\\
-2) the term $D$ is even, or its bit value is smaller than or equal 2\,, \\
-3) the term $\phi(N)$ is odd, or its length is smaller than \texttt{Size}-2\,,\\
-4) the greatest common divisor of $D$ and $\phi(N)$ is not 1\,.
+\textbf{Exception:}\\ If one of the following conditions about the
+private key is met, then a \texttt{Constraint\_Error} is raised:
+\begin{itemize}
+\item the length of $N$ is not equal the \texttt{Size}\,,
+\item the term $D$ is even, or its bit value is smaller than or equal 2\,,
+\item the term $\phi(N)$ is odd, or its length is smaller than
+  \texttt{Size}-2\,,
+\item the greatest common divisor of $D$ and $\phi(N)$ is not 1\,.
+\end{itemize}
+
 \subsubsection*{Low-Level-API}
-The Low-Level-API can be used only when users know exactly what it does. Naive usage of the API can lead to critic security problems, cause identical plaintexts can be encrypted to identical ciphertexts.
+The Low-Level-API can be used only when users know exactly what it
+does. Naive usage of the API can lead to critic security problems,
+cause identical plaintexts can be encrypted to identical ciphertexts.
 \begin{lstlisting}{}
   procedure Encrypt(Public_Key : in  Public_Key_RSA;
                     Plaintext  : in  RSA_Number;
-                    Ciphertext : out RSA_Number);   
+                    Ciphertext : out RSA_Number);
   procedure Encrypt(Public_Key : in  Public_Key_RSA;
                     Plaintext  : in  Big_Unsigned;
                     Ciphertext : out Big_Unsigned);
 \end{lstlisting}
-The procedures encrypt a plaintext to a ciphertext with a public key. They use the "naive" RSA-Process ($C=P^{K.E}$(mod $K.N$)).\\
-\textbf{Exception:}\\
-If the public key is invalid, where the length of $N$ is not equal the \texttt{Size}, or the term $E$ is even or smaller than 3 :\quad \texttt{Invalid\_Public\_Key\_Error}.\\
-\hline \\ \ \\
+The procedures encrypt a plaintext to a ciphertext with a public
+key. They use the "naive" RSA-Process ($C=P^{K.E}$(mod $K.N$)).\\
+
+\noindent\textbf{Exception:}\\
+If the public key is invalid, where the length of $N$ is not equal the
+\texttt{Size}, or the term $E$ is even or smaller than 3 :\quad
+\texttt{Invalid\_Public\_Key\_Error}.
+
+\hhline
 \begin{lstlisting}{}
   procedure Decrypt(Private_Key : in  Private_Key_RSA;
                     Ciphertext  : in  RSA_Number;
@@ -154,12 +218,21 @@ If the public key is invalid, where the length of $N$ is not equal the \texttt{S
                     Ciphertext  : in  Big_Unsigned;
                     Plaintext   : out Big_Unsigned);
 \end{lstlisting}
-The two procedures can be both used to decrypt a ciphertext. It checks at first if the private key is valid or not, and then it decrypts the ciphertext to a plaintext with the private key. They use the "naive" RSA-Process ($P=C^{K.D}$ (mod $K.N$)).\\
-\textbf{Exception:}\\ If one of the following conditions about the private key is met, then a \texttt{Decrypt\_Error} is raised:\\
-1) the length of $N$ is not equal the \texttt{Size}\,,\\
-2) the term $D$ is even, or its bit value is smaller than or equal 2\,, \\
-3) the term $\phi(N)$ is odd, or its length is smaller than \texttt{Size}-2\,,\\
-4) the greatest common divisor of $D$ and $\phi(N)$ is not 1\,.
+The two procedures can be both used to decrypt a ciphertext. It checks
+at first if the private key is valid or not, and then it decrypts the
+ciphertext to a plaintext with the private key. They use the "naive"
+RSA-Process ($P=C^{K.D}$ (mod $K.N$)).\\
+
+\noindent\textbf{Exception:}\\ If one of the following conditions
+about the private key is met, then a \texttt{Decrypt\_Error} is
+raised:
+\begin{enumerate}
+\item the length of $N$ is not equal the \texttt{Size}\,,
+\item the term $D$ is even, or its bit value is smaller than or equal 2\,,
+\item the term $\phi(N)$ is odd, or its length is smaller than \texttt{Size}-2\,,
+\item the greatest common divisor of $D$ and $\phi(N)$ is not 1\,.
+\end{enumerate}
+
 \section{Example}
 \begin{lstlisting}{}
   with Crypto.Types; use Crypto.Types;
@@ -173,7 +246,7 @@ The two procedures can be both used to decrypt a ciphertext. It checks at first 
     Private_Key : Private_Key_RSA;
   begin
     Gen_Key(Public_Key, Private_Key); -- Generation of key pair
-    declare 
+    declare
       -- Encryption & Decryption
 	  Ciphertext:RSA_Number:= OAEP_Encrypt(Public_Key, Message);
 	  Plaintext:Bytes:= OAEP_Decrypt(Private_Key, Ciphertext);

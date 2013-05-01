@@ -1,5 +1,13 @@
 \chapter{Crypto.Asymmetric.ECDSA}
-In this generic package the ECDSA (Elliptic Curve DSA) algorithm is implemented. It's a further extension of the DSA algorithm in the area of elliptic curve. Users can generate digital signatures and verify the authenticity of the signatures by using ECDSA. The private key is used in the signature process, while the public key is used for verification. During the signature process the SHA-1 hash value of the message (not the message) is signed. People who hasn't the private key can't generate a valid signature. However people who knows the public key can convince the signature by running the verification process.
+In this generic package the ECDSA (Elliptic Curve DSA) algorithm is
+implemented. It's a further extension of the DSA algorithm in the area
+of elliptic curve. Users can generate digital signatures and verify
+the authenticity of the signatures by using ECDSA. The private key is
+used in the signature process, while the public key is used for
+verification. During the signature process the SHA-1 hash value of the
+message (not the message) is signed. People who hasn't the private key
+can't generate a valid signature. However people who knows the public
+key can convince the signature by running the verification process.
 \section{API}
 \subsubsection*{Generic Part}
 \begin{lstlisting}{}
@@ -16,23 +24,26 @@ The type \texttt{Public\_Key\_ECDSA} has four components:
 \begin{lstlisting}{}
   type ECDSA_P_KEY is record
     E : Elliptic_Curve_Zp;
-    P : EC_Point; 
+    P : EC_Point;
     n : Big_Unsigned;
-    Q : EC_Point; 
+    Q : EC_Point;
   end record;
   type Public_Key_ECDSA is new ECDSA_P_KEY;
 \end{lstlisting}
-$E$ is an elliptic curve over $Z_P$. $P$ is a public point in the curve, and its order is known as $n$. $Q$ is the public part of the key. \\
-The type \texttt{Private\_Key\_ECDSA} has the following variables:
+$E$ is an elliptic curve over $Z_P$. $P$ is a public point in the
+curve, and its order is known as $n$. $Q$ is the public part of the
+key. \\ The type \texttt{Private\_Key\_ECDSA} has the following
+variables:
 \begin{lstlisting}{}
   type ECDSA_S_KEY is record
-    Q : EC_Point; 
+    Q : EC_Point;
     d : Big_Unsigned;
   end record;
   type Private_Key_ECDSA is new ECDSA_S_KEY;
 \end{lstlisting}
-$Q$ is a point in the elliptic curve and also the public part of the key. $d$ is a number and the private part of the key.\\
-The type \texttt{Signature\_ECDSA} contains the following variables:
+$Q$ is a point in the elliptic curve and also the public part of the
+key. $d$ is a number and the private part of the key.\\ The type
+\texttt{Signature\_ECDSA} contains the following variables:
 \begin{lstlisting}{}
   type ECDSA_KEY is record
     R : Big_Unsigned;
@@ -46,14 +57,21 @@ The signature is made of a pair ($R,S$).\\
   procedure Gen_Public_Key(Public_Key  : out Public_Key_ECDSA;
 			               	length      : in DB.Bit_Length);
 \end{lstlisting}
-This procedure gets an elliptic curve from the database. The curve has at least cryptographic security in length.\\
-\hline \\ \ \\
+This procedure gets an elliptic curve from the database. The curve has
+at least cryptographic security in length.
+
+\hhline
 \begin{lstlisting}{}
  procedure Gen_Private_Key(Public_Key :in out Public_Key_ECDSA;
                            Private_Key:out Private_Key_ECDSA);
 \end{lstlisting}
-This procedure generates a private key corresponding to the previously created public key. A random number ($d$) will be produced at first as the secret part of the key. Then a point ($Q$) is calculated as common part of the two keys (it is stored in both keys) from the random number ($d$) and the public point of the public key ($P$).\\
-\hline \\ \ \\
+This procedure generates a private key corresponding to the previously
+created public key. A random number ($d$) will be produced at first as
+the secret part of the key. Then a point ($Q$) is calculated as common
+part of the two keys (it is stored in both keys) from the random
+number ($d$) and the public point of the public key ($P$).
+
+\hhline
 \begin{lstlisting}{}
   procedure Sign(Public_Key  : in Public_Key_ECDSA;
 		 			  Private_Key : in  Private_Key_ECDSA;
@@ -61,51 +79,70 @@ This procedure generates a private key corresponding to the previously created p
                  Signature   : out Signature_ECDSA);
 \end{lstlisting}
 This procedure signs the SHA-1 hash value of a message with the private key.\\
-\hline \\ \ \\
+
+\hhline
 \begin{lstlisting}{}
   function Verify(Public_Key  : Public_Key_ECDSA;
                   SHA1_Hash   : W_Block160;
                   Signature   : Signature_ECDSA)
                   return Boolean;
 \end{lstlisting}
-The function returns true if the signature can be verified with the public key to be a valid signature of the SHA-1 hash value \texttt{SHA1\_Hash}. If not, then false will be returned.\\
-With the public key only the signature which related to the private key can be verified. If the two keys don't match together, then false\begin{scriptsize}
-•
-\end{scriptsize} will be returned.\\
-But consider this situation, if Bob uses the identity card of Alice, then we can't make identification of Bob with the identity card, although the identity card of Alice is valid.\\
-\hline \\ \ \\
+The function returns true if the signature can be verified with the
+public key to be a valid signature of the SHA-1 hash value
+\texttt{SHA1\_Hash}. If not, then false will be returned.\\ With the
+public key only the signature which related to the private key can be
+verified. If the two keys don't match together, then false will be
+returned.
+
+But consider this situation, if Bob uses the identity card of Alice,
+then we can't make identification of Bob with the identity card,
+although the identity card of Alice is valid.
+
+\hhline
 \begin{lstlisting}{}
   procedure Sign_File(Filename    : in  String;
           		       Public_Key  : in  Public_Key_ECDSA;
 					     	 Private_Key : in  Private_Key_ECDSA;
 						    Signature   : out Signature_ECDSA);
 \end{lstlisting}
-This procedure signs data file (\texttt{Filename}) with the private key.\\
-\textbf{Exception:}
-If the \texttt{Private\_Key} is not initialized:\quad \texttt{Invalid\_Private\_Key\_Error}.\\
-\hline \\ \ \\
+This procedure signs data file (\texttt{Filename}) with the private
+key.\\
+
+\noindent\textbf{Exception:}\\ If the \texttt{Private\_Key} is not
+initialized:\quad \texttt{Invalid\_Private\_Key\_Error}.
+
+\hhline
 \begin{lstlisting}{}
   function Verify_File(Filename   : String;
 					 		  Public_Key : Public_Key_ECDSA;
-                       Signature  : Signature_ECDSA) 
+                       Signature  : Signature_ECDSA)
                        return Boolean;
 \end{lstlisting}
-This function returns true if the signature can be verified with the public key to be a valid signature of the file (\texttt{Filename}). If not, then false will be returned.\\
-Only the signature which related to the private key and the public key can be verified. If the two keys don't match, then false will be returned.\\
-\textbf{Exception:}
-If the \texttt{Public\_Key} is not initialized:\quad \texttt{Invalid\_Public\_Key\_Error}.\\
-\hline \\ \ \\
+This function returns true if the signature can be verified with the
+public key to be a valid signature of the file (\texttt{Filename}). If
+not, then false will be returned.\\ Only the signature which related
+to the private key and the public key can be verified. If the two keys
+don't match, then false will be returned.\\
+
+\noindent\textbf{Exception:}\\ If the \texttt{Public\_Key} is not
+initialized:\quad \texttt{Invalid\_Public\_Key\_Error}.\\
+
+
+\hhline
 \begin{lstlisting}{}
   function Verify_Key_Pair(Private_Key : Private_Key_ECDSA;
-                           Public_Key  : Public_Key_ECDSA) 
+                           Public_Key  : Public_Key_ECDSA)
                            return Boolean;
 \end{lstlisting}
-This function returns true if the private key and the public key match, that is, they are verified to be a pair of keys. If not, false is returned.\\
-\hline \\ \ \\
+This function returns true if the private key and the public key
+match, that is, they are verified to be a pair of keys. If not, false
+is returned.
+
+\hhline
 \begin{lstlisting}{}
   function equal_Public_Key_Curve
   					  					(Public_Key_A : Public_Key_ECDSA;
-		              				 Public_Key_B : Public_Key_ECDSA) 	
+		              				 Public_Key_B : Public_Key_ECDSA)
 								 			return Boolean;
 \end{lstlisting}
 This function returns true if the two public keys, \texttt{Public\_Key\_A} and \texttt{Public\_Key\_B}, are tested to be the same key, else false is returned.\\
@@ -127,12 +164,12 @@ This function returns true if the two public keys, \texttt{Public\_Key\_A} and \
     Gen_Public_Key(Public_Key, 178);
   	 Gen_Private_Key(Public_Key, Private_Key);
   	-- Sign
-  	 Sign_File("Example_DSA.adb", Public_Key, 
+  	 Sign_File("Example_DSA.adb", Public_Key,
   	          Private_Key, Signature);
   	-- Verification
   	if Verify_File("Example_DSA.adb", Public_Key, Signature) then
        Put_Line("OK");
-    else 
+    else
        Put_Line("Error");
     end if;
   end Example_ECDSA;
