@@ -1,10 +1,27 @@
 \chapter{Crypto.Asymmetric.ECDH}\label{ECDH}
-In this generic package the implementation of Elliptic Curve Diffie–Hellman (ECDH) algorithm is provided. The ECDH is an key agreement protocol that allows two parties, each having the other party's public key, and one's own private key, to establish a shared secret over an insecure channel \cite{ECDH-NIST}. A brief description of elliptic curve will be introduced here. For detailed information you can go to \texttt{Crypto.Types.Elliptic\_Curve} (Chapter \ref{ConceptofElliptic}).
+In this generic package the implementation of Elliptic Curve
+Diffie–Hellman (ECDH) algorithm is provided. The ECDH is an key
+agreement protocol that allows two parties, each having the other
+party's public key, and one's own private key, to establish a shared
+secret over an insecure channel \cite{ECDH-NIST}. A brief description
+of elliptic curve will be introduced here. For detailed information
+you can go to \texttt{Crypto.Types.Elliptic\_Curve} (Chapter
+\ref{ConceptofElliptic}).
+
 \subsubsection*{Mathematical Background}
-An elliptic curve $E$ is of the form $y^2=x^3+ax+b\mod p$. A point $P$ is in the curve $E$ and has an order $n$. A pair of keys are made of a public point $Q$ and a secret number $d$ where $Q=d*P$. For calculation these following parameters are required: $a,b,p,P,n$ and also the key pair $(d,Q)$.
-\subsubsection*{Key Generation}\\
-Let Alice's key pair be ($d_A,Q_A$) and Bob's key pair be ($d_B,Q_B$). Each public part should be known to the other party.\\
-Alice compute $(x_k,y_k)=d_AQ_B$, Bob computes $(x_k,y_k)=d_BQ_A$. The shared key is $x_k$ (the $x$ coordinate of the point). The shared key calculated by both parties is equal, because\\ $d_AQ_B=d_Ad_BP=d_Bd_AP=d_BQ_A$.
+An elliptic curve $E$ is of the form $y^2=x^3+ax+b\mod p$. A point $P$
+is in the curve $E$ and has an order $n$. A pair of keys are made of a
+public point $Q$ and a secret number $d$ where $Q=d*P$. For
+calculation these following parameters are required: $a,b,p,P,n$ and
+also the key pair $(d,Q)$.
+
+\subsubsection*{Key Generation}
+Let Alice's key pair be ($d_A,Q_A$) and Bob's key pair be
+($d_B,Q_B$). Each public part should be known to the other
+party.\\ Alice compute $(x_k,y_k)=d_AQ_B$, Bob computes
+$(x_k,y_k)=d_BQ_A$. The shared key is $x_k$ (the $x$ coordinate of the
+point). The shared key calculated by both parties is equal,
+because\\ $d_AQ_B=d_Ad_BP=d_Bd_AP=d_BQ_A$.
 \section{API}
 \subsubsection*{Generic Part}
 \begin{lstlisting}{}
@@ -32,7 +49,7 @@ The type \texttt{Shared\_Key\_ECDH} contains a point:
     W : EC_Point;  --(x,y) in Key Generation
   end record;
   type Shared_Key_ECDH is new ECDH_KEY;
-\end{lstlisting}\\
+\end{lstlisting}
 The type \texttt{Public\_Key\_ECDH} is made of:
 \begin{lstlisting}{}
   type ECDH_P_KEY is record
@@ -42,34 +59,44 @@ The type \texttt{Public\_Key\_ECDH} is made of:
     Q : EC_Point;
   end record;
   type Public_Key_ECDH is new ECDH_P_KEY;
-\end{lstlisting}\\
-$E$ is an elliptic curve over $Z_P$. $P$ is a public point in the curve and is in order $n$, $Q$ is the public part of the key.\\
+\end{lstlisting}
+$E$ is an elliptic curve over $Z_P$. $P$ is a public point in the
+curve and is in order $n$, $Q$ is the public part of the key.
+
 \subsubsection*{Procedures}
 \begin{lstlisting}{}
   procedure Gen_Public_Key(Public_Key_A  : out Public_Key_ECDH;
 			    			   	length        : in  DB.Bit_Length);
 \end{lstlisting}
-This procedure gets an elliptic curve from the database. The curve has at least cryptographic security in length.\\
-%\textbf{Exception:}
-%If length in bit is not supported (max. bit length = 512): \texttt{LEN\_EX}.\\
-\hline \\ \ \\
+This procedure gets an elliptic curve from the database. The curve has
+at least cryptographic security in length.\\ \hhline
 \begin{lstlisting}{}
   procedure Gen_Single_Private_Key
   					 (Public_Key_A  : in out Public_Key_ECDH;
 				     Private_Key_A : out    Private_Key_ECDH);
 \end{lstlisting}
-In this procedure, a private key \texttt{Private\_Key\_A} will be created according to the value \texttt{Public\_Key\_A}. Additionally a random number $d$ is generated as the secret part of \texttt{Private\_\-Key\_A}. Then a point $Q$ is calculated as the public part of \texttt{Private\_Key\_A} which is the product of the random number and the public point $P$ of \texttt{Public\_Key\_A} (that is, $Q=d*P$). Point $Q$ will be stored in both keys.\\
-\hline \\ \ \\
+In this procedure, a private key \texttt{Private\_Key\_A} will be
+created according to the value \texttt{Public\_Key\_A}. Additionally a
+random number $d$ is generated as the secret part of
+\texttt{Private\_\-Key\_A}. Then a point $Q$ is calculated as the
+public part of \texttt{Private\_Key\_A} which is the product of the
+random number and the public point $P$ of \texttt{Public\_Key\_A}
+(that is, $Q=d*P$). Point $Q$ will be stored in both keys.\\ \hhline
 \begin{lstlisting}{}
   procedure Gen_Shared_Private_Key
   					(Public_Key_B  : in Public_Key_ECDH;
 				    Private_Key_A : in Private_Key_ECDH;
 				    Shared_Key_A  : out Shared_Key_ECDH);
 \end{lstlisting}
-In this procedure a shared key \texttt{Shared\_Key\_A} is generated. It is calculated as the product of the public part of \texttt{Public\_Key\_B} and the secret part of \texttt{Private\_Key\_A}, ($Q_B*d_A$).\\
+In this procedure a shared key \texttt{Shared\_Key\_A} is
+generated. It is calculated as the product of the public part of
+\texttt{Public\_Key\_B} and the secret part of
+\texttt{Private\_Key\_A}, ($Q_B*d_A$).\\
+
 \textbf{Exception:}\\
 If the shared key is equal infinity:\quad \texttt{EC\_IFINITY\_EX}.\\
-\hline \\ \ \\
+\hhline
+
 \begin{lstlisting}{}
   function Verify(Public_Key_A  : Public_Key_ECDH;
 		   			Public_Key_B  : Public_Key_ECDH;
@@ -79,7 +106,9 @@ If the shared key is equal infinity:\quad \texttt{EC\_IFINITY\_EX}.\\
 		   			Shared_Key_B  : Shared_Key_ECDH) 
 		   			                return Boolean;
 \end{lstlisting}
-This function returns true if the same private keys and shared keys can be calculated from the delivered informations.\\
+This function returns true if the same private keys and shared keys
+can be calculated from the delivered informations.
+
 \section{Example}
 \begin{lstlisting}{}
   with Crypto.Types.Big_Numbers;
@@ -112,8 +141,15 @@ This function returns true if the same private keys and shared keys can be calcu
 \end{lstlisting}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \chapter{Crypto.Asymmetric.ECIES}
-Elliptic Curve Integrated Encryption Scheme (ECIES) is proposed by Abdalla, Bellare and Rogaway in \cite{DBLP:conf/ctrsa/AbdallaBR01}, and is one of the two standardized IES which based on elliptic curves. Using ECIES algorithm two parties can do encryption and decryption with a shared private key. Usually ECDH (Chapter \ref{ECDH}) algorithm will be used to generate the shared key.
+Elliptic Curve Integrated Encryption Scheme (ECIES) is proposed by
+Abdalla, Bellare and Rogaway in \cite{DBLP:conf/ctrsa/AbdallaBR01},
+and is one of the two standardized IES which based on elliptic
+curves. Using ECIES algorithm two parties can do encryption and
+decryption with a shared private key. Usually ECDH (Chapter
+\ref{ECDH}) algorithm will be used to generate the shared key.
+
 \subsubsection*{Precondition:}
 The following algorithms will be used to calculate a shared key:
 \begin{itemize}
@@ -123,24 +159,27 @@ The following algorithms will be used to calculate a shared key:
 \end{itemize}
 \subsubsection*{Encryption}
 \begin{enumerate}
-\item Two keys are generated from the shared ECDH key, one ($k_E$) for encryption and the other one ($k_M$) for MAC algorithm.
+\item Two keys are generated from the shared ECDH key, one ($k_E$) for
+  encryption and the other one ($k_M$) for MAC algorithm.
 \item The message $M$ is encrypted: $C=E({k_E},M)$.
 \item Tag of the ciphertext is calculated: $T=MAC({k_M},C)$.
 \item Output: $C||T$.
 \end{enumerate}
 \subsubsection*{Decryption}
 \begin{enumerate}
-\item Two keys ($k_E$ and $k_M$) will be generated again. 
+\item Two keys ($k_E$ and $k_M$) will be generated again.
 \item Use MAC to check the tag if $T'=MAC({k_M},C)$.
 \item Decrypt the message: $M=D({k_E},C)$.
 \end{enumerate}
+
 \section{API}
 \subsubsection*{Generic Part}
 \begin{lstlisting}{}
   generic
     Size : Positive;
 \end{lstlisting}
-\textbf{Exception}: $Size\neq 512+64*I$ $(I\in \{0,\cdots,8\})$: \texttt{Constraint\_Error}.\\
+\textbf{Exception}: $Size\neq 512+64*I$ $(I\in \{0,\cdots,8\})$:
+\texttt{Constraint\_Error}.
 \subsubsection*{Types}
 \begin{lstlisting}{}
   type Cipher_ECIES is private;
@@ -157,8 +196,13 @@ The type \texttt{Cipher\_ECIES} has five components:
   end record;
   type Cipher_ECIES is new ECIES_C_KEY;
 \end{lstlisting}
-The term \texttt{Public\_Point} is the public key. \texttt{Message\_Block\_Count} is used to count the ciphertext blocks. \texttt{Mac} is the MAC tag of the ciphertext block. \texttt{Cipher} is the ciphertext. The ciphertext is divided into blocks, the blocks are indexed in \texttt{Cipher\_Map}.\\ \ \\
-The type \texttt{Plain\_ECIES} is made of:
+The term \texttt{Public\_Point} is the public
+key. \texttt{Message\_Block\_Count} is used to count the ciphertext
+blocks. \texttt{Mac} is the MAC tag of the ciphertext
+block. \texttt{Cipher} is the ciphertext. The ciphertext is divided
+into blocks, the blocks are indexed in
+\texttt{Cipher\_Map}.\\ \ \\ The type \texttt{Plain\_ECIES} is made
+of:
 \begin{lstlisting}{}
   type ECIES_P_KEY is record
     Message_Block_Count : natural := 1;
@@ -169,31 +213,37 @@ The type \texttt{Plain\_ECIES} is made of:
   end record;
   type Plain_ECIES is new ECIES_P_KEY;
 \end{lstlisting}
-\texttt{Message\_Block\_Count} is the count of the message blocks. \texttt{AES\_Key} is the key for AES-256 algorithm, and \texttt{Mac\_Key} is the key for HMAC-SHA-256 algorithm. \texttt{Message} is the plaintext. The plaintext is divided into blocks, and they are indexed in \texttt{Message\_Map}.\\
+\texttt{Message\_Block\_Count} is the count of the message
+blocks. \texttt{AES\_Key} is the key for AES-256 algorithm, and
+\texttt{Mac\_Key} is the key for HMAC-SHA-256
+algorithm. \texttt{Message} is the plaintext. The plaintext is divided
+into blocks, and they are indexed in \texttt{Message\_Map}.\\
 \subsubsection*{Procedures}
 \begin{lstlisting}{}
    --internal purpose
   procedure Message_Prepare(Plain   : out Plain_ECIES;
                             Message : in  String);
 \end{lstlisting}
-This procedure converts a string to the type \texttt{Plain\_ECIES}. It's only for internal use.\\
-\hline \\ \ \\
+This procedure converts a string to the type
+\texttt{Plain\_ECIES}. It's only for internal use.\\ \hhline
 \begin{lstlisting}{}
    --internal purpose
   procedure Key_Prepare(AES_Key    : out B_Block256;
                         Mac_Key    : out W_Block512;
                         Shared_Key : in Shared_Key_ECDH);
 \end{lstlisting}
-This procedure generates a key \texttt{AS\_Key} for AES-256 algorithm and a key \texttt{Mac\_Key} for HMAC-SHA-256 algorithm based on the \texttt{Shared\_Key}. It's only for internal use.\\
-\hline \\ \ \\
+This procedure generates a key \texttt{AS\_Key} for AES-256 algorithm
+and a key \texttt{Mac\_Key} for HMAC-SHA-256 algorithm based on the
+\texttt{Shared\_Key}. It's only for internal use.\\ \hhline
 \begin{lstlisting}{}
    --internal purpose
   procedure Mac_Compute(Mac_Key : in  W_Block512;
                         Cipher  : in  Cipher_ECIES;
                         Mac     : out W_Block256);
 \end{lstlisting}
-This procedure computes a tag of the ciphertext. HMAC-SHA-256 algorithm and the \texttt{Mac\_Key} are used. It's only for internal use.\\
-\hline \\ \ \\
+This procedure computes a tag of the ciphertext. HMAC-SHA-256
+algorithm and the \texttt{Mac\_Key} are used. It's only for internal
+use.\\ \hhline
 \begin{lstlisting}{}
   procedure Encrypt(Public_Key_A : in  Public_Key_ECDH;
                     Shared_Key   : in  Shared_Key_ECDH;
@@ -204,11 +254,16 @@ This procedure computes a tag of the ciphertext. HMAC-SHA-256 algorithm and the 
                     Plaintext    : out Unbounded_String);
 
 \end{lstlisting}
-In the procedure \texttt{Encrypt()} all the internal helping procedures are called. The \texttt{AES\_Key} and \texttt{Mac\_Key} are generated from the \texttt{Shared\_Key}. Then the message is encrypted  and a tag will be calculated at last. 
-Procedure \texttt{Decrypt()} does much the same as in \texttt{Encrypt()}, additionally it makes a verification of the generated tag and the tag of the \texttt{Cipher}, if the two tags are equal, then the plaintext is returned, else an exception will be raised with "Found different MACs".\\
-\textbf{Exception:}\\ 
-If a different MAC is found:\quad \texttt{MAC\_ERROR};\\
-\hline \\ \ \\
+In the procedure \texttt{Encrypt()} all the internal helping
+procedures are called. The \texttt{AES\_Key} and \texttt{Mac\_Key} are
+generated from the \texttt{Shared\_Key}. Then the message is encrypted
+and a tag will be calculated at last.  Procedure \texttt{Decrypt()}
+does much the same as in \texttt{Encrypt()}, additionally it makes a
+verification of the generated tag and the tag of the \texttt{Cipher},
+if the two tags are equal, then the plaintext is returned, else an
+exception will be raised with "Found different
+MACs".\\ \textbf{Exception:}\\ If a different MAC is found:\quad
+\texttt{MAC\_ERROR};\\ \hhline
 \begin{lstlisting}{}
   procedure Encrypt(Public_Key_A  : in  Public_Key_ECDH;
                     Public_Key_B  : in  Public_Key_ECDH;
@@ -220,10 +275,17 @@ If a different MAC is found:\quad \texttt{MAC\_ERROR};\\
                     Cipher        : in  Cipher_ECIES;
                     Plaintext     : out Unbounded_String);
 \end{lstlisting}
-In the procedure \texttt{Encrypt()} a shared key will be generated from \texttt{Public\_Key\_B} and \texttt{Private\-\_Key\_A}, and then it calls the procedure \texttt{Encrypt()} above to make encryption. Furthermore it tests the two variables of type \texttt{Public\_Key\_ECDH} for equality.\\
-Procedure \texttt{Decrypt()} decrypts the ciphertext by generating the shared key from \texttt{Public\_K\-ey\_B()} and \texttt{Private\_Key\_A()} and then calling the procedure \texttt{Decrypt()} above.\\
-\textbf{Exception:}\\ 
-If a different elliptic curve or domain parameter is found:\quad \texttt{CURVE\_ERROR}.\\
+In the procedure \texttt{Encrypt()} a shared key will be generated
+from \texttt{Public\_Key\_B} and \texttt{Private\-\_Key\_A}, and then
+it calls the procedure \texttt{Encrypt()} above to make
+encryption. Furthermore it tests the two variables of type
+\texttt{Public\_Key\_ECDH} for equality.\\
+Procedure \texttt{Decrypt()} decrypts the ciphertext by generating the
+shared key from \texttt{Public\_K\-ey\_B()} and
+\texttt{Private\_Key\_A()} and then calling the procedure
+\texttt{Decrypt()} above.\\
+\textbf{Exception:}\\ If a different elliptic curve or domain
+parameter is found:\quad \texttt{CURVE\_ERROR}.
 \section{Example}
 \begin{lstlisting}{}
   with Crypto.Symmetric.Algorithm.ECIES;

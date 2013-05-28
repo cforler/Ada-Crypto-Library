@@ -1,11 +1,22 @@
 \chapter{Regression Tests}
-Figure \ref{ACLTEST} shows the layout of the test suites in the ACL. To run the complete test, we need only run the file \texttt{Test\_Tests}. Since the total test may last a few minutes, the tests are additionally divided into five main categories: \texttt{Test-Big\_Number}, \texttt{Test-Symmetric\_Ciphers}, \texttt{Test-Asymmetric\_Ciphers}, \texttt{Test-Hash} and \texttt{Test-MISC}. All test cases for the big number library are in \texttt{test\_suite\_big\_num1}, \texttt{test\_suite\_\-big\_num2}, \texttt{test\_suite\_big\_num3} and \texttt{test\_suite\_big\_num4}, the four suites are then collected in \texttt{test\_suite\_big\_num\_all}.
+Figure \ref{ACLTEST} shows the layout of the test suites in the
+ACL. To run the complete test, we need only run the file
+\texttt{Test\_Tests}. Since the total test may last a few minutes, the
+tests are additionally divided into five main categories:
+\texttt{Test-Big\_Number}, \texttt{Test-Symmetric\_Ciphers},
+\texttt{Test-Asymmetric\_Ciphers}, \texttt{Test-Hash} and
+\texttt{Test-MISC}. All test cases for the big number library are in
+\texttt{test\_suite\_big\_num1}, \texttt{test\_suite\_\-big\_num2},
+\texttt{test\_suite\_big\_num3} and \texttt{test\_suite\_big\_num4},
+the four suites are then collected in
+\texttt{test\_suite\_big\_num\_all}.
 \begin{figure}[h]
-  \includegraphics[scale=0.8]{Pictures/Layout_of_Test_Suite.pdf} 
+  \includegraphics[scale=0.8]{./images/Layout_of_Test_Suite} 
   \caption{The structure of the ACL Test.}\label{ACLTEST}
 \end{figure}
 
-We start by writing a simple test case for the package \texttt{Crypto.Types.Big\_Numbers}.
+We start by writing a simple test case for the package
+\texttt{Crypto.Types.Big\_Numbers}.
 \begin{lstlisting}[numbers=left,caption={test-big\_number\_power.ads}\label{Big12}]
  with AUnit;
  with AUnit.Test_Cases;
@@ -51,7 +62,17 @@ We start by writing a simple test case for the package \texttt{Crypto.Types.Big\
  end Test.Big_Number_Power;
 \end{lstlisting}
 
-Listing \ref{Big12} is the header file, which contains the definitions of the types and operations required for the corresponding body file. As shown in Listing \ref{Big1}, the function \texttt{Register\_Tests()} (line 12) registsters the test case \texttt{Big\_Number\_Test1}, and the function \texttt{Name()} (line 18) returns the name of the test case. The procedure \texttt{Big\_Number\_Test1()} (line 23) contains the test case, which tests if $19^{19}$ equals the result or not. The method \texttt{Assert()} (line 26) checks the values, if the two values are equal, then, the test is passed, else, the test case is failed with a message "Failed with A." printed. 
+Listing \ref{Big12} is the header file, which contains the definitions
+of the types and operations required for the corresponding body
+file. As shown in Listing \ref{Big1}, the function
+\texttt{Register\_Tests()} (line 12) registsters the test case
+\texttt{Big\_Number\_Test1}, and the function \texttt{Name()} (line
+18) returns the name of the test case. The procedure
+\texttt{Big\_Number\_Test1()} (line 23) contains the test case, which
+tests if $19^{19}$ equals the result or not. The method
+\texttt{Assert()} (line 26) checks the values, if the two values are
+equal, then, the test is passed, else, the test case is failed with a
+message "Failed with A." printed.
 
 \begin{lstlisting}[numbers=left,caption={test-suite\_big\_number.ads}\label{BigS2}]
  with AUnit; use AUnit;
@@ -74,8 +95,10 @@ Listing \ref{Big12} is the header file, which contains the definitions of the ty
  end Test.Suite_Big_Num;
 \end{lstlisting}
 
-Figure \ref{BigS2} is the header file of a test suite, and
-Figure \ref{BigS} is the body file. As shown in Figure \ref{BigS}, the function \texttt{Suite()} (line 5) gathers the test cases from the file \texttt{Test.Big\_Number\_Power}.
+Figure \ref{BigS2} is the header file of a test suite, and Figure
+\ref{BigS} is the body file. As shown in Figure \ref{BigS}, the
+function \texttt{Suite()} (line 5) gathers the test cases from the
+file \texttt{Test.Big\_Number\_Power}.
 
 \begin{lstlisting}[numbers=left,caption={test-big\_number.adb}\label{BigR}]
  with Test.Suite_Big_Num;
@@ -86,17 +109,23 @@ Figure \ref{BigS} is the body file. As shown in Figure \ref{BigS}, the function 
    							(Test.Suite_Big_Num.Suite);
    Reporter : AUnit.Reporter.Text.Text_Reporter;
  begin
-   Run(Reporter); 
+   Run(Reporter);
  end Test.Big_Number;
 \end{lstlisting}
 
-To run the tests, a runner (Figure \ref{BigR}) is created to provide a routine that execute all the test cases in the suite. Test results are reported using \texttt{Reporter}, which is specified when calling \texttt{Run}. The final report is output once all test have been run, so that they can be grouped (failed or passed).
-We need only compile the file \texttt{test-big\_Number.adb}.
-Figure \ref{TEST} shows the test result for the package \texttt{Crypto.Types.Big\_Numbers}.
+To run the tests, a runner (Figure \ref{BigR}) is created to provide a
+routine that execute all the test cases in the suite. Test results are
+reported using \texttt{Reporter}, which is specified when calling
+\texttt{Run}. The final report is output once all test have been run,
+so that they can be grouped (failed or passed).  We need only compile
+the file \texttt{test-big\_Number.adb}.  Figure \ref{TEST} shows the
+test result for the package \texttt{Crypto.Types.Big\_Numbers}.
 \begin{figure}[h]
 \centering
-  \includegraphics[scale=0.5]{Pictures/Big_Number.png} 
+  \includegraphics[scale=0.5]{./images/Big_Number}
   \caption{The result of a test.}\label{TEST}
 \end{figure}
 
-This is the same workflow when we do other tests. To run the whole test cases, we need to compile the file \texttt{test-tests.adb}, it is the runner, which collects all test suites for the ACL.
+This is the same workflow when we do other tests. To run the whole
+test cases, we need to compile the file \texttt{test-tests.adb}, it is
+the runner, which collects all test suites for the ACL.
