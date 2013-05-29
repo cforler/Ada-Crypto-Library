@@ -16,11 +16,10 @@ package body Test.Suite_MAC is
    SHA512_MAC_Test    : aliased Test.SHA512_MAC.HMAC_Test;
    Whirlpool_MAC_Test : aliased Test.Whirlpool_MAC.HMAC_Test;
    Test_HMAC	      : aliased Test.HMAC.HMAC_Test;
-   Test_RMAC          :	aliased Test.RMAC.RMAC_Test;
-   Test_CMAC          : aliased Test.CMAC.CMAC_Test;
+   Test_RMAC: 		aliased Test.RMAC.RMAC_Test;
    Test_Symmetric_Mac : aliased Test.Symmetric_Mac.Mac_Test;
-   
-   
+   Test_CMAC          : aliased Test.CMAC.CMAC_Test;
+
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    begin
       Add_Test(Result'Access, SHA1_MAC_Test'Access);
@@ -29,9 +28,8 @@ package body Test.Suite_MAC is
       Add_Test(Result'Access, Whirlpool_MAC_Test'Access);
       Add_Test(Result'Access, Test_HMAC'Access);
       Add_Test(Result'Access, Test_RMAC'Access);
-      Add_Test(Result'Access, Test_CMAC'Access);
       Add_Test(Result'Access, Test_Symmetric_Mac'Access);
-      
+      Add_Test(Result'Access, Test_CMAC'Access);
       return Result'Access;
    end Suite;
 end Test.Suite_MAC;

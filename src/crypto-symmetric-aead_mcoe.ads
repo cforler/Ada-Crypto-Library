@@ -31,6 +31,9 @@ package Crypto.Symmetric.AEAD_McOE is
    package AEAD is new AE.AD;
 
    type AEAD_McOE is new AE.AE_Scheme and AEAD.AEAD_Scheme with private;
+   
+   
+   Invalid_Ciphertext_Error : exception;
 
    ---------------------------------------------
    ---- overriding functions and procedures ----
