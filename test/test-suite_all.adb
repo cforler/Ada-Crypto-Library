@@ -7,7 +7,7 @@ with Test.Suite_MAC;
 with Test.Suite_Hash_Function;
 with Test.Suite_Nonces;
 with Test.Suite_Misc;
-with Test.Suite_AE;
+--with Test.Suite_AE;
 with AUnit.Tests;
 with AUnit.Tests;
 
@@ -25,7 +25,7 @@ package body Test.Suite_All is
       Result.Add_Test(Test.Suite_Hash_Function.Suite);
       Result.Add_Test(Test.Suite_Nonces.Suite);
       Result.Add_Test(Test.Suite_Misc.Suite);
-      Result.Add_Test(Test.Suite_AE.Suite);
+--      Result.Add_Test(Test.Suite_AE.Suite);
       return Result;
    end Suite;
 end Test.Suite_All;

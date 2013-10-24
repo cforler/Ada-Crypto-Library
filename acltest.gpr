@@ -8,8 +8,12 @@ project AclTest is
    --for Exec_Dir    use ".";
 
    package Compiler is
-      for Default_Switches ("ada") use ("-O2", "-gnatyM9999", "-gnat05");
+      for Default_Switches ("ada") use ("-O2", "-gnatyM9999", "-gnat12");
    end Compiler;
+
+   package Builder is
+      for Default_Switches ("ada") use ("-j4");
+   end Builder;
 
 end AclTest;
 
