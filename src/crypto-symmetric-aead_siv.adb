@@ -18,10 +18,9 @@ package body Crypto.Symmetric.AEAD_SIV is
                                                                 Prepare_Key    => BC.Prepare_Key,
                                                                 Encrypt        => BC.Encrypt);
 
-   package CMAC is new Crypto.Symmetric.Mac.CMAC(C             => BC_Oneway,
-                                                 To_Block_Type => To_Block_Type,
-                                                 To_Bytes      => To_Bytes,
-                                                 Shift_Left    => Shift_Left);
+   package CMAC is new Crypto.Symmetric.Mac.CMAC(C          => BC_Oneway,
+                                                 Shift_Left => Shift_Left,
+                                                 "xor"      => "xor");
 
    package CTR is new Crypto.Symmetric.Mode.CTR(BC);
 
@@ -41,7 +40,7 @@ package body Crypto.Symmetric.AEAD_SIV is
    begin
       Temp(Temp'Last-3) := 16#7F#;
       Temp(Temp'Last-7) := 16#7F#;
-      IV := To_Block_Type(To_Bytes(IV) and Temp);
+      IV := To_Block_Type(To_Bytes(IV) & Temp);
    end Prepare_IV;
 
    -----------------------------------------------------------------

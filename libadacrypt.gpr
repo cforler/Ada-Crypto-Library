@@ -1,22 +1,19 @@
 project LibAdaCrypt is
 
-    for Library_Name use "libadacrypt" ;
-    
-    for Library_Kind use "static";
-    for Library_Dir  use "src/lib";
-    for Library_Src_Dir use "src/lib";
+   for Library_Name use "libadacrypt";
+   for Library_Kind use "static";
+   for Library_Dir use "src\lib";
+   for Library_Src_Dir use "src\lib";
+   for Object_Dir use "src";
+   for Source_Dirs use ("src");
 
-    for Object_Dir use "src";
-    for Source_Dirs use ( "src" );
+   package Builder is
+      for Default_Switches ("ada") use ("-j4");
+   end Builder;
 
-    package Builder is
-        for Default_Switches ( "Ada" )
-            use ( "-j2" );
-    end Builder;
-
-    package Compiler is
-        for Default_Switches ( "Ada" )
-            use ( "-O2", "-gnat05", "-gnatn" );
-    end Compiler;
+   package Compiler is
+      for Default_Switches ("ada") use ("-O2", "-gnatn", "-gnat12");
+   end Compiler;
 
 end LibAdaCrypt;
+

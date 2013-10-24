@@ -1,16 +1,15 @@
 with "libadacrypt.gpr";
 
 project AclTest is
-    
-    for Source_Dirs use ( "test" );
-    for Main        use ( "acltest" );
 
-    for Object_Dir  use "test";
-    --for Exec_Dir    use ".";
-    
-    package Compiler is
-        for Default_Switches ( "Ada" )
-            use ( "-O2" , "-gnatyM9999", "-gnat05" );
-    end Compiler;
+   for Source_Dirs use ("test/**");
+   for Main use ("test-tests.adb");
+   for Object_Dir use "test";
+   --for Exec_Dir    use ".";
+
+   package Compiler is
+      for Default_Switches ("ada") use ("-O2", "-gnatyM9999", "-gnat05");
+   end Compiler;
 
 end AclTest;
+
