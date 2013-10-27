@@ -61,9 +61,9 @@ package body Crypto.Symmetric.AE_OCB3 is
       Tmp_1 : B_Block128 := To_B_Block128(To_Bytes(S));
    begin
       if Result(0) < 128 then
-         Result:=To_Bytes( Shift_Block_Left(Tmp_1,1));
+         Result:=To_Bytes( Shift_Left(Tmp_1,1));
       else
-         Result :=  To_Bytes(Shift_Block_Left(Tmp_1,1)) xor 2#1000_0111#;
+         Result :=  To_Bytes(Shift_Left(Tmp_1,1)) xor 2#1000_0111#;
       end if;
       return To_Block_Type(Result);
    end Double_S;
