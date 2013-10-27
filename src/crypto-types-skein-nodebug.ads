@@ -11,7 +11,7 @@
 -- replace skein_nodebug with skein_debug if you want debug outputs on stdout
 -- can be replaced in skein_adb, threefish.adb and skein_types.adb
 
-package Crypto.Symmetric.Algorithm.Skein.Nodebug is
+package Crypto.Types.Skein.Nodebug is
     procedure Put(input      : in String);
     procedure Put_Line(input : in String);
 
@@ -21,4 +21,4 @@ package Crypto.Symmetric.Algorithm.Skein.Nodebug is
                       Leading_Spaces : in Boolean := true);
 
     procedure Put_Error_Line(input : in String);
-end Crypto.Symmetric.Algorithm.Skein.Nodebug;
+end Crypto.Types.Skein.Nodebug;

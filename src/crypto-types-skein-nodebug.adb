@@ -1,6 +1,6 @@
 -- Author: martin
 with Ada.Text_IO;
-package body Crypto.Symmetric.Algorithm.Skein.Nodebug is
+package body Crypto.Types.Skein.Nodebug is
     procedure Put(input      : in String) is
     begin
         null;
@@ -29,4 +29,4 @@ package body Crypto.Symmetric.Algorithm.Skein.Nodebug is
     end Put_Error_Line;
 begin
     null;
-end Crypto.Symmetric.Algorithm.Skein.Nodebug;
+end Crypto.Types.Skein.Nodebug;
