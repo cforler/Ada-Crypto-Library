@@ -15,44 +15,45 @@
 
 with Ada.Unchecked_Conversion;
 with Ada.Containers.Doubly_Linked_Lists;
+with Crypto.Types; use Crypto.Types;
 
 
 package Crypto.Types.Skein is
     --the Mode type, just for distinguishing the diffrent mode of Skein
     type Skein_Mode is (m256, m512, m1024);
-    function Get_Number_Of_Skein_Bytes(Mode : in Skein_Mode)
+    function Get_Number_Of_Bytes(Mode : in Skein_Mode)
             return Natural;
 
     --the basic type we are working with in Skein
-    type Skein_Byte is mod 256;
-    type Skein_Bytes is array(Natural range <>) of Skein_Byte;
+    ---type Byte is mod 256;
+    ---type Bytes is array(Natural range <>) of Byte;
 
-    type Bytes_Access is access Skein_Bytes;
+    type Bytes_Access is access Bytes;
 
-    --a group of Skein_Bytes we want to work on using different tasks
+    --a group of Bytes we want to work on using different tasks
     --we need this for UBI-Tree-Mode (we are calculating different parts
     --of the inner state using different tasks)
     protected type Protected_Bytes(Last_Index : Natural) is
-        --sets a number of Skein_Bytes in the group of Skein_Bytes
-        procedure Set_Bytes(In_Bytes     : in Skein_Bytes;
+        --sets a number of Bytes in the group of Bytes
+        procedure Set_Bytes(In_Bytes     : in Bytes;
                             Index_First  : in Natural;
                             Index_Last   : in Natural);
-        --returns the whole group of Skein_Bytes
-        procedure Return_Bytes(Out_Bytes : out Skein_Bytes);
+        --returns the whole group of Bytes
+        procedure Return_Bytes(Out_Bytes : out Bytes);
     private
-        B : Skein_Bytes(0..Last_Index);
+        B : Bytes(0..Last_Index);
     end Protected_Bytes;
 
     --if we have lengths of Bits mod 8 != 0 then we can use this
-    --function to get the correct size for an Skein_Byte-Array
-    function Create(Message_Length_Bits : Natural) return Skein_Bytes;
+    --function to get the correct size for an Byte-Array
+    function Create(Message_Length_Bits : Natural) return Bytes;
 
     --if we want something like toString we can use this functions
-    function Show_Bin(b : Skein_Byte) return String;
-    function Show_Hex(b : Skein_Byte) return String;
+    function Show_Bin(b : Byte) return String;
+    function Show_Hex(b : Byte) return String;
 
-    --sometimes we need to set a single Bit inside of a Skein_Byte
-    procedure Set_Bit(b        : in out Skein_Byte;
+    --sometimes we need to set a single Bit inside of a Byte
+    procedure Set_Bit(b        : in out Byte;
                       Position : in     Natural;
                       Value    : in     Boolean);
 
@@ -102,7 +103,7 @@ package Crypto.Types.Skein is
 
 
 
---    function "*"(Left : Skein_Byte;
+--    function "*"(Left : Byte;
 --                 Right : Integer) return Integer;
     function "+"(Left : Skeinword;
             Right : Integer) return Skeinword;
@@ -115,25 +116,25 @@ package Crypto.Types.Skein is
                       count : in Natural) return Skeinword;
 
     function Natural_To_Bytes(N      : Natural;
-                              number : Natural) return Skein_Bytes;
+                              number : Natural) return Bytes;
 
-    function Bytes_To_Skeinword(b : in Skein_Bytes)
+    function Bytes_To_Skeinword(b : in Bytes)
             return Skeinword;
 
-    function Bytes_To_Skeinword_Array(b : in Skein_Bytes)
+    function Bytes_To_Skeinword_Array(b : in Bytes)
             return Skeinword_Array;
 
     function Skeinword_To_Bytes(s: in Skeinword)
-            return Skein_Bytes;
+            return Bytes;
 
     function Skeinword_Array_To_Bytes(s : in Skeinword_Array)
-            return Skein_Bytes;
+            return Bytes;
 
-    function "+"(Left: Skein_Bytes;
-                 Right: Natural) return Skein_Bytes;
+    function "+"(Left: Bytes;
+                 Right: Natural) return Bytes;
 
 
-    --a special type for the length of Skein Input Message lengths (in Skein_Bytes)
+    --a special type for the length of Skein Input Message lengths (in Bytes)
     --Attention, this should be 2**96 but this is not supportet atm
     --we need to get this rigth!!!
     type Skein_Message_Length is mod 2**64;
@@ -149,11 +150,11 @@ package Crypto.Types.Skein is
     type Skein_Message_Tweak_Tuple(
         Message_Length_Bits : Natural;
         Message_Bytes_Last  : Integer) --we need Integer here because if we have an empty
-                                        --array of Skein_Byte we need it with index 0..-1
+                                        --array of Byte we need it with index 0..-1
         is record
-        Message         : Skein_Bytes(0..Message_Bytes_Last);
+        Message         : Bytes(0..Message_Bytes_Last);
         Message_Length  : Natural := Message_Length_Bits;
-        Type_Value      : Skein_Byte;
+        Type_Value      : Byte;
     end record;
     --we need an array of this record type,
     --as it is an unconstrained type which is not allowed in records
@@ -167,9 +168,9 @@ package Crypto.Types.Skein is
     procedure Set_Data(
                 List               : in out Skein_Message_Tweak_Tuple_Pointer_Array;
                 Index              : in     Natural;
-                Message            : in     Skein_Bytes;
+                Message            : in     Bytes;
                 Message_Length_Bits: in     Natural;
-                Type_Value         : in     Skein_Byte);
+                Type_Value         : in     Byte);
 
 
 --    package Skein_Message_Tweak_Tuple_Pointer_List is new Ada.Containers.Doubly_Linked_Lists(

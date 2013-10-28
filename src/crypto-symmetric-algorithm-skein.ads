@@ -17,50 +17,50 @@ package Crypto.Symmetric.Algorithm.Skein is
     --the most significant not ued Bit is set to 1
     --all other unused Bits are set to 0
     function Message_Bit_Padding(
-            Message        : in Skein_Bytes;
-            Desired_Length : in Natural) return Skein_Bytes;
+            Message        : in Bytes;
+            Desired_Length : in Natural) return Bytes;
 
     --returns a Boolean-value if a Bit padding took place
     --we need this information to calculate the configuration Sting later
     function Get_Bit_Padding_Status(
-            Message        : in Skein_Bytes;
+            Message        : in Bytes;
             Desired_Length : in Natural) return Boolean;
 
-    --padds a given Skein_Byte-Array to a given length (defined by the Skein_Mode)
+    --padds a given Byte-Array to a given length (defined by the Skein_Mode)
     --too long arays will be cut off to the correct length
     function Message_Byte_Padding(
             Mode             : in Skein_Mode;
-            Original_Message : in Skein_Bytes) return Skein_Bytes;
+            Original_Message : in Bytes) return Bytes;
 
     --return a modified Tweak for given parameters
     function Get_Current_Tweak(
-            T_S       : in Skein_Bytes;
-            N_M       : in Skein_Message_Length;    --Number of Skein_Bytes in Input Message
+            T_S       : in Bytes;
+            N_M       : in Skein_Message_Length;    --Number of Bytes in Input Message
             Index     : in Natural;    --index of Message Block we are curently working on
             N_b       : in Natural;    --Number State-Bytes for the current mode
             First_Run : in Boolean;    --a_i
             Last_Run  : in Boolean;    --b_i
             B         : in Boolean)    --was there any BitPadding?
-            return Skein_Bytes;
+            return Bytes;
 
     --calculates the UBI for given parameters
     --see Skein paper for details
     procedure Straight_UBI(
             Mode                  : in     Skein_Mode;
-            G                     : in     Skein_Bytes;    --starting value on N_Bs
-            Full_Message          : in     Skein_Bytes;    --Message of variable lenght
+            G                     : in     Bytes;    --starting value on N_Bs
+            Full_Message          : in     Bytes;    --Message of variable lenght
             Full_Message_Bits     : in     Natural;  --the length of the input Message in Bits
-            T_S                   : in     Skein_Bytes;    --Starting Tweak T_S of 16
-            Result                :    out Skein_Bytes);   --the result of UBI:
+            T_S                   : in     Bytes;    --Starting Tweak T_S of 16
+            Result                :    out Bytes);   --the result of UBI:
 
     task type Tree_UBI_Task(Mode : Skein_Mode;
             Longest_Message_Bytes : Natural)
         is
         entry compute(  Mode                : in     Skein_Mode;
-                        G                   : in     Skein_Bytes;
-                        Full_Message        : in     Skein_Bytes;
+                        G                   : in     Bytes;
+                        Full_Message        : in     Bytes;
                         Full_Message_Length : in     Natural;
-                        T_S                 : in     Skein_Bytes;
+                        T_S                 : in     Bytes;
                         Result_Access       : in out Bytes_Access;
                         Result_First        : in     Natural;
                         Result_Last         : in     Natural;
@@ -71,14 +71,14 @@ package Crypto.Symmetric.Algorithm.Skein is
     --see Skein paper for details
     procedure Tree_UBI(
             Mode                  : in     Skein_Mode;
-            G                     : in     Skein_Bytes;    --starting value on N_Bs
-            Full_Message          : in     Skein_Bytes;    --Message of variable lenght
+            G                     : in     Bytes;    --starting value on N_Bs
+            Full_Message          : in     Bytes;    --Message of variable lenght
             Full_Message_Bits     : in     Natural;  --the length of the input Message in Bits
-            T_S                   : in     Skein_Bytes;    --Starting Tweak T_S of 16 Byte
+            T_S                   : in     Bytes;    --Starting Tweak T_S of 16 Byte
             Y_l                   : in     Natural;  --loaf-size for treemode
             Y_f                   : in     Natural;  --node-size for treemode
             Y_M                   : in     Natural;  --max tree height
-            Result                :    out Skein_Bytes;    --the result of UBI:
+            Result                :    out Bytes;    --the result of UBI:
             Number_Of_Tasks       : in     Natural := 2);
 
     --calculates the output of the Skein Hashfunction for a given length
@@ -86,9 +86,9 @@ package Crypto.Symmetric.Algorithm.Skein is
     --see Skein paper for details
     procedure Output(
             Mode       : in     Skein_Mode;
-            G          : in     Skein_Bytes;     --the chaining value
+            G          : in     Bytes;     --the chaining value
             N_0        : in     Natural;   --number of required output BITS
-            Result     :    out Skein_Bytes);    --the result, if N_0 mod 8 != 0
+            Result     :    out Bytes);    --the result, if N_0 mod 8 != 0
                                            --the last byte is only partially used
 
     --returns the configuration String C for given parameters
@@ -98,7 +98,7 @@ package Crypto.Symmetric.Algorithm.Skein is
                 Y_l : in Natural := 0;
                 Y_f : in Natural := 0;
                 Y_m : in Natural := 0)
-            return Skein_Bytes;
+            return Bytes;
 
     --------------------------------------------------------
     -- various Init, Update and Final calls
@@ -109,84 +109,84 @@ package Crypto.Symmetric.Algorithm.Skein is
     procedure Init(
             Mode : in     Skein_Mode;
             N_0  : in     Natural;
-            K    : in     Skein_Bytes ;
+            K    : in     Bytes ;
             Y_l  : in     Natural;
             Y_f  : in     Natural;
             Y_m  : in     Natural;
-            State:    out Skein_Bytes);
+            State:    out Bytes);
 
     --simplified Init-call for Simple_Skein
     --no key and no tree-hashing is used
     procedure Init(
             Mode : in     Skein_Mode;
             N_0  : in     Natural;
-            State:    out Skein_Bytes);
+            State:    out Bytes);
 
     --full Update call for Skein
     --this Call can be done multiple times for a list of tuples (T,M)
     --New-State is the result after each UBI
     procedure Update(
             Mode            : in     Skein_Mode;
-            Old_State       : in     Skein_Bytes;
-            Message         : in     Skein_Bytes;
+            Old_State       : in     Bytes;
+            Message         : in     Bytes;
             Message_Length  : in     Natural;
-            Type_Value      : in     Skein_Byte;
+            Type_Value      : in     Byte;
             Y_l             : in     Natural;
             Y_f             : in     Natural;
             Y_m             : in     Natural;
-            New_State       :    out Skein_Bytes);
+            New_State       :    out Bytes);
 
     --simplified Update call for Skein
     --no key or treehashing is used
     procedure Update(
             Mode            : in     Skein_Mode;
-            Old_State       : in     Skein_Bytes;
-            Message         : in     Skein_Bytes;
+            Old_State       : in     Bytes;
+            Message         : in     Bytes;
             Message_Length  : in     Natural;
-            New_State       :    out Skein_Bytes);
+            New_State       :    out Bytes);
 
     --Final call for Skein
     --here only the correct is calculated using UBI
     --see Skein paper for details
     procedure Final(
             Mode        : in     Skein_Mode;
-            Old_State   : in     Skein_Bytes;
+            Old_State   : in     Bytes;
             N_0         : in     Natural;
-            New_State   :    out Skein_Bytes);
+            New_State   :    out Bytes);
 
     --all-in-one-call for Skein
     --here an array of tuples (T,M) is used as inputs
     procedure Hash(
             Mode        : in     Skein_Mode;
             N_0         : in     Natural;
-            K           : in     Skein_Bytes;
+            K           : in     Bytes;
             Y_l         : in     Natural;
             Y_f         : in     Natural;
             Y_m         : in     Natural;
             Tuple_Array : in     Skein_Message_Tweak_Tuple_Pointer_Array;
-            Result      :    out Skein_Bytes);
+            Result      :    out Bytes);
 
     --all-in-one-call for Skein
     --using only one tuple (T,M)
     procedure Hash(
             Mode            : in     Skein_Mode;
             N_0             : in     Natural;
-            K               : in     Skein_Bytes;
+            K               : in     Bytes;
             Y_l             : in     Natural;
             Y_f             : in     Natural;
             Y_m             : in     Natural;
-            Message         : in     Skein_Bytes;
+            Message         : in     Bytes;
             Message_Length  : in     Natural;
-            Type_Value      : in     Skein_Byte;
-            Result          :    out Skein_Bytes);
+            Type_Value      : in     Byte;
+            Result          :    out Bytes);
 
     --simplified all-in-one-call for Skein
     --no key or treehashing is used here
     procedure Hash(
             Mode            : in     Skein_Mode;
             N_0             : in     Natural;
-            Message         : in     Skein_Bytes;
+            Message         : in     Bytes;
             Message_Length  : in     Natural;
-            Result          :    out Skein_Bytes);
+            Result          :    out Bytes);
 
 end Crypto.Symmetric.Algorithm.Skein;

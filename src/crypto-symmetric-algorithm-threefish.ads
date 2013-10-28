@@ -101,10 +101,10 @@ package Crypto.Symmetric.Algorithm.Threefish is
     --inputs are arrays of Bytes
     --conversion from Byte-array to Skeinword is done here
     procedure Encrypt (Mode             : in     Skein_Mode;
-                       Block_Cipher_Key : in     Skein_Bytes;
-                       Tweak            : in     Skein_Bytes;
-                       Plaintext        : in     Skein_Bytes;
-                       Result           :    out Skein_Bytes);
+                       Block_Cipher_Key : in     Bytes;
+                       Tweak            : in     Bytes;
+                       Plaintext        : in     Bytes;
+                       Result           :    out Bytes);
 
     --inputs are the specified types
     --this is the "real" procedure for encryption, the other ones are just wrapper

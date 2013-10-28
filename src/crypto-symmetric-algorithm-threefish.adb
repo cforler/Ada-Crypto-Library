@@ -118,10 +118,10 @@ package body Crypto.Symmetric.Algorithm.Threefish is
 
 
     procedure encrypt ( Mode             : in     Skein_Mode;
-                        Block_Cipher_Key : in     Skein_Bytes;
-                        Tweak            : in     Skein_Bytes;
-                        Plaintext        : in     Skein_Bytes;
-                        Result           :    out Skein_Bytes) is
+                        Block_Cipher_Key : in     Bytes;
+                        Tweak            : in     Bytes;
+                        Plaintext        : in     Bytes;
+                        Result           :    out Bytes) is
         words    : Threefish_Words'Class
                  := Make_Words( Mode => Threefish.Skein_Mode_To_Threefish_Mode(Mode),
                                 SWA  => Bytes_To_Skeinword_Array(Plaintext));

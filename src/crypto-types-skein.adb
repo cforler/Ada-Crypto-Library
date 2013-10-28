@@ -18,7 +18,7 @@ with Interfaces;
 with Crypto.Types.Skein.Stringmanipulation;        use Crypto.Types.Skein.Stringmanipulation;
 
 package body Crypto.Types.Skein is
-    function Get_Number_Of_Skein_Bytes(Mode : in Skein_Mode)
+    function Get_Number_Of_Bytes(Mode : in Skein_Mode)
             return Natural is
     begin
         case Mode is
@@ -26,9 +26,9 @@ package body Crypto.Types.Skein is
             when m512  => return 64;
             when m1024 => return 128;
         end case;
-    end Get_Number_Of_Skein_Bytes;
+    end Get_Number_Of_Bytes;
 
-    function Create(Message_Length_Bits : Natural) return Skein_Bytes is
+    function Create(Message_Length_Bits : Natural) return Bytes is
         function Get_Bytes_Last(Bit_Length : Natural) return Natural is
         begin
             if Bit_Length mod 8 = 0 then
@@ -37,14 +37,14 @@ package body Crypto.Types.Skein is
                 return Bit_Length/8;
             end if;
         end Get_Bytes_Last;
-        return_Bytes : Skein_Bytes(0..Get_Bytes_Last(Message_Length_Bits))
-                     := (others => Skein_Byte(0));
+        return_Bytes : Bytes(0..Get_Bytes_Last(Message_Length_Bits))
+                     := (others => Byte(0));
     begin
         return return_Bytes;
     end Create;
 
     protected body Protected_Bytes is
-        procedure Set_Bytes(In_Bytes    : in Skein_Bytes;
+        procedure Set_Bytes(In_Bytes    : in Bytes;
                             Index_First : in Natural;
                             Index_Last  : in Natural) is
             i2 : Natural := 0;
@@ -56,7 +56,7 @@ package body Crypto.Types.Skein is
                 i2 := i2 +1;
             end loop;
         end Set_Bytes;
-        procedure Return_Bytes(Out_Bytes : out Skein_Bytes) is
+        procedure Return_Bytes(Out_Bytes : out Bytes) is
         begin
             Out_Bytes := B;
         end Return_Bytes;
@@ -182,14 +182,14 @@ package body Crypto.Types.Skein is
         end if;
     end Set_Bit;
 
-    procedure Set_Bit(b        : in out Skein_Byte;
+    procedure Set_Bit(b        : in out Byte;
                       Position : in     Natural;
                       Value    : in     Boolean) is
     begin
         if Value then
-            b := b or Skein_Byte(2**Position);
+            b := b or Byte(2**Position);
         else
-            b := b and Skein_Byte'Last - Skein_Byte(2**Position);
+            b := b and Byte'Last - Byte(2**Position);
         end if;
     end Set_Bit;
 
@@ -202,9 +202,9 @@ package body Crypto.Types.Skein is
         return Skeinword(Interfaces.Rotate_Left(Interfaces.Unsigned_64(sw1), count));
     end left_rot;
 
-    --we want to be able to multiply Integers and Skein_Bytes
+    --we want to be able to multiply Integers and Bytes
     --we need this ins_To_int for example
---    function "*"(Left : Skein_Byte;
+--    function "*"(Left : Byte;
 --            Right : Integer) return Integer is
 --    begin
 --        return Integer(Left) * Right;
@@ -232,20 +232,20 @@ package body Crypto.Types.Skein is
     end "+";
 
     function Natural_To_Bytes(N      : Natural;
-                              number : Natural) return Skein_Bytes is
-        result : Skein_Bytes(0..number-1) := (others => Skein_Byte(0));
+                              number : Natural) return Bytes is
+        result : Bytes(0..number-1) := (others => Byte(0));
     begin
         for i in result'Range loop  --Natural can be at least 256**3
-            --result(i) := Skein_Byte( ( N/(256**i) ) mod 256);
+            --result(i) := Byte( ( N/(256**i) ) mod 256);
             if i < 4 then
-                result(i) := Skein_Byte( (N/(256**i)) mod 256 );
+                result(i) := Byte( (N/(256**i)) mod 256 );
                 --Ada.Text_IO.Put_Line(Show_Hex(result(i)));
             end if;
         end loop;
         return result;
     end Natural_To_Bytes;
 
-    function Bytes_To_Skeinword(b : in Skein_Bytes)
+    function Bytes_To_Skeinword(b : in Bytes)
             return Skeinword is
         My_SW : Skeinword := Skeinword(0);
     begin
@@ -263,7 +263,7 @@ package body Crypto.Types.Skein is
     end Bytes_To_Skeinword;
 
     --8 bytes are one Skeinword
-    function Bytes_To_Skeinword_Array(b: in Skein_Bytes)
+    function Bytes_To_Skeinword_Array(b: in Bytes)
             return Skeinword_Array is
         My_SW_Array  : Skeinword_Array(0..b'Length/8 -1);
     begin
@@ -280,19 +280,19 @@ package body Crypto.Types.Skein is
 
     --convert one single Skeinword to an array of 8 Bytes
     function Skeinword_To_Bytes(s: in Skeinword)
-            return Skein_Bytes is
-        My_Bytes_Array : Skein_Bytes(0..7);
+            return Bytes is
+        My_Bytes_Array : Bytes(0..7);
     begin
         for i in My_Bytes_Array'Range loop
-            My_Bytes_Array(i) := Skein_Byte( s/256**i mod 256 );
+            My_Bytes_Array(i) := Byte( s/256**i mod 256 );
         end loop;
         return My_Bytes_Array;
     end Skeinword_To_Bytes;
 
     --one Skeinword is 8 Bytes
     function Skeinword_Array_To_Bytes(s : in Skeinword_Array)
-            return Skein_Bytes is
-        My_Bytes : Skein_Bytes(0..s'Length*8-1);
+            return Bytes is
+        My_Bytes : Bytes(0..s'Length*8-1);
     begin
         for i in s'Range loop
             My_Bytes(i*8..i*8+7) := Skeinword_To_Bytes(s(i));
@@ -300,8 +300,8 @@ package body Crypto.Types.Skein is
         return My_Bytes;
     end Skeinword_Array_To_Bytes;
 
-    function "+"(Left: Skein_Bytes;
-            Right: Natural) return Skein_Bytes is
+    function "+"(Left: Bytes;
+            Right: Natural) return Bytes is
 
     begin
         if not (Left'Length = 8) then
@@ -343,7 +343,7 @@ package body Crypto.Types.Skein is
         return out_String;
     end Show_Hex;
 
-    function Show_Bin(b : Skein_Byte) return String is
+    function Show_Bin(b : Byte) return String is
         out_String : String(1..8);
     begin
         for i in out_String'Range loop
@@ -356,7 +356,7 @@ package body Crypto.Types.Skein is
         return out_String;
     end Show_Bin;
 
-    function Show_Hex(b : Skein_Byte) return String is
+    function Show_Hex(b : Byte) return String is
         Bin_String : String := Show_Bin(b);
         out_String : String(1..2);
     begin
@@ -378,9 +378,9 @@ package body Crypto.Types.Skein is
     procedure Set_Data(
             List               : in out Skein_Message_Tweak_Tuple_Pointer_Array;
             Index              : in     Natural;
-            Message            : in     Skein_Bytes;
+            Message            : in     Bytes;
             Message_Length_Bits: in     Natural;
-            Type_Value         : in     Skein_Byte) is
+            Type_Value         : in     Byte) is
     begin
         List(Index) := new Skein_Message_Tweak_Tuple(
                             Message_Length_Bits => Message_Length_Bits,
