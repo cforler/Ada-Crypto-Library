@@ -208,7 +208,7 @@ package body Crypto.Symmetric.AE_OCB3 is
          end if;
 
          if Overlap < 0 then
-            raise Invalid_Ciphertext_Error;
+            raise  Constraint_Error with "Invalid_Ciphertext_Error";
          elsif Overlap = 0 then -- no Ciphertext was written (|M| = 0)
             Tag(Tag'First..This.Taglen-1) := A(A'First..A'First+This.Taglen-1);
             Bytelen := 0;
@@ -230,7 +230,7 @@ package body Crypto.Symmetric.AE_OCB3 is
    -- blocks, started at 1.
    function Number_Of_Trailing_Zeros(Value : in Positive) return Natural is
       C: Natural := 0;
-      X: Positive := Value;
+      X: Word :=  Word(Value);
    begin
       if (Word(Value) and 16#01#) /= 0 then
          return C;
@@ -334,7 +334,7 @@ package body Crypto.Symmetric.AE_OCB3 is
    begin
       Read_Ciphertext_Again(First_Block, Bytes_Read);
       if Bytes_Read = 0 then
-         raise Invalid_Ciphertext_Error;
+	 raise  Constraint_Error with "Invalid_Ciphertext_Error";	 
       elsif
          Bytes_Read < Bytes_Per_Block then
          null;
@@ -598,7 +598,7 @@ package body Crypto.Symmetric.AE_OCB3 is
 
       if Bytes_Read = 0 then
          -- Tag must be at least 1 byte
-         raise Invalid_Ciphertext_Error;
+         raise  Constraint_Error with "Invalid_Ciphertext_Error";
       elsif Bytes_Read < Bytes_Per_Block then
          Extract(This       => This,
                  A          => First_Block,
