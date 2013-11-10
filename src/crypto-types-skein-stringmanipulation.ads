@@ -41,6 +41,5 @@ package Crypto.Types.Skein.Stringmanipulation is
 
     function get_Value_From_Hex_Char(Hex_Char : Character) return Natural;
     function get_Value_From_Bin_Char(Bin_Char : Character) return Natural;
-    function Get_Hex_Char_From_Bin_String(Bin_String : String) return Character;
 
 end Crypto.Types.Skein.Stringmanipulation;

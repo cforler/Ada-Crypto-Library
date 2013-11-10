@@ -62,18 +62,19 @@ package body Crypto.Types.Skein is
         end Return_Bytes;
     end Protected_Bytes;
     ------------------------------------------------------------------
-    -- we need some functions to Create Skeinwords from various inputs
+    -- we need some functions to Create Dwords from various inputs
     ------------------------------------------------------------------
-    function Create(Input : Natural) return Skeinword is
-        My_Skeinword : Skeinword := Skeinword(Input);
+    function Create(Input : Natural) return Dword is
+        My_Dword : Dword := Dword(Input);
     begin
-        return My_Skeinword;
+        return My_Dword;
     end Create;
 
     function  Create(input : in String;
-                     Mode  : in Skeinword_Input_Mode_Type := Hex) return Skeinword is
+                     Mode  : in Dword_Input_Mode_Type := Hex) return Dword is
+        use stringmanipulation;
 
-        output: Skeinword := 0;
+        output: Dword := 0;
         Input_Copy  : Unbounded_String := str2ustr(input);
 
         --needed to fill missing lengths
@@ -99,7 +100,7 @@ package body Crypto.Types.Skein is
                 --Ada.Text_IO.Put_LIne("The full Hex String: " & Full_Hex_String);
                 for i in Full_Hex_String'Range loop --attention, Strings are in Range 1..xxx
                     output := output +
-                                Skeinword(get_Value_From_Hex_Char(Full_Hex_String(i))) * 16**(17-i-1) ;
+                                Dword(get_Value_From_Hex_Char(Full_Hex_String(i))) * 16**(17-i-1) ;
                 end loop;
 
 
@@ -128,7 +129,7 @@ package body Crypto.Types.Skein is
     end Create;
 
 
-    --we need this for the random Skeinwords
+    --we need this for the random Dwords
     subtype Random_Type is Integer range 0 .. 15;
     package Random_Pack is new Ada.Numerics.Discrete_Random (Random_Type);
     G : Random_Pack.Generator;
@@ -139,8 +140,8 @@ package body Crypto.Types.Skein is
         return Random_Pack.Random (G);
     end Generate_Number;
 
-    function  Create(Mode : Skeinword_Kind_Mode_Type) return Skeinword is
-        result : Skeinword;
+    function  Create(Mode : Dword_Kind_Mode_Type) return Dword is
+        result : Dword;
         Result_Hex_String : String := "0000000000000000";
         Hex_Array : array (0..15) of Character
             := ('0','1','2','3','4','5','6','7','8','9',
@@ -171,14 +172,14 @@ package body Crypto.Types.Skein is
     -----------------------------------------------
     -- we want to be able to set a single Bit
     -----------------------------------------------
-    procedure Set_Bit(Word     : in out Skeinword;
+    procedure Set_Bit(Word     : in out Dword;
                       Position : in Natural;
                       Value    : in Boolean) is
     begin
         if Value then  --we want to set it to true
-            Word := Word or Skeinword(2)**Position;
+            Word := Word or Dword(2)**Position;
         else
-            Word := Word and (Skeinword'Last - Skeinword(2)**Position);
+            Word := Word and (Dword'Last - Dword(2)**Position);
         end if;
     end Set_Bit;
 
@@ -196,14 +197,14 @@ package body Crypto.Types.Skein is
     -------------------------------------------------
     -- we also need rotation
     -------------------------------------------------
-    function left_rot(sw1   : in Skeinword;
-                      count : in Natural) return Skeinword is
+    function left_rot(sw1   : in Dword;
+                      count : in Natural) return Dword is
     begin
-        return Skeinword(Interfaces.Rotate_Left(Interfaces.Unsigned_64(sw1), count));
+        return Dword(Interfaces.Rotate_Left(Interfaces.Unsigned_64(sw1), count));
     end left_rot;
 
     --we want to be able to multiply Integers and Bytes
-    --we need this ins_To_int for example
+    --we need this in Bytes_To_int for example
 --    function "*"(Left : Byte;
 --            Right : Integer) return Integer is
 --    begin
@@ -211,11 +212,11 @@ package body Crypto.Types.Skein is
 --    end "*";
 
 
---    function "+" (Left,Right : Skeinword) return Skeinword is
+--    function "+" (Left,Right : Dword) return Dword is
 --    begin
 --        return Left xor Right;
 --    end "+" ;
---    function "xor" (Left,Right : Skeinword) return Skeinword is
+--    function "xor" (Left,Right : Dword) return Dword is
 --    begin
 --        return Left + Right;
 --    end "xor" ;
@@ -225,10 +226,10 @@ package body Crypto.Types.Skein is
 
 
 
-    function "+"(Left : Skeinword;
-                 Right : Integer) return Skeinword is
+    function "+"(Left : Dword;
+                 Right : Integer) return Dword is
     begin
-        return Left +  Skeinword(Right);
+        return Left +  Dword(Right);
     end "+";
 
     function Natural_To_Bytes(N      : Natural;
@@ -245,27 +246,27 @@ package body Crypto.Types.Skein is
         return result;
     end Natural_To_Bytes;
 
-    function Bytes_To_Skeinword(b : in Bytes)
-            return Skeinword is
-        My_SW : Skeinword := Skeinword(0);
+    function Bytes_To_Dword(b : in Bytes)
+            return Dword is
+        My_SW : Dword := Dword(0);
     begin
         if not (b'Length = 8) then
-            Put_Error_Line("The Length of Bytes must be 8 for converting to Skeinword");
+            Put_Error_Line("The Length of Bytes must be 8 for converting to Dword");
             Raise Program_Error;
         end if;
         --8 Bytes are one word,
         for j in b'Range loop
-            --we need mod 8 here because in call from Bytes_To_Skeinword_Array
+            --we need mod 8 here because in call from Bytes_To_Dword_Array
             --the indices are kept :/
-            My_SW := My_SW + ( Skeinword(b(j)) * 256**(j mod 8) );
+            My_SW := My_SW + ( Dword(b(j)) * 256**(j mod 8) );
         end loop;
         return My_SW;
-    end Bytes_To_Skeinword;
+    end Bytes_To_Dword;
 
-    --8 bytes are one Skeinword
-    function Bytes_To_Skeinword_Array(b: in Bytes)
-            return Skeinword_Array is
-        My_SW_Array  : Skeinword_Array(0..b'Length/8 -1);
+    --8 bytes are one Dword
+    function Bytes_To_Dword_Array(b: in Bytes)
+            return Dword_Array is
+        My_SW_Array  : Dword_Array(0..b'Length/8 -1);
     begin
         if not (b'Length mod 8 = 0) then
             Put_Error_Line("The Length of Bytes must be a multiple of 8");
@@ -273,13 +274,13 @@ package body Crypto.Types.Skein is
             Raise Program_Error;
         end if;
         for i in My_SW_Array'Range loop
-            My_SW_Array(i) := Bytes_To_Skeinword(b(8*i..8*i+7));
+            My_SW_Array(i) := Bytes_To_Dword(b(8*i..8*i+7));
         end loop;
         return My_SW_Array;
-    end Bytes_To_Skeinword_Array;
+    end Bytes_To_Dword_Array;
 
-    --convert one single Skeinword to an array of 8 Bytes
-    function Skeinword_To_Bytes(s: in Skeinword)
+    --convert one single Dword to an array of 8 Bytes
+    function Dword_To_Bytes(s: in Dword)
             return Bytes is
         My_Bytes_Array : Bytes(0..7);
     begin
@@ -287,18 +288,18 @@ package body Crypto.Types.Skein is
             My_Bytes_Array(i) := Byte( s/256**i mod 256 );
         end loop;
         return My_Bytes_Array;
-    end Skeinword_To_Bytes;
+    end Dword_To_Bytes;
 
-    --one Skeinword is 8 Bytes
-    function Skeinword_Array_To_Bytes(s : in Skeinword_Array)
+    --one Dword is 8 Bytes
+    function Dword_Array_To_Bytes(s : in Dword_Array)
             return Bytes is
         My_Bytes : Bytes(0..s'Length*8-1);
     begin
         for i in s'Range loop
-            My_Bytes(i*8..i*8+7) := Skeinword_To_Bytes(s(i));
+            My_Bytes(i*8..i*8+7) := Dword_To_Bytes(s(i));
         end loop;
         return My_Bytes;
-    end Skeinword_Array_To_Bytes;
+    end Dword_Array_To_Bytes;
 
     function "+"(Left: Bytes;
             Right: Natural) return Bytes is
@@ -308,14 +309,14 @@ package body Crypto.Types.Skein is
             Put_Error_Line("maximum of 8 Byte is allowed for Addition");
             Raise Program_Error;
         end if;
-        return Skeinword_To_Bytes(Bytes_To_Skeinword(Left) + Right);
+        return Dword_To_Bytes(Bytes_To_Dword(Left) + Right);
     end "+";
 
     --------------------------------------------
     -- some "toString" functions
     --------------------------------------------
-    function Show_Bin(sw1 : Skeinword) return String is
-        swc : Skeinword := sw1;
+    function Show_Bin(sw1 : Dword) return String is
+        swc : Dword := sw1;
         out_String : String(1..64);
     begin
         --
@@ -330,18 +331,18 @@ package body Crypto.Types.Skein is
         return out_String;
     end Show_Bin;
 
-    function Show_Hex(sw1 : Skeinword) return String is
-        Bin_String : String := Show_Bin(sw1);
-        out_String : String(1..16);
-        Start_Index : Natural := 1;
-    begin
-        --we convert 4 chars of the Bin_String to one Char Hex_String
-        for i in out_String'Range loop
-            Start_Index := 4*i -3;
-            out_String(i) := Get_Hex_Char_From_Bin_String(Bin_String(4*i -3 .. 4*i));
-        end loop;
-        return out_String;
-    end Show_Hex;
+--      function Show_Hex(sw1 : Dword) return String is
+--          Bin_String : String := Show_Bin(sw1);
+--          out_String : String(1..16);
+--          Start_Index : Natural := 1;
+--      begin
+--          --we convert 4 chars of the Bin_String to one Char Hex_String
+--          for i in out_String'Range loop
+--              Start_Index := 4*i -3;
+--              out_String(i) := Get_Hex_Char_From_Bin_String(Bin_String(4*i -3 .. 4*i));
+--          end loop;
+--          return out_String;
+--      end Show_Hex;
 
     function Show_Bin(b : Byte) return String is
         out_String : String(1..8);
@@ -356,16 +357,16 @@ package body Crypto.Types.Skein is
         return out_String;
     end Show_Bin;
 
-    function Show_Hex(b : Byte) return String is
-        Bin_String : String := Show_Bin(b);
-        out_String : String(1..2);
-    begin
-        --we convert 4 chars of the Bin_String to one Char Hex_String
-        for i in out_String'Range loop
-            out_String(i) := Get_Hex_Char_From_Bin_String(Bin_String(4*i -3 .. 4*i));
-        end loop;
-        return out_String;
-    end Show_Hex;
+--      function Show_Hex(b : Byte) return String is
+--          Bin_String : String := Show_Bin(b);
+--          out_String : String(1..2);
+--      begin
+--          --we convert 4 chars of the Bin_String to one Char Hex_String
+--          for i in out_String'Range loop
+--              out_String(i) := Get_Hex_Char_From_Bin_String(Bin_String(4*i -3 .. 4*i));
+--          end loop;
+--          return out_String;
+--      end Show_Hex;
 
 
     function Create(Size : Natural)

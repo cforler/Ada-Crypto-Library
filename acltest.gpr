@@ -3,9 +3,48 @@ with "libadacrypt.gpr";
 project AclTest is
 
    for Source_Dirs use ("test/**");
-   for Main use ("test-tests.adb");
+   for Main use ("test-hash.adb", "test-tests.adb");
    for Object_Dir use "test";
    --for Exec_Dir    use ".";
+
+   for Source_Files use ("ada_containers-aunit_lists.adb", "ada_containers-aunit_lists.ads", "ada_containers.ads", "aunit-assertions-assert_exception.adb", "aunit-assertions.adb", "aunit-assertions.ads", 
+      "aunit-last_chance_handler.adb", "aunit-last_chance_handler.ads", "aunit-memory-utils.adb", "aunit-memory-utils.ads", "aunit-memory.adb", "aunit-memory.ads", "aunit-options.ads", "aunit-reporter-text.adb", 
+      "aunit-reporter-text.ads", "aunit-reporter-xml.adb", "aunit-reporter-xml.ads", "aunit-reporter.ads", "aunit-run.adb", "aunit-run.ads", "aunit-simple_test_cases-run_routine.adb", "aunit-simple_test_cases.adb", 
+      "aunit-simple_test_cases.ads", "aunit-test_caller.adb", "aunit-test_caller.ads", "aunit-test_cases-registration.adb", "aunit-test_cases.adb", "aunit-test_cases.ads", "aunit-test_filters.adb", "aunit-test_filters.ads", 
+      "aunit-test_fixtures.adb", "aunit-test_fixtures.ads", "aunit-test_results-acl.adb", "aunit-test_results-acl.ads", "aunit-test_results.adb", "aunit-test_results.ads", "aunit-test_suites.adb", "aunit-test_suites.ads", "aunit-tests.ads", 
+      "aunit-time_measure.adb", "aunit-time_measure.ads", "aunit.adb", "aunit.ads", "big_number_add_results.adb", "big_number_add_results.ads", "big_number_and_results.adb", "big_number_and_results.ads", "big_number_constants.adb", 
+      "big_number_constants.ads", "big_number_div_results.adb", "big_number_div_results.ads", "big_number_exponentiate_results.adb", "big_number_exponentiate_results.ads", "big_number_mod_results.adb", 
+      "big_number_mod_results.ads", "big_number_mult_results.adb", "big_number_mult_results.ads", "big_number_mult2_results.adb", "big_number_mult2_results.ads", "big_number_or_results.adb", "big_number_or_results.ads", 
+      "big_number_sub_results.adb", "big_number_sub_results.ads", "big_number_xor_results.adb", "big_number_xor_results.ads", "big_numbers_mod_utils.adb", "big_numbers_mod_utils.ads", "e.adb", "esbox.adb", "test-aes_oneway.adb", 
+      "test-aes_oneway.ads", "test-aes128.adb", "test-aes128.ads", "test-aes192.adb", "test-aes192.ads", "test-aes256.adb", "test-aes256.ads", "test-asymmetric_ciphers.adb", "test-big_number.adb", "test-big_number_add.adb", 
+      "test-big_number_add.ads", "test-big_number_add_mod_utils.adb", "test-big_number_add_mod_utils.ads", "test-big_number_and.adb", "test-big_number_and.ads", "test-big_number_b_add.adb", "test-big_number_b_add.ads", 
+      "test-big_number_b_div.adb", "test-big_number_b_div.ads", "test-big_number_b_mult.adb", "test-big_number_b_mult.ads", "test-big_number_b_sub.adb", "test-big_number_b_sub.ads", "test-big_number_comp.adb", 
+      "test-big_number_comp.ads", "test-big_number_dec.adb", "test-big_number_dec.ads", "test-big_number_div.adb", "test-big_number_div.ads", "test-big_number_div_mod_utils.adb", "test-big_number_div_mod_utils.ads", 
+      "test-big_number_exponentiate.adb", "test-big_number_exponentiate.ads", "test-big_number_inc.adb", "test-big_number_inc.ads", "test-big_number_inv_mod_utils.adb", "test-big_number_inv_mod_utils.ads", 
+      "test-big_number_iseven.adb", "test-big_number_iseven.ads", "test-big_number_isodd.adb", "test-big_number_isodd.ads", "test-big_number_lprime_mod_utils.adb", "test-big_number_lprime_mod_utils.ads", "test-big_number_lsb.adb", 
+      "test-big_number_lsb.ads", "test-big_number_min_max.adb", "test-big_number_min_max.ads", "test-big_number_mod.adb", "test-big_number_mod.ads", "test-big_number_mod_type_comp_and_add.adb", 
+      "test-big_number_mod_type_comp_and_add.ads", "test-big_number_mod_types.adb", "test-big_number_mod_types.ads", "test-big_number_mr_mod_utils.adb", "test-big_number_mr_mod_utils.ads", "test-big_number_msb.adb", 
+      "test-big_number_msb.ads", "test-big_number_mult_mod_utils.adb", "test-big_number_mult_mod_utils.ads", "test-big_number_mult2.adb", "test-big_number_mult2.ads", "test-big_number_multiplication.adb", 
+      "test-big_number_multiplication.ads", "test-big_number_or.adb", "test-big_number_or.ads", "test-big_number_pow_mod_utils.adb", "test-big_number_pow_mod_utils.ads", "test-big_number_prime_mod_utils.adb", 
+      "test-big_number_prime_mod_utils.ads", "test-big_number_rand_mod_utils.adb", "test-big_number_rand_mod_utils.ads", "test-big_number_rl.adb", "test-big_number_rl.ads", "test-big_number_sl.adb", "test-big_number_sl.ads", 
+      "test-big_number_sr.adb", "test-big_number_sr.ads", "test-big_number_sub.adb", "test-big_number_sub.ads", "test-big_number_sub_mod_utils.adb", "test-big_number_sub_mod_utils.ads", "test-big_number_swap.adb", 
+      "test-big_number_swap.ads", "test-big_number_xor.adb", "test-big_number_xor.ads", "test-big_numbers_division.adb", "test-big_numbers_division.ads", "test-big_numbers_utils.adb", "test-big_numbers_utils.ads", "test-blowfish.adb", 
+      "test-blowfish.ads", "test-blowfish_oneway.adb", "test-blowfish_oneway.ads", "test-bps_mode.adb", "test-bps_mode.ads", "test-cbc_mode.adb", "test-cbc_mode.ads", "test-cfb_mode.adb", "test-cfb_mode.ads", 
+      "test-cfb_oneway_mode.adb", "test-cfb_oneway_mode.ads", "test-cmac.adb", "test-cmac.ads", "test-counter_generator.adb", "test-counter_generator.ads", "test-ctr_mode.adb", "test-ctr_mode.ads", "test-ctr_oneway_mode.adb", 
+      "test-ctr_oneway_mode.ads", "test-dsa.adb", "test-dsa.ads", "test-ecdh.adb", "test-ecdh.ads", "test-ecdsa.adb", "test-ecdsa.ads", "test-ecies.adb", "test-ecies.ads", "test-elliptic_curves.adb", "test-elliptic_curves.ads", 
+      "test-elliptic_curves_nss_bf.adb", "test-elliptic_curves_nss_bf.ads", "test-elliptic_curves_zp.adb", "test-elliptic_curves_zp.ads", "test-hash.adb", "test-hmac.adb", "test-hmac.ads", "test-mmh.adb", "test-mmh.ads", 
+      "test-noobcipher.adb", "test-noobcipher.ads", "test-ocb.adb", "test-ocb.adb", "test-ocb.ads", "test-ocb.ads", "test-ofb_mode.adb", "test-ofb_mode.ads", "test-ofb_oneway_mode.adb", "test-ofb_oneway_mode.ads", "test-random.adb", 
+      "test-random.ads", "test-random_generator.adb", "test-random_generator.ads", "test-rmac.adb", "test-rmac.ads", "test-rsa.adb", "test-rsa.ads", "test-serpent.adb", "test-serpent.ads", "test-serpent_oneway.adb", 
+      "test-serpent_oneway.ads", "test-sha1.adb", "test-sha1.ads", "test-sha1_mac.adb", "test-sha1_mac.ads", "test-sha256.adb", "test-sha256.ads", "test-sha256_mac.adb", "test-sha256_mac.ads", "test-sha256_oneway.adb", 
+      "test-sha256_oneway.ads", "test-sha384.adb", "test-sha384.ads", "test-sha384_oneway.adb", "test-sha384_oneway.ads", "test-sha512.adb", "test-sha512.ads", "test-sha512_mac.adb", "test-sha512_mac.ads", "test-sha512_oneway.adb", 
+      "test-sha512_oneway.ads", "test-skein.adb", "test-skein.ads", "test-suite_all.adb", "test-suite_all.ads", "test-suite_asymmetric_ciphers.adb", "test-suite_asymmetric_ciphers.ads", "test-suite_big_num_all.adb", 
+      "test-suite_big_num_all.ads", "test-suite_big_num1.adb", "test-suite_big_num1.ads", "test-suite_big_num2.adb", "test-suite_big_num2.ads", "test-suite_big_num3.adb", "test-suite_big_num3.ads", "test-suite_big_num4.adb", 
+      "test-suite_big_num4.ads", "test-suite_blockciphers.adb", "test-suite_blockciphers.ads", "test-suite_elliptic_curves.adb", "test-suite_elliptic_curves.ads", "test-suite_hash_function.adb", "test-suite_hash_function.ads", 
+      "test-suite_mac.adb", "test-suite_mac.ads", "test-suite_misc.adb", "test-suite_misc.ads", "test-suite_nonces.adb", "test-suite_nonces.ads", "test-suite_oneway_blockciphers.adb", "test-suite_oneway_blockciphers.ads", 
+      "test-symmetric_ciphers.adb", "test-symmetric_mac.adb", "test-symmetric_mac.ads", "test-tdes.adb", "test-tdes.ads", "test-tdes_oneway.adb", "test-tdes_oneway.ads", "test-template.adb", "test-template.ads", "test-tests.adb", 
+      "test-twofish128.adb", "test-twofish128.ads", "test-twofish128_oneway.adb", "test-twofish128_oneway.ads", "test-twofish192.adb", "test-twofish192.ads", "test-twofish192_oneway.adb", "test-twofish192_oneway.ads", 
+      "test-twofish256.adb", "test-twofish256.ads", "test-twofish256_oneway.adb", "test-twofish256_oneway.ads", "test-types.adb", "test-types.ads", "test-whirlpool.adb", "test-whirlpool.ads", "test-whirlpool_mac.adb", 
+      "test-whirlpool_mac.ads", "test-whirlpool_oneway.adb", "test-whirlpool_oneway.ads", "test.ads", "w.adb");
 
    package Compiler is
       for Default_Switches ("ada") use ("-O2", "-gnatyM9999", "-gnat12");

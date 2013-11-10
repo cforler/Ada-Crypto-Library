@@ -12,6 +12,7 @@
 --with skein_debug;               use skein_debug;
 with Crypto.Types.Skein.Nodebug;             use Crypto.Types.Skein.Nodebug;
 with Crypto.Symmetric.Algorithm.Threefish;
+with Crypto.Types.Skein; use Crypto.Types.Skein;
 
 
 
@@ -223,11 +224,12 @@ package body Crypto.Symmetric.Algorithm.Skein is
 --                & Integer'Image(Current_Key'Length)
 --                );
             --now we have the tweak,key and ne message and can use the blockcipher
-         threefish.Encrypt(Mode             => Mode,
-                           Block_Cipher_Key => Current_Key,
-                           Tweak            => Current_Tweak,
-                           Plaintext        => Current_Message,
-                           Result           => Current_Result);
+            threefish.encrypt(
+                Mode             => Mode,
+                Block_Cipher_Key => Current_Key,
+                Tweak            => Current_Tweak,
+                Plaintext        => Current_Message,
+                Result           => Current_Result);
 
             --as a final step lets XOR the result with the message
             for i in Current_Result'Range loop
@@ -533,7 +535,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
             Put_Line(" ");
             Put_Line("The resulting  Message M_l after l=" & Integer'Image(l));
             for i in 0..M_New_Length loop
-                Put(Show_Hex(M_New(i)));
+                Put(To_Hex(M_New(i)));
                 Put(" ");
                 if (i+1) mod 16 = 0 then
                     Put_LIne(" ");

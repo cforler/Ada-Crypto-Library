@@ -24,9 +24,6 @@ package Crypto.Types.Skein is
     function Get_Number_Of_Bytes(Mode : in Skein_Mode)
             return Natural;
 
-    --the basic type we are working with in Skein
-    ---type Byte is mod 256;
-    ---type Bytes is array(Natural range <>) of Byte;
 
     type Bytes_Access is access Bytes;
 
@@ -50,7 +47,7 @@ package Crypto.Types.Skein is
 
     --if we want something like toString we can use this functions
     function Show_Bin(b : Byte) return String;
-    function Show_Hex(b : Byte) return String;
+--    function Show_Hex(b : Byte) return String;
 
     --sometimes we need to set a single Bit inside of a Byte
     procedure Set_Bit(b        : in out Byte;
@@ -61,73 +58,72 @@ package Crypto.Types.Skein is
     --of 64 Bit
     --we need some functions to work on this special type
     --and some depending types such as arays of them
-    type Skeinword is mod 2**64;
     type Boolean_Array_64 is array(0..63) of Boolean;
     for Boolean_Array_64'Component_Size use 1;
-    function Skeinword_To_Boolean_Array_64 is
-        new Ada.Unchecked_Conversion (Source => Skeinword,
+    function Dword_To_Boolean_Array_64 is
+        new Ada.Unchecked_Conversion (Source => Dword,
                                       Target => Boolean_Array_64);
 
-    --some Array Types of Skeinwords
+    --some Array Types of Dwords
     --we need them for the internals in Threefish
-    type Skeinword_Array is array (Natural range <>) of Skeinword;
-    type Skeinword_Matrix is array (Natural range <>,Natural range <>) of skeinword;
+    type Dword_Array is array (Natural range <>) of Dword;
+    type Dword_Matrix is array (Natural range <>,Natural range <>) of dword;
 
     --some "toString" functions
-    function Show_Bin(sw1 : Skeinword) return String;
-    function Show_Hex(sw1 : Skeinword) return String;
+    function Show_Bin(sw1 : Dword) return String;
+--    function Show_Hex(sw1 : Dword) return String;
 
     --some simple Create functions
     --inputs can be Natural
     --or Hex Stings (=Array of Chars)
     --or Binary String (=Array of Chars)
     --or random/allOne/allZero
-    function Create(Input : Natural) return Skeinword;
+    function Create(Input : Natural) return Dword;
 
-    --type for supported skeinword-inputs for Create-function with String input
-    type Skeinword_Input_Mode_Type is (Hex, Bin);
+    --type for supported dword-inputs for Create-function with String input
+    type Dword_Input_Mode_Type is (Hex, Bin);
     function  Create(Input : in String;
-                     Mode  : in Skeinword_Input_Mode_Type := Hex) return Skeinword;
+                     Mode  : in Dword_Input_Mode_Type := Hex) return Dword;
 
-    --we also want to be able to create defined skeinwords
-    type Skeinword_Kind_Mode_Type is (random, all_zero, all_one);
-    function  Create(Mode : Skeinword_Kind_Mode_Type) return Skeinword;
+    --we also want to be able to create defined dwords
+    type Dword_Kind_Mode_Type is (random, all_zero, all_one);
+    function  Create(Mode : Dword_Kind_Mode_Type) return Dword;
 
 
 
 
     --we want to have some function overwritten for tests
---    function "+" (Left,Right : Skeinword) return Skeinword;
---    function "xor" (Left,Right : Skeinword) return Skeinword;
+--    function "+" (Left,Right : Dword) return Dword;
+--    function "xor" (Left,Right : Dword) return Dword;
 
 
 
 
 --    function "*"(Left : Byte;
 --                 Right : Integer) return Integer;
-    function "+"(Left : Skeinword;
-            Right : Integer) return Skeinword;
+    function "+"(Left : Dword;
+            Right : Integer) return Dword;
 
-    procedure Set_Bit(Word     : in out Skeinword;
+    procedure Set_Bit(Word     : in out Dword;
                      Position : in Natural;
                      Value    : in Boolean);
 
-    function left_rot(sw1   : in Skeinword;
-                      count : in Natural) return Skeinword;
+    function left_rot(sw1   : in Dword;
+                      count : in Natural) return Dword;
 
     function Natural_To_Bytes(N      : Natural;
                               number : Natural) return Bytes;
 
-    function Bytes_To_Skeinword(b : in Bytes)
-            return Skeinword;
+    function Bytes_To_Dword(b : in Bytes)
+            return Dword;
 
-    function Bytes_To_Skeinword_Array(b : in Bytes)
-            return Skeinword_Array;
+    function Bytes_To_Dword_Array(b : in Bytes)
+            return Dword_Array;
 
-    function Skeinword_To_Bytes(s: in Skeinword)
+    function Dword_To_Bytes(s: in Dword)
             return Bytes;
 
-    function Skeinword_Array_To_Bytes(s : in Skeinword_Array)
+    function Dword_Array_To_Bytes(s : in Dword_Array)
             return Bytes;
 
     function "+"(Left: Bytes;

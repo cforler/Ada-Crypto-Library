@@ -9,6 +9,7 @@
 -- tested with gcc 4.2.4
 ------------------------------------------------------------------------
 with Crypto.Types.Skein; use Crypto.Types.Skein;
+with Crypto.Types;
 
 package Crypto.Symmetric.Algorithm.Skein is
 
@@ -17,7 +18,7 @@ package Crypto.Symmetric.Algorithm.Skein is
     --the most significant not ued Bit is set to 1
     --all other unused Bits are set to 0
     function Message_Bit_Padding(
-            Message        : in Bytes;
+            Message        : in Types.Bytes;
             Desired_Length : in Natural) return Bytes;
 
     --returns a Boolean-value if a Bit padding took place
@@ -47,10 +48,10 @@ package Crypto.Symmetric.Algorithm.Skein is
     --see Skein paper for details
     procedure Straight_UBI(
             Mode                  : in     Skein_Mode;
-            G                     : in     Bytes;    --starting value on N_Bs
+            G                     : in     Bytes;    --starting value on N_B Bytes
             Full_Message          : in     Bytes;    --Message of variable lenght
             Full_Message_Bits     : in     Natural;  --the length of the input Message in Bits
-            T_S                   : in     Bytes;    --Starting Tweak T_S of 16
+            T_S                   : in     Bytes;    --Starting Tweak T_S of 16 Byte
             Result                :    out Bytes);   --the result of UBI:
 
     task type Tree_UBI_Task(Mode : Skein_Mode;
@@ -71,7 +72,7 @@ package Crypto.Symmetric.Algorithm.Skein is
     --see Skein paper for details
     procedure Tree_UBI(
             Mode                  : in     Skein_Mode;
-            G                     : in     Bytes;    --starting value on N_Bs
+            G                     : in     Bytes;    --starting value on N_B Bytes
             Full_Message          : in     Bytes;    --Message of variable lenght
             Full_Message_Bits     : in     Natural;  --the length of the input Message in Bits
             T_S                   : in     Bytes;    --Starting Tweak T_S of 16 Byte
