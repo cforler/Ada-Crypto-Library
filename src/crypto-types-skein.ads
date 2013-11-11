@@ -22,16 +22,6 @@ package Crypto.Types.Skein is
 
 
 
-
-    --if we have lengths of Bits mod 8 != 0 then we can use this
-    --function to get the correct size for an Byte-Array
-    function Create(Message_Length_Bits : Natural) return Bytes;
-
-    --sometimes we need to set a single Bit inside of a Byte
-    procedure Set_Bit(b        : in out Byte;
-                      Position : in     Natural;
-                      Value    : in     Boolean);
-
     --in Threefish itself we use Words of defined length
     --of 64 Bit
     --we need some functions to work on this special type
@@ -63,27 +53,8 @@ package Crypto.Types.Skein is
     type Dword_Kind_Mode_Type is (random, all_zero, all_one);
     function  Create(Mode : Dword_Kind_Mode_Type) return Dword;
 
-
-
-
-    --we want to have some function overwritten for tests
---    function "+" (Left,Right : Skeinword) return Skeinword;
---    function "xor" (Left,Right : Skeinword) return Skeinword;
-
-
-
-
---    function "*"(Left : Byte;
---                 Right : Integer) return Integer;
     function "+"(Left : Dword;
             Right : Integer) return Dword;
-
-    procedure Set_Bit(Word     : in out Dword;
-                     Position : in Natural;
-                     Value    : in Boolean);
-
-    function left_rot(sw1   : in Dword;
-                      count : in Natural) return Dword;
 
     function Natural_To_Bytes(N      : Natural;
                               number : Natural) return Bytes;

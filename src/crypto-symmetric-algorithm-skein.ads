@@ -14,6 +14,11 @@ with Crypto.Symmetric.Algorithm.Threefish; use Crypto.Symmetric.Algorithm.Threef
 
 package Crypto.Symmetric.Algorithm.Skein is
 
+    --sometimes we need to set a single Bit inside of a Byte
+    procedure Set_Bit(b        : in out Byte;
+                      Position : in     Natural;
+                      Value    : in     Boolean);
+
    type Bytes_Access is access Bytes;
 
     --calculates a new Byte-Aray for a given length of Bits

@@ -20,21 +20,6 @@ with Crypto.Types.Skein.Stringmanipulation;        use Crypto.Types.Skein.String
 package body Crypto.Types.Skein is
 
 
-    function Create(Message_Length_Bits : Natural) return Bytes is
-        function Get_Bytes_Last(Bit_Length : Natural) return Natural is
-        begin
-            if Bit_Length mod 8 = 0 then
-                return Bit_Length/8 -1;
-            else
-                return Bit_Length/8;
-            end if;
-        end Get_Bytes_Last;
-        return_Bytes : Bytes(0..Get_Bytes_Last(Message_Length_Bits))
-                     := (others => Byte(0));
-    begin
-        return return_Bytes;
-    end Create;
-
     ------------------------------------------------------------------
     -- we need some functions to Create Dwords from various inputs
     ------------------------------------------------------------------
@@ -144,39 +129,8 @@ package body Crypto.Types.Skein is
         return result;
     end Create;
 
-    -----------------------------------------------
-    -- we want to be able to set a single Bit
-    -----------------------------------------------
-    procedure Set_Bit(Word     : in out Dword;
-                      Position : in Natural;
-                      Value    : in Boolean) is
-    begin
-        if Value then  --we want to set it to true
-            Word := Word or Dword(2)**Position;
-        else
-            Word := Word and (Dword'Last - Dword(2)**Position);
-        end if;
-    end Set_Bit;
 
-    procedure Set_Bit(b        : in out Byte;
-                      Position : in     Natural;
-                      Value    : in     Boolean) is
-    begin
-        if Value then
-            b := b or Byte(2**Position);
-        else
-            b := b and Byte'Last - Byte(2**Position);
-        end if;
-    end Set_Bit;
 
-    -------------------------------------------------
-    -- we also need rotation
-    -------------------------------------------------
-    function left_rot(sw1   : in Dword;
-                      count : in Natural) return Dword is
-    begin
-        return Dword(Interfaces.Rotate_Left(Interfaces.Unsigned_64(sw1), count));
-    end left_rot;
 
     --we want to be able to multiply Integers and Bytes
     --we need this in Bytes_To_int for example

@@ -21,6 +21,17 @@ package body Crypto.Symmetric.Algorithm.Skein is
     package threefish renames Crypto.Symmetric.Algorithm.Threefish;
 
 
+   procedure Set_Bit(b        : in out Byte;
+                      Position : in     Natural;
+                      Value    : in     Boolean) is
+    begin
+        if Value then
+            b := b or Byte(2**Position);
+        else
+            b := b and Byte'Last - Byte(2**Position);
+        end if;
+    end Set_Bit;
+
    function Message_Bit_Padding(
             Message        : in Bytes;
             Desired_Length : in Natural) return Bytes is

@@ -388,7 +388,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
                             rotConst: in     Natural) is
     begin
         sw1 := sw1 + sw2;
-        sw2 := left_rot(sw2, rotConst);
+        sw2 := Rotate_Left(sw2, rotConst);
         sw2 := sw1 xor sw2;
     end Threefish_mix;
 
@@ -397,7 +397,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
                                     rotConst: in     Natural) is
     begin
         sw2 := sw2 xor sw1;
-        sw2 := left_rot(sw2, 64 - rotConst); --in fact we want an right_rot
+        sw2 := Rotate_Left(sw2, 64 - rotConst); --in fact we want an right_rot
 
         sw1 := sw1 - sw2;
     end Threefish_Reverse_mix;
