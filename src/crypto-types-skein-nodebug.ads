@@ -12,7 +12,7 @@
 -- can be replaced in skein_adb, threefish.adb and skein_types.adb
 
 package Crypto.Types.Skein.Nodebug is
-    procedure Put(input      : in String);
+     procedure Put(input      : in String);
     procedure Put_Line(input : in String);
 
     procedure Put(input              : in Integer;

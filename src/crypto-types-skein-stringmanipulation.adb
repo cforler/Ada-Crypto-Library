@@ -121,4 +121,28 @@ package body Crypto.Types.Skein.Stringmanipulation is
         end case;
     end get_Value_From_Bin_Char;
 
+    function Get_Hex_Char_From_Bin_String(Bin_String : String) return Character is
+    begin
+        if Bin_String = "0000" then return '0'; end if;
+        if Bin_String = "0001" then return '1'; end if;
+        if Bin_String = "0010" then return '2'; end if;
+        if Bin_String = "0011" then return '3'; end if;
+        if Bin_String = "0100" then return '4'; end if;
+        if Bin_String = "0101" then return '5'; end if;
+        if Bin_String = "0110" then return '6'; end if;
+        if Bin_String = "0111" then return '7'; end if;
+        if Bin_String = "1000" then return '8'; end if;
+        if Bin_String = "1001" then return '9'; end if;
+        if Bin_String = "1010" then return 'A'; end if;
+        if Bin_String = "1011" then return 'B'; end if;
+        if Bin_String = "1100" then return 'C'; end if;
+        if Bin_String = "1101" then return 'D'; end if;
+        if Bin_String = "1110" then return 'E'; end if;
+        if Bin_String = "1111" then return 'F'; end if;
+
+        --TODO: set all zero, abort whole operation, raise exception
+        Put_Line("incorrect input for Bin_String, please check");
+        raise Program_Error;
+    end Get_Hex_Char_From_Bin_String;
+
 end Crypto.Types.Skein.Stringmanipulation;

@@ -157,17 +157,26 @@ package Crypto.Types is
    function Shift_Right  (Value : Mod_Type; Amount : Natural) return Mod_Type;
    function Rotate_Left  (Value : Mod_Type; Amount : Natural) return Mod_type;
    function Rotate_Right (Value : Mod_Type; Amount : Natural) return Mod_Type;
+   
+   
    pragma Import (Intrinsic, Shift_Left);
+   pragma Import (Intrinsic, Shift_Right);
    
    function Shift_Left (Value : Bytes; Amount : Natural) return Bytes;  
    function Shift_Left (Value : B_Block128 ; Amount : Natural) return B_Block128;  
+   function Shift_Right (Value : Bytes; Amount : Natural) return Bytes;  
+   function Shift_Right (Value : B_Block128 ; Amount : Natural) return B_Block128; 
+   
+   --function Shift_Right (Value : Bytes; Amount : Natural) return Bytes;  
+   --function Shift_Right (Value : B_Block128 ; Amount : Natural) return B_Block128; 
 
    --Operations for Bytes
    function "xor"(Left, Right : Bytes)        return Bytes;
    function "xor"(Left : Bytes; Right : Byte) return Bytes;
    function "+"(Left : Bytes; Right : Byte)   return Bytes; 
    function "+"(Left : Byte; Right  : Bytes)  return Bytes;
-   
+   function "and"(Left, Right : Bytes)        return Bytes;
+   		
    
    -- Operations for Words
    function "xor"(Left, Right : Words)       return Words;
@@ -305,6 +314,8 @@ package Crypto.Types is
       function "xor"(Left : T_A; Right  : T) return T_A;
       function "xor"(Left : T; Right : T_A)  return T_A;
       
+      function "and"(Left, Right : T_A)      return T_A;
+      
       function "+"(Left : T_A; Right : T) return T_A;
       function "+"(Left : T; Right : T_A) return T_A;
       
@@ -314,6 +325,7 @@ package Crypto.Types is
       function Right_Part(Block : in T_A) return T_A;      
       
       function Shift_Left(Value : T_A;  Amount : Natural) return T_A;
+      function Shift_Right(Value : T_A;  Amount : Natural) return T_A;
    end Generic_Mod_Aux;
    
    
@@ -331,7 +343,6 @@ private
    pragma Inline (To_DWord, R_To_DWord);
    pragma Inline (Is_Zero);
    pragma Inline (Left_Part, Right_Part); 
-   pragma Import (Intrinsic, Shift_Right);
    pragma Import (Intrinsic, Rotate_Left);
    pragma Import (Intrinsic, Rotate_Right);
    

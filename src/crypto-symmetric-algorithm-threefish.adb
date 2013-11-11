@@ -15,6 +15,7 @@ with Crypto.Types.Skein;           use Crypto.Types.Skein;
 
 package body Crypto.Symmetric.Algorithm.Threefish is
 
+
     Mix_Constants_256 : constant array (0..7, 0..1, 0..2) of Natural
                         := (((0,1,14),  (2,3,16)),
                             ((0,3,52),  (2,1,57)),
@@ -52,14 +53,14 @@ package body Crypto.Symmetric.Algorithm.Threefish is
 
                                 (( 0,15, 9),  ( 2,11,48),  ( 6,13,35),  ( 4, 9,52),  (14, 1,23),  ( 8, 5,31),  (10, 3,37),  (12, 7,20)));
 
-    function Get_Last_Dword_Index(mode : in Threefish_mode) return Natural is
+    function Get_Last_Word_Index(mode : in Threefish_mode) return Natural is
     begin
         case mode is
             when mode256  => return 256/64 - 1;
             when mode512  => return 512/64 - 1;
             when mode1024 => return 1024/64 - 1;
         end case;
-    end Get_Last_Dword_Index;
+    end Get_Last_Word_Index;
 
     function Get_Name(mode : in Threefish_mode) return String is
     begin
@@ -113,7 +114,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
                                     tweaks : Threefish_tweaks'Class)
             return boolean is
     begin
-        return Keys.data'Last = Get_Last_Dword_Index(mode);
+        return Keys.data'Last = Get_Last_Word_Index(mode);
     end Threefish_Mode_Check;
 
 
@@ -122,40 +123,40 @@ package body Crypto.Symmetric.Algorithm.Threefish is
                         Tweak            : in     Bytes;
                         Plaintext        : in     Bytes;
                         Result           :    out Bytes) is
-        Dwords    : Threefish_Dwords'Class
-                 := Make_Dwords( Mode => Threefish.Skein_Mode_To_Threefish_Mode(Mode),
-                                SWA  => To_DWords(Plaintext));
+        words    : Threefish_Words'Class
+                 := Make_Words( Mode => Threefish.Skein_Mode_To_Threefish_Mode(Mode),
+                                SWA  => Bytes_To_Skeinword_Array(Plaintext));
         Keys     : Threefish_Keys'Class
                  := Make_Keys(Mode => Threefish.Skein_Mode_To_Threefish_Mode(Mode),
-                              SWA  => To_DWords(Block_Cipher_Key));
+                              SWA  => Bytes_To_Skeinword_Array(Block_Cipher_Key));
         tweaks   : Threefish_Tweaks'Class
                  := Make_Tweaks(Mode => Threefish.Skein_Mode_To_Threefish_Mode(Mode),
-                                SWA  => To_DWords(Tweak));
-        outDwords : Threefish_Dwords'Class := Make_Dwords(Skein_Mode_To_Threefish_Mode(Mode));
+                                SWA  => Bytes_To_Skeinword_Array(Tweak));
+        outwords : Threefish_Words'Class := Make_Words(Skein_Mode_To_Threefish_Mode(Mode));
     begin
         --Show only the inputs
-        --Show_Dwords(true,"inputDwords",Dwords);
+        --Show_Words(true,"inputwords",words);
 
         encrypt(Mode => Skein_Mode_To_Threefish_Mode(Mode),
-            inDwords  => Dwords,
+            inwords  => words,
             Keys     => Keys,
             tweaks   => tweaks,
-            outDwords => outDwords,
+            outwords => outwords,
             Talk_Mode=> false);
-        Result := To_Bytes(outDwords.data);
+        Result := Skeinword_Array_To_Bytes(outwords.data);
 
-        --Show_Dwords(true,"results",outDwords);
+        --Show_Words(true,"results",outwords);
     end encrypt ;
 
     procedure encrypt  (mode      : in Threefish_mode;
-                        inDwords   : in Threefish_Dwords'Class;
+                        inwords   : in Threefish_words'Class;
                         Keys      : in Threefish_Keys'Class;
                         tweaks    : in Threefish_tweaks'Class;
-                        outDwords  : out Threefish_Dwords'Class;
+                        outwords  : out Threefish_words'Class;
                         Talk_Mode : in Boolean := false) is
 
     --we calculate the Extended Keys here (KeyShedule)
-        Extended_Keys : Threefish_Extended_Keys(Get_Last_Dword_Index(mode));
+        Extended_Keys : Threefish_Extended_Keys(Get_Last_Word_Index(mode));
 
     --we have to count the rounds and the keyinjections
         Round_Counter         : Natural := 0;
@@ -169,19 +170,19 @@ package body Crypto.Symmetric.Algorithm.Threefish is
 
 
     begin
-        Show_Dwords(Talk_Mode,"initial Dwords",inDwords);
+        Show_Words(Talk_Mode,"initial Words",inwords);
 
         if Talk_Mode then
             Put_Line("here are input Keys");
             for i in Keys.data'Range loop
-                Put_Line(To_Hex(Keys.data(i)));
+                Put_Line(Show_Hex(Keys.data(i)));
             end loop;
         end if;
 
         if Talk_Mode then
             Put_Line("here are input tweaks");
             for i in tweaks.data'Range loop
-                Put_Line(To_Hex(tweaks.data(i)));
+                Put_Line(Show_Hex(tweaks.data(i)));
             end loop;
         end if;
 
@@ -195,7 +196,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
             Put_Line("Here are the expanded Keys");
             for i in Extended_Keys.data'Range loop
                 for j in Keys.data'Range loop
-                    Put_line(To_Hex(Extended_Keys.data(i,j)));
+                    Put_line(Show_Hex(Extended_Keys.data(i,j)));
                 end loop;
                 Put_line("-----------");
             end loop;
@@ -203,12 +204,12 @@ package body Crypto.Symmetric.Algorithm.Threefish is
 
         -- now we have the Extended Keys
         -- we can do the Keyinjection and the Mixing
-        outDwords := inDwords;
+        outwords := inwords;
 
         --the initial keyInjection
-        Key_Injection(outDwords, Extended_Keys, 0);
+        Key_Injection(outwords, Extended_Keys, 0);
 
-        Show_Dwords(Talk_Mode,"Dwords after initial keyInjection",outDwords);
+        Show_Words(Talk_Mode,"Words after initial keyInjection",outwords);
 
         --we want to do 72/80 rounds
         --insert the Extended Keys after every 4th round
@@ -219,20 +220,20 @@ package body Crypto.Symmetric.Algorithm.Threefish is
                 Current_Mix_Variable := get_Mix_Variables(mode, r, j);
 
                 --do the mixing
-                Threefish_mix(outDwords.data(Current_Mix_Variable.input1),
-                              outDwords.data(Current_Mix_Variable.input2),
+                Threefish_mix(outwords.data(Current_Mix_Variable.input1),
+                              outwords.data(Current_Mix_Variable.input2),
                               Current_Mix_Variable.rotconst);
             end loop;
 
-            Show_Dwords(Talk_Mode,"Dwords after round: " & r'Img,outDwords);
+            Show_Words(Talk_Mode,"Words after round: " & r'Img,outwords);
 
             --do the keyinjection afte every round mod 4 = 0
             if r mod 4 = 0 then
-                Key_Injection(  outDwords,
+                Key_Injection(  outwords,
                                 Extended_Keys,
                                 r/4);
 
-                Show_Dwords(Talk_Mode,"Dwords after round " & r'Img & " and KeyInjection",outDwords);
+                Show_Words(Talk_Mode,"Words after round " & r'Img & " and KeyInjection",outwords);
             end if;
 
 
@@ -245,13 +246,13 @@ package body Crypto.Symmetric.Algorithm.Threefish is
     --we need a new KeyDeInjection
     --we need a new DeMIX
     procedure decrypt  (mode        : in     Threefish_mode;
-                        inDwords     : in     Threefish_Dwords'Class;
+                        inwords     : in     Threefish_words'Class;
                         Keys        : in     Threefish_Keys'Class;
                         tweaks      : in     Threefish_tweaks'Class;
-                        outDwords    :    out Threefish_Dwords'Class;
+                        outwords    :    out Threefish_words'Class;
                         Talk_Mode   : in     Boolean := false) is
         --we calculate the Extended Keys here (KeyShedule)
-        Extended_Keys : Threefish_Extended_Keys(Get_Last_Dword_Index(mode));
+        Extended_Keys : Threefish_Extended_Keys(Get_Last_Word_Index(mode));
 
         --some vaiales needed for the MIX-operations
         TOTAL_NUMBER_OF_MIX_OPERATIONS_PER_ROUND
@@ -266,7 +267,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
 
         -- now we have the Extended Keys
         -- we can do the Keyinjection and the "unMixing"
-        outDwords := inDwords;
+        outwords := inwords;
 
         --we want to do 72/80 rounds
         --insert the Extended Keys after every 4th round
@@ -275,7 +276,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
 
             --do the keyinjection after every round mod 4 = 0
             if r mod 4 = 0 then
-                Reverse_Key_Injection(  outDwords,
+                Reverse_Key_Injection(  outwords,
                                 Extended_Keys,
                                 r/4);
             end if;
@@ -285,8 +286,8 @@ package body Crypto.Symmetric.Algorithm.Threefish is
                 Current_Mix_Variable := get_Mix_Variables(mode, r, j);
 
                 --do the mixing
-                Threefish_Reverse_mix(outDwords.data(Current_Mix_Variable.input1),
-                              outDwords.data(Current_Mix_Variable.input2),
+                Threefish_Reverse_mix(outwords.data(Current_Mix_Variable.input1),
+                              outwords.data(Current_Mix_Variable.input2),
                               Current_Mix_Variable.rotconst);
             end loop;
 
@@ -294,7 +295,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
         end loop;
 
         --the "initial" keyInjection
-        Reverse_Key_Injection(outDwords, Extended_Keys, 0);
+        Reverse_Key_Injection(outwords, Extended_Keys, 0);
     end decrypt  ;
 
     procedure Key_Schedule ( mode    : in     Threefish_mode;
@@ -305,18 +306,18 @@ package body Crypto.Symmetric.Algorithm.Threefish is
         k_f : Natural := Keys.data'First;
         k_l : Natural := Keys.data'Last;
 
-        --the number of Dwords(just for better readability
+        --the number of words(just for better readability
         n_w : Natural := k_l + 1;
 
         --we need longer Keys and tweaks for the calculation
-        long_Keys : Dwords(0..k_l+1);
-        long_tweaks : Dwords (0..2);
+        long_Keys : skeinword_array(0..k_l+1);
+        long_tweaks : skeinword_array (0..2);
 
-        --some Dwords we will need
-        c240 : Dword := create("1BD11BDAA9FC1A22", Hex);
+        --some skeinwords we will need
+        c240 : skeinword := create("1BD11BDAA9FC1A22", Hex);
     begin
         --------------------------
-        --first we c5have fill the longer Keys and tweaks
+        --first we have fill the longer Keys and tweaks
         long_Keys(0..k_l) := Keys.data(0..k_l);
         long_Keys(n_w) := c240;
         for i in k_f..k_l loop
@@ -341,38 +342,38 @@ package body Crypto.Symmetric.Algorithm.Threefish is
             Put_Line("-------------------------------");
             Put_Line("the Extended Keys: ");
             for i in 0..10 loop
-                Put_Line(To_Hex(ext_Keys.data(i,0)) & "    "
-                    & To_Hex(ext_Keys.data(i,1))& "    "
-                    & To_Hex(ext_Keys.data(i,2))& "    "
-                    & To_Hex(ext_Keys.data(i,3)));
+                Put_Line(Show_Hex(ext_Keys.data(i,0)) & "    "
+                    & Show_Hex(ext_Keys.data(i,1))& "    "
+                    & Show_Hex(ext_Keys.data(i,2))& "    "
+                    & Show_Hex(ext_Keys.data(i,3)));
             end loop;
         end if;
 
     end Key_Schedule ;
 
 
-    procedure Key_Injection(Dwords   : in out Threefish_Dwords'Class;
+    procedure Key_Injection(words   : in out Threefish_words'Class;
                             ks      : in     Threefish_Extended_Keys'Class;
                             r       : in     Natural) is
     begin
-        --we just have to ADD Dwords and Extended Keys for the current round
-        for w in Dwords.data'Range loop
-            Dwords.data(w) := Dwords.data(w) + ks.data(r,w);
+        --we just have to ADD words and Extended Keys for the current round
+        for w in words.data'Range loop
+            words.data(w) := words.data(w) + ks.data(r,w);
         end loop;
     end Key_Injection;
 
-    procedure Reverse_Key_Injection(Dwords   : in out Threefish_Dwords'Class;
+    procedure Reverse_Key_Injection(words   : in out Threefish_words'Class;
                                     ks      : in     Threefish_Extended_Keys'Class;
                                     r       : in     Natural) is
     begin
-        --we just have to ADD Dwords and Extended Keys for the current round
-        for w in Dwords.data'Range loop
-            Dwords.data(w) := Dwords.data(w) - ks.data(r/8,w);
+        --we just have to ADD words and Extended Keys for the current round
+        for w in words.data'Range loop
+            words.data(w) := words.data(w) - ks.data(r/8,w);
         end loop;
     end Reverse_Key_Injection;
 
-    procedure Threefish_mix(sw1     : in out Dword;
-                            sw2     : in out Dword;
+    procedure Threefish_mix(sw1     : in out skeinword;
+                            sw2     : in out skeinword;
                             rotConst: in     Natural) is
     begin
         sw1 := sw1 + sw2;
@@ -380,8 +381,8 @@ package body Crypto.Symmetric.Algorithm.Threefish is
         sw2 := sw1 xor sw2;
     end Threefish_mix;
 
-    procedure Threefish_Reverse_mix(sw1     : in out Dword;
-                                    sw2     : in out Dword;
+    procedure Threefish_Reverse_mix(sw1     : in out skeinword;
+                                    sw2     : in out skeinword;
                                     rotConst: in     Natural) is
     begin
         sw2 := sw2 xor sw1;
@@ -423,17 +424,17 @@ package body Crypto.Symmetric.Algorithm.Threefish is
     end get_Mix_Variables ;
 
 -------
-    function Make_Dwords(mode : Threefish_mode)  return Threefish_Dwords'Class is
-        Dwords : Threefish_Dwords(Last_Index => Get_Last_Dword_Index(mode));
+    function Make_Words(mode : Threefish_mode)  return Threefish_Words'Class is
+        words : Threefish_Words(Last_Index => Get_Last_Word_Index(mode));
     begin
-        for i in Dwords.data'Range loop
-            Dwords.data(i) := Create("000", Hex);
+        for i in words.data'Range loop
+            words.data(i) := Create("000", Hex);
         end loop;
-        return Dwords;
-    end make_Dwords;
+        return words;
+    end make_words;
 --------
     function Make_Keys(mode : Threefish_mode)   return Threefish_Keys'Class is
-        Keys : Threefish_Keys(Get_Last_Dword_Index(mode));
+        Keys : Threefish_Keys(Get_Last_Word_Index(mode));
     begin
         for i in Keys.data'Range loop
             Keys.data(i) := Create("000", Hex);
@@ -442,7 +443,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
     end make_Keys;
 --------
     function Make_Tweaks(mode : Threefish_mode) return Threefish_Tweaks'Class is
-        tweaks : Threefish_Tweaks(Get_Last_Dword_Index(mode));
+        tweaks : Threefish_Tweaks(Get_Last_Word_Index(mode));
     begin
         for i in tweaks.data'Range loop
             tweaks.data(i) := Create("000", Hex);
@@ -451,7 +452,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
     end make_tweaks;
 ---------
     function Make_Extended_Keys(mode : Threefish_mode) return Threefish_Extended_Keys'Class is
-        Extended_Keys : Threefish_Extended_Keys(Get_Last_Dword_Index(mode));
+        Extended_Keys : Threefish_Extended_Keys(Get_Last_Word_Index(mode));
     begin
         for i in Extended_Keys.data'Range(1) loop
             for j in Extended_Keys.data'Range(2) loop
@@ -461,25 +462,25 @@ package body Crypto.Symmetric.Algorithm.Threefish is
         return Extended_Keys;
     end make_Extended_Keys;
 ----------
-    function Make_Dwords(mode : Threefish_mode;
-            SWA  : Dwords)  return Threefish_Dwords'Class is
-        Dwords : Threefish_Dwords(Last_Index => Get_Last_Dword_Index(mode));
+    function Make_Words(mode : Threefish_mode;
+            SWA  : Skeinword_Array)  return Threefish_Words'Class is
+        words : Threefish_Words(Last_Index => Get_Last_Word_Index(mode));
     begin
-        if not (SWA'Last = Get_Last_Dword_Index(mode)) then
+        if not (SWA'Last = Get_Last_Word_Index(mode)) then
             Put_Error_Line("Wrong Range, please check");
             Raise Program_Error;
         end if;
-        for i in Dwords.data'Range loop
-            Dwords.data(i) := SWA(i);
+        for i in words.data'Range loop
+            words.data(i) := SWA(i);
         end loop;
-        return Dwords;
-    end Make_Dwords;
+        return words;
+    end Make_Words;
 ---------------
     function Make_Keys(mode : Threefish_Mode;
-            SWA  : Dwords)   return Threefish_Keys'Class is
-        Keys : Threefish_Keys(Last_Index => Get_Last_Dword_Index(mode));
+            SWA  : Skeinword_Array)   return Threefish_Keys'Class is
+        Keys : Threefish_Keys(Last_Index => Get_Last_Word_Index(mode));
     begin
-        if not (SWA'Last = Get_Last_Dword_Index(mode)) then
+        if not (SWA'Last = Get_Last_Word_Index(mode)) then
             Put_Error_Line("Wrong Range, please check");
             Raise Program_Error;
         end if;
@@ -490,13 +491,13 @@ package body Crypto.Symmetric.Algorithm.Threefish is
     end Make_Keys;
 -------------
     function Make_Tweaks(mode : Threefish_mode;
-                SWA  : Dwords) return Threefish_Tweaks'Class is
-        tweaks : Threefish_Tweaks(Last_Index => Get_Last_Dword_Index(mode));
+                SWA  : Skeinword_Array) return Threefish_Tweaks'Class is
+        tweaks : Threefish_Tweaks(Last_Index => Get_Last_Word_Index(mode));
     begin
         if not (SWA'Last = 1) then
             Put_Error_Line("Wrong Range for Tweaks, please check:"
                 & Integer'Image(SWA'Last) & " vs."
-                & Integer'Image(Get_Last_Dword_Index(mode)));
+                & Integer'Image(Get_Last_Word_Index(mode)));
             Raise Program_Error;
         end if;
         for i in tweaks.data'Range loop
@@ -505,60 +506,60 @@ package body Crypto.Symmetric.Algorithm.Threefish is
         return tweaks;
     end Make_Tweaks;
 
-    procedure Show_Dwords(Talk_Mode : Boolean;
+    procedure Show_Words(Talk_Mode : Boolean;
                          message   : String;
-                         Dwords     : Threefish_Dwords'Class) is
+                         words     : Threefish_Words'Class) is
     begin
         if Talk_Mode then
             Put_Line("-------------------------------");
             Put_Line(message);
-            for i in Dwords.data'Range loop
-                Put(To_Hex(Dwords.data(i)));
+            for i in words.data'Range loop
+                Put(Show_Hex(words.data(i)));
                 Put("    ");
                 if (i+1) mod 4 = 0 then
                     Put_Line(" ");
                 end if;
-                --Put_Line(show(Dwords.data(i)));
+                --Put_Line(show(words.data(i)));
             end loop;
         end if;
-    end Show_Dwords;
+    end Show_Words;
 
 
-    procedure Set_Threefish_Dword(Dwords : in out Threefish_Dwords'Class;
+    procedure Set_Threefish_Word(Words : in out Threefish_Words'Class;
                                 Index  : in     Natural;
-                                Dword   : in     Crypto.Types.Dword) is
+                                Word   : in     Skeinword) is
     begin
-        Dwords.data(Index) := Dword;
-    end Set_Threefish_Dword;
+        Words.data(Index) := Word;
+    end Set_Threefish_Word;
 
     procedure Set_Threefish_Key(Keys   : in out Threefish_Keys'Class;
                                 Index  : in     Natural;
-                                Key    : in     Dword) is
+                                Key    : in     Skeinword) is
     begin
         Keys.data(Index) := Key;
     end Set_Threefish_Key;
 
     procedure Set_Threefish_Tweak(tweaks : in out Threefish_Tweaks'Class;
                                   Index  : in     Natural;
-                                  Tweak  : in     Dword) is
+                                  Tweak  : in     Skeinword) is
     begin
         tweaks.data(Index) := tweak;
     end Set_Threefish_Tweak;
 
-    function Get_Threefish_Dword(Dwords : in Threefish_Dwords'Class;
-                                Index : in Natural) return Dword is
+    function Get_Threefish_Word(Words : in Threefish_Words'Class;
+                                Index : in Natural) return Skeinword is
     begin
-        return Dwords.data(Index);
-    end Get_Threefish_Dword;
+        return Words.data(Index);
+    end Get_Threefish_Word;
 
     function Get_Threefish_Key(Keys : in Threefish_Keys'Class;
-                               Index : in Natural) return Dword is
+                               Index : in Natural) return Skeinword is
     begin
         return Keys.data(Index);
     end Get_Threefish_Key;
 
     function Get_Threefish_Tweak(Tweaks : in Threefish_Tweaks'Class;
-                                 Index : in Natural) return Dword is
+                                 Index : in Natural) return Skeinword is
     begin
         return Tweaks.data(Index);
     end Get_Threefish_Tweak;

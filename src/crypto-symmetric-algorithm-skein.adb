@@ -20,7 +20,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
 
     package threefish renames Crypto.Symmetric.Algorithm.Threefish;
 
-    function Message_Bit_Padding(
+   function Message_Bit_Padding(
             Message        : in Bytes;
             Desired_Length : in Natural) return Bytes is
         Local_Message : Bytes := Message;
@@ -73,13 +73,13 @@ package body Crypto.Symmetric.Algorithm.Skein is
         function Get_P(Original_Message : Bytes) return Natural is
         begin
             if Original_Message'Length = 0 then
-                return Get_Number_Of_Bytes(Mode);
-            elsif Original_Message'Length mod Get_Number_Of_Bytes(Mode) = 0 then
+                return Get_Number_Of_Skein_Bytes(Mode);
+            elsif Original_Message'Length mod Get_Number_Of_Skein_Bytes(Mode) = 0 then
                 return 0;
             else
-                return Get_Number_Of_Bytes(Mode)
+                return Get_Number_Of_Skein_Bytes(Mode)
                        - (Original_Message'Length
-                           mod Get_Number_Of_Bytes(Mode));
+                           mod Get_Number_Of_Skein_Bytes(Mode));
             end if;
         end Get_P;
         p : Natural := Get_P(Original_Message);
@@ -162,7 +162,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
             Result                :    out Bytes)   --the result of UBI:
     is
         Current_Tweak      : Bytes := T_S;  --we will manipulate this in every UBI-round
-        Current_Message    : Bytes(0..Get_Number_Of_Bytes(Mode)-1);
+        Current_Message    : Bytes(0..Get_Number_Of_Skein_Bytes(Mode)-1);
                                             --the current 8,16,24 Bytes
 
         Current_Key        : Bytes := G;    --the "Keys" for the BlockCipher
@@ -194,9 +194,9 @@ package body Crypto.Symmetric.Algorithm.Skein is
         N_M : Natural := 0;
     begin
         --check if G has the correct Size
-        if not (G'Length = Get_Number_Of_Bytes(Mode)) then
+        if not (G'Length = Get_Number_Of_Skein_Bytes(Mode)) then
             Put_Line("This is the wrong input size or mode, please check.");
-            Put_Line(Integer'Image(G'Length) & " vs." & Integer'Image(Get_Number_Of_Bytes(Mode)));
+            Put_Line(Integer'Image(G'Length) & " vs." & Integer'Image(Get_Number_Of_Skein_Bytes(Mode)));
             Raise Program_Error;
         end if;
 
@@ -208,13 +208,13 @@ package body Crypto.Symmetric.Algorithm.Skein is
             Current_Tweak := Get_Current_Tweak(
                 T_S       => T_S,
                 N_M       => Skein_Message_Length(N_M),               --we normaly dont need a special variable here!!!
-                Index     => Bytes_Processed / Get_Number_Of_Bytes(Mode),
-                N_b       => Get_Number_Of_Bytes(Mode),
+                Index     => Bytes_Processed / Get_Number_Of_Skein_Bytes(Mode),
+                N_b       => Get_Number_Of_Skein_Bytes(Mode),
                 First_Run => Bytes_Processed = 0,
-                Last_Run  => Full_Message'Length - Bytes_Processed <= Get_Number_Of_Bytes(Mode),
+                Last_Run  => Full_Message'Length - Bytes_Processed <= Get_Number_Of_Skein_Bytes(Mode),
                 B         => B);
 
-            Current_Message := Byte_Padded_Message(Bytes_Processed..Bytes_Processed+Get_Number_Of_Bytes(Mode)-1);
+            Current_Message := Byte_Padded_Message(Bytes_Processed..Bytes_Processed+Get_Number_Of_Skein_Bytes(Mode)-1);
 
             Current_Key     := Current_Result;
 
@@ -237,7 +237,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
             end loop;
 
             --increment the counter for the next run
-            Bytes_Processed := Bytes_Processed + Get_Number_Of_Bytes(Mode);
+            Bytes_Processed := Bytes_Processed + Get_Number_Of_Skein_Bytes(Mode);
 
             --if this was the last block we can finish this here
             exit when Bytes_Processed = Byte_Padded_Message'Length;
@@ -260,14 +260,14 @@ package body Crypto.Symmetric.Algorithm.Skein is
     task body Tree_UBI_Task
         is
         Local_Mode                  : Skein_Mode;
-        Local_G                     : Bytes(0..Get_Number_Of_Bytes(Mode)-1);
+        Local_G                     : Bytes(0..Get_Number_Of_Skein_Bytes(Mode)-1);
         Local_Full_Message          : Bytes(0..Longest_Message_Bytes-1);
         Local_Full_Message_Length   : Natural;
         Local_T_S                   : Bytes(0..15);
         Local_Result_Access         : Bytes_Access;
         Local_Result_First          : Natural;
         Local_Result_Last           : Natural;
-        --Local_Result                : Bytes(0..Get_Number_Of_Bytes(Mode)-1);
+        --Local_Result                : Bytes(0..Get_Number_Of_Skein_Bytes(Mode)-1);
         --since we have to save a larger "internally" Full Message, we need to save
         --the real size of the Full_message here too
         Full_Message_First          : Natural;
@@ -322,7 +322,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
                     Result              => Local_Result_Access.all(Local_Result_First..Local_Result_Last)
                     );
 
-                Local_Length_Access.all.Increase(Value => Get_Number_Of_Bytes(Mode));
+                Local_Length_Access.all.Increase(Value => Get_Number_Of_Skein_Bytes(Mode));
 
             or terminate;
             end select;
@@ -342,7 +342,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
             Number_Of_Tasks       : in     Natural := 2)
         is
 
-        N_b     : Natural := Get_Number_Of_Bytes(Mode); --this is in BYTES
+        N_b     : Natural := Get_Number_Of_Skein_Bytes(Mode); --this is in BYTES
         --leaf size N_l= N_b* 2**Y_l BITS
         N_l     : Natural
                 := N_b * 2**Y_l;
@@ -535,7 +535,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
             Put_Line(" ");
             Put_Line("The resulting  Message M_l after l=" & Integer'Image(l));
             for i in 0..M_New_Length loop
-                Put(To_Hex(M_New(i)));
+                Put(Show_Hex(M_New(i)));
                 Put(" ");
                 if (i+1) mod 16 = 0 then
                     Put_LIne(" ");
@@ -565,7 +565,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
                                             --the last byte is only partially used
         is
         --we need at least the size for the current Mode
-        Local_Result : Bytes(0..N_0/8 + Get_Number_Of_Bytes(Mode));  --build N_b bytes more, we cut it later..
+        Local_Result : Bytes(0..N_0/8 + Get_Number_Of_Skein_Bytes(Mode));  --build N_b bytes more, we cut it later..
         Counter : Natural := 0;
         T_out : Bytes(0..15)
                      := (15 => Byte(63),
@@ -578,12 +578,12 @@ package body Crypto.Symmetric.Algorithm.Skein is
                 Full_Message => Natural_To_Bytes(Counter,8),
                 Full_Message_Bits => 8*8,
                 T_S => T_out,          --this is T_{out}* 2^{120}
-                Result => Local_Result(Counter*Get_Number_Of_Bytes(Mode)
-                                        .. Counter*Get_Number_Of_Bytes(Mode) + Get_Number_Of_Bytes(Mode) -1)
+                Result => Local_Result(Counter*Get_Number_Of_Skein_Bytes(Mode)
+                                        .. Counter*Get_Number_Of_Skein_Bytes(Mode) + Get_Number_Of_Skein_Bytes(Mode) -1)
                 );
 
             Counter := Counter + 1;
-            exit when Counter*Get_Number_Of_Bytes(Mode) >= N_0/8;
+            exit when Counter*Get_Number_Of_Skein_Bytes(Mode) >= N_0/8;
         end loop;
 
         --we just need the first N_0/8 Bytes
@@ -644,9 +644,9 @@ package body Crypto.Symmetric.Algorithm.Skein is
             ) is
         --initialize K_Tick, we will set it to all-zero
         --or some value depending on K
-        Empty_G: Bytes(0..Get_Number_Of_Bytes(Mode)-1)
+        Empty_G: Bytes(0..Get_Number_Of_Skein_Bytes(Mode)-1)
                 := (others => Byte(0));
-        K_Tick : Bytes(0..Get_Number_Of_Bytes(Mode)-1);
+        K_Tick : Bytes(0..Get_Number_Of_Skein_Bytes(Mode)-1);
         T_Key : Bytes(0..15) := (others => Byte(0));
 
         --data used for the Configuration calculations
@@ -810,9 +810,9 @@ package body Crypto.Symmetric.Algorithm.Skein is
             Y_m         : in     Natural;
             Tuple_Array : in     Skein_Message_Tweak_Tuple_Pointer_Array;
             Result      :    out Bytes) is
-        Initresult  : Bytes(0..Get_Number_Of_Bytes(Mode)-1)
+        Initresult  : Bytes(0..Get_Number_Of_Skein_Bytes(Mode)-1)
                     := (others => Byte(0));
-        Updateresult: Bytes(0..Get_Number_Of_Bytes(Mode)-1)
+        Updateresult: Bytes(0..Get_Number_Of_Skein_Bytes(Mode)-1)
                     := (others => Byte(0));
     begin
         Init(Mode   => Mode,
@@ -852,9 +852,9 @@ package body Crypto.Symmetric.Algorithm.Skein is
             Message_Length  : in     Natural;
             Type_Value      : in     Byte;
             Result          :    out Bytes) is
-        Initresult  : Bytes(0..Get_Number_Of_Bytes(Mode)-1)
+        Initresult  : Bytes(0..Get_Number_Of_Skein_Bytes(Mode)-1)
                     := (others => Byte(0));
-        Updateresult: Bytes(0..Get_Number_Of_Bytes(Mode)-1)
+        Updateresult: Bytes(0..Get_Number_Of_Skein_Bytes(Mode)-1)
                     := (others => Byte(0));
     begin
         Init(Mode => Mode,

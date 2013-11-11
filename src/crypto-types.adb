@@ -54,6 +54,22 @@ package body Crypto.Types is
       return Right xor Left;
    end "xor";
    
+      
+      ------------------------------------------------------------------------
+      
+   function "and"(Left, Right : T_A) return T_A is
+	Result : T_A(0..Left'Length-1);
+   begin
+
+      if Left'Length /= Right'Length then
+         raise  Constraint_Error;
+      end if;
+      for I in 0..Left'Length-1 loop
+         Result(I) := Left(Left'First+I) and Right(Right'First+I);
+      end loop;
+      return Result;
+   end "and";
+      
    ------------------------------------------------------------------------
    function "+"(Left : T_A; Right : T) return T_A is
       Result: T_A(Left'Range) := Left;
@@ -126,7 +142,26 @@ package body Crypto.Types is
 	   xor Shift_Right(Value(I+1),T'Size-L);
       end loop;
       return Result;
-   end Shift_Left; 
+      end Shift_Left; 
+      -------------------------------------------------------------------------
+         function Shift_Right(Value : T_A;  Amount : Natural) return T_A  is
+      Result : T_A(Value'Range) := (others => 0);
+      L : constant Natural := Amount mod T'Size;
+      M : constant Natural := Value'First+(Amount/T'Size);
+   begin
+      if Amount >= Value'Size then
+	 return Result;
+      elsif Amount = 0 then
+	 return Value;
+      end if;      
+      Result(Value'Last-M) := Shift_Right(Value(Value'Last),L);      
+      
+      for I in reverse Value'First..Value'Last-(M+1) loop
+	 Result(I) := Shift_Right(Value(I),L)
+	   xor Shift_Left(Value(I+1),T'Size-L);
+      end loop;
+      return Result;
+   end Shift_Right;    
 
    end Generic_Mod_Aux;
    
@@ -326,6 +361,13 @@ package body Crypto.Types is
    begin
       return Right + Left;
    end "+";
+   
+   ---------------------------------------------------------------------------
+   
+   function "and"(Left, Right : Bytes) return Bytes is
+   begin
+      return Aux_Byte."and"(Left,Right);
+   end "and";
 
    ---------------------------------------------------------------------------
    ---------------------------------------------------------------------------
@@ -778,6 +820,22 @@ package body Crypto.Types is
    begin
       return  B_Block128(Aux_Byte.Shift_Left(Bytes(Value),Amount));
    end Shift_Left;
+   
+   ----------------------------------------------------------------------------
+   
+   function Shift_Right(Value : Bytes; Amount : Natural) return Bytes is
+   begin
+      return Aux_Byte.Shift_Right(Value,Amount);
+   end Shift_Right;
+   
+   ---------------------------------------------------------------------------
+   
+   function Shift_Right(Value : B_Block128; Amount : Natural) return B_Block128 is
+   begin
+      return  B_Block128(Aux_Byte.Shift_Right(Bytes(Value),Amount));
+   end Shift_Right;
+   
+   ---------------------------------------------------------------------------
    
    
    

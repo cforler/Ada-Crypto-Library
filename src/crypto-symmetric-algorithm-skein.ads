@@ -18,7 +18,7 @@ package Crypto.Symmetric.Algorithm.Skein is
     --the most significant not ued Bit is set to 1
     --all other unused Bits are set to 0
     function Message_Bit_Padding(
-            Message        : in Types.Bytes;
+            Message        : in Bytes;
             Desired_Length : in Natural) return Bytes;
 
     --returns a Boolean-value if a Bit padding took place

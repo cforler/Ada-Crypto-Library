@@ -19,7 +19,7 @@ with Ada.Strings.Unbounded;         use Ada.Strings.Unbounded;
 --need regulary
 package Crypto.Types.Skein.Stringmanipulation is
 
-    --converts String to Unbounded_String
+   --converts String to Unbounded_String
     function str2ustr (input : in String) return Ada.Strings.Unbounded.Unbounded_String;
 
     --converts Unbounded_String to String
@@ -41,5 +41,6 @@ package Crypto.Types.Skein.Stringmanipulation is
 
     function get_Value_From_Hex_Char(Hex_Char : Character) return Natural;
     function get_Value_From_Bin_Char(Bin_Char : Character) return Natural;
+    function Get_Hex_Char_From_Bin_String(Bin_String : String) return Character;
 
 end Crypto.Types.Skein.Stringmanipulation;
