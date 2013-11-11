@@ -1,5 +1,6 @@
 with AUnit.Assertions;
 with Crypto.Symmetric.Algorithm.Skein;
+with Crypto.Symmetric.Algorithm.Threefish;
 with Crypto.Types.Skein;
 with Crypto.Types;
 with Ada.text_IO;
@@ -8,6 +9,7 @@ package body Test.Skein is
    use Crypto.Types.Skein;
    use Crypto.Symmetric.Algorithm.Skein;
    use Crypto.Types;
+   use Crypto.Symmetric.Algorithm.Threefish;
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------

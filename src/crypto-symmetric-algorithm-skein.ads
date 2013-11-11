@@ -10,9 +10,11 @@
 ------------------------------------------------------------------------
 with Crypto.Types.Skein; use Crypto.Types.Skein;
 with Crypto.Types;
+with Crypto.Symmetric.Algorithm.Threefish; use Crypto.Symmetric.Algorithm.Threefish;
 
 package Crypto.Symmetric.Algorithm.Skein is
 
+   type Bytes_Access is access Bytes;
 
     --calculates a new Byte-Aray for a given length of Bits
     --the most significant not ued Bit is set to 1

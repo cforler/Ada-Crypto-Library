@@ -19,35 +19,13 @@ with Crypto.Types; use Crypto.Types;
 
 
 package Crypto.Types.Skein is
-    --the Mode type, just for distinguishing the diffrent mode of Skein
-    type Skein_Mode is (m256, m512, m1024);
-    function Get_Number_Of_Skein_Bytes(Mode : in Skein_Mode)
-            return Natural;
 
 
-    type Bytes_Access is access Bytes;
 
-    --a group of Bytes we want to work on using different tasks
-    --we need this for UBI-Tree-Mode (we are calculating different parts
-    --of the inner state using different tasks)
-    protected type Protected_Bytes(Last_Index : Natural) is
-        --sets a number of Bytes in the group of Bytes
-        procedure Set_Bytes(In_Bytes     : in Bytes;
-                            Index_First  : in Natural;
-                            Index_Last   : in Natural);
-        --returns the whole group of Bytes
-        procedure Return_Bytes(Out_Bytes : out Bytes);
-    private
-        B : Bytes(0..Last_Index);
-    end Protected_Bytes;
 
     --if we have lengths of Bits mod 8 != 0 then we can use this
     --function to get the correct size for an Byte-Array
     function Create(Message_Length_Bits : Natural) return Bytes;
-
-    --if we want something like toString we can use this functions
-    function Show_Bin(b : Byte) return String;
-    function Show_Hex(b : Byte) return String;
 
     --sometimes we need to set a single Bit inside of a Byte
     procedure Set_Bit(b        : in out Byte;
@@ -58,37 +36,32 @@ package Crypto.Types.Skein is
     --of 64 Bit
     --we need some functions to work on this special type
     --and some depending types such as arays of them
-    type Skeinword is mod 2**64;
     type Boolean_Array_64 is array(0..63) of Boolean;
     for Boolean_Array_64'Component_Size use 1;
-    function Skeinword_To_Boolean_Array_64 is
-        new Ada.Unchecked_Conversion (Source => Skeinword,
+    function Dword_To_Boolean_Array_64 is
+        new Ada.Unchecked_Conversion (Source => DWord,
                                       Target => Boolean_Array_64);
 
     --some Array Types of Skeinwords
     --we need them for the internals in Threefish
-    type Skeinword_Array is array (Natural range <>) of Skeinword;
-    type Skeinword_Matrix is array (Natural range <>,Natural range <>) of skeinword;
-
-    --some "toString" functions
-    function Show_Bin(sw1 : Skeinword) return String;
-    function Show_Hex(sw1 : Skeinword) return String;
+    type Dword_array is array (Natural range <>) of DWord;
+    type Dword_Matrix is array (Natural range <>,Natural range <>) of Dword;
 
     --some simple Create functions
     --inputs can be Natural
     --or Hex Stings (=Array of Chars)
     --or Binary String (=Array of Chars)
     --or random/allOne/allZero
-    function Create(Input : Natural) return Skeinword;
+    function Create(Input : Natural) return DWord;
 
-    --type for supported skeinword-inputs for Create-function with String input
-    type Skeinword_Input_Mode_Type is (Hex, Bin);
+    --type for supported Dword-inputs for Create-function with String input
+    type Dword_Input_Mode_Type is (Hex, Bin);
     function  Create(Input : in String;
-                     Mode  : in Skeinword_Input_Mode_Type := Hex) return Skeinword;
+                     Mode  : in Dword_Input_Mode_Type := Hex) return Dword;
 
-    --we also want to be able to create defined skeinwords
-    type Skeinword_Kind_Mode_Type is (random, all_zero, all_one);
-    function  Create(Mode : Skeinword_Kind_Mode_Type) return Skeinword;
+    --we also want to be able to create defined Dwords
+    type Dword_Kind_Mode_Type is (random, all_zero, all_one);
+    function  Create(Mode : Dword_Kind_Mode_Type) return Dword;
 
 
 
@@ -102,29 +75,29 @@ package Crypto.Types.Skein is
 
 --    function "*"(Left : Byte;
 --                 Right : Integer) return Integer;
-    function "+"(Left : Skeinword;
-            Right : Integer) return Skeinword;
+    function "+"(Left : Dword;
+            Right : Integer) return Dword;
 
-    procedure Set_Bit(Word     : in out Skeinword;
+    procedure Set_Bit(Word     : in out Dword;
                      Position : in Natural;
                      Value    : in Boolean);
 
-    function left_rot(sw1   : in Skeinword;
-                      count : in Natural) return Skeinword;
+    function left_rot(sw1   : in Dword;
+                      count : in Natural) return Dword;
 
     function Natural_To_Bytes(N      : Natural;
                               number : Natural) return Bytes;
 
-    function Bytes_To_Skeinword(b : in Bytes)
-            return Skeinword;
+    function Bytes_To_Dword(b : in Bytes)
+            return Dword;
 
-    function Bytes_To_Skeinword_Array(b : in Bytes)
-            return Skeinword_Array;
+    function Bytes_To_Dword_array(b : in Bytes)
+            return Dword_array;
 
-    function Skeinword_To_Bytes(s: in Skeinword)
+    function Dword_To_Bytes(s: in Dword)
             return Bytes;
 
-    function Skeinword_Array_To_Bytes(s : in Skeinword_Array)
+    function Dword_array_To_Bytes(s : in Dword_array)
             return Bytes;
 
     function "+"(Left: Bytes;
@@ -187,15 +160,6 @@ package Crypto.Types.Skein is
 
     --we need an access type of this to use is inside of tasks :/
     type Skein_Tree_Message_Length_Counter_Access is access Skein_Tree_Message_Length_Counter;
-
-
-
-    --since there are no tasks with discrimiants possible we need a workaround
-    type Skein_Tree_Task_Data is
-        record
-            Mode                  : Skein_Mode;
-            Longest_Message_Bytes : Natural;
-        end record;
 
     function Get_Max(a,b : Natural) return Natural;
 

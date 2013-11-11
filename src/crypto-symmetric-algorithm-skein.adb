@@ -20,6 +20,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
 
     package threefish renames Crypto.Symmetric.Algorithm.Threefish;
 
+
    function Message_Bit_Padding(
             Message        : in Bytes;
             Desired_Length : in Natural) return Bytes is
@@ -535,7 +536,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
             Put_Line(" ");
             Put_Line("The resulting  Message M_l after l=" & Integer'Image(l));
             for i in 0..M_New_Length loop
-                Put(Show_Hex(M_New(i)));
+                Put(To_Hex(M_New(i)));
                 Put(" ");
                 if (i+1) mod 16 = 0 then
                     Put_LIne(" ");
