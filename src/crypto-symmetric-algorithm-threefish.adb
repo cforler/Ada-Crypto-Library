@@ -9,569 +9,955 @@
 -- tested with gcc 4.2.4
 ------------------------------------------------------------------------
 
-with Crypto.Types.Skein.Nodebug;           use Crypto.Types.Skein.Nodebug;
+with Crypto.Types.Skein.Nodebug; use Crypto.Types.Skein.Nodebug;
 --with skein_nodebug;         use skein_nodebug;
-with Crypto.Types.Skein;           use Crypto.Types.Skein;
+with Crypto.Types.Skein;                    use Crypto.Types.Skein;
+with Ada.Characters.Handling;               use Ada.Characters.Handling;
+with Ada.Strings.Unbounded;                 use Ada.Strings.Unbounded;
+with Ada.Numerics;
+with Ada.Numerics.Discrete_Random;
 
 package body Crypto.Symmetric.Algorithm.Threefish is
 
+   Mix_Constants_256 : constant array (0 .. 7, 0 .. 1, 0 .. 2) of Natural :=
+     (((0, 1, 14), (2, 3, 16)),
+      ((0, 3, 52), (2, 1, 57)),
+      ((0, 1, 23), (2, 3, 40)),
+      ((0, 3, 5), (2, 1, 37)),
+      ((0, 1, 25), (2, 3, 33)),
+      ((0, 3, 46), (2, 1, 12)),
+      ((0, 1, 58), (2, 3, 22)),
+      ((0, 3, 32), (2, 1, 32)));
 
-    Mix_Constants_256 : constant array (0..7, 0..1, 0..2) of Natural
-                        := (((0,1,14),  (2,3,16)),
-                            ((0,3,52),  (2,1,57)),
-                            ((0,1,23),  (2,3,40)),
-                            ((0,3, 5),  (2,1,37)),
-                            ((0,1,25),  (2,3,33)),
-                            ((0,3,46),  (2,1,12)),
-                            ((0,1,58),  (2,3,22)),
-                            ((0,3,32),  (2,1,32)));
+   Mix_Constants_512 : constant array (0 .. 7, 0 .. 3, 0 .. 2) of Natural :=
+     (((0, 1, 46), (2, 3, 36), (4, 5, 19), (6, 7, 37)),
+      ((2, 1, 33), (4, 7, 27), (6, 5, 14), (0, 3, 42)),
+      ((4, 1, 17), (6, 3, 49), (0, 5, 36), (2, 7, 39)),
+      ((6, 1, 44), (0, 7, 9), (2, 5, 54), (4, 3, 56)),
+      ((0, 1, 39), (2, 3, 30), (4, 5, 34), (6, 7, 24)),
+      ((2, 1, 13), (4, 7, 50), (6, 5, 10), (0, 3, 17)),
+      ((4, 1, 25), (6, 3, 29), (0, 5, 39), (2, 7, 43)),
+      ((6, 1, 8), (0, 7, 35), (2, 5, 56), (4, 3, 22)));
 
-    Mix_Constants_512 : constant array (0..7, 0..3, 0..2) of Natural
-                        := (((0,1,46),  (2,3,36),   (4,5,19),   (6,7,37)),
-                            ((2,1,33),  (4,7,27),   (6,5,14),   (0,3,42)),
-                            ((4,1,17),  (6,3,49),   (0,5,36),   (2,7,39)),
-                            ((6,1,44),  (0,7, 9),   (2,5,54),   (4,3,56)),
-                            ((0,1,39),  (2,3,30),   (4,5,34),   (6,7,24)),
-                            ((2,1,13),  (4,7,50),   (6,5,10),   (0,3,17)),
-                            ((4,1,25),  (6,3,29),   (0,5,39),   (2,7,43)),
-                            ((6,1, 8),  (0,7,35),   (2,5,56),   (4,3,22)));
+   Mix_Constants_1024 : constant array (0 .. 7, 0 .. 7, 0 .. 2) of Natural :=
+     (((0, 1, 24),
+       (2, 3, 13),
+       (4, 5, 8),
+       (6, 7, 47),
+       (8, 9, 8),
+       (10, 11, 17),
+       (12, 13, 22),
+       (14, 15, 37)),
 
-    Mix_Constants_1024 : constant array (0..7, 0..7, 0..2) of Natural
-                            := ((( 0, 1,24),  ( 2, 3,13),  ( 4, 5, 8),  ( 6, 7,47),  ( 8, 9, 8),  (10,11,17),  (12,13,22),  (14,15,37)),
+      ((0, 9, 38),
+       (2, 13, 19),
+       (6, 11, 10),
+       (4, 15, 55),
+       (10, 7, 49),
+       (12, 3, 18),
+       (14, 5, 23),
+       (8, 1, 52)),
 
-                                (( 0, 9,38),  ( 2,13,19),  ( 6,11,10),  ( 4,15,55),  (10, 7,49),  (12, 3,18),  (14, 5,23),  ( 8, 1,52)),
+      ((0, 7, 33),
+       (2, 5, 4),
+       (4, 3, 51),
+       (6, 1, 13),
+       (12, 15, 34),
+       (14, 13, 41),
+       (8, 11, 59),
+       (10, 9, 17)),
 
-                                (( 0, 7,33),  ( 2, 5, 4),  ( 4, 3,51),  ( 6, 1,13),  (12,15,34),  (14,13,41),  ( 8,11,59),  (10, 9,17)),
+      ((0, 15, 5),
+       (2, 11, 20),
+       (6, 13, 48),
+       (4, 9, 41),
+       (14, 1, 47),
+       (8, 5, 28),
+       (10, 3, 16),
+       (12, 7, 25)),
 
-                                (( 0,15, 5),  ( 2,11,20),  ( 6,13,48),  ( 4, 9,41),  (14, 1,47),  ( 8, 5,28),  (10, 3,16),  (12, 7,25)),
+      ((0, 1, 41),
+       (2, 3, 9),
+       (4, 5, 37),
+       (6, 7, 31),
+       (8, 9, 12),
+       (10, 11, 47),
+       (12, 13, 44),
+       (14, 15, 30)),
 
-                                (( 0, 1,41),  ( 2, 3, 9),  ( 4, 5,37),  ( 6, 7,31),  ( 8, 9,12),  (10,11,47),  (12,13,44),  (14,15,30)),
+      ((0, 9, 16),
+       (2, 13, 34),
+       (6, 11, 56),
+       (4, 15, 51),
+       (10, 7, 4),
+       (12, 3, 53),
+       (14, 5, 42),
+       (8, 1, 41)),
 
-                                (( 0, 9,16),  ( 2,13,34),  ( 6,11,56),  ( 4,15,51),  (10, 7, 4),  (12, 3,53),  (14, 5,42),  ( 8, 1,41)),
+      ((0, 7, 31),
+       (2, 5, 44),
+       (4, 3, 47),
+       (6, 1, 46),
+       (12, 15, 19),
+       (14, 13, 42),
+       (8, 11, 44),
+       (10, 9, 25)),
 
-                                (( 0, 7,31),  ( 2, 5,44),  ( 4, 3,47),  ( 6, 1,46),  (12,15,19),  (14,13,42),  ( 8,11,44),  (10, 9,25)),
+      ((0, 15, 9),
+       (2, 11, 48),
+       (6, 13, 35),
+       (4, 9, 52),
+       (14, 1, 23),
+       (8, 5, 31),
+       (10, 3, 37),
+       (12, 7, 20)));
 
-                                (( 0,15, 9),  ( 2,11,48),  ( 6,13,35),  ( 4, 9,52),  (14, 1,23),  ( 8, 5,31),  (10, 3,37),  (12, 7,20)));
+   function Get_Number_Of_Skein_Bytes (Mode : in Skein_Mode) return Natural is
+   begin
+      case Mode is
+         when m256 =>
+            return 32;
+         when m512 =>
+            return 64;
+         when m1024 =>
+            return 128;
+      end case;
+   end Get_Number_Of_Skein_Bytes;
 
+   function Get_Last_Word_Index (mode : in Threefish_Mode) return Natural is
+   begin
+      case mode is
+         when mode256 =>
+            return 256 / 64 - 1;
+         when mode512 =>
+            return 512 / 64 - 1;
+         when mode1024 =>
+            return 1024 / 64 - 1;
+      end case;
+   end Get_Last_Word_Index;
 
-   function Get_Number_Of_Skein_Bytes(Mode : in Skein_Mode)
-            return Natural is
-    begin
-        case Mode is
-            when m256  => return 32;
-            when m512  => return 64;
-            when m1024 => return 128;
-        end case;
-    end Get_Number_Of_Skein_Bytes;
+   function Get_Name (mode : in Threefish_Mode) return String is
+   begin
+      case mode is
+         when mode256 =>
+            return "Threefish-256";
+         when mode512 =>
+            return "Threefish-512";
+         when mode1024 =>
+            return "Threefish-1024";
+      end case;
+   end Get_Name;
 
-    function Get_Last_Word_Index(mode : in Threefish_mode) return Natural is
-    begin
-        case mode is
-            when mode256  => return 256/64 - 1;
-            when mode512  => return 512/64 - 1;
-            when mode1024 => return 1024/64 - 1;
-        end case;
-    end Get_Last_Word_Index;
+   function Get_Bit_Count (mode : in Threefish_Mode) return Natural is
+   begin
+      case mode is
+         when mode256 =>
+            return 256;
+         when mode512 =>
+            return 512;
+         when mode1024 =>
+            return 1024;
+      end case;
+   end Get_Bit_Count;
 
-    function Get_Name(mode : in Threefish_mode) return String is
-    begin
-        case mode is
-            when mode256  => return "Threefish-256";
-            when mode512  => return "Threefish-512";
-            when mode1024 => return "Threefish-1024";
-        end case;
-    end Get_Name;
+   function Get_Number_Of_Rounds (mode : in Threefish_Mode) return Natural is
+   begin
+      case mode is
+         when mode256 =>
+            return 72;
+         when mode512 =>
+            return 72;
+         when mode1024 =>
+            return 80;
+      end case;
+   end Get_Number_Of_Rounds;
 
-    function Get_Bit_Count(mode : in Threefish_Mode) return Natural is
-    begin
-        case mode is
-            when mode256  => return 256;
-            when mode512  => return 512;
-            when mode1024 => return 1024;
-        end case;
-    end Get_Bit_Count;
+   function Get_Number_Of_Mix_Operations
+     (Mode : in Threefish_Mode)
+      return Natural
+   is
+   begin
+      case Mode is
+         when mode256 =>
+            return 2;
+         when mode512 =>
+            return 4;
+         when mode1024 =>
+            return 8;
+      end case;
+   end Get_Number_Of_Mix_Operations;
 
-    function Get_Number_Of_Rounds(mode : in Threefish_Mode) return Natural is
-    begin
-        case mode is
-            when mode256  => return 72;
-            when mode512  => return 72;
-            when mode1024 => return 80;
-        end case;
-    end Get_Number_Of_Rounds;
+   function Skein_Mode_To_Threefish_Mode
+     (SMode : in Skein_Mode)
+      return  Threefish_Mode
+   is
+   begin
+      case SMode is
+         when m256 =>
+            return Threefish.mode256;
+         when m512 =>
+            return Threefish.mode512;
+         when m1024 =>
+            return Threefish.mode1024;
+      end case;
+   end Skein_Mode_To_Threefish_Mode;
 
-    function Get_Number_Of_Mix_Operations(Mode : in Threefish_Mode) return Natural is
-    begin
-        case mode is
-            when mode256  => return 2;
-            when mode512  => return 4;
-            when mode1024 => return 8;
-        end case;
-    end Get_Number_Of_Mix_Operations;
+   function Threefish_Mode_Check
+     (mode   : Threefish_Mode;
+      keys   : Threefish_Keys'Class;
+      tweaks : Threefish_Tweaks'Class)
+      return   Boolean
+   is
+   begin
+      return keys.data'Last = Get_Last_Word_Index (mode);
+   end Threefish_Mode_Check;
 
+   procedure Encrypt
+     (Mode             : in Skein_Mode;
+      Block_Cipher_Key : in Bytes;
+      Tweak            : in Bytes;
+      Plaintext        : in Bytes;
+      Result           : out Bytes)
+   is
+      words    : Threefish_Words'Class  :=
+        Make_Words
+           (mode => Threefish.Skein_Mode_To_Threefish_Mode (Mode),
+            SWA  => Bytes_To_Dwords (Plaintext));
+      Keys     : Threefish_Keys'Class   :=
+        Make_Keys
+           (mode => Threefish.Skein_Mode_To_Threefish_Mode (Mode),
+            SWA  => Bytes_To_Dwords (Block_Cipher_Key));
+      tweaks   : Threefish_Tweaks'Class :=
+        Make_Tweaks
+           (mode => Threefish.Skein_Mode_To_Threefish_Mode (Mode),
+            SWA  => Bytes_To_Dwords (Tweak));
+      outwords : Threefish_Words'Class  :=
+        Make_Words (Skein_Mode_To_Threefish_Mode (Mode));
+   begin
+      --Show only the inputs
+      --Show_Words(true,"inputwords",words);
 
-    function Skein_Mode_To_Threefish_Mode(SMode : in Skein_Mode)
-            return Threefish_Mode is
-    begin
-        case Smode is
-            when m256  => return Threefish.mode256;
-            when m512  => return Threefish.mode512;
-            when m1024 => return Threefish.mode1024;
-        end case;
-    end Skein_Mode_To_Threefish_Mode;
+      Encrypt
+        (Mode      => Skein_Mode_To_Threefish_Mode (Mode),
+         Inwords   => words,
+         Keys      => Keys,
+         Tweaks    => tweaks,
+         Outwords  => outwords,
+         Talk_Mode => False);
+      Result := Dwords_To_Bytes (outwords.data);
 
-    function Threefish_Mode_Check(  mode : Threefish_mode;
-                                    Keys : Threefish_Keys'Class;
-                                    tweaks : Threefish_tweaks'Class)
-            return boolean is
-    begin
-        return Keys.data'Last = Get_Last_Word_Index(mode);
-    end Threefish_Mode_Check;
+      --Show_Words(true,"results",outwords);
+   end Encrypt;
 
+   procedure Encrypt
+     (Mode      : in Threefish_Mode;
+      Inwords   : in Threefish_Words'Class;
+      Keys      : in Threefish_Keys'Class;
+      Tweaks    : in Threefish_Tweaks'Class;
+      Outwords  : out Threefish_Words'Class;
+      Talk_Mode : in Boolean := False)
+   is
 
-    procedure encrypt ( Mode             : in     Skein_Mode;
-                        Block_Cipher_Key : in     Bytes;
-                        Tweak            : in     Bytes;
-                        Plaintext        : in     Bytes;
-                        Result           :    out Bytes) is
-        words    : Threefish_Words'Class
-                 := Make_Words( Mode => Threefish.Skein_Mode_To_Threefish_Mode(Mode),
-                                SWA  => Bytes_To_Dword_array(Plaintext));
-        Keys     : Threefish_Keys'Class
-                 := Make_Keys(Mode => Threefish.Skein_Mode_To_Threefish_Mode(Mode),
-                              SWA  => Bytes_To_Dword_array(Block_Cipher_Key));
-        tweaks   : Threefish_Tweaks'Class
-                 := Make_Tweaks(Mode => Threefish.Skein_Mode_To_Threefish_Mode(Mode),
-                                SWA  => Bytes_To_Dword_array(Tweak));
-        outwords : Threefish_Words'Class := Make_Words(Skein_Mode_To_Threefish_Mode(Mode));
-    begin
-        --Show only the inputs
-        --Show_Words(true,"inputwords",words);
+      --we calculate the Extended Keys here (KeyShedule)
+      Extended_Keys : Threefish_Extended_Keys (Get_Last_Word_Index (Mode));
 
-        encrypt(Mode => Skein_Mode_To_Threefish_Mode(Mode),
-            inwords  => words,
-            Keys     => Keys,
-            tweaks   => tweaks,
-            outwords => outwords,
-            Talk_Mode=> false);
-        Result := Dword_array_To_Bytes(outwords.data);
+      --we have to count the rounds and the keyinjections
+      Round_Counter : Natural := 0;
 
-        --Show_Words(true,"results",outwords);
-    end encrypt ;
+      --some vaiales needed for the MIX-operations
+      TOTAL_NUMBER_OF_MIX_OPERATIONS_PER_ROUND : constant Natural :=
+        Get_Number_Of_Mix_Operations (Mode);
+      TOTAL_NUMBER_OF_ROUNDS                   : constant Natural :=
+        Get_Number_Of_Rounds (Mode);
+      Current_Mix_Variable                     : Threefish_Mix_Variables_Type;
 
-    procedure encrypt  (mode      : in Threefish_mode;
-                        inwords   : in Threefish_words'Class;
-                        Keys      : in Threefish_Keys'Class;
-                        tweaks    : in Threefish_tweaks'Class;
-                        outwords  : out Threefish_words'Class;
-                        Talk_Mode : in Boolean := false) is
+   begin
+      Show_Words (Talk_Mode, "initial Words", Inwords);
 
-    --we calculate the Extended Keys here (KeyShedule)
-        Extended_Keys : Threefish_Extended_Keys(Get_Last_Word_Index(mode));
+      if Talk_Mode then
+         Put_Line ("here are input Keys");
+         for i in Keys.data'Range loop
+            Put_Line (To_Hex (Keys.data (i)));
+         end loop;
+      end if;
 
-    --we have to count the rounds and the keyinjections
-        Round_Counter         : Natural := 0;
+      if Talk_Mode then
+         Put_Line ("here are input tweaks");
+         for i in Tweaks.data'Range loop
+            Put_Line (To_Hex (Tweaks.data (i)));
+         end loop;
+      end if;
 
-    --some vaiales needed for the MIX-operations
-        TOTAL_NUMBER_OF_MIX_OPERATIONS_PER_ROUND
-            : constant Natural := Get_Number_Of_Mix_Operations(Mode);
-        TOTAL_NUMBER_OF_ROUNDS
-            : constant Natural := Get_Number_Of_Rounds(Mode);
-        Current_Mix_Variable : Threefish_Mix_Variables_Type;
+      --do the Keyshedule
+      Key_Schedule (Mode, Keys, Tweaks, Extended_Keys);
 
-
-    begin
-        Show_Words(Talk_Mode,"initial Words",inwords);
-
-        if Talk_Mode then
-            Put_Line("here are input Keys");
-            for i in Keys.data'Range loop
-                Put_Line(To_Hex(Keys.data(i)));
+      if Talk_Mode and False then
+         --show the expanded Keys
+         Put_Line ("");
+         Put_Line ("Here are the expanded Keys");
+         for i in Extended_Keys.data'Range loop
+            for j in Keys.data'Range loop
+               Put_Line (To_Hex (Extended_Keys.data (i, j)));
             end loop;
-        end if;
+            Put_Line ("-----------");
+         end loop;
+      end if;
 
-        if Talk_Mode then
-            Put_Line("here are input tweaks");
-            for i in tweaks.data'Range loop
-                Put_Line(To_Hex(tweaks.data(i)));
-            end loop;
-        end if;
+      -- now we have the Extended Keys
+      -- we can do the Keyinjection and the Mixing
+      Outwords := Inwords;
 
+      --the initial keyInjection
+      Key_Injection (Outwords, Extended_Keys, 0);
 
-        --do the Keyshedule
-        Key_Schedule ( mode, Keys, tweaks, Extended_Keys);
+      Show_Words (Talk_Mode, "Words after initial keyInjection", Outwords);
 
-        if Talk_Mode and false then
-            --show the expanded Keys
-            Put_Line("");
-            Put_Line("Here are the expanded Keys");
-            for i in Extended_Keys.data'Range loop
-                for j in Keys.data'Range loop
-                    Put_line(To_Hex(Extended_Keys.data(i,j)));
-                end loop;
-                Put_line("-----------");
-            end loop;
-        end if;
+      --we want to do 72/80 rounds
+      --insert the Extended Keys after every 4th round
+      --for i in 0..TOTAL_NUMBER_OF_ROUNDS-1 loop
+      for r in 1 .. TOTAL_NUMBER_OF_ROUNDS loop
+         for j in 1 .. TOTAL_NUMBER_OF_MIX_OPERATIONS_PER_ROUND loop
+            --get the values for the current MIX opeation
+            Current_Mix_Variable := Get_Mix_Variables (Mode, r, j);
 
-        -- now we have the Extended Keys
-        -- we can do the Keyinjection and the Mixing
-        outwords := inwords;
+            --do the mixing
+            Threefish_mix
+              (Outwords.data (Current_Mix_Variable.Input1),
+               Outwords.data (Current_Mix_Variable.Input2),
+               Current_Mix_Variable.Rotconst);
+         end loop;
 
-        --the initial keyInjection
-        Key_Injection(outwords, Extended_Keys, 0);
+         Show_Words (Talk_Mode, "Words after round: " & r'Img, Outwords);
 
-        Show_Words(Talk_Mode,"Words after initial keyInjection",outwords);
+         --do the keyinjection afte every round mod 4 = 0
+         if r mod 4 = 0 then
+            Key_Injection (Outwords, Extended_Keys, r / 4);
 
-        --we want to do 72/80 rounds
-        --insert the Extended Keys after every 4th round
-        --for i in 0..TOTAL_NUMBER_OF_ROUNDS-1 loop
-        for r in 1..TOTAL_NUMBER_OF_ROUNDS loop
-            for j in 1..TOTAL_NUMBER_OF_MIX_OPERATIONS_PER_ROUND loop
-                --get the values for the current MIX opeation
-                Current_Mix_Variable := get_Mix_Variables(mode, r, j);
+            Show_Words
+              (Talk_Mode,
+               "Words after round " & r'Img & " and KeyInjection",
+               Outwords);
+         end if;
 
-                --do the mixing
-                Threefish_mix(outwords.data(Current_Mix_Variable.input1),
-                              outwords.data(Current_Mix_Variable.input2),
-                              Current_Mix_Variable.rotconst);
-            end loop;
+      end loop;
 
-            Show_Words(Talk_Mode,"Words after round: " & r'Img,outwords);
+   end Encrypt;
 
-            --do the keyinjection afte every round mod 4 = 0
-            if r mod 4 = 0 then
-                Key_Injection(  outwords,
-                                Extended_Keys,
-                                r/4);
+   --ATTENTION:
+   --we need a new KeyDeInjection
+   --we need a new DeMIX
+   procedure Decrypt
+     (mode      : in Threefish_Mode;
+      inwords   : in Threefish_Words'Class;
+      keys      : in Threefish_Keys'Class;
+      tweaks    : in Threefish_Tweaks'Class;
+      outwords  : out Threefish_Words'Class;
+      Talk_Mode : in Boolean := False)
+   is
+      --we calculate the Extended Keys here (KeyShedule)
+      Extended_Keys : Threefish_Extended_Keys (Get_Last_Word_Index (mode));
 
-                Show_Words(Talk_Mode,"Words after round " & r'Img & " and KeyInjection",outwords);
+      --some vaiales needed for the MIX-operations
+      TOTAL_NUMBER_OF_MIX_OPERATIONS_PER_ROUND : constant Natural :=
+        Get_Number_Of_Mix_Operations (mode);
+      TOTAL_NUMBER_OF_ROUNDS                   : constant Natural :=
+        Get_Number_Of_Rounds (mode);
+      Current_Mix_Variable                     : Threefish_Mix_Variables_Type;
+   begin
+
+      --do the Keyshedule
+      Key_Schedule (mode, keys, tweaks, Extended_Keys);
+
+      -- now we have the Extended Keys
+      -- we can do the Keyinjection and the "unMixing"
+      outwords := inwords;
+
+      --we want to do 72/80 rounds
+      --insert the Extended Keys after every 4th round
+      --for i in 0..TOTAL_NUMBER_OF_ROUNDS-1 loop
+      for r in reverse 1 .. TOTAL_NUMBER_OF_ROUNDS loop
+
+         --do the keyinjection after every round mod 4 = 0
+         if r mod 4 = 0 then
+            Reverse_Key_Injection (outwords, Extended_Keys, r / 4);
+         end if;
+
+         for j in 1 .. TOTAL_NUMBER_OF_MIX_OPERATIONS_PER_ROUND loop
+            --get the values for the current MIX opeation
+            Current_Mix_Variable := Get_Mix_Variables (mode, r, j);
+
+            --do the mixing
+            Threefish_Reverse_mix
+              (outwords.data (Current_Mix_Variable.Input1),
+               outwords.data (Current_Mix_Variable.Input2),
+               Current_Mix_Variable.Rotconst);
+         end loop;
+
+      end loop;
+
+      --the "initial" keyInjection
+      Reverse_Key_Injection (outwords, Extended_Keys, 0);
+   end Decrypt;
+
+   procedure Key_Schedule
+     (mode     : in Threefish_Mode;
+      keys     : in Threefish_Keys'Class;
+      Tweaks   : in Threefish_Tweaks'Class;
+      ext_Keys : in out Threefish_Extended_Keys'Class)
+   is
+      --some variables we will need more often
+      k_f : Natural := keys.data'First;
+      k_l : Natural := keys.data'Last;
+
+      --the number of words(just for better readability
+      n_w : Natural := k_l + 1;
+
+      --we need longer Keys and tweaks for the calculation
+      long_Keys   : DWords (0 .. k_l + 1);
+      long_tweaks : DWords (0 .. 2);
+
+      --some Dwords we will need
+      c240 : DWord := Create ("1BD11BDAA9FC1A22", Hex);
+   begin
+      --------------------------
+      --first we have fill the longer Keys and tweaks
+      long_Keys (0 .. k_l) := keys.data (0 .. k_l);
+      long_Keys (n_w)      := c240;
+      for i in k_f .. k_l loop
+         long_Keys (n_w) := long_Keys (n_w) xor keys.data (i);
+      end loop;
+
+      long_tweaks (0 .. 1) := Tweaks.data (0 .. 1);
+      long_tweaks (2)      := Tweaks.data (0) xor Tweaks.data (1);
+
+      --now we can calculate the whole Extended Keys matrix
+      for r in 0 .. Get_Number_Of_Rounds (mode) / 4 loop
+         for i in 0 .. n_w - 4 loop
+            ext_Keys.data (r, i) := long_Keys ((r + i) mod (n_w + 1));
+         end loop;
+
+         ext_Keys.data (r, n_w - 3) :=
+           long_Keys ((r + n_w - 3) mod (n_w + 1)) +
+           long_tweaks (r mod 3);
+         ext_Keys.data (r, n_w - 2) :=
+           long_Keys ((r + n_w - 2) mod (n_w + 1)) +
+           long_tweaks ((r + 1) mod 3);
+         ext_Keys.data (r, n_w - 1) :=
+           long_Keys ((r + n_w - 1) mod (n_w + 1)) + DWord (r);
+      end loop;
+
+      if False then
+         Put_Line ("-------------------------------");
+         Put_Line ("the Extended Keys: ");
+         for i in 0 .. 10 loop
+            Put_Line
+              (To_Hex (ext_Keys.data (i, 0)) &
+               "    " &
+               To_Hex (ext_Keys.data (i, 1)) &
+               "    " &
+               To_Hex (ext_Keys.data (i, 2)) &
+               "    " &
+               To_Hex (ext_Keys.data (i, 3)));
+         end loop;
+      end if;
+
+   end Key_Schedule;
+
+   procedure Key_Injection
+     (words : in out Threefish_Words'Class;
+      ks    : in Threefish_Extended_Keys'Class;
+      r     : in Natural)
+   is
+   begin
+      --we just have to ADD words and Extended Keys for the current round
+      for w in words.data'Range loop
+         words.data (w) := words.data (w) + ks.data (r, w);
+      end loop;
+   end Key_Injection;
+
+   procedure Reverse_Key_Injection
+     (words : in out Threefish_Words'Class;
+      ks    : in Threefish_Extended_Keys'Class;
+      r     : in Natural)
+   is
+   begin
+      --we just have to ADD words and Extended Keys for the current round
+      for w in words.data'Range loop
+         words.data (w) := words.data (w) - ks.data (r / 8, w);
+      end loop;
+   end Reverse_Key_Injection;
+
+   procedure Threefish_mix
+     (sw1      : in out DWord;
+      sw2      : in out DWord;
+      rotConst : in Natural)
+   is
+   begin
+      sw1 := sw1 + sw2;
+      sw2 := Rotate_Left (sw2, rotConst);
+      sw2 := sw1 xor sw2;
+   end Threefish_mix;
+
+   procedure Threefish_Reverse_mix
+     (sw1      : in out DWord;
+      sw2      : in out DWord;
+      rotConst : in Natural)
+   is
+   begin
+      sw2 := sw2 xor sw1;
+      sw2 := Rotate_Left (sw2, 64 - rotConst); --in fact we want an right_rot
+
+      sw1 := sw1 - sw2;
+   end Threefish_Reverse_mix;
+
+   -------------------------------------------
+   --the helper functions
+   -------------------------------------------
+   function Get_Mix_Variables
+     (Mode           : in Threefish_Mode;
+      Roundnumber    : in Natural;
+      Mix_Fct_Number : in Natural)
+      return           Threefish_Mix_Variables_Type
+   is
+      my_Mix_Variable : Threefish_Mix_Variables_Type;
+   begin
+      case Mode is
+         when mode256 =>
+            --thanks to the ads we have to add 1 to the indexes
+            --maybe we change this later, then we only have to do it here
+            my_Mix_Variable.Input1   :=
+              Mix_Constants_256 ((Roundnumber - 1) mod 8, Mix_Fct_Number - 1, 0
+);
+            my_Mix_Variable.Input2   :=
+              Mix_Constants_256 ((Roundnumber - 1) mod 8, Mix_Fct_Number - 1, 1
+);
+            my_Mix_Variable.Rotconst :=
+              Mix_Constants_256 ((Roundnumber - 1) mod 8, Mix_Fct_Number - 1, 2
+);
+
+         when mode512 =>
+            my_Mix_Variable.Input1   :=
+              Mix_Constants_512 ((Roundnumber - 1) mod 8, Mix_Fct_Number - 1, 0
+);
+            my_Mix_Variable.Input2   :=
+              Mix_Constants_512 ((Roundnumber - 1) mod 8, Mix_Fct_Number - 1, 1
+);
+            my_Mix_Variable.Rotconst :=
+              Mix_Constants_512 ((Roundnumber - 1) mod 8, Mix_Fct_Number - 1, 2
+);
+
+         when mode1024 =>
+            my_Mix_Variable.Input1   :=
+              Mix_Constants_1024 ((Roundnumber - 1) mod 8, Mix_Fct_Number -
+                                                           1, 0);
+            my_Mix_Variable.Input2   :=
+              Mix_Constants_1024 ((Roundnumber - 1) mod 8, Mix_Fct_Number -
+                                                           1, 1);
+            my_Mix_Variable.Rotconst :=
+              Mix_Constants_1024 ((Roundnumber - 1) mod 8, Mix_Fct_Number -
+                                                           1, 2);
+      end case;
+
+      return my_Mix_Variable;
+   end Get_Mix_Variables;
+
+   -------
+   function Make_Words (mode : Threefish_Mode) return Threefish_Words'Class is
+      words : Threefish_Words (Last_Index => Get_Last_Word_Index (mode));
+   begin
+      for i in words.data'Range loop
+         words.data (i) := Create ("000", Hex);
+      end loop;
+      return words;
+   end Make_Words;
+   --------
+   function Make_Keys (mode : Threefish_Mode) return Threefish_Keys'Class is
+      Keys : Threefish_Keys (Get_Last_Word_Index (mode));
+   begin
+      for i in Keys.data'Range loop
+         Keys.data (i) := Create ("000", Hex);
+      end loop;
+      return Keys;
+   end Make_Keys;
+   --------
+   function Make_Tweaks
+     (mode : Threefish_Mode)
+      return Threefish_Tweaks'Class
+   is
+      tweaks : Threefish_Tweaks (Get_Last_Word_Index (mode));
+   begin
+      for i in tweaks.data'Range loop
+         tweaks.data (i) := Create ("000", Hex);
+      end loop;
+      return tweaks;
+   end Make_Tweaks;
+   ---------
+   function Make_Extended_Keys
+     (mode : Threefish_Mode)
+      return Threefish_Extended_Keys'Class
+   is
+      Extended_Keys : Threefish_Extended_Keys (Get_Last_Word_Index (mode));
+   begin
+      for i in Extended_Keys.data'Range (1) loop
+         for j in Extended_Keys.data'Range (2) loop
+            Extended_Keys.data (i, j) := Create ("000", Hex);
+         end loop;
+      end loop;
+      return Extended_Keys;
+   end Make_Extended_Keys;
+   ----------
+   function Make_Words
+     (mode : Threefish_Mode;
+      SWA  : DWords)
+      return Threefish_Words'Class
+   is
+      words : Threefish_Words (Last_Index => Get_Last_Word_Index (mode));
+   begin
+      if not (SWA'Last = Get_Last_Word_Index (mode)) then
+         Put_Error_Line ("Wrong Range, please check");
+         raise Program_Error;
+      end if;
+      for i in words.data'Range loop
+         words.data (i) := SWA (i);
+      end loop;
+      return words;
+   end Make_Words;
+   ---------------
+   function Make_Keys
+     (mode : Threefish_Mode;
+      SWA  : DWords)
+      return Threefish_Keys'Class
+   is
+      Keys : Threefish_Keys (Last_Index => Get_Last_Word_Index (mode));
+   begin
+      if not (SWA'Last = Get_Last_Word_Index (mode)) then
+         Put_Error_Line ("Wrong Range, please check");
+         raise Program_Error;
+      end if;
+      for i in Keys.data'Range loop
+         Keys.data (i) := SWA (i);
+      end loop;
+      return Keys;
+   end Make_Keys;
+   -------------
+   function Make_Tweaks
+     (mode : Threefish_Mode;
+      SWA  : DWords)
+      return Threefish_Tweaks'Class
+   is
+      tweaks : Threefish_Tweaks (Last_Index => Get_Last_Word_Index (mode));
+   begin
+      if not (SWA'Last = 1) then
+         Put_Error_Line
+           ("Wrong Range for Tweaks, please check:" &
+            Integer'Image (SWA'Last) &
+            " vs." &
+            Integer'Image (Get_Last_Word_Index (mode)));
+         raise Program_Error;
+      end if;
+      for i in tweaks.data'Range loop
+         tweaks.data (i) := SWA (i);
+      end loop;
+      return tweaks;
+   end Make_Tweaks;
+
+   procedure Show_Words
+     (Talk_Mode : Boolean;
+      message   : String;
+      words     : Threefish_Words'Class)
+   is
+   begin
+      if Talk_Mode then
+         Put_Line ("-------------------------------");
+         Put_Line (message);
+         for i in words.data'Range loop
+            Put (To_Hex (words.data (i)));
+            Put ("    ");
+            if (i + 1) mod 4 = 0 then
+               Put_Line (" ");
             end if;
+            --Put_Line(show(words.data(i)));
+         end loop;
+      end if;
+   end Show_Words;
 
+   procedure Set_Threefish_Word
+     (words : in out Threefish_Words'Class;
+      Index : in Natural;
+      Word  : in DWord)
+   is
+   begin
+      words.data (Index) := Word;
+   end Set_Threefish_Word;
 
+   procedure Set_Threefish_Key
+     (keys  : in out Threefish_Keys'Class;
+      Index : in Natural;
+      Key   : in DWord)
+   is
+   begin
+      keys.data (Index) := Key;
+   end Set_Threefish_Key;
 
-        end loop;
+   procedure Set_Threefish_Tweak
+     (tweaks : in out Threefish_Tweaks'Class;
+      Index  : in Natural;
+      Tweak  : in DWord)
+   is
+   begin
+      tweaks.data (Index) := Tweak;
+   end Set_Threefish_Tweak;
 
-    end encrypt;
+   function Get_Threefish_Word
+     (Words : in Threefish_Words'Class;
+      Index : in Natural)
+      return  DWord
+   is
+   begin
+      return Words.data (Index);
+   end Get_Threefish_Word;
 
-    --ATTENTION:
-    --we need a new KeyDeInjection
-    --we need a new DeMIX
-    procedure decrypt  (mode        : in     Threefish_mode;
-                        inwords     : in     Threefish_words'Class;
-                        Keys        : in     Threefish_Keys'Class;
-                        tweaks      : in     Threefish_tweaks'Class;
-                        outwords    :    out Threefish_words'Class;
-                        Talk_Mode   : in     Boolean := false) is
-        --we calculate the Extended Keys here (KeyShedule)
-        Extended_Keys : Threefish_Extended_Keys(Get_Last_Word_Index(mode));
+   function Get_Threefish_Key
+     (Keys  : in Threefish_Keys'Class;
+      Index : in Natural)
+      return  DWord
+   is
+   begin
+      return Keys.data (Index);
+   end Get_Threefish_Key;
 
-        --some vaiales needed for the MIX-operations
-        TOTAL_NUMBER_OF_MIX_OPERATIONS_PER_ROUND
-            : constant Natural := Get_Number_Of_Mix_Operations(Mode);
-        TOTAL_NUMBER_OF_ROUNDS
-            : constant Natural := Get_Number_Of_Rounds(Mode);
-        Current_Mix_Variable : Threefish_Mix_Variables_Type;
-    begin
+   function Get_Threefish_Tweak
+     (Tweaks : in Threefish_Tweaks'Class;
+      Index  : in Natural)
+      return   DWord
+   is
+   begin
+      return Tweaks.data (Index);
+   end Get_Threefish_Tweak;
 
-        --do the Keyshedule
-        Key_Schedule ( mode, Keys, tweaks, Extended_Keys);
+   ------------Types & Functions from old Types-Skein.adb
 
-        -- now we have the Extended Keys
-        -- we can do the Keyinjection and the "unMixing"
-        outwords := inwords;
+   --we need this for the random Dwords
+   subtype Random_Type is Integer range 0 .. 15;
+   package Random_Pack is new Ada.Numerics.Discrete_Random (Random_Type);
+   G : Random_Pack.Generator;
 
-        --we want to do 72/80 rounds
-        --insert the Extended Keys after every 4th round
-        --for i in 0..TOTAL_NUMBER_OF_ROUNDS-1 loop
-        for r in reverse 1..TOTAL_NUMBER_OF_ROUNDS loop
+   function Generate_Number return Integer is
+   begin
+      --Random_Pack.Reset (G);
+      return Random_Pack.Random (G);
+   end Generate_Number;
 
-            --do the keyinjection after every round mod 4 = 0
-            if r mod 4 = 0 then
-                Reverse_Key_Injection(  outwords,
-                                Extended_Keys,
-                                r/4);
-            end if;
+   function Create
+     (Input : in String;
+      Mode  : in Dword_Input_Mode_Type := Hex)
+      return  DWord
+   is
 
-            for j in 1..TOTAL_NUMBER_OF_MIX_OPERATIONS_PER_ROUND loop
-                --get the values for the current MIX opeation
-                Current_Mix_Variable := get_Mix_Variables(mode, r, j);
+      output     : DWord            := 0;
+      Input_Copy : Unbounded_String :=
+        Ada.Strings.Unbounded.To_Unbounded_String (Input);
 
-                --do the mixing
-                Threefish_Reverse_mix(outwords.data(Current_Mix_Variable.input1),
-                              outwords.data(Current_Mix_Variable.input2),
-                              Current_Mix_Variable.rotconst);
+      --needed to fill missing lengths
+      Full_Hex_String : String (1 .. 16);
+      Full_Bin_String : String (1 .. 64);
+
+   begin
+
+      --first lets remove all delimiters TODO
+      remove_Delimiters (Input_Copy);
+
+      case Mode is
+         when Hex =>
+            --fill missing inputs with zeros / cut too long inputs
+            for i in reverse 1 .. 16 loop
+               --Put_Line("i: " & i'Img & "    input'Last: " & input'Last'Img);
+               if i >
+                  Ada.Strings.Unbounded.To_String (Input_Copy)'Last
+               then
+                  Full_Hex_String (17 - i) := '0';
+               else
+                  --fill with correct entry from input
+                  Full_Hex_String (17 - i) :=
+                    Ada.Strings.Unbounded.To_String (Input_Copy) (
+                    Ada.Strings.Unbounded.To_String (Input_Copy)'Last +
+                                                                  1 -
+                                                                  i);
+               end if;
+            end loop;
+            --Ada.Text_IO.Put_LIne("The full Hex String: " & Full_Hex_String);
+            for i in Full_Hex_String'Range loop --attention, Strings are in
+                                                --Range 1..xxx
+               output := output +
+                         DWord (get_Value_From_Hex_Char
+                                   (Full_Hex_String (i))) *
+                         16 ** (17 - i - 1);
             end loop;
 
+         when Bin =>
+            --fill missing inputs with zeros / cut too long inputs
+            --all Strings start from index 1
+            for i in reverse 1 .. 64 loop
+               if i >
+                  Ada.Strings.Unbounded.To_String (Input_Copy)'Last
+               then    --if the input is to
+                  --short
+                  Full_Bin_String (65 - i) := '0';
+               else
+                  --TODO: check if its '1' or '0' and check for spacers
 
-        end loop;
-
-        --the "initial" keyInjection
-        Reverse_Key_Injection(outwords, Extended_Keys, 0);
-    end decrypt  ;
-
-    procedure Key_Schedule ( mode    : in     Threefish_mode;
-                            Keys    : in     Threefish_Keys'Class;
-                            Tweaks  : in     Threefish_tweaks'Class;
-                            ext_Keys: in out Threefish_Extended_Keys'Class) is
-        --some variables we will need more often
-        k_f : Natural := Keys.data'First;
-        k_l : Natural := Keys.data'Last;
-
-        --the number of words(just for better readability
-        n_w : Natural := k_l + 1;
-
-        --we need longer Keys and tweaks for the calculation
-        long_Keys : Dword_array(0..k_l+1);
-        long_tweaks : Dword_array (0..2);
-
-        --some Dwords we will need
-        c240 : Dword := create("1BD11BDAA9FC1A22", Hex);
-    begin
-        --------------------------
-        --first we have fill the longer Keys and tweaks
-        long_Keys(0..k_l) := Keys.data(0..k_l);
-        long_Keys(n_w) := c240;
-        for i in k_f..k_l loop
-            long_Keys(n_w) := long_Keys(n_w) xor Keys.data(i);
-        end loop;
-
-        long_tweaks(0..1) := tweaks.data(0..1);
-        long_tweaks(2)    := tweaks.data(0) xor tweaks.data(1);
-
-        --now we can calculate the whole Extended Keys matrix
-        for r in 0..Get_Number_Of_Rounds(Mode)/4 loop
-            for i in 0..n_w-4 loop
-                ext_Keys.data(r,i) := long_Keys((r + i)     mod (n_w +1));
+                  Full_Bin_String (65 - i) :=
+                    Ada.Strings.Unbounded.To_String (Input_Copy) (
+                    Ada.Strings.Unbounded.To_String (Input_Copy)'Last +
+                                                                  1 -
+                                                                  i);
+               end if;
             end loop;
 
-            ext_Keys.data(r,n_w-3) := long_Keys((r + n_w-3) mod (n_w + 1)) + long_tweaks(r mod 3);
-            ext_Keys.data(r,n_w-2) := long_Keys((r + n_w-2) mod (n_w + 1)) + long_tweaks((r+1) mod 3);
-            ext_Keys.data(r,n_w-1) := long_Keys((r + n_w-1) mod (n_w + 1)) + Create(r);
-        end loop;
-
-        if false then
-            Put_Line("-------------------------------");
-            Put_Line("the Extended Keys: ");
-            for i in 0..10 loop
-                Put_Line(To_Hex(ext_Keys.data(i,0)) & "    "
-                    & To_Hex(ext_Keys.data(i,1))& "    "
-                    & To_Hex(ext_Keys.data(i,2))& "    "
-                    & To_Hex(ext_Keys.data(i,3)));
+            --now lets create the word
+            --Put_Line("Create was called for binmode");
+            for i in reverse Full_Bin_String'Range loop  --attention, Strings
+                                                         --are in Range 1..xxx
+               output := output +
+                         get_Value_From_Bin_Char (Full_Bin_String (i)) *
+                         2 ** (65 - i - 1);
             end loop;
-        end if;
+      end case;
 
-    end Key_Schedule ;
+      return output;
+   end Create;
 
-
-    procedure Key_Injection(words   : in out Threefish_words'Class;
-                            ks      : in     Threefish_Extended_Keys'Class;
-                            r       : in     Natural) is
-    begin
-        --we just have to ADD words and Extended Keys for the current round
-        for w in words.data'Range loop
-            words.data(w) := words.data(w) + ks.data(r,w);
-        end loop;
-    end Key_Injection;
-
-    procedure Reverse_Key_Injection(words   : in out Threefish_words'Class;
-                                    ks      : in     Threefish_Extended_Keys'Class;
-                                    r       : in     Natural) is
-    begin
-        --we just have to ADD words and Extended Keys for the current round
-        for w in words.data'Range loop
-            words.data(w) := words.data(w) - ks.data(r/8,w);
-        end loop;
-    end Reverse_Key_Injection;
-
-    procedure Threefish_mix(sw1     : in out Dword;
-                            sw2     : in out Dword;
-                            rotConst: in     Natural) is
-    begin
-        sw1 := sw1 + sw2;
-        sw2 := Rotate_Left(sw2, rotConst);
-        sw2 := sw1 xor sw2;
-    end Threefish_mix;
-
-    procedure Threefish_Reverse_mix(sw1     : in out Dword;
-                                    sw2     : in out Dword;
-                                    rotConst: in     Natural) is
-    begin
-        sw2 := sw2 xor sw1;
-        sw2 := Rotate_Left(sw2, 64 - rotConst); --in fact we want an right_rot
-
-        sw1 := sw1 - sw2;
-    end Threefish_Reverse_mix;
-
-    -------------------------------------------
-    --the helper functions
-    -------------------------------------------
-    function get_Mix_Variables (Mode            : in Threefish_mode;
-                                Roundnumber     : in Natural;
-                                Mix_Fct_Number  : in Natural)
-            return Threefish_Mix_Variables_Type is
-
-        my_Mix_Variable : Threefish_Mix_Variables_Type;
-    begin
-        case mode is
-            when mode256 =>
-                --thanks to the ads we have to add 1 to the indexes
-                --maybe we change this later, then we only have to do it here
-                my_Mix_Variable.input1   := Mix_Constants_256((Roundnumber-1) mod 8, Mix_Fct_Number-1, 0);
-                my_Mix_Variable.input2   := Mix_Constants_256((Roundnumber-1) mod 8, Mix_Fct_Number-1, 1);
-                my_Mix_Variable.rotconst := Mix_Constants_256((Roundnumber-1) mod 8, Mix_Fct_Number-1, 2);
-
-            when mode512 =>
-                my_Mix_Variable.input1   := Mix_Constants_512((Roundnumber-1) mod 8, Mix_Fct_Number-1, 0);
-                my_Mix_Variable.input2   := Mix_Constants_512((Roundnumber-1) mod 8, Mix_Fct_Number-1, 1);
-                my_Mix_Variable.rotconst := Mix_Constants_512((Roundnumber-1) mod 8, Mix_Fct_Number-1, 2);
-
-            when mode1024 =>
-                my_Mix_Variable.input1   := Mix_Constants_1024((Roundnumber-1) mod 8, Mix_Fct_Number-1, 0);
-                my_Mix_Variable.input2   := Mix_Constants_1024((Roundnumber-1) mod 8, Mix_Fct_Number-1, 1);
-                my_Mix_Variable.rotconst := Mix_Constants_1024((Roundnumber-1) mod 8, Mix_Fct_Number-1, 2);
-        end case;
-
-        return my_Mix_Variable;
-    end get_Mix_Variables ;
-
--------
-    function Make_Words(mode : Threefish_mode)  return Threefish_Words'Class is
-        words : Threefish_Words(Last_Index => Get_Last_Word_Index(mode));
-    begin
-        for i in words.data'Range loop
-            words.data(i) := Create("000", Hex);
-        end loop;
-        return words;
-    end make_words;
---------
-    function Make_Keys(mode : Threefish_mode)   return Threefish_Keys'Class is
-        Keys : Threefish_Keys(Get_Last_Word_Index(mode));
-    begin
-        for i in Keys.data'Range loop
-            Keys.data(i) := Create("000", Hex);
-        end loop;
-        return Keys;
-    end make_Keys;
---------
-    function Make_Tweaks(mode : Threefish_mode) return Threefish_Tweaks'Class is
-        tweaks : Threefish_Tweaks(Get_Last_Word_Index(mode));
-    begin
-        for i in tweaks.data'Range loop
-            tweaks.data(i) := Create("000", Hex);
-        end loop;
-        return tweaks;
-    end make_tweaks;
----------
-    function Make_Extended_Keys(mode : Threefish_mode) return Threefish_Extended_Keys'Class is
-        Extended_Keys : Threefish_Extended_Keys(Get_Last_Word_Index(mode));
-    begin
-        for i in Extended_Keys.data'Range(1) loop
-            for j in Extended_Keys.data'Range(2) loop
-                Extended_Keys.data(i,j) := Create("000", Hex);
+   function Create (Mode : Dword_Kind_Mode_Type) return DWord is
+      result            : DWord;
+      Result_Hex_String : String                       := "0000000000000000";
+      Hex_Array         : array (0 .. 15) of Character :=
+        ('0',
+         '1',
+         '2',
+         '3',
+         '4',
+         '5',
+         '6',
+         '7',
+         '8',
+         '9',
+         'A',
+         'B',
+         'C',
+         'D',
+         'E',
+         'F');
+   begin
+      case Mode is
+         when random =>
+            --get a random number between 0 and 15
+            --rand.reset(my_Generator);
+            for i in Result_Hex_String'Range loop
+               Result_Hex_String (i) := Hex_Array (Generate_Number);
             end loop;
-        end loop;
-        return Extended_Keys;
-    end make_Extended_Keys;
-----------
-    function Make_Words(mode : Threefish_mode;
-            SWA  : Dword_array)  return Threefish_Words'Class is
-        words : Threefish_Words(Last_Index => Get_Last_Word_Index(mode));
-    begin
-        if not (SWA'Last = Get_Last_Word_Index(mode)) then
-            Put_Error_Line("Wrong Range, please check");
-            Raise Program_Error;
-        end if;
-        for i in words.data'Range loop
-            words.data(i) := SWA(i);
-        end loop;
-        return words;
-    end Make_Words;
----------------
-    function Make_Keys(mode : Threefish_Mode;
-            SWA  : Dword_Array)   return Threefish_Keys'Class is
-        Keys : Threefish_Keys(Last_Index => Get_Last_Word_Index(mode));
-    begin
-        if not (SWA'Last = Get_Last_Word_Index(mode)) then
-            Put_Error_Line("Wrong Range, please check");
-            Raise Program_Error;
-        end if;
-        for i in Keys.data'Range loop
-            Keys.data(i) := SWA(i);
-        end loop;
-        return Keys;
-    end Make_Keys;
--------------
-    function Make_Tweaks(mode : Threefish_mode;
-                SWA  : Dword_Array) return Threefish_Tweaks'Class is
-        tweaks : Threefish_Tweaks(Last_Index => Get_Last_Word_Index(mode));
-    begin
-        if not (SWA'Last = 1) then
-            Put_Error_Line("Wrong Range for Tweaks, please check:"
-                & Integer'Image(SWA'Last) & " vs."
-                & Integer'Image(Get_Last_Word_Index(mode)));
-            Raise Program_Error;
-        end if;
-        for i in tweaks.data'Range loop
-            tweaks.data(i) := SWA(i);
-        end loop;
-        return tweaks;
-    end Make_Tweaks;
 
-    procedure Show_Words(Talk_Mode : Boolean;
-                         message   : String;
-                         words     : Threefish_Words'Class) is
-    begin
-        if Talk_Mode then
-            Put_Line("-------------------------------");
-            Put_Line(message);
-            for i in words.data'Range loop
-                Put(To_Hex(words.data(i)));
-                Put("    ");
-                if (i+1) mod 4 = 0 then
-                    Put_Line(" ");
-                end if;
-                --Put_Line(show(words.data(i)));
-            end loop;
-        end if;
-    end Show_Words;
+            --Ada.Text_IO.Put_Line("");
+            --Ada.Text_IO.Put_Line(Result_Hex_String);
+            result := Create (Result_Hex_String, Hex);
+         when all_zero =>
+            result := Create ("00000000", Hex);
+         when all_one =>
+            result := Create ("FFFFFFFF_FFFFFFFF", Hex);
+         when others =>
+            Put_Error_Line ("This should never happen");
+            result := Create ("000000", Hex);
+      end case;
+      return result;
+   end Create;
 
+   --Stuff further needed
 
-    procedure Set_Threefish_Word(Words : in out Threefish_Words'Class;
-                                Index  : in     Natural;
-                                Word   : in     Dword) is
-    begin
-        Words.data(Index) := Word;
-    end Set_Threefish_Word;
+   --removes all delimiters and spaces from a given unbounded String
+   --makes everything lowercase
+   procedure remove_Delimiters (text : in out Unbounded_String) is
+      Last_Index : Natural                  :=
+        Ada.Strings.Unbounded.To_String (text)'Last;
+      new_text   : String (1 .. Last_Index) :=
+        Ada.Strings.Unbounded.To_String (text);
+      counter    : Natural                  := 1;
+   begin
+      for i in 1 .. Last_Index loop
+         if (new_text (i) = ' ' or
+             new_text (i) = '.' or
+             new_text (i) = '_')
+         then
+            null;
+         --Put_LIne("this was a delimiter");
+         else
+            new_text (counter) := new_text (i);
+            counter            := counter + 1;
+         end if;
+      end loop;
+      --make it lowercase
+      new_text := To_Lower (new_text);
+      --set the out-parameter
+      text :=
+         Ada.Strings.Unbounded.To_Unbounded_String
+           (new_text (1 .. counter - 1));
+   end remove_Delimiters;
 
-    procedure Set_Threefish_Key(Keys   : in out Threefish_Keys'Class;
-                                Index  : in     Natural;
-                                Key    : in     Dword) is
-    begin
-        Keys.data(Index) := Key;
-    end Set_Threefish_Key;
+   function get_Value_From_Hex_Char (Hex_Char : Character) return Natural is
+   begin
+      case Hex_Char is
+      when '0' =>
+         return 0;
+      when '1' =>
+         return 1;
+      when '2' =>
+         return 2;
+      when '3' =>
+         return 3;
+      when '4' =>
+         return 4;
+      when '5' =>
+         return 5;
+      when '6' =>
+         return 6;
+      when '7' =>
+         return 7;
+      when '8' =>
+         return 8;
+      when '9' =>
+         return 9;
+      when 'a' =>
+         return 10;
+      when 'b' =>
+         return 11;
+      when 'c' =>
+         return 12;
+      when 'd' =>
+         return 13;
+      when 'e' =>
+         return 14;
+      when 'f' =>
+         return 15;
+      when others =>
+         --TODO: set all zero, abort whole operation, raise exception
+         Put_Line ("incorrect input for hex, please check");
+         raise Program_Error;
+      end case;
+   end get_Value_From_Hex_Char;
 
-    procedure Set_Threefish_Tweak(tweaks : in out Threefish_Tweaks'Class;
-                                  Index  : in     Natural;
-                                  Tweak  : in     Dword) is
-    begin
-        tweaks.data(Index) := tweak;
-    end Set_Threefish_Tweak;
+   function get_Value_From_Bin_Char (Bin_Char : Character) return Natural is
+   begin
+      case Bin_Char is
+         when '0' =>
+            return 0;
+         when '1' =>
+            return 1;
+         when others =>
+            --TODO: set all zero, abort whole operation, raise exception
+            Put_Line ("incorrect input for bin, please check");
+            raise Program_Error;
+      end case;
+   end get_Value_From_Bin_Char;
 
-    function Get_Threefish_Word(Words : in Threefish_Words'Class;
-                                Index : in Natural) return Dword is
-    begin
-        return Words.data(Index);
-    end Get_Threefish_Word;
-
-    function Get_Threefish_Key(Keys : in Threefish_Keys'Class;
-                               Index : in Natural) return Dword is
-    begin
-        return Keys.data(Index);
-    end Get_Threefish_Key;
-
-    function Get_Threefish_Tweak(Tweaks : in Threefish_Tweaks'Class;
-                                 Index : in Natural) return Dword is
-    begin
-        return Tweaks.data(Index);
-    end Get_Threefish_Tweak;
+begin --package initialisation
+   Random_Pack.Reset (G);
+   null;
 end Crypto.Symmetric.Algorithm.Threefish;
