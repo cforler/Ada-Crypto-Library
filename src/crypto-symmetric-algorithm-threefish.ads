@@ -192,10 +192,6 @@ package Crypto.Symmetric.Algorithm.Threefish is
       tweaks : Threefish_Tweaks'Class)
       return   Boolean;
 
-   procedure Show_Words
-     (Talk_Mode : Boolean;
-      message   : String;
-      words     : Threefish_Words'Class);
 
 private
    type Threefish_Words (Last_Index : Natural) is tagged record

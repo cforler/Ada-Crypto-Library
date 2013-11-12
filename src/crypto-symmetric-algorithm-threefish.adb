@@ -9,13 +9,13 @@
 -- tested with gcc 4.2.4
 ------------------------------------------------------------------------
 
-with Crypto.Types.Skein.Nodebug; use Crypto.Types.Skein.Nodebug;
 --with skein_nodebug;         use skein_nodebug;
 with Crypto.Types.Skein;                    use Crypto.Types.Skein;
 with Ada.Characters.Handling;               use Ada.Characters.Handling;
 with Ada.Strings.Unbounded;                 use Ada.Strings.Unbounded;
 with Ada.Numerics;
 with Ada.Numerics.Discrete_Random;
+with Ada.Text_IO;			    use Ada.Text_IO;
 
 package body Crypto.Symmetric.Algorithm.Threefish is
 
@@ -272,36 +272,14 @@ package body Crypto.Symmetric.Algorithm.Threefish is
       Current_Mix_Variable                     : Threefish_Mix_Variables_Type;
 
    begin
-      Show_Words (Talk_Mode, "initial Words", Inwords);
 
-      if Talk_Mode then
-         Put_Line ("here are input Keys");
-         for i in Keys.data'Range loop
-            Put_Line (To_Hex (Keys.data (i)));
-         end loop;
-      end if;
 
-      if Talk_Mode then
-         Put_Line ("here are input tweaks");
-         for i in Tweaks.data'Range loop
-            Put_Line (To_Hex (Tweaks.data (i)));
-         end loop;
-      end if;
+
 
       --do the Keyshedule
       Key_Schedule (Mode, Keys, Tweaks, Extended_Keys);
 
-      if Talk_Mode and False then
-         --show the expanded Keys
-         Put_Line ("");
-         Put_Line ("Here are the expanded Keys");
-         for i in Extended_Keys.data'Range loop
-            for j in Keys.data'Range loop
-               Put_Line (To_Hex (Extended_Keys.data (i, j)));
-            end loop;
-            Put_Line ("-----------");
-         end loop;
-      end if;
+
 
       -- now we have the Extended Keys
       -- we can do the Keyinjection and the Mixing
@@ -309,8 +287,6 @@ package body Crypto.Symmetric.Algorithm.Threefish is
 
       --the initial keyInjection
       Key_Injection (Outwords, Extended_Keys, 0);
-
-      Show_Words (Talk_Mode, "Words after initial keyInjection", Outwords);
 
       --we want to do 72/80 rounds
       --insert the Extended Keys after every 4th round
@@ -327,16 +303,10 @@ package body Crypto.Symmetric.Algorithm.Threefish is
                Current_Mix_Variable.Rotconst);
          end loop;
 
-         Show_Words (Talk_Mode, "Words after round: " & r'Img, Outwords);
-
          --do the keyinjection afte every round mod 4 = 0
          if r mod 4 = 0 then
             Key_Injection (Outwords, Extended_Keys, r / 4);
 
-            Show_Words
-              (Talk_Mode,
-               "Words after round " & r'Img & " and KeyInjection",
-               Outwords);
          end if;
 
       end loop;
@@ -446,20 +416,6 @@ package body Crypto.Symmetric.Algorithm.Threefish is
            long_Keys ((r + n_w - 1) mod (n_w + 1)) + DWord (r);
       end loop;
 
-      if False then
-         Put_Line ("-------------------------------");
-         Put_Line ("the Extended Keys: ");
-         for i in 0 .. 10 loop
-            Put_Line
-              (To_Hex (ext_Keys.data (i, 0)) &
-               "    " &
-               To_Hex (ext_Keys.data (i, 1)) &
-               "    " &
-               To_Hex (ext_Keys.data (i, 2)) &
-               "    " &
-               To_Hex (ext_Keys.data (i, 3)));
-         end loop;
-      end if;
 
    end Key_Schedule;
 
@@ -614,7 +570,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
       words : Threefish_Words (Last_Index => Get_Last_Word_Index (mode));
    begin
       if not (SWA'Last = Get_Last_Word_Index (mode)) then
-         Put_Error_Line ("Wrong Range, please check");
+         Put_Line ("Wrong Range, please check");
          raise Program_Error;
       end if;
       for i in words.data'Range loop
@@ -631,7 +587,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
       Keys : Threefish_Keys (Last_Index => Get_Last_Word_Index (mode));
    begin
       if not (SWA'Last = Get_Last_Word_Index (mode)) then
-         Put_Error_Line ("Wrong Range, please check");
+         Put_Line ("Wrong Range, please check");
          raise Program_Error;
       end if;
       for i in Keys.data'Range loop
@@ -648,7 +604,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
       tweaks : Threefish_Tweaks (Last_Index => Get_Last_Word_Index (mode));
    begin
       if not (SWA'Last = 1) then
-         Put_Error_Line
+         Put_Line
            ("Wrong Range for Tweaks, please check:" &
             Integer'Image (SWA'Last) &
             " vs." &
@@ -661,25 +617,6 @@ package body Crypto.Symmetric.Algorithm.Threefish is
       return tweaks;
    end Make_Tweaks;
 
-   procedure Show_Words
-     (Talk_Mode : Boolean;
-      message   : String;
-      words     : Threefish_Words'Class)
-   is
-   begin
-      if Talk_Mode then
-         Put_Line ("-------------------------------");
-         Put_Line (message);
-         for i in words.data'Range loop
-            Put (To_Hex (words.data (i)));
-            Put ("    ");
-            if (i + 1) mod 4 = 0 then
-               Put_Line (" ");
-            end if;
-            --Put_Line(show(words.data(i)));
-         end loop;
-      end if;
-   end Show_Words;
 
    procedure Set_Threefish_Word
      (words : in out Threefish_Words'Class;
@@ -864,7 +801,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
          when all_one =>
             result := Create ("FFFFFFFF_FFFFFFFF", Hex);
          when others =>
-            Put_Error_Line ("This should never happen");
+            Put_Line ("This should never happen");
             result := Create ("000000", Hex);
       end case;
       return result;

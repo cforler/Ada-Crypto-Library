@@ -11,7 +11,7 @@
 ------------------------------------------------------------------------
 
 --with skein_debug;               use skein_debug;
-with Crypto.Types.Skein.Nodebug;            use Crypto.Types.Skein.Nodebug;
+with Ada.Text_IO;			    use Ada.Text_IO;
 with Ada.Strings.Unbounded;                 use Ada.Strings.Unbounded;
 with Ada.Numerics.Discrete_Random;
 with Interfaces;
@@ -61,7 +61,7 @@ package body Crypto.Types.Skein is
       My_SW : DWord := DWord (0);
    begin
       if not (b'Length = 8) then
-         Put_Error_Line
+         Put_Line
            ("The Length of Bytes must be 8 for converting to Dword");
          raise Program_Error;
       end if;
@@ -79,8 +79,8 @@ package body Crypto.Types.Skein is
       My_SW_Array : DWords (0 .. b'Length / 8 - 1);
    begin
       if not (b'Length mod 8 = 0) then
-         Put_Error_Line ("The Length of Bytes must be a multiple of 8");
-         Put_Error_Line (Integer'Image (b'Length));
+         Put_Line ("The Length of Bytes must be a multiple of 8");
+         Put_Line (Integer'Image (b'Length));
          raise Program_Error;
       end if;
       for i in My_SW_Array'Range loop
@@ -112,7 +112,7 @@ package body Crypto.Types.Skein is
    function "+" (Left : Bytes; Right : Natural) return Bytes is
    begin
       if not (Left'Length = 8) then
-         Put_Error_Line ("maximum of 8 Byte is allowed for Addition");
+         Put_Line ("maximum of 8 Byte is allowed for Addition");
          raise Program_Error;
       end if;
       return Dword_To_Bytes (Bytes_To_Dword (Left) + Right);

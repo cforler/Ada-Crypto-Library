@@ -10,9 +10,10 @@
 ------------------------------------------------------------------------
 
 --with skein_debug;               use skein_debug;
-with Crypto.Types.Skein.Nodebug;           use Crypto.Types.Skein.Nodebug;
+with Ada.Text_IO;			use Ada.Text_IO;
 with Crypto.Symmetric.Algorithm.Threefish;
 with Crypto.Types.Skein;                   use Crypto.Types.Skein;
+
 
 package body Crypto.Symmetric.Algorithm.Skein is
 
@@ -344,14 +345,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
       --end loop;
       Result := Current_Result;
 
-      Put_Line
-        ("UBI is done for:" &
-         "  G'Length:" &
-         Integer'Image (G'Length) &
-         "  M'Length:" &
-         Integer'Image (Full_Message'Length) &
-         "  Bit_Padded_Message'Length:" &
-         Integer'Image (Bit_Padded_Message'Length));
+
    end Straight_UBI;
 
    task body Tree_UBI_Task is
@@ -512,8 +506,6 @@ package body Crypto.Symmetric.Algorithm.Skein is
                                                                   --Tweak
                                                                   --always
    begin
-      Put_Line
-        ("N_l=" & Integer'Image (N_l) & "     N_n=" & Integer'Image (N_n));
       --split M in Blocks, each block has 8*N_l Bits
       --the last Block has between 1 and 8*N_l bits
 
@@ -571,7 +563,6 @@ package body Crypto.Symmetric.Algorithm.Skein is
            (Value => (Last_Piece + 1) * N_b);
 
          for i in 0 .. Last_Piece loop
-            Put_Line ("i= " & Integer'Image (i));
 
             --the current M_l,i is N Bytes long
             --from i*N..(i+1)*N -1 -- the old M_l is M_old
@@ -596,18 +587,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
 
             --which parts of the input message do we need?
 
-            Put_Line
-              ("Current_Length_Bits: " & Integer'Image (Current_Length_Bits));
-            Put_Line
-              ("inmessage: " &
-               Integer'Image (i * N) &
-               " to" &
-               Integer'Image (i * N + Current_Length_Bits / 8 - 1));
-            Put_Line
-              ("outmessage: " &
-               Integer'Image (i * N_b) &
-               " to" &
-               Integer'Image ((i + 1) * N_b - 1));
+
             --                Straight_UBI(
             --                    Mode => Mode,
             --                    G => G,
@@ -677,19 +657,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
             exit when True;
          end if;
 
-         -- we could not exit, so we have to set the "new_Message" as the old
-         --one
-         --and do one more round
-         Put_Line (" ");
-         Put_Line ("The resulting  Message M_l after l=" & Integer'Image (l));
-         for i in 0 .. M_New_Length loop
-            Put (To_Hex (M_new (i)));
-            Put (" ");
-            if (i + 1) mod 16 = 0 then
-               Put_Line (" ");
-            end if;
-         end loop;
-         Put_Line (" ");
+
 
          --we can do this because we are at least in the second tree-level
          --here the bit-length is always Byte-lenght*8
@@ -810,10 +778,8 @@ package body Crypto.Symmetric.Algorithm.Skein is
       T_Conf : Bytes (0 .. 15) := (15 => Byte (4), others => Byte (0));
    begin
       --calculate K_Tick
-      Put_Line (":::::::::::Calculation of K_Tick started:::::::::::");
       if K'Length = 0 then                --This isnt correct, this is not
                                           --possible in Ada.
-         Put_Line ("empty Key found");
          K_Tick := (others => Byte (0));
       else
          Straight_UBI
@@ -826,8 +792,6 @@ package body Crypto.Symmetric.Algorithm.Skein is
       end if;
 
       --now we have K_Tick and can go on with the Configuration calculation
-      Put_Line
-        (":::::::::::Calculation of Configuration Block started:::::::::::");
       Straight_UBI
         (Mode              => Mode,
          G                 => K_Tick,
@@ -875,14 +839,12 @@ package body Crypto.Symmetric.Algorithm.Skein is
       --then we use tree-hashing
       T_Msg : Bytes (0 .. 15) := (15 => Byte (48), others => Byte (0));
    begin
-      Put_Line (":::::::::::Calculation of Update-Block started:::::::::::");
       --!!!!!!!!!!! we have to differ between normal UBI and TreeUBI here
       if Tweak = T_Msg and
          ((not (Y_l = 0) or not (Y_f = 0) or not (Y_m = 0)))
       then
          null;
          --we want treehasing
-         Put_Line ("using Tree-hashing");
          Tree_UBI
            (Mode              => Mode,
             G                 => Old_State,
@@ -941,8 +903,6 @@ package body Crypto.Symmetric.Algorithm.Skein is
       --the final result , the size is correct only for N_0 mod 8 = 0!!
       H : Bytes (0 .. N_0 / 8 - 1) := (others => Byte (0));
    begin
-      Put_Line
-        (":::::::::::Calculation of Output-function started:::::::::::");
       --as a last step we do the Output-function
       Output (Mode => Mode, G => Old_State, N_0 => N_0, Result => H);
 
