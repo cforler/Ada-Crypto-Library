@@ -19,11 +19,11 @@ use Crypto.Types;
    package OCB is new Crypto.Symmetric.AE_OCB3(BC            => AES_128,
                                               N             => N,
                                               "xor"         => "xor",
-                                              To_Block_Type => Crypto.Types.To_B_Block128,
-                                              To_Bytes      => Crypto.Types.To_Bytes,
-                                              Shift_Left    => Crypto.Types.Shift_Left,
-                                              Shift_Right   => Crypto.Types.Shift_Right,
-                                              To_Byte_Word  => Crypto.Types.To_Bytes);
+                                              To_Block_Type => To_B_Block128,
+                                              To_Bytes      => To_Bytes,
+                                              Shift_Left    => Shift_Left,
+                                              Shift_Right   => Shift_Right,
+                                              To_Byte_Word  => To_Bytes);
 
    Static_Nonce: B_Block128 := (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#, 16#08#, 16#09#, 16#0A#, 16#0B#, others=>Byte(0));
    Plaintext: B_Block128 := (others => 0);
@@ -60,6 +60,8 @@ use Crypto.Types;
 		return new String'("OCB3 Test");
 	end Name;
 
+
+
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 ------------------------------------ Start Tests -----------------------------------
@@ -67,13 +69,39 @@ use Crypto.Types;
 -------------------------------------- Test 1 --------------------------------------
 ------------------------------------------------------------------------------------
 
+
    procedure OCB3_Test1(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
+
+      subtype nonce_bytes is Bytes(0..15);
+
+      function Inc(Item: nonce_bytes) return nonce_bytes is
+         use Crypto.Types;
+         Result: nonce_bytes := Item;
+      begin
+         Result := Result;
+         return Result;
+      end Inc;
+
+      package N is new Crypto.Types.Nonces(Block => nonce_bytes);
+      package Counter is new N.Nonces_Ctr(Inc => Inc);
+
+
+      Nonce: Counter.Nonce_Ctr;
+      zero_iv: Block(0..15):=(others=>Byte(0));
+
    begin
-      Crypto.Types.
 
 
-   	   	   Assert(CT(I) = false, "OCB3 failed.");
+
+      Counter.Initialize(This      => Nonce,
+                         File_Path => nonce_for_ocb.txt,
+                         IV        =>zero_iv );
+
+
+
+      Assert(true, "OCB3 failed.");
+
    end OCB3_Test1;
 
 ------------------------------------------------------------------------------------
