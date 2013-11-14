@@ -45,7 +45,7 @@ project LibAdaCrypt is
       "crypto-types-nonces-nonces_mixed_1.ads", "crypto-types-nonces-nonces_mixed_2.adb", "crypto-types-nonces-nonces_mixed_2.ads", "crypto-types-nonces-nonces_random.adb", "crypto-types-nonces-nonces_random.ads", 
       "crypto-types-nonces-nonces_randomized_counter.adb", "crypto-types-nonces-nonces_randomized_counter.ads", "crypto-types-nonces.ads", "crypto-types-random.adb", "crypto-types-random.ads", 
       "crypto-types-random_source-file.adb", "crypto-types-random_source-file.ads", "crypto-types-random_source-hashfunction.adb", "crypto-types-random_source-hashfunction.ads", "crypto-types-random_source.adb", 
-      "crypto-types-random_source.ads", "crypto-types-skein.adb", "crypto-types-skein.ads", "crypto-types.adb", "crypto-types.ads", "crypto.ads");
+      "crypto-types-random_source.ads", "crypto-types.adb", "crypto-types.ads", "crypto.ads");
 
    package Builder is
       for Default_Switches ("ada") use ("-j4");

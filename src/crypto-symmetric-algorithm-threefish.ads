@@ -1,19 +1,55 @@
-------------------------------------------------------------------------
---
--- Implementation of the Threefish Block Cipher function.
---
--- Source code author: Martin Kausche, 2008.
---
+-- This program is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU General Public License as
+-- published by the Free Software Foundation; either version 2 of the
+-- License, or (at your option) any later version.
+
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-- General Public License for more details.
+
+-- You should have received a copy of the GNU General Public License
+-- along with this program; if not, write to the Free Software
+-- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+-- 02111-1307, USA.
+
+-- As a special exception, if other files instantiate generics from
+-- this unit, or you link this unit with other files to produce an
+-- executable, this unit does not by itself cause the resulting
+-- executable to be covered by the GNU General Public License. This
+-- exception does not however invalidate any other reasons why the
+-- executable file might be covered by the GNU Public License.
+
+-- Original Source code author: Martin Kausche, 2008.
 -- This source code is released to the public domain.
---
--- tested with gcc 4.2.4
-------------------------------------------------------------------------
-with Crypto.Types.Skein; use Crypto.Types.Skein;
 with Crypto.Types;       use Crypto.Types;
 with Ada.Strings.Unbounded;         use Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;             use Ada.Strings.Fixed;
 --
 package Crypto.Symmetric.Algorithm.Threefish is
+
+
+
+   ----------------------------------------------------------------
+   --skein-specific tools imported from old types.skein
+   ----------------------------------------------------------------
+
+   --minor special type functions, used by Threefish and Skein
+
+   function "+" (Left : DWord; Right : Integer) return DWord;
+
+   function Natural_To_Bytes (N : Natural; number : Natural) return Bytes;
+
+   function Bytes_To_Dword (b : in Bytes) return DWord;
+
+   function Bytes_To_Dwords (b : in Bytes) return DWords;
+
+   function Dword_To_Bytes (s : in DWord) return Bytes;
+
+   function Dwords_To_Bytes (s : in DWords) return Bytes;
+
+   function "+" (Left : Bytes; Right : Natural) return Bytes;
+
 
    --the Mode type, just for distinguishing the diffrent mode of Skein
    type Skein_Mode is (m256, m512, m1024);
@@ -53,6 +89,9 @@ package Crypto.Symmetric.Algorithm.Threefish is
    type Threefish_Tweaks (Last_Index : Natural) is tagged private;
    type Threefish_State (Last_Index : Natural) is tagged private;
    type Threefish_Extended_Keys (Last_Index : Natural) is tagged private;
+
+
+   --Status getter/setter
 
    procedure Set_Threefish_Word
      (words : in out Threefish_Words'Class;

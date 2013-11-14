@@ -1,16 +1,29 @@
-------------------------------------------------------------------------
---
--- Implementation of the Threefish Block Cipher function.
---
--- Source code author: Martin Kausche, 2008.
---
+-- This program is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU General Public License as
+-- published by the Free Software Foundation; either version 2 of the
+-- License, or (at your option) any later version.
+
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-- General Public License for more details.
+
+-- You should have received a copy of the GNU General Public License
+-- along with this program; if not, write to the Free Software
+-- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+-- 02111-1307, USA.
+
+-- As a special exception, if other files instantiate generics from
+-- this unit, or you link this unit with other files to produce an
+-- executable, this unit does not by itself cause the resulting
+-- executable to be covered by the GNU General Public License. This
+-- exception does not however invalidate any other reasons why the
+-- executable file might be covered by the GNU Public License.
+
+-- Original Source code author: Martin Kausche, 2008.
 -- This source code is released to the public domain.
---
--- tested with gcc 4.2.4
-------------------------------------------------------------------------
 
 --with skein_nodebug;         use skein_nodebug;
-with Crypto.Types.Skein;                    use Crypto.Types.Skein;
 with Ada.Characters.Handling;               use Ada.Characters.Handling;
 with Ada.Strings.Unbounded;                 use Ada.Strings.Unbounded;
 with Ada.Numerics;
@@ -111,6 +124,86 @@ package body Crypto.Symmetric.Algorithm.Threefish is
        (8, 5, 31),
        (10, 3, 37),
        (12, 7, 20)));
+
+
+   function "+" (Left : DWord; Right : Integer) return DWord is
+   begin
+      return Left + DWord (Right);
+   end "+";
+
+   function Natural_To_Bytes (N : Natural; number : Natural) return Bytes is
+      result : Bytes (0 .. number - 1) := (others => Byte (0));
+   begin
+      for i in result'Range loop  --Natural can be at least 256**3
+         --result(i) := Byte( ( N/(256**i) ) mod 256);
+         if i < 4 then
+            result (i) := Byte ((N / (256 ** i)) mod 256);
+            --Ada.Text_IO.Put_Line(Show_Hex(result(i)));
+         end if;
+      end loop;
+      return result;
+   end Natural_To_Bytes;
+
+   function Bytes_To_Dword (b : in Bytes) return DWord is
+      My_SW : DWord := DWord (0);
+   begin
+      if not (b'Length = 8) then
+         Put_Line
+           ("The Length of Bytes must be 8 for converting to Dword");
+         raise Program_Error;
+      end if;
+      --8 Bytes are one word,
+      for j in b'Range loop
+         --we need mod 8 here because in call from Bytes_To_Dwords
+         --the indices are kept :/
+         My_SW := My_SW + (DWord (b (j)) * 256 ** (j mod 8));
+      end loop;
+      return My_SW;
+   end Bytes_To_Dword;
+
+   --8 bytes are one Dword
+   function Bytes_To_Dwords (b : in Bytes) return DWords is
+      My_SW_Array : DWords (0 .. b'Length / 8 - 1);
+   begin
+      if not (b'Length mod 8 = 0) then
+         Put_Line ("The Length of Bytes must be a multiple of 8");
+         Put_Line (Integer'Image (b'Length));
+         raise Program_Error;
+      end if;
+      for i in My_SW_Array'Range loop
+         My_SW_Array (i) := Bytes_To_Dword (b (8 * i .. 8 * i + 7));
+      end loop;
+      return My_SW_Array;
+   end Bytes_To_Dwords;
+
+   --convert one single Dword to an array of 8 Bytes
+   function Dword_To_Bytes (s : in DWord) return Bytes is
+      My_Bytes_Array : Bytes (0 .. 7);
+   begin
+      for i in My_Bytes_Array'Range loop
+         My_Bytes_Array (i) := Byte (s / 256 ** i mod 256);
+      end loop;
+      return My_Bytes_Array;
+   end Dword_To_Bytes;
+
+   --one Dword is 8 Bytes
+   function Dwords_To_Bytes (s : in DWords) return Bytes is
+      My_Bytes : Bytes (0 .. s'Length * 8 - 1);
+   begin
+      for i in s'Range loop
+         My_Bytes (i * 8 .. i * 8 + 7) := Dword_To_Bytes (s (i));
+      end loop;
+      return My_Bytes;
+   end Dwords_To_Bytes;
+
+   function "+" (Left : Bytes; Right : Natural) return Bytes is
+   begin
+      if not (Left'Length = 8) then
+         Put_Line ("maximum of 8 Byte is allowed for Addition");
+         raise Program_Error;
+      end if;
+      return Dword_To_Bytes (Bytes_To_Dword (Left) + Right);
+   end "+";
 
    function Get_Number_Of_Skein_Bytes (Mode : in Skein_Mode) return Natural is
    begin
