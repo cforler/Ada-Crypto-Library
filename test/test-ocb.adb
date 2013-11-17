@@ -3,6 +3,7 @@ with Crypto.Symmetric.AE_OCB3;
 with Crypto.Symmetric.Blockcipher_AES128;
 with Crypto.Types;
 with Crypto.Types.Nonces;
+with Crypto.Types.Nonces.Nonces_Ctr;
 with Ada.Text_IO;
 
 package body Test.OCB is
@@ -15,23 +16,23 @@ use Crypto.Types;
 ------------------------------------------------------------------------------------
 
    package AES_128 renames Crypto.Symmetric.Blockcipher_AES128;
-   package N is new Crypto.Types.Nonces(Block=>Crypto.Types.B_Block128);
-   package OCB is new Crypto.Symmetric.AE_OCB3(BC            => AES_128,
-                                              N             => N,
-                                              "xor"         => "xor",
-                                              To_Block_Type => To_B_Block128,
-                                              To_Bytes      => To_Bytes,
-                                              Shift_Left    => Shift_Left,
-                                              Shift_Right   => Shift_Right,
-                                              To_Byte_Word  => To_Bytes);
+--     package N is new Crypto.Types.Nonces(Block=>Crypto.Types.B_Block128);
+--     package OCB is new Crypto.Symmetric.AE_OCB3(BC            => AES_128,
+--                                                N             => N,
+--                                                "xor"         => "xor",
+--                                                To_Block_Type => To_B_Block128,
+--                                                To_Bytes      => To_Bytes,
+--                                                Shift_Left    => Shift_Left,
+--                                                Shift_Right   => Shift_Right,
+--                                                To_Byte_Word  => To_Bytes);
 
    Static_Nonce: B_Block128 := (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#, 16#08#, 16#09#, 16#0A#, 16#0B#, others=>Byte(0));
    Plaintext: B_Block128 := (others => 0);
    Key: B_Block128 := (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#, 16#08#, 16#09#, 16#0A#, 16#0B#, 16#0C#, 16#0D#, 16#0E#, 16#0F#);
-   Ciphertext: B_Block128; --:= (16#5D#, 16#9D#, 16#4E#, 16#EF#, 16#FA#,
-                          --    16#91#, 16#51#, 16#57#, 16#55#, 16#24#,
-                          --    16#F1#, 16#15#, 16#81#, 16#5A#, 16#12#,
-                          --    16#E0#);
+   --Ciphertext: B_Block128; --:= (16#5D#, 16#9D#, 16#4E#, 16#EF#, 16#FA#,
+     --                     --    16#91#, 16#51#, 16#57#, 16#55#, 16#24#,
+       --                   --    16#F1#, 16#15#, 16#81#, 16#5A#, 16#12#,
+         --                 --    16#E0#);
    PT: B_Block128 := (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#, others=>Byte(0));
    CT: B_Block128;
 
@@ -45,8 +46,8 @@ use Crypto.Types;
 		use Test_Cases.Registration;
 	begin
 		Register_Routine(T, OCB3_Test1'Access,"OCB3_Test1.");
-		Register_Routine(T, OCB3_Test2'Access,"OCB3_Test2.");
-		Register_Routine(T, OCB3_Test3'Access,"OCB3_Test3.");
+		--Register_Routine(T, OCB3_Test2'Access,"OCB3_Test2.");
+		--Register_Routine(T, OCB3_Test3'Access,"OCB3_Test3.");
 	end Register_Tests;
 
 ------------------------------------------------------------------------------------
@@ -73,32 +74,41 @@ use Crypto.Types;
    procedure OCB3_Test1(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
 
-      subtype nonce_bytes is Bytes(0..15);
-
-      function Inc(Item: nonce_bytes) return nonce_bytes is
+      function Inc(Item: B_Block128) return B_Block128 is
          use Crypto.Types;
-         Result: nonce_bytes := Item;
+         Result: B_Block128 := Item;
       begin
          Result := Result;
          return Result;
       end Inc;
 
-      package N is new Crypto.Types.Nonces(Block => nonce_bytes);
+
+
+      package N is new Crypto.Types.Nonces(Block => B_Block128);
       package Counter is new N.Nonces_Ctr(Inc => Inc);
 
 
       Nonce: Counter.Nonce_Ctr;
-      zero_iv: Block(0..15):=(others=>Byte(0));
+      zero_iv: B_Block128:=(16#00#,16#01#,16#02#,16#03#,
+                            16#04#,16#05#,16#06#,16#07#,
+                            16#08#,16#09#,16#0A#,16#0B#,
+                            16#08#,16#09#,16#0A#,16#0B#);
+
+      output: B_Block128;
+
 
    begin
 
-
+      Ada.Text_IO.Put_Line("Counter Test");
 
       Counter.Initialize(This      => Nonce,
-                         File_Path => nonce_for_ocb.txt,
-                         IV        =>zero_iv );
+                         File_Path => "nonce_for_ocb.txt",
+                         IV        => zero_iv );
 
+      output:=Counter.Update(Nonce);
+      Ada.Text_IO.Put_Line(To_String(To_Bytes(output)));
 
+      Ada.Text_IO.Put_Line("Counter Test Ende");
 
       Assert(true, "OCB3 failed.");
 

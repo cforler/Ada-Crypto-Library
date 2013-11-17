@@ -70,6 +70,10 @@ package Crypto.Symmetric.AE_OCB3 is
                           N_Init              : in     Block;
                           Bytes_Of_N_Read     : in     Positive;
                           Taglen              : in     Positive);
+   
+   procedure Hash(Key             : in	Key_Type;
+                  Associated_data : in	Callback_Reader;
+                  Sum		  : out B_Block128);
 
 private
    type Block_Array is array (-1..31) of BC.Block;

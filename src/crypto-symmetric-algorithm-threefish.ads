@@ -36,7 +36,7 @@ package Crypto.Symmetric.Algorithm.Threefish is
 
    --minor special type functions, used by Threefish and Skein
 
-   function "+" (Left : DWord; Right : Integer) return DWord;
+
 
    function Natural_To_Bytes (N : Natural; number : Natural) return Bytes;
 
@@ -48,7 +48,7 @@ package Crypto.Symmetric.Algorithm.Threefish is
 
    function Dwords_To_Bytes (s : in DWords) return Bytes;
 
-   function "+" (Left : Bytes; Right : Natural) return Bytes;
+   --function "+" (Left : Bytes; Right : Natural) return Bytes;
 
 
    --the Mode type, just for distinguishing the diffrent mode of Skein

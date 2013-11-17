@@ -886,6 +886,22 @@ package body Crypto.Symmetric.AE_OCB3 is
          This.Offset := Stretch_Then_Shift(To_Bytes(Ktop), Integer(Bottom(Bottom'Last)));         
       end if;
    end Init_Decrypt;
+   
+   
+   procedure Hash(Key             : in	Key_Type;
+                  Associated_data : in	Callback_Reader;
+                  Sum	     : out      B_Block128) is
+      Curr_Block: Bytes := Zero_Bytes;
+      
+   begin
+
+      
+      null;
+
+   end Hash;
+   
+      
+   
 
    -----------------------------------------------------------------
 
