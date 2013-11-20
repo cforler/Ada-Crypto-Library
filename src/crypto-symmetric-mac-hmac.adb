@@ -31,7 +31,7 @@ package body Crypto.Symmetric.Mac.Hmac is
    begin
       Fill36(Ipad);
       Init;
-      Round(K xor Ipad);
+      Update(K xor Ipad);
    end Reset;
 
    ---------------------------------------------------------------------------
@@ -46,7 +46,7 @@ package body Crypto.Symmetric.Mac.Hmac is
 
    procedure Sign(Message_Block : in Message_Type) is
    begin
-      Round(Message_Block);
+      Update(Message_Block);
    end Sign;
 
    ---------------------------------------------------------------------------
@@ -63,7 +63,7 @@ package body Crypto.Symmetric.Mac.Hmac is
 
       Fill5C(Opad);
       Init;
-      Round(K xor Opad);
+      Update(K xor Opad);
 
       Copy(Tag,Final);
       Len := Tag'Size/8;
@@ -77,7 +77,7 @@ package body Crypto.Symmetric.Mac.Hmac is
 
    procedure Verify(Message_Block : in Message_Type) is
    begin
-      Round(Message_Block);
+      Update(Message_Block);
    end Verify;
 
    ---------------------------------------------------------------------------
@@ -95,7 +95,7 @@ package body Crypto.Symmetric.Mac.Hmac is
    begin
       Fill5C(Opad);
       Init;
-      Round(K xor Opad);
+      Update(K xor Opad);
 
       Copy(Tag2,Final);
       Len := Tag'Size/8;

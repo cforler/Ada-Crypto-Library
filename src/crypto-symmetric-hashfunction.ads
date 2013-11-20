@@ -58,7 +58,7 @@ package Crypto.Symmetric.Hashfunction is
    function To_Bytes(Hash : Hash_Type) return Bytes;
 
    procedure Init;
-   procedure Round(Message_Block : in Message_Type);
+   procedure Update(Message_Block : in Message_Type);
    function Final_Round(Last_Message_Block  : Message_Type;
                         Last_Message_Length : Message_Block_Length_Type)
                        return Hash_Type;

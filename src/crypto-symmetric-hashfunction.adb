@@ -35,10 +35,10 @@ package body  Crypto.Symmetric.Hashfunction is
 
    ---------------------------------------------------------------------------
 
-   procedure Round(Message_Block : in Message_Type) is
+   procedure Update(Message_Block : in Message_Type) is
    begin
       Round(Message_Block, H);
-   end Round;
+   end Update;
 
    ---------------------------------------------------------------------------
 

@@ -323,7 +323,7 @@ package body Crypto.Asymmetric.RSA is
             end if;
 
             for I in 1..M_Hash_Rounds  loop
-               SHA1.Round( W_Block512(Seed_Words(First+((I-1)*(M'Length+1))..
+               SHA1.Update( W_Block512(Seed_Words(First+((I-1)*(M'Length+1))..
 						   (First+(I*(M'Length+1))-2))));
             end loop;
 
