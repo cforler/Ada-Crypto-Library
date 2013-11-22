@@ -58,11 +58,11 @@ package Crypto.Types is
    type DWords is array (Integer range <>) of DWord;
 
    type Mod_Types  is array (Natural range <>) of Mod_type;
-   
-   
+
+
    subtype Byte_Word_Range  is Natural range 0..3;
    subtype Byte_DWord_Range is Natural range 0..7;
-     
+
    subtype Byte_Word  is Bytes (Byte_Word_Range);
    subtype Byte_DWord is Bytes (Byte_DWord_Range);
 
@@ -76,7 +76,7 @@ package Crypto.Types is
    subtype B_Block160_Range is Natural range 0..19;
    subtype B_Block192_Range is Natural range 0..23;
    subtype B_Block256_Range is Natural range 0..31;
-   
+
    type B_Block32  is array(B_Block32_Range)  of Byte;
    type B_Block48  is array(B_Block48_Range)  of Byte;
    type B_Block56  is array(B_Block56_Range)  of Byte;
@@ -86,14 +86,14 @@ package Crypto.Types is
    type B_Block192 is array(B_Block192_Range) of Byte;
    type B_Block256 is array(B_Block256_Range) of Byte;
 
-   
+
    -- word blocks (W_BlockN): array of N/32 Words
    subtype W_Block128_Range is Natural range 0..3;
    subtype W_Block160_Range is Natural range 0..4;
    subtype W_Block192_Range is Natural range 0..5;
    subtype W_Block256_Range is Natural range 0..7;
    subtype W_Block512_Range is Natural range 0..15;
-   
+
    type W_Block128 is array(W_Block128_Range) of Word;
    type W_Block160 is array(W_Block160_Range) of Word;
    type W_Block192 is array(W_Block192_Range) of Word;
@@ -107,33 +107,34 @@ package Crypto.Types is
    subtype DW_Block384_Range  is Natural range 0..5;
    subtype DW_Block512_Range  is Natural range 0..7;
    subtype DW_Block1024_Range is Natural range 0..15;
-   
+
    type DW_Block128   is array(DW_Block128_Range) of DWord;
    type DW_Block256   is array(DW_Block256_Range)  of DWord;
    type DW_Block384   is array(DW_Block384_Range)  of DWord;
    type DW_Block512   is array(DW_Block512_Range)  of DWord;
    type DW_Block1024  is array(DW_Block1024_Range) of DWord;
-   
-   
+
+
    subtype Hex_Byte_Range   is Natural range 1..2;
    subtype Hex_Word_Range   is Natural range 1..8;
    subtype Hex_DWord_Range  is Natural range 1..16;
-   
-   
+
+
    subtype Hex_Byte  is String (Hex_Byte_Range);
    subtype Hex_Word  is String (Hex_Word_Range);
    subtype Hex_DWord is String (Hex_DWord_Range);
 
 
+   subtype Message_Block_Length256  is Natural range 0 ..  32;
    subtype Message_Block_Length512  is Natural range 0 ..  64;
    subtype Message_Block_Length1024 is Natural range 0 .. 128;
-   
-   
+
+
    ---------------------------------------------------------------------------
    ---------------------------FUNCTIONS---------------------------------------
    ---------------------------------------------------------------------------
 
-   function Shift_Left   (Value : Byte; Amount : Natural) return Byte; 
+   function Shift_Left   (Value : Byte; Amount : Natural) return Byte;
    function Shift_Right  (Value : Byte; Amount : Natural) return Byte;
    function Rotate_Left  (Value : Byte; Amount : Natural) return Byte;
    function Rotate_Right (Value : Byte; Amount : Natural) return Byte;
@@ -157,27 +158,27 @@ package Crypto.Types is
    function Shift_Right  (Value : Mod_Type; Amount : Natural) return Mod_Type;
    function Rotate_Left  (Value : Mod_Type; Amount : Natural) return Mod_type;
    function Rotate_Right (Value : Mod_Type; Amount : Natural) return Mod_Type;
-   
-   
+
+
    pragma Import (Intrinsic, Shift_Left);
    pragma Import (Intrinsic, Shift_Right);
-   
-   function Shift_Left (Value : Bytes; Amount : Natural) return Bytes;  
-   function Shift_Left (Value : B_Block128 ; Amount : Natural) return B_Block128;  
-   function Shift_Right (Value : Bytes; Amount : Natural) return Bytes;  
-   function Shift_Right (Value : B_Block128 ; Amount : Natural) return B_Block128; 
-   
-   --function Shift_Right (Value : Bytes; Amount : Natural) return Bytes;  
-   --function Shift_Right (Value : B_Block128 ; Amount : Natural) return B_Block128; 
+
+   function Shift_Left (Value : Bytes; Amount : Natural) return Bytes;
+   function Shift_Left (Value : B_Block128 ; Amount : Natural) return B_Block128;
+   function Shift_Right (Value : Bytes; Amount : Natural) return Bytes;
+   function Shift_Right (Value : B_Block128 ; Amount : Natural) return B_Block128;
+
+   --function Shift_Right (Value : Bytes; Amount : Natural) return Bytes;
+   --function Shift_Right (Value : B_Block128 ; Amount : Natural) return B_Block128;
 
    --Operations for Bytes
    function "xor"(Left, Right : Bytes)        return Bytes;
    function "xor"(Left : Bytes; Right : Byte) return Bytes;
-   function "+"(Left : Bytes; Right : Byte)   return Bytes; 
+   function "+"(Left : Bytes; Right : Byte)   return Bytes;
    function "+"(Left : Byte; Right  : Bytes)  return Bytes;
    function "and"(Left, Right : Bytes)        return Bytes;
-   		
-   
+
+
    -- Operations for Words
    function "xor"(Left, Right : Words)       return Words;
    function "+"(Left : Words; Right : Word)  return Words;
@@ -213,7 +214,7 @@ package Crypto.Types is
    function To_DWord    (X : Byte_DWord) return DWord;
    function R_To_DWord  (X : Byte_DWord) return DWord;
    function To_DWords   (Byte_Array : Bytes) return DWords;
-      
+
    -- DWord to Bytes
    function To_Bytes   (X : DWord)            return Byte_DWord;
    function R_To_Bytes (X : DWord)            return Byte_DWord;
@@ -239,7 +240,7 @@ package Crypto.Types is
 
    -- Bytes to String
    function To_String(ASCII : Bytes) return String;
-    
+
 
    -- To_Hex
    function To_Hex(B : Byte)  return Hex_Byte;
@@ -251,8 +252,8 @@ package Crypto.Types is
    function Is_Zero(Byte_Array  : Bytes)   return Boolean;
    function Is_Zero(Word_Array  : Words)   return Boolean;
    function Is_Zero(DWord_Array : DWords) return Boolean;
-   
-   
+
+
    -- Byte Blocks To Bytes.
    -- Needed for generic packages to convert a specific byte block.
    function To_Bytes(B : B_Block64)  return Bytes;
@@ -266,85 +267,85 @@ package Crypto.Types is
    function To_Bytes(D : DW_Block384) return Bytes;
    function To_Bytes(D : DW_Block512) return Bytes;
 
-   
+
    -- Bytes To block of Bytes.
    -- Needed for generic packages to convert a specific byte block.
-   function To_B_Block64(B : Bytes) return B_Block64;   
+   function To_B_Block64(B : Bytes) return B_Block64;
    function To_B_Block128(B : Bytes) return B_Block128;
    function To_B_Block192(B : Bytes) return B_Block192;
    function To_B_Block256(B : Bytes) return B_Block256;
-   
-   
+
+
    -- Bytes To block of words.
    -- Needed for generic packages to convert a specific byte block.
    function To_W_Block160(B : Bytes) return W_Block160;
    function To_W_Block256(B : Bytes) return W_Block256;
-   
-   
+
+
    -- Bytes To block of double words.
    -- Needed for generic packages to convert a specific byte block.
    function To_DW_Block256(B : Bytes) return DW_Block256;
    function To_DW_Block384(B : Bytes) return DW_Block384;
    function To_DW_Block512(B : Bytes) return DW_Block512;
-   
+
    -- Needed for generic packages to convert a specific byte block.
    function "xor"(Left, Right : B_Block64)    return   B_Block64;
    function "xor"(Left, Right : B_Block128)   return   B_Block128;
    function "xor"(Left, Right : W_Block512)   return   W_Block512;
    function "xor"(Left, Right : DW_Block512)  return  DW_Block512;
    function "xor"(Left, Right : DW_Block1024) return  DW_Block1024;
-   
+
    function "+"(Left : B_Block128; Right : Byte) return B_Block128;
-   
-     
-   -- Splits  byte array of length n into a left part of length  
+
+
+   -- Splits  byte array of length n into a left part of length
    -- ceiling(n/2) and a right part of length floor(n/2).
    function Left_Part(Block : in Bytes)  return Bytes;
    function Right_Part(Block : in Bytes) return Bytes;
-   
-   -- Nested generic package 
+
+   -- Nested generic package
    generic
       type T is mod <>;
       type T_A is array (Integer range <>) of T;
       with function Shift_Left  (Value : T; Amount : Natural) return T is <>;
       with function Shift_Right (Value : T; Amount : Natural) return T is <>;
-      
+
    package Generic_Mod_Aux is
       function "xor"(Left, Right : T_A)      return T_A;
       function "xor"(Left : T_A; Right  : T) return T_A;
       function "xor"(Left : T; Right : T_A)  return T_A;
-      
+
       function "and"(Left, Right : T_A)      return T_A;
-      
+
       function "+"(Left : T_A; Right : T) return T_A;
       function "+"(Left : T; Right : T_A) return T_A;
-      
+
       function Is_Zero(Item : T_A) return Boolean;
-      
+
       function Left_Part (Block : in T_A) return T_A;
-      function Right_Part(Block : in T_A) return T_A;      
-      
+      function Right_Part(Block : in T_A) return T_A;
+
       function Shift_Left(Value : T_A;  Amount : Natural) return T_A;
       function Shift_Right(Value : T_A;  Amount : Natural) return T_A;
    end Generic_Mod_Aux;
-   
-   
-  
+
+
+
    ---------------------------------------------------------------------------
    -------------------------------PRIVATE-------------------------------------
    ---------------------------------------------------------------------------
 
 private
    pragma Inline (To_B_Block128,To_B_Block192,To_B_Block256);
-   pragma Inline ("xor","+"); 
+   pragma Inline ("xor","+");
    pragma Inline (R_To_Bytes, To_Bytes);
    pragma Inline (To_Word, Byte0, Byte1, Byte2, Byte3);
    pragma Inline (Byte4, Byte5, Byte6, Byte7);
    pragma Inline (To_DWord, R_To_DWord);
    pragma Inline (Is_Zero);
-   pragma Inline (Left_Part, Right_Part); 
+   pragma Inline (Left_Part, Right_Part);
    pragma Import (Intrinsic, Rotate_Left);
    pragma Import (Intrinsic, Rotate_Right);
-   
+
    pragma Optimize(Time);
 end Crypto.Types;

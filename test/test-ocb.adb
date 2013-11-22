@@ -5,6 +5,9 @@ with Crypto.Types;
 with Crypto.Types.Nonces;
 with Crypto.Types.Nonces.Nonces_Ctr;
 with Ada.Text_IO;
+with Ada.Integer_Text_IO;
+with Ada.Directories;
+with Crypto.Symmetric.AE;
 
 package body Test.OCB is
 use Crypto.Types;
@@ -75,40 +78,82 @@ use Crypto.Types;
       use AUnit.Assertions;
 
       function Inc(Item: B_Block128) return B_Block128 is
-         use Crypto.Types;
-         Result: B_Block128 := Item;
       begin
-         Result := Result;
-         return Result;
+         return (16#00#,16#01#,16#02#,16#03#,
+                  16#04#,16#05#,16#06#,16#07#,
+                  16#08#,16#09#,16#0A#,16#0B#,
+                  16#08#,16#09#,16#0A#,16#0B#);
       end Inc;
-
-
 
       package N is new Crypto.Types.Nonces(Block => B_Block128);
       package Counter is new N.Nonces_Ctr(Inc => Inc);
-
-
       Nonce: Counter.Nonce_Ctr;
-      zero_iv: B_Block128:=(16#00#,16#01#,16#02#,16#03#,
-                            16#04#,16#05#,16#06#,16#07#,
-                            16#08#,16#09#,16#0A#,16#0B#,
-                            16#08#,16#09#,16#0A#,16#0B#);
 
+      zero_iv: B_Block128:=(others=>Byte(0));
       output: B_Block128;
+
+      procedure give_bytes(B : out Bytes; Count: out Natural) is
+         return_bytes : Bytes(0..0);
+      begin
+         B:=return_bytes;
+         Count:=0;
+      end;
+
+      procedure get_bytes(B : in Bytes) is
+      begin
+         for i in B'Range loop
+            Ada.Text_IO.Put_Line(Crypto.Types.To_Hex(B(i)));
+      	 end loop;
+      end;
+
+
+
+      package ae is new Crypto.Symmetric.AE(Key_Type => B_Block128,
+                                            Block    => B_Block128,
+                                            N        => N);
+
+      package OCB3 is new Crypto.Symmetric.AE_OCB3(BC            => AES_128,
+                                                  N             => N,
+                                                  "xor"         => "xor",
+                                                  To_Block_Type => To_B_Block128,
+                                                  To_Bytes      => To_Bytes,
+                                                  Shift_Left    => Shift_Left,
+                                                  Shift_Right   => Shift_Right,
+                                                  To_Byte_Word  => To_Bytes);
+      my_Scheme : OCB3.AE_OCB;
+      CR : OCB3.AE.Callback_Reader := give_bytes'Access;
+      CW : OCB3.AE.Callback_Writer := get_bytes'Access;
 
 
    begin
 
-      Ada.Text_IO.Put_Line("Counter Test");
+      OCB3.Init_Encrypt(This  => my_Scheme,
+                        Key   => Key,
+                        Nonce => Nonce);
 
-      Counter.Initialize(This      => Nonce,
-                         File_Path => "nonce_for_ocb.txt",
-                         IV        => zero_iv );
 
-      output:=Counter.Update(Nonce);
-      Ada.Text_IO.Put_Line(To_String(To_Bytes(output)));
+      OCB3.Encrypt(This             => my_Scheme,
+                  Read_Plaintext   => CR,
+                  Write_Ciphertext => CW);
 
-      Ada.Text_IO.Put_Line("Counter Test Ende");
+--        Counter.Initialize(This      => Nonce,
+--                           File_Path => "last_nonce.txt",
+--                           IV        => zero_iv);
+--
+--        output:=counter.Update(Nonce);
+--
+--        if zero_iv(12)=output(10) then
+--           Ada.Text_IO.Put_Line("gleich");
+--        else
+--           Ada.Text_IO.Put_Line("nicht gleich");
+--
+--        end if;
+
+--        for i in 0..127 loop
+--           Ada.Text_IO.Put_Line(Crypto.Types.To_Hex(output(i)));
+--        end loop;
+
+      Ada.Text_IO.Put_Line("End");
 
       Assert(true, "OCB3 failed.");
 

@@ -532,6 +532,10 @@ package body Crypto.Symmetric.AE_OCB3 is
          Ada.Text_IO.Put(Tmp1(i)'Img);
       end loop;
       Ada.Text_IO.New_Line;
+      
+      --Calculating the Hash of the Associated Data, XORing with Checksum
+      
+      
 
       
       -- concatenate the last block and Tag (if necessary)
@@ -888,15 +892,37 @@ package body Crypto.Symmetric.AE_OCB3 is
    end Init_Decrypt;
    
    
-   procedure Hash(Key             : in	Key_Type;
-                  Associated_data : in	Callback_Reader;
-                  Sum	     : out      B_Block128) is
+   procedure Hash(This     	  : in  AE_OCB;
+                  Read_AD 	  : in	Callback_Reader;
+                  Sum	     	  : out Block) is
       Curr_Block: Bytes := Zero_Bytes;
+      Curr_Encrypted: Block := Zero_Block;
+      Return_Block: Bytes := Zero_Bytes;
+      Bytes_Read: Natural;
+      Count : Natural := 0;
+      
+      Offset : Block := Zero_Block;
+      
       
    begin
-
       
-      null;
+      loop
+         Read_AD(Curr_Block, Bytes_Read);
+         Count := Count+1;
+         if Bytes_Read = Bytes_Per_Block then
+            Offset := Offset xor This.L_Array(Number_Of_Trailing_Zeros(Count) - 1);
+            BC.Encrypt(To_Block(Curr_Block) xor Offset, Curr_Encrypted);
+            Return_Block := Return_Block xor To_Bytes(Curr_Encrypted);
+         elsif Bytes_Read > 0 then
+            Offset := Offset xor L_Star;
+            BC.Encrypt(Padding_One_Zero(Curr_Block, Bytes_Read) xor Offset, Curr_Encrypted);
+            Return_Block := Return_Block xor To_Bytes(Curr_Encrypted);
+            exit;
+         else
+            exit;
+         end if;   
+      end loop;
+      Sum := To_Block(Return_Block);
 
    end Hash;
    
