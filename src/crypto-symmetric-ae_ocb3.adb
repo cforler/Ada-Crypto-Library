@@ -78,7 +78,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       Tmp := To_Bytes(L_Star);
       Ada.Text_IO.Put("L_*");
       for i in Tmp'Range loop
-          Ada.Text_IO.Put(Tmp(i)'Img);
+          Ada.Text_IO.Put(To_Hex(Tmp(i)));
       end loop;
       Ada.Text_IO.New_Line;
 
@@ -86,7 +86,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       Tmp := To_Bytes(L_Dollar);
       Ada.Text_IO.Put("L_$");
       for i in Tmp'Range loop
-          Ada.Text_IO.Put(Tmp(i)'Img);
+          Ada.Text_IO.Put(To_Hex(Tmp(i)));
       end loop;
       Ada.Text_IO.New_Line;
 
@@ -97,7 +97,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       Tmp := To_Bytes(A(0));
       Ada.Text_IO.Put("L_1");
       for i in Tmp'Range loop
-          Ada.Text_IO.Put(Tmp(i)'Img);
+          Ada.Text_IO.Put(To_Hex(Tmp(i)));
       end loop;
       Ada.Text_IO.New_Line;
    end Setup;
@@ -267,7 +267,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       Tmp := To_Bytes(Offset);
       Ada.Text_IO.Put("Offset");
       for i in Tmp'Range loop
-          Ada.Text_IO.Put(Tmp(i)'Img);
+          Ada.Text_IO.Put(To_Hex(Tmp(i)));
       end loop;
       Ada.Text_IO.New_Line;      
 
@@ -280,7 +280,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       Tmp := To_Bytes(Checksum);
       Ada.Text_IO.Put("Checksum");
       for i in Tmp'Range loop
-          Ada.Text_IO.Put(Tmp(i)'Img);
+          Ada.Text_IO.Put(To_Hex(Tmp(i)));
       end loop;
       Ada.Text_IO.New_Line; 
       Count := Count + 1;
@@ -835,7 +835,7 @@ package body Crypto.Symmetric.AE_OCB3 is
             Tmp := To_Bytes(Ktop);
             Ada.Text_IO.Put("Ktop");
             for i in Tmp'Range loop
-                Ada.Text_IO.Put(Tmp(i)'Img);
+                Ada.Text_IO.Put(To_Hex(Tmp(i)));
             end loop;
             Ada.Text_IO.New_Line;
 
@@ -844,7 +844,7 @@ package body Crypto.Symmetric.AE_OCB3 is
             Tmp := To_Bytes(This.Offset);
             Ada.Text_IO.Put("Initial Offset");
             for i in Tmp'Range loop
-                Ada.Text_IO.Put(Tmp(i)'Img);
+                Ada.Text_IO.Put(To_Hex(Tmp(i)));
             end loop;
             Ada.Text_IO.New_Line;  
          end if;
