@@ -1,4 +1,4 @@
-with AUnit.Assertions;
+with AUnit.Assertions; use AUnit.Assertions;
 with Crypto.Symmetric.AE_OCB3;
 with Crypto.Symmetric.Blockcipher_AES128;
 with Crypto.Types;
@@ -7,6 +7,7 @@ with Crypto.Types.Nonces.Nonces_Ctr;
 with Ada.Text_IO;
 with Ada.Integer_Text_IO;
 with Ada.Directories;
+with Ada.Containers.Vectors;
 with Crypto.Symmetric.AE;
 with Crypto.Symmetric.KDF_SHA512Crypt;
 
@@ -19,16 +20,64 @@ use Crypto.Types;
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 
-   package AES_128 renames Crypto.Symmetric.Blockcipher_AES128;
 
-   Plaintext: B_Block128 := (others => 0);
-   Key: B_Block128 := (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#, 16#08#, 16#09#, 16#0A#, 16#0B#, 16#0C#, 16#0D#, 16#0E#, 16#0F#);
-   --Ciphertext: B_Block128; --:= (16#5D#, 16#9D#, 16#4E#, 16#EF#, 16#FA#,
-     --                     --    16#91#, 16#51#, 16#57#, 16#55#, 16#24#,
-       --                   --    16#F1#, 16#15#, 16#81#, 16#5A#, 16#12#,
-         --                 --    16#E0#);
+   Zero_Bytes : Bytes(1..0) := (others => 0);
+   Eight_Bytes_Container : Bytes(0..7):= (others=>0);
+   Sixteen_Bytes_Container : Bytes(0..15):= (others => 0);
+   Twentyfour_Bytes_Container : Bytes(0..23):= (others => 0);
+   Thirtytwo_Bytes_Container : Bytes(0..31):= (others => 0);
+   Fourty_Bytes_Container : Bytes(0..39):= (others => 0);
+
+   Eight_Bytes_Full : Bytes(0..7):= (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#);
+   Sixteen_Bytes_Full : Bytes(0..15):= (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#,
+                                   16#08#, 16#09#, 16#0A#, 16#0B#, 16#0C#, 16#0D#, 16#0E#, 16#0F#);
+   Twentyfour_Bytes_Full : Bytes(0..23):= (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#,
+                                   16#08#, 16#09#, 16#0A#, 16#0B#, 16#0C#, 16#0D#, 16#0E#, 16#0F#,
+                                   16#10#, 16#12#, 16#13#, 16#14#, 16#15#, 16#16#, 16#17#, 16#18#);
+
+   Key: B_Block128 := (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#,
+                       16#08#, 16#09#, 16#0A#, 16#0B#, 16#0C#, 16#0D#, 16#0E#, 16#0F#);
+
+
    PT: B_Block128 := (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#, others=>Byte(0));
-   CT: B_Block128;
+
+   CT: Bytes(0..23) := (others=>0);
+
+   Plain_Bytes : Bytes(0..7) := (others=>0);
+
+
+   -------Counter-------------
+      function Inc(Item: B_Block128) return B_Block128 is
+      begin
+         return (16#00#,16#01#,16#02#,16#03#,
+                 16#04#,16#05#,16#06#,16#07#,
+                 16#08#,16#09#,16#0A#,16#0B#,
+                 16#08#,16#09#,16#0A#,16#0B#);
+      end Inc;
+
+      package N is new Crypto.Types.Nonces(Block => B_Block128);
+      package Counter is new N.Nonces_Ctr(Inc => Inc);
+      Nonce: Counter.Nonce_Ctr;
+      zero_iv: B_Block128:=(others=>Byte(0));
+
+
+      ----------AE package------------------------
+
+      package AES_128 renames Crypto.Symmetric.Blockcipher_AES128;
+
+      package OCB3 is new Crypto.Symmetric.AE_OCB3(BC            => AES_128,
+                                                  N             => N,
+                                                  "xor"         => "xor",
+                                                  To_Block_Type => To_B_Block128,
+                                                  To_Bytes      => To_Bytes,
+                                                  Shift_Left    => Shift_Left,
+                                                  Shift_Right   => Shift_Right,
+                                                  To_Byte_Word  => To_Bytes);
+
+      my_Scheme : OCB3.AE_OCB;
+
+
+
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
@@ -39,9 +88,9 @@ use Crypto.Types;
 	procedure Register_Tests(T : in out OCB3_Test) is
 		use Test_Cases.Registration;
 	begin
-		Register_Routine(T, OCB3_Test1'Access,"OCB3_Test1.");
-		Register_Routine(T, OCB3_Test2'Access,"OCB3_Test2.");
-		--Register_Routine(T, OCB3_Test3'Access,"OCB3_Test3.");
+		Register_Routine(T, OCB3_Test_Initialize'Access,"OCB3 Initialization");
+		Register_Routine(T, OCB3_Test_Encryption'Access,"OCB3 Encryption / Decryption");
+		Register_Routine(T, OCB3_Test_Exceptions'Access,"OCB3 Exceptions");
 	end Register_Tests;
 
 ------------------------------------------------------------------------------------
@@ -65,194 +114,102 @@ use Crypto.Types;
 ------------------------------------------------------------------------------------
 
 
-   procedure OCB3_Test1(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions;
-
-      -------Counter-------------
-      function Inc(Item: B_Block128) return B_Block128 is
-      begin
-         return (16#00#,16#01#,16#02#,16#03#,
-                 16#04#,16#05#,16#06#,16#07#,
-                 16#08#,16#09#,16#0A#,16#0B#,
-                 16#08#,16#09#,16#0A#,16#0B#);
-      end Inc;
-
-      package N is new Crypto.Types.Nonces(Block => B_Block128);
-      package Counter is new N.Nonces_Ctr(Inc => Inc);
-      Nonce: Counter.Nonce_Ctr;
-
-      zero_iv: B_Block128:=(others=>Byte(0));
-      output: B_Block128;
-
-
-      ---------callback functions-----------------
-
-      Give_Counter: Natural:= 0;
-
-      package giver is
-         procedure give_bytes(B : out Bytes; Count: out Natural);
-      end giver;
-
-
-      package body giver is
-         procedure give_bytes(B : out Bytes; Count: out Natural) is
-         begin
-            if Give_Counter=0 then
-               B(0..15):=(16#00#,16#01#,16#02#,16#03#,16#04#,16#05#,16#06#,16#07#,
-                         16#08#,16#09#,16#0A#,16#0B#,16#0C#,16#0D#,16#0E#,16#0F#);
-               Count:=16;
-               Give_Counter:=1;
-               --Ada.Text_IO.Put("give A");
-            elsif Give_Counter=1 then
-               B(0..15):=(16#10#,16#11#,16#12#,16#13#,16#14#,16#15#,16#16#,16#17#,
-                         16#18#,16#19#,16#1A#,16#1B#,16#1C#,16#1D#,16#1E#,16#1F#);
-               Count:=16;
-               Give_Counter:=2;
-               --Ada.Text_IO.Put("give B");
-            else
-               B(0..15):=(16#20#,16#21#,16#22#,16#23#,16#24#,16#25#,16#26#,16#27#, Others=>0);
-               Count:=8;
-               Give_Counter:=5;
-               --Ada.Text_IO.Put("give C");
-            end if;
-         end give_bytes;
-      end giver;
-
-
-
-
-      procedure give_bytes(B : out Bytes; Count: out Natural) is
-         return_bytes : Bytes(0..7):=(others=>Byte(0));
-      begin
-         B:=return_bytes;
-         Count:=8;
-      end;
-
-      procedure get_bytes(B : in Bytes) is
-      begin
-	 Ada.Text_IO.New_Line;
-         for i in B'Range loop
-            Ada.Text_IO.Put(Crypto.Types.To_Hex(B(i)));
-         end loop;
-         Ada.Text_IO.New_Line;
-      end;
-
-      ----------AE package------------------------
-
-      package AES_128 renames Crypto.Symmetric.Blockcipher_AES128;
-
-      package OCB3 is new Crypto.Symmetric.AE_OCB3(BC            => AES_128,
-                                                  N             => N,
-                                                  "xor"         => "xor",
-                                                  To_Block_Type => To_B_Block128,
-                                                  To_Bytes      => To_Bytes,
-                                                  Shift_Left    => Shift_Left,
-                                                  Shift_Right   => Shift_Right,
-                                                  To_Byte_Word  => To_Bytes);
-
-
-
-      my_Scheme : OCB3.AE_OCB;
-      CR : OCB3.AE.Callback_Reader := giver.give_bytes'Access;
-      CW : OCB3.AE.Callback_Writer := get_bytes'Access;
-
-
-
-
-
+   procedure OCB3_Test_Initialize(T : in out Test_Cases.Test_Case'Class) is
    begin
-      Ada.Text_IO.New_Line;
-      Ada.Text_IO.Put_Line("Start ocbee");
-
-
       Counter.Initialize(This      => Nonce,
                          File_Path => "last_nonce.txt",
                          IV        => zero_iv);
-
---        my_Scheme.Init_Encrypt(Key   => Key,
---                               Nonce => Nonce);
 
       my_Scheme.Init_Encrypt(Key             => Key,
                              N_Init          => Nonce,
                              Bytes_Of_N_Read => 12,
                              Taglen          => 16);
 
-      my_Scheme.Encrypt(Read_Plaintext   =>CR ,
-                        Write_Ciphertext =>CW );
 
 
---
---        if zero_iv(12)=output(10) then
---           Ada.Text_IO.Put_Line("gleich");
---        else
---           Ada.Text_IO.Put_Line("nicht gleich");
---
---        end if;
-
---        for i in 0..127 loop
---           Ada.Text_IO.Put_Line(Crypto.Types.To_Hex(output(i)));
---        end loop;
-
-      Ada.Text_IO.New_Line;
-      Ada.Text_IO.Put_Line("End OCB");
-      Ada.Text_IO.Put_Line(Integer'Image(Give_Counter));
 
       Assert(true, "OCB3 failed.");
 
-   end OCB3_Test1;
+   end OCB3_Test_Initialize;
 
 ------------------------------------------------------------------------------------
 -------------------------------------- Test 2 --------------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure OCB3_Test2(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions;
+   procedure OCB3_Test_Encryption(T : in out Test_Cases.Test_Case'Class) is
 
-      package KDF renames Crypto.Symmetric.KDF_SHA512Crypt;
-      bo : Boolean;
-      wb : W_Block512 := (others=>0);
    begin
 
-      Ada.Text_IO.Put_Line("start_kdf");
-      bo := KDF.Initialize(Parameter => 5);
-      KDF.Derive(Salt     => "hihihihihi",
-                 Password => "hihihihihi",
-                 Key      => wb );
+--        my_Scheme.Encrypt(Plaintext  => Zero_Bytes,
+--                          Ciphertext => Sixteen_Bytes_Container,
+--                          AD         => Zero_Bytes);
+--
+--        Assert(Sixteen_Bytes_Container = (16#19#, 16#7B#, 16#9C#, 16#3C#, 16#44#, 16#1D#, 16#3C#, 16#83#,
+--               16#EA#, 16#FB#, 16#2B#, 16#EF#, 16#63#, 16#3B#, 16#91#, 16#82#),"First Encryption failed!");
+--
+--        -------
+--
+--
+--        my_Scheme.Encrypt(Plaintext  => Eight_Bytes_Full,
+--                          Ciphertext => Twentyfour_Bytes_Container,
+--                          AD         => Eight_Bytes_Full);
+--
+--        Assert(Twentyfour_Bytes_Container = (16#92#, 16#B6#, 16#57#, 16#13#, 16#0A#, 16#74#, 16#B8#, 16#5A#, 16#16#, 16#DC#, 16#76#, 16#A4#, 16#6D#, 16#47#, 16#E1#, 16#EA#, 16#D5#, 16#37#, 16#20#, 16#9E#, 16#8A#, 16#96#, 16#D1#, 16#4E#),"First Encryption failed!");
+--
+--        --------
+--
+--        my_Scheme.Encrypt(Plaintext  => Zero_Bytes,
+--                          Ciphertext => Sixteen_Bytes_Container,
+--                          AD         => Eight_Bytes_Full);
+--
+--        Assert(Sixteen_Bytes_Container = (16#98#, 16#B9#, 16#15#, 16#52#, 16#C8#, 16#C0#, 16#09#, 16#18#, 16#50#, 16#44#, 16#E3#, 16#0A#, 16#6E#, 16#B2#, 16#FE#, 16#21#),"First Encryption failed!");
+--
+--
+--        --------
+--
+--        my_Scheme.Encrypt(Plaintext  => Eight_Bytes_Full,
+--                          Ciphertext => Twentyfour_Bytes_Container,
+--                          AD         => Zero_Bytes);
+--
+--        Assert(Twentyfour_Bytes_Container = (16#92#, 16#B6#, 16#57#, 16#13#, 16#0A#, 16#74#, 16#B8#, 16#5A#,
+--               				   16#97#, 16#1E#, 16#FF#, 16#CA#, 16#E1#, 16#9A#, 16#D4#, 16#71#,
+--               				   16#6F#, 16#88#, 16#E8#, 16#7B#, 16#87#, 16#1F#, 16#BE#, 16#ED#),"First Encryption failed!");
+--
+--        --------
 
-      for i in wb'Range loop
-
-            Ada.Text_IO.Put(Crypto.Types.To_Hex(wb(i)));
-         end loop;
-
-
-      Ada.Text_IO.Put_Line("end_kdf1");
+      my_Scheme.Encrypt(Plaintext  => Sixteen_Bytes_Full,
+                        Ciphertext => Fourty_Bytes_Container,
+                        AD         => Zero_Bytes);
 
 
+      for I in Fourty_Bytes_Container'Range loop
+         Ada.Text_IO.Put(To_Hex(Fourty_Bytes_Container(I)));
+      end loop;
 
 
-   	Assert(True, "Fail at SHA512Crypt Test");
+      Assert(Thirtytwo_Bytes_Container = (16#BE#, 16#A5#, 16#E8#, 16#79#, 16#8D#, 16#BE#, 16#71#, 16#10#,
+             				  16#03#, 16#1C#, 16#14#, 16#4D#, 16#A0#, 16#B2#, 16#61#, 16#22#,
+             				  16#77#, 16#6C#, 16#99#, 16#24#, 16#D6#, 16#72#, 16#3A#, 16#1F#,
+             				  16#C4#, 16#52#, 16#45#, 16#32#, 16#AC#, 16#3E#, 16#5B#, 16#EB#),"First Encryption failed!");
 
-   end OCB3_Test2;
+
+
+
+
+      Assert(True, "Fail at SHA512Crypt Test");
+
+   end OCB3_Test_Encryption;
 
 ------------------------------------------------------------------------------------
 -------------------------------------- Test 3 --------------------------------------
 ------------------------------------------------------------------------------------
 
-   procedure OCB3_Test3(T : in out Test_Cases.Test_Case'Class) is
-      use AUnit.Assertions;
+   procedure OCB3_Test_Exceptions(T : in out Test_Cases.Test_Case'Class) is
    begin
 
-   	   Key := (others => 0);
+   	   Assert(True, "Aussage");
 
-   	   CT := (16#9F#, 16#58#, 16#9F#, 16#5C#, 16#F6#, 16#12#, 16#2C#, 16#32#,
-              16#B6#, 16#BF#, 16#EC#, 16#2F#, 16#2A#, 16#E8#, 16#C3#, 16#5A#);
-
-	   CT := (others => 0);
-   	   for I in PT'Range loop
-   	   	   Assert(PT(I) = CT(I), "OCB3 failed.");
-	   end loop;
-
-   end OCB3_Test3;
+   end OCB3_Test_Exceptions;
 
 ------------------------------------------------------------------------------------
 

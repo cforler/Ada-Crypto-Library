@@ -1,4 +1,5 @@
 with Ada.Containers.Indefinite_Vectors;
+with Ada.Containers.Vectors;
 with Ada.Text_IO;
 with Crypto.Types;
 
@@ -108,19 +109,28 @@ package body Crypto.Symmetric.AE_OCB3 is
                                Amount       : Natural) return Block is
       K : Block := To_Block(Value);
       L : Bytes := Value;
-      R : Bytes := Zero_Bytes;
+      R : Bytes(0..Bytes_Per_Block*2);
    begin
-      --stretch 
-      L := To_Bytes(Shift_Left(K, Amount));    
-  
-      --110
-      K := K xor Shift_Left(K, 8); -- specified in docu      
-      R := To_Bytes(Shift_Right(K, Bytes_Per_Block*8 - Amount));      
-
-      --Shift
-      L := To_Bytes(To_Block(L) xor To_Block(R)); 
       
-      return To_Block(L);
+--        --stretch 
+--        L := To_Bytes(Shift_Left(K, Amount));    
+--    
+--        --110
+--        K := K xor Shift_Left(K, 8); -- specified in docu      
+--        R := To_Bytes(Shift_Right(K, Bytes_Per_Block*8 - Amount));      
+--  
+--        --Shift
+--        L := To_Bytes(To_Block(L) xor To_Block(R)); 
+
+      
+      R(0..Bytes_Per_Block-1) := Value;
+      R(Bytes_Per_Block..Bytes_Per_Block+7) 
+        := Value(0..7) 
+        xor Value(1..8);
+      
+      R:=Shift_Left(R, Amount);
+      
+      return To_Block(R(1..Bytes_Per_Block));
    end Stretch_Then_Shift;
 
    -----------------------------------------------------------------
@@ -429,154 +439,30 @@ package body Crypto.Symmetric.AE_OCB3 is
                      Read_Plaintext   : in     Callback_Reader;
                      Write_Ciphertext : in     Callback_Writer) is
 
-      Bytes_Read: Natural;
-      Ciphertext : Block;
-      Offset: Block := This.Offset;
-      Blockcount: Positive := 1;
-      Checksum: Block := Zero_Block;
-      Nonce: Bytes := Zero_Bytes;
-      Pad : Block;
-
-      Last_C_Block: Bytes := Zero_Bytes;     -- last Ciphertext block in bytes
-      Last_P_Block: Bytes(Zero_Bytes'Range); -- last Plaintext block in bytes
-
-      Prev_Block: Bytes := Zero_Bytes;
-      Curr_Block: Bytes := Zero_Bytes;
-
-      Tmp1 :Bytes := Zero_Bytes;
-      Tmp : Block := To_Block(Zero_Bytes xor 2#0000_1111#);--8+4+2+1=15
+      
+        
+      Empty_Callback_Reader : Callback_Reader := EmptyReader'Access;
+      
    begin
-
-      Ada.Text_IO.Put_Line("Test for Double_S");
-      Tmp1 :=To_Bytes(Double_S(Tmp)); 
-      for i in Tmp1'Range loop
-         Ada.Text_IO.Put(Tmp1(i)'Img);
-      end loop;
-      Ada.Text_IO.New_Line;
-      Ada.Text_IO.New_Line;
-
-      --read the first block of plaintext
-      Read_Plaintext(Prev_Block, Bytes_Read);
-      --check if the block is the last block
-      if Bytes_Read < Bytes_Per_Block then
-         Last_P_Block(Prev_Block'First..Prev_Block'First+Prev_Block'Length-1) := Prev_Block;
-      else
-         loop
-            Read_Plaintext(Curr_Block, Bytes_Read);
-
-            if Bytes_Read = Bytes_Per_Block then
-               Aux_Enc(This       => This,
-                       Offset     => Offset,
-                       Checksum   => Checksum,
-                       Write      => Write_Ciphertext,
-                       Count      => Blockcount,
-                       Input      => To_Block_Type(Prev_Block),
-                       Output     => Ciphertext);
-               Prev_Block := Curr_Block;
-
-            elsif Bytes_Read = 0 then
-               Last_P_Block := Prev_Block;
-               -- Assigning is important for later use:
-               Bytes_Read := Bytes_Per_Block;
-               exit;
-            else
-               Aux_Enc(This       => This,
-                       Offset     => Offset,
-                       Checksum   => Checksum,
-                       Write      => Write_Ciphertext,
-                       Count      => Blockcount,
-                       Input      => To_Block_Type(Prev_Block),
-                       Output     => Ciphertext);
-               Last_P_Block := Curr_Block;
-               exit;
-            end if;
-
-         end loop;
-      end if;
-      
-      if Bytes_Read > 0 then
-         --117
-            Offset := Offset xor L_Star;
-            Tmp1 :=To_Bytes(Offset);
-            Ada.Text_IO.Put("Offset_*"); 
-            for i in Tmp1'Range loop
-                Ada.Text_IO.Put(Tmp1(i)'Img);
-            end loop;
-            Ada.Text_IO.New_Line;
-         --118
-            BC.Encrypt(Offset, Pad);
-         declare
-            C: Bytes := To_Bytes(Pad);
-         begin
-         --119
-            Last_C_Block(0..Bytes_Read-1) := Last_P_Block(0..Bytes_Read-1) xor C(C'First..C'First+Bytes_Read-1);
-         end;
-         --120 
-         Checksum := Checksum xor Padding_One_Zero(Last_P_Block, Bytes_Read);
-         Tmp1 := To_Bytes(Checksum);
-
-         Ada.Text_IO.Put("Checksum_*");
-         for i in Tmp1'Range loop
-             Ada.Text_IO.Put(Tmp1(i)'Img);
-         end loop;
-         Ada.Text_IO.New_Line; 
-      end if;
-      --121
-      Offset := Offset xor L_Dollar;
-      
-      --122 calculate the Tag
-      BC.Encrypt(Checksum xor Offset, Ciphertext);
-      Tmp1 := To_Bytes(Ciphertext);
-      Ada.Text_IO.Put("Tag: ");
-      for i in Tmp1'Range loop
-         Ada.Text_IO.Put(Tmp1(i)'Img);
-      end loop;
-      Ada.Text_IO.New_Line;
-      
-      --Calculating the Hash of the Associated Data, XORing with Checksum
-      
-      
-
-      
-      -- concatenate the last block and Tag (if necessary)
-      declare
-         C: constant Bytes := To_Bytes(Ciphertext);
-      begin
-         if Bytes_Read < Bytes_Per_Block then
-            declare
-               -- |B| = |last message block| + |desired Tag|
-               B: Bytes(0..(Bytes_Read+This.Taglen-1));
-            begin
-               -- concatenate last Ciphertext bytes with the Tag
-               B(B'First..Bytes_Read-1) := Last_C_Block(Last_C_Block'First..Bytes_Read-1);
-               B(Bytes_Read..B'Last) := C(C'First..C'First+This.Taglen-1);
-               if B'Length > Bytes_Per_Block then
-                  Write_Ciphertext(B(B'First..Bytes_Per_Block-1));
-                  declare
-                     -- This step is only for normalizing the index (starting at 0)
-                     Temp: constant Bytes(0..(B'Length-Bytes_Per_Block)-1) := B(Bytes_Per_Block..B'Last);
-                  begin
-                     Write_Ciphertext(Temp);
-                  end;
-               else
-                  Write_Ciphertext(B(B'First..B'Last));
-               end if;
-            end;
-         else
-           -- write the last Ciphertext block an the Tag
-            Write_Ciphertext(Last_C_Block);
-            Write_Ciphertext(C(C'First..This.Taglen-1));
-         end if;
-      end;
+      Encrypt(This             => This,
+              Read_Plaintext   => Read_Plaintext,
+              Write_Ciphertext => Write_Ciphertext,
+              Read_AD          => Empty_Callback_Reader);
 
    end Encrypt;
 
+   
+   
+   
+   
+   
    -----------------------------------------------------------------
 
    function Aux_Decrypt(This                   : in AE_OCB;
                         Read_Ciphertext        : in Callback_Reader;
                         Read_Ciphertext_Again  : in Callback_Reader;
-                        Write_Plaintext        : in Callback_Writer)
+                        Write_Plaintext        : in Callback_Writer;
+                        Read_AD		       : in Callback_Reader)
                         return Boolean is
 
       Bytes_Read: Natural;
@@ -738,6 +624,11 @@ package body Crypto.Symmetric.AE_OCB3 is
       --322 Final -> Tag
       BC.Encrypt(Checksum xor Offset, T);      
      
+      --"Hashing" of the Associated Data
+      T := T xor Hash_AD(This    => This,
+                         Read_AD => Read_AD);
+      
+      
       declare
          Calculated_Tag: constant Bytes := To_Bytes(T);
       begin
@@ -751,7 +642,27 @@ package body Crypto.Symmetric.AE_OCB3 is
 
    end Aux_Decrypt;
 
+   
+   
    -----------------------------------------------------------------
+   
+   function Aux_Decrypt(This                   : in AE_OCB;
+                        Read_Ciphertext        : in Callback_Reader;
+                        Read_Ciphertext_Again  : in Callback_Reader;
+                        Write_Plaintext        : in Callback_Writer)
+                        return Boolean is
+   begin
+      
+      return Aux_Decrypt(This		       => This,
+                         Read_Ciphertext       => Read_Ciphertext,
+                  	 Read_Ciphertext_Again => Read_Ciphertext_Again,
+                         Write_Plaintext       => Write_Plaintext,
+                         Read_AD	       => null);
+   end Aux_Decrypt;
+   -----------------------------------------------------------------
+   
+   
+   
 
    function Decrypt_And_Verify(This                   : in out AE_OCB;
                                Read_Ciphertext        : in     Callback_Reader;
@@ -892,9 +803,8 @@ package body Crypto.Symmetric.AE_OCB3 is
    end Init_Decrypt;
    
    
-   procedure Hash(This     	  : in  AE_OCB;
-                  Read_AD 	  : in	Callback_Reader;
-                  Sum	     	  : out Block) is
+   function Hash_AD(This     	  : in  AE_OCB;
+                  Read_AD 	  : in	Callback_Reader) return Block is
       Curr_Block: Bytes := Zero_Bytes;
       Curr_Encrypted: Block := Zero_Block;
       Return_Block: Bytes := Zero_Bytes;
@@ -902,9 +812,14 @@ package body Crypto.Symmetric.AE_OCB3 is
       Count : Natural := 0;
       
       Offset : Block := Zero_Block;
+      Sum    : Block;
       
       
    begin
+      
+      if Read_AD = null then 
+         return Zero_Block; 
+      end if;
       
       loop
          Read_AD(Curr_Block, Bytes_Read);
@@ -922,13 +837,442 @@ package body Crypto.Symmetric.AE_OCB3 is
             exit;
          end if;   
       end loop;
-      Sum := To_Block(Return_Block);
-
-   end Hash;
+      
+      if Count = 1 and Bytes_Read = 0 then
+         Sum := Zero_Block;
+      else
+        Sum := To_Block(Return_Block);
+      end if;
+   
+      return Sum;
+   
+   end Hash_AD;
    
       
+   ------------------------------------------------------------------------
    
+   procedure Encrypt(This             : in out AE_OCB;
+                     Read_Plaintext   : in     Callback_Reader;
+                     Write_Ciphertext : in     Callback_Writer;
+                     Read_AD	      : in     Callback_Reader) is
 
-   -----------------------------------------------------------------
+      Bytes_Read: Natural;
+      Ciphertext : Block;
+      Offset: Block := This.Offset;
+      Blockcount: Positive := 1;
+      Checksum: Block := Zero_Block;
+      Nonce: Bytes := Zero_Bytes;
+      Pad : Block;
+
+      Last_C_Block: Bytes := Zero_Bytes;     -- last Ciphertext block in bytes
+      Last_P_Block: Bytes(Zero_Bytes'Range); -- last Plaintext block in bytes
+
+      Prev_Block: Bytes := Zero_Bytes;
+      Curr_Block: Bytes := Zero_Bytes;
+
+      Tmp1 :Bytes := Zero_Bytes;
+      Tmp : Block := To_Block(Zero_Bytes xor 2#0000_1111#);--8+4+2+1=15
+   begin
+
+      Ada.Text_IO.Put_Line("Test for Double_S");
+      Tmp1 :=To_Bytes(Double_S(Tmp)); 
+      for i in Tmp1'Range loop
+         Ada.Text_IO.Put(Tmp1(i)'Img);
+      end loop;
+      Ada.Text_IO.New_Line;
+      Ada.Text_IO.New_Line;
+
+      --read the first block of plaintext
+      Read_Plaintext(Prev_Block, Bytes_Read);
+
+      --check if the block is the last block
+      if Bytes_Read < Bytes_Per_Block then
+         Last_P_Block(Prev_Block'First..Prev_Block'First+Prev_Block'Length-1) := Prev_Block;
+      else
+         loop
+            Read_Plaintext(Curr_Block, Bytes_Read);
+
+            if Bytes_Read = Bytes_Per_Block then
+               Aux_Enc(This       => This,
+                       Offset     => Offset,
+                       Checksum   => Checksum,
+                       Write      => Write_Ciphertext,
+                       Count      => Blockcount,
+                       Input      => To_Block_Type(Prev_Block),
+                       Output     => Ciphertext);
+               Prev_Block := Curr_Block;
+
+            elsif Bytes_Read = 0 then
+               
+               Last_P_Block := Prev_Block;
+               -- Assigning is important for later use:
+               Bytes_Read := Bytes_Per_Block;
+               exit;
+            else
+               Aux_Enc(This       => This,
+                       Offset     => Offset,
+                       Checksum   => Checksum,
+                       Write      => Write_Ciphertext,
+                       Count      => Blockcount,
+                       Input      => To_Block_Type(Prev_Block),
+                       Output     => Ciphertext);
+               Last_P_Block := Curr_Block;
+               exit;
+            end if;
+
+         end loop;
+      end if;
+      
+      if Bytes_Read > 0 then
+         --117
+            Offset := Offset xor L_Star;
+            Tmp1 :=To_Bytes(Offset);
+            Ada.Text_IO.Put("Offset_*"); 
+            for i in Tmp1'Range loop
+                Ada.Text_IO.Put(Tmp1(i)'Img);
+            end loop;
+            Ada.Text_IO.New_Line;
+         --118
+            BC.Encrypt(Offset, Pad);
+         declare
+            C: Bytes := To_Bytes(Pad);
+         begin
+         --119
+            Last_C_Block(0..Bytes_Read-1) := Last_P_Block(0..Bytes_Read-1) xor C(C'First..C'First+Bytes_Read-1);
+         end;
+         --120 
+         Checksum := Checksum xor Padding_One_Zero(Last_P_Block, Bytes_Read);
+         Tmp1 := To_Bytes(Checksum);
+
+         Ada.Text_IO.Put("Checksum_*");
+         for i in Tmp1'Range loop
+             Ada.Text_IO.Put(Tmp1(i)'Img);
+         end loop;
+         Ada.Text_IO.New_Line; 
+      end if;
+      --121
+      Offset := Offset xor L_Dollar;
+      
+      --122 calculate the Tag
+      BC.Encrypt(Checksum xor Offset, Ciphertext);
+      Tmp1 := To_Bytes(Ciphertext);
+      Ada.Text_IO.Put("Tag: ");
+      for i in Tmp1'Range loop
+         Ada.Text_IO.Put(Tmp1(i)'Img);
+      end loop;
+      Ada.Text_IO.New_Line;
+      
+      --Calculating the Hash of the Associated Data, XORing with Checksum
+      
+      Ciphertext := Ciphertext xor Hash_AD(This    => This,
+                                           Read_AD => Read_AD);
+      
+      -- concatenate the last block and Tag (if necessary)
+      declare
+         C: constant Bytes := To_Bytes(Ciphertext);
+      begin
+         if Bytes_Read < Bytes_Per_Block then
+            declare
+               -- |B| = |last message block| + |desired Tag|
+               B: Bytes(0..(Bytes_Read+This.Taglen-1));
+            begin
+               -- concatenate last Ciphertext bytes with the Tag
+               B(B'First..Bytes_Read-1) := Last_C_Block(Last_C_Block'First..Bytes_Read-1);
+               B(Bytes_Read..B'Last) := C(C'First..C'First+This.Taglen-1);
+               if B'Length > Bytes_Per_Block then
+                  Write_Ciphertext(B(B'First..Bytes_Per_Block-1));
+                  declare
+                     -- This step is only for normalizing the index (starting at 0)
+                     Temp: constant Bytes(0..(B'Length-Bytes_Per_Block)-1) := B(Bytes_Per_Block..B'Last);
+                  begin
+                     Write_Ciphertext(Temp);
+                  end;
+               else
+                  Write_Ciphertext(B(B'First..B'Last));
+               end if;
+            end;
+         else
+           -- write the last Ciphertext block an the Tag
+            Write_Ciphertext(Last_C_Block);
+            Write_Ciphertext(C(C'First..This.Taglen-1));
+         end if;
+      end;
+
+   end Encrypt;
+   
+   function Decrypt_And_Verify(This                   : in out AE_OCB;
+                               Read_Ciphertext        : in     Callback_Reader;
+                               Read_Ciphertext_Again  : in     Callback_Reader := null;
+                               Write_Plaintext        : in     Callback_Writer;
+                               Read_AD	      	      : in     Callback_Reader)
+                               return Boolean is
+      
+      RCA: constant Callback_Reader := Read_Masked_Plaintext'Access;
+      
+   begin
+      if Read_Ciphertext_Again = null then
+
+         Store_Internally := True;
+
+         return Aux_Decrypt(This                   => This,
+                            Read_Ciphertext        => Read_Ciphertext,
+                            Read_Ciphertext_Again  => RCA,
+                            Write_Plaintext        => Write_Plaintext,
+                            Read_AD	           => Read_AD);
+      else
+         return Aux_Decrypt(This                   => This,
+                            Read_Ciphertext        => Read_Ciphertext,
+                            Read_Ciphertext_Again  => Read_Ciphertext_Again,
+                            Write_Plaintext        => Write_Plaintext,
+                            Read_AD	           => Read_AD);
+      end if;
+
+   end Decrypt_And_Verify;
+   
+   
+   
+   procedure EmptyReader(B : out Bytes; Count: out Natural) is
+   begin
+      Count := 0;
+      B := (others=>0);
+   end;
+   
+   procedure Encrypt(This             : in out AE_OCB;
+                     Plaintext        : in     Bytes;
+                     Ciphertext       : out    Bytes;
+                     AD	      	      : in     Bytes) is
+      
+      package Vectors_Package is new Ada.Containers.Vectors(Index_Type   => Natural,
+                                                            Element_Type => Byte);
+      Ciphertext_Vector : Vectors_Package.Vector;
+      Plaintext_Vector : Vectors_Package.Vector;
+      AD_Vector : Vectors_Package.Vector;
+      
+      Plaintext_Position : Natural := 0;
+      AD_Position : Natural := 0;
+      
+      procedure Get_Bytes_Plaintext(B : in Bytes) is
+      begin
+         ada.Text_IO.Put_Line("Get_Bytes_Plaintext");
+         for I in B'Range loop
+            Plaintext_Vector.Append(B(I));
+         end loop;
+      end;
+      
+      procedure Get_Bytes_Ciphertext(B : in Bytes) is
+      begin
+          ada.Text_IO.Put_Line("Get_Bytes_Ciphertext");
+         for I in B'Range loop
+            Ciphertext_Vector.Append(B(I));
+         end loop;
+      end;
+      
+      procedure Get_Bytes_AD(B : in Bytes) is
+      begin
+         ada.Text_IO.Put_Line("Get_Bytes_AD");
+         for I in B'Range loop
+            AD_Vector.Append(B(I));
+         end loop;
+      end;
+      
+      procedure Give_Bytes_Plaintext(B : out Bytes; Count: out Natural) is
+         Rest : Natural;
+      begin
+         ada.Text_IO.Put_Line("Give_Bytes_Plaintext");
+         Rest := Integer(Plaintext_Vector.Length) - Plaintext_Position;
+         ada.Text_IO.Put_Line(Integer'Image(Rest));
+         if Rest >= Bytes_Per_Block then
+            Count := Bytes_Per_Block;
+            for I in Plaintext_Position..Plaintext_Position+Bytes_Per_Block-1 loop
+               B(I-Plaintext_Position):= Plaintext_Vector.Element(Index => I);
+            end loop;
+            Plaintext_Position:= Plaintext_Position+Bytes_Per_Block;
+         elsif Rest = 0 then
+            Count := 0;
+         else
+            Count := Rest;
+            for I in Plaintext_Position..Plaintext_Position+Rest-1 loop
+               B(I-Plaintext_Position):= Plaintext_Vector.Element(Index => I);
+            end loop;
+         end if;
+         
+         Ada.Text_IO.Put("Plaintext-Bytes: ");
+         for I in B'Range loop
+            Ada.Text_IO.Put(To_Hex(B(I)));   
+         end loop;
+         Ada.Text_IO.Put("Plaintext Bytes Amount" & Natural'Image(Count));
+         
+         
+      end Give_Bytes_Plaintext;
+      
+      procedure Give_Bytes_AD(B : out Bytes; Count: out Natural) is
+         Rest : Natural;
+      begin
+         ada.Text_IO.Put_Line("Give_Bytes_AD");
+         Rest := Integer(AD_Vector.Length) - AD_Position;
+         if Rest >= Bytes_Per_Block then
+            Count := Bytes_Per_Block;
+            for I in AD_Position..AD_Position+Bytes_Per_Block-1 loop
+               B(I-AD_Position):= AD_Vector.Element(Index => I);
+            end loop;
+            AD_Position:= AD_Position+Bytes_Per_Block;
+         elsif Rest = 0 then
+            Count := 0;
+         else
+            Count := Rest;
+            for I in AD_Position..AD_Position+Rest-1 loop
+               B(I-AD_Position):= AD_Vector.Element(Index => I);
+            end loop;
+         end if;
+      end Give_Bytes_AD;
+      
+      procedure Give_Bytes_Ciphertext(B : out Bytes) is
+         Curs : Vectors_Package.Cursor := Ciphertext_Vector.First;
+         Counter : Integer := 0;
+      begin
+         ada.Text_IO.Put_Line("Give_Bytes_Ciphertext" & Integer'Image(Integer(Ciphertext_Vector.Length)));
+         
+         while(Vectors_Package.Has_Element(Curs)) loop
+            B(Counter):= Ciphertext_Vector.Element(Vectors_Package.To_Index(Curs));
+            Counter := Counter+1;
+            Vectors_Package.Next(Curs);
+         end loop;
+         
+      end Give_Bytes_Ciphertext;
+   begin
+      
+      Get_Bytes_Plaintext(B => Plaintext);
+      Get_Bytes_AD(B => AD);
+      
+      
+      Encrypt(This             => This,
+              Read_Plaintext   => Give_Bytes_Plaintext'Unrestricted_Access ,
+              Write_Ciphertext => Get_Bytes_Ciphertext'Unrestricted_Access,
+              Read_AD          => Give_Bytes_AD'Unrestricted_Access);
+      
+      
+      Give_Bytes_Ciphertext(B => Ciphertext);
+      
+   end Encrypt;
+   
+   function Decrypt_And_Verify(This                   : in out AE_OCB;
+                               Ciphertext             : in     Bytes;
+                               Plaintext              : out    Bytes;
+                               AD	      	      : in     Bytes)
+                               return Boolean is 
+      Verfied : Boolean := False;
+      
+      package Vectors_Package is new Ada.Containers.Vectors(Index_Type   => Natural,
+                                                            Element_Type => Byte);
+      
+      Ciphertext_Vector : Vectors_Package.Vector;
+      Plaintext_Vector : Vectors_Package.Vector;
+      AD_Vector : Vectors_Package.Vector;
+      
+      Ciphertext_Position : Natural := 0;
+      AD_Position : Natural := 0;
+      
+      procedure Get_Bytes_Plaintext(B : in Bytes) is
+      begin
+         ada.Text_IO.Put_Line("Get_Bytes_Plaintext");
+         for I in B'Range loop
+            Plaintext_Vector.Append(B(I));
+         end loop;
+      end;
+      
+      procedure Get_Bytes_Ciphertext(B : in Bytes) is
+      begin
+          ada.Text_IO.Put_Line("Get_Bytes_Ciphertext");
+         for I in B'Range loop
+            Ciphertext_Vector.Append(B(I));
+         end loop;
+      end;
+      
+      procedure Get_Bytes_AD(B : in Bytes) is
+      begin
+         ada.Text_IO.Put_Line("Get_Bytes_AD");
+         for I in B'Range loop
+            AD_Vector.Append(B(I));
+         end loop;
+      end;
+      
+      procedure Give_Bytes_Ciphertext(B : out Bytes; Count: out Natural) is
+         Rest : Natural;
+      begin
+         ada.Text_IO.Put_Line("Give_Bytes_Ciphertext");
+         Rest := Integer(Ciphertext_Vector.Length) - Ciphertext_Position;
+         ada.Text_IO.Put_Line(Integer'Image(Rest));
+         if Rest >= Bytes_Per_Block then
+            Count := Bytes_Per_Block;
+            for I in Ciphertext_Position..Ciphertext_Position+Bytes_Per_Block-1 loop
+               B(I-Ciphertext_Position):= Ciphertext_Vector.Element(Index => I);
+            end loop;
+            Ciphertext_Position:= Ciphertext_Position+Bytes_Per_Block;
+         elsif Rest = 0 then
+            Count := 0;
+         else
+            Count := Rest;
+            for I in Ciphertext_Position..Ciphertext_Position+Rest-1 loop
+               B(I-Ciphertext_Position):= Ciphertext_Vector.Element(Index => I);
+            end loop;
+         end if;
+      end Give_Bytes_Ciphertext;
+      
+      procedure Give_Bytes_AD(B : out Bytes; Count: out Natural) is
+         Rest : Natural;
+      begin
+         ada.Text_IO.Put_Line("Give_Bytes_AD");
+         Rest := Integer(AD_Vector.Length) - AD_Position;
+         if Rest >= Bytes_Per_Block then
+            Count := Bytes_Per_Block;
+            for I in AD_Position..AD_Position+Bytes_Per_Block-1 loop
+               B(I-AD_Position):= AD_Vector.Element(Index => I);
+            end loop;
+            AD_Position:= AD_Position+Bytes_Per_Block;
+         elsif Rest = 0 then
+            Count := 0;
+         else
+            Count := Rest;
+            for I in AD_Position..AD_Position+Rest-1 loop
+               B(I-AD_Position):= AD_Vector.Element(Index => I);
+            end loop;
+         end if;
+      end Give_Bytes_AD;
+      
+      procedure Give_Bytes_Plaintext(B : out Bytes) is
+         Curs : Vectors_Package.Cursor := Plaintext_Vector.First;
+         Counter : Integer := 0;
+      begin
+         ada.Text_IO.Put_Line("Give_Bytes_Plaintext" & Integer'Image(Integer(Plaintext_Vector.Length)));
+         
+         while(Vectors_Package.Has_Element(Curs)) loop
+            B(Counter):= Plaintext_Vector.Element(Vectors_Package.To_Index(Curs));
+            Counter := Counter+1;
+            Vectors_Package.Next(Curs);
+         end loop;
+         
+      end Give_Bytes_Plaintext;
+      
+   begin
+      
+      Get_Bytes_Ciphertext(B => Ciphertext);
+      Get_Bytes_AD(B => AD);
+      
+      Verfied:=
+      Decrypt_And_Verify(This       	 => This,
+                         Read_Ciphertext => Give_Bytes_Ciphertext'Unrestricted_Access,
+                         Write_Plaintext => Get_Bytes_Plaintext'Unrestricted_Access,
+                         Read_AD         => Give_Bytes_AD'Unrestricted_Access);
+      
+      Give_Bytes_Plaintext(B => Plaintext);
+      
+      return Verfied;
+   end  Decrypt_And_Verify;
+   
+     
+   
+   
+      
+
 
 end Crypto.Symmetric.AE_OCB3;

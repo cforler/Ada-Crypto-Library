@@ -44,6 +44,7 @@ package Crypto.Symmetric.AE_OCB3 is
                      Read_Plaintext   : in     Callback_Reader;
                      Write_Ciphertext : in     Callback_Writer);
 
+
    overriding
    function Decrypt_And_Verify(This                   : in out AE_OCB;
                                Read_Ciphertext        : in     Callback_Reader;
@@ -51,6 +52,34 @@ package Crypto.Symmetric.AE_OCB3 is
                                Write_Plaintext        : in     Callback_Writer)
                                return Boolean;
 
+   
+   --------------------------------------------------
+   -- Encryption / Decryption with Associated Data --
+   --------------------------------------------------
+   
+   procedure Encrypt(This             : in out AE_OCB;
+                     Read_Plaintext   : in     Callback_Reader;
+                     Write_Ciphertext : in     Callback_Writer;
+                     Read_AD	      : in     Callback_Reader);
+   
+   procedure Encrypt(This             : in out AE_OCB;
+                     Plaintext        : in     Bytes;
+                     Ciphertext       : out     Bytes;
+                     AD	      	      : in     Bytes);
+   
+   function Decrypt_And_Verify(This                   : in out AE_OCB;
+                               Read_Ciphertext        : in     Callback_Reader;
+                               Read_Ciphertext_Again  : in     Callback_Reader := null;
+                               Write_Plaintext        : in     Callback_Writer;
+                               Read_AD	      	      : in     Callback_Reader)
+                               return Boolean;
+   
+   function Decrypt_And_Verify(This                   : in out AE_OCB;
+                               Ciphertext             : in     Bytes;
+                               Plaintext              : out    Bytes;
+                               AD	      	      : in     Bytes)
+                               return Boolean;
+   
    ---------------------------------------------
    ---- additional functions and procedures ----
    ---------------------------------------------
@@ -71,11 +100,18 @@ package Crypto.Symmetric.AE_OCB3 is
                           Bytes_Of_N_Read     : in     Positive;
                           Taglen              : in     Positive);
    
-   procedure Hash(This     	  : in  AE_OCB;
-                  Read_AD 	  : in	Callback_Reader;
-                  Sum		  : out Block);
+   procedure EmptyReader(B : out Bytes; Count: out Natural);
+   
 
 private
+   
+   --"Hashing" for Associated Data
+   function Hash_AD(This     	  : in  AE_OCB;
+                    Read_AD 	  : in	Callback_Reader) return Block;
+   
+
+   
+   
    type Block_Array is array (-1..31) of BC.Block;
    subtype Taglength_Range is Positive range 1..Bytes_Per_Block;
    
