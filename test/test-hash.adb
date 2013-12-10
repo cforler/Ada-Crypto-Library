@@ -18,5 +18,5 @@ begin
    Crypto.Types.Random.Set(Dev_U_Rand);
    
    Run_HASH(Reporter);
-   Run_MAC(Reporter);
+   --Run_MAC(Reporter);
 end Test.HASH;

@@ -604,19 +604,38 @@ package body Crypto.Symmetric.AE_OCB3 is
                  Output   => Plaintext);
       end if;
 
-      --317
+     
+      
+      
+      if Last_B_Bytelen = 0 then
+         null;
+         
+      elsif Last_B_Bytelen < Bytes_Per_Block then 
+       --317
       Offset := Offset xor L_Star;
        
       --318
       BC.Encrypt(Offset, Pad);
-      declare
-         C: Bytes := To_Bytes(Pad);
-      begin
-      --319
-         Last_P_Block(0..Bytes_Read-1) := Last_C_Block(0..Bytes_Read-1) xor C(0 .. Bytes_Read-1);
-      end;
-      --320 
-      Checksum := Checksum xor Padding_One_Zero(Last_P_Block, Bytes_Read);
+         declare
+            C: Bytes := To_Bytes(Pad);
+         begin
+            --319
+            Last_P_Block(0..Bytes_Read-1) := Last_C_Block(0..Bytes_Read-1) xor C(0 .. Bytes_Read-1);
+         end;
+         --320 
+         Checksum := Checksum xor Padding_One_Zero(Last_P_Block, Bytes_Read);   
+         
+      else
+         Aux_Dec(This     => This,
+                 Offset   => Offset,
+                 Checksum => Checksum,
+                 Count    => Blockcount,
+                 Input    => To_Block_Type(Last_C_Block),
+                 Output   => Plaintext);
+         
+         Masked_Plaintext.Append(New_Item => Last_C_Block);
+         Last_B_Bytelen := 0;
+      end if;
       
       --321
       Offset := Offset xor L_Dollar;
@@ -632,6 +651,17 @@ package body Crypto.Symmetric.AE_OCB3 is
       declare
          Calculated_Tag: constant Bytes := To_Bytes(T);
       begin
+         Ada.Text_IO.Put_Line("Original Tag:");
+         for I in Tag'First..This.Taglen-1 loop
+            Ada.Text_IO.Put(To_Hex(B => Tag(I)));
+         end loop;
+         Ada.Text_IO.New_Line;
+         Ada.Text_IO.Put_Line("Calculated Tag:");
+         for I in Calculated_Tag'First..This.Taglen-1 loop
+            Ada.Text_IO.Put(To_Hex(B => Calculated_Tag(I)));
+         end loop;
+            
+         
          if Tag(Tag'First..This.Taglen-1) = Calculated_Tag(Calculated_Tag'First..This.Taglen-1) then
             Verification_Bool := True;
             Write_Decrypted_Plaintext(This, Read_Ciphertext_Again, Write_Plaintext, Dec_Bool, Last_P_Block, Last_B_Bytelen);
@@ -904,7 +934,15 @@ package body Crypto.Symmetric.AE_OCB3 is
 
             elsif Bytes_Read = 0 then
                
-               Last_P_Block := Prev_Block;
+               Aux_Enc(This       => This,
+                       Offset     => Offset,
+                       Checksum   => Checksum,
+                       Write      => Write_Ciphertext,
+                       Count      => Blockcount,
+                       Input      => To_Block_Type(Prev_Block),
+                       Output     => Ciphertext);
+               
+               --Last_P_Block := Prev_Block;
                -- Assigning is important for later use:
                Bytes_Read := Bytes_Per_Block;
                exit;
@@ -923,7 +961,12 @@ package body Crypto.Symmetric.AE_OCB3 is
          end loop;
       end if;
       
-      if Bytes_Read > 0 then
+      Ada.Text_IO.Put("LAST P BLOCK");
+         for i in Last_P_Block'Range loop
+             Ada.Text_IO.Put(To_Hex(Last_P_Block(i)));
+         end loop;
+      
+      if Bytes_Read > 0 and Bytes_Read < Bytes_Per_Block then
          --117
             Offset := Offset xor L_Star;
             Tmp1 :=To_Bytes(Offset);
@@ -993,7 +1036,7 @@ package body Crypto.Symmetric.AE_OCB3 is
             end;
          else
            -- write the last Ciphertext block an the Tag
-            Write_Ciphertext(Last_C_Block);
+            --Write_Ciphertext(Last_C_Block); --already done above in loop
             Write_Ciphertext(C(C'First..This.Taglen-1));
          end if;
       end;

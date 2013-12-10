@@ -280,6 +280,7 @@ package Crypto.Types is
    -- Needed for generic packages to convert a specific byte block.
    function To_W_Block160(B : Bytes) return W_Block160;
    function To_W_Block256(B : Bytes) return W_Block256;
+   function To_W_Block512(B : Bytes) return W_Block512;
 
 
    -- Bytes To block of double words.
@@ -287,10 +288,12 @@ package Crypto.Types is
    function To_DW_Block256(B : Bytes) return DW_Block256;
    function To_DW_Block384(B : Bytes) return DW_Block384;
    function To_DW_Block512(B : Bytes) return DW_Block512;
+   function To_DW_Block1024(B : Bytes) return DW_Block1024;
 
    -- Needed for generic packages to convert a specific byte block.
    function "xor"(Left, Right : B_Block64)    return   B_Block64;
    function "xor"(Left, Right : B_Block128)   return   B_Block128;
+   function "xor"(Left, Right : W_Block160)   return   W_Block160;
    function "xor"(Left, Right : W_Block512)   return   W_Block512;
    function "xor"(Left, Right : DW_Block512)  return  DW_Block512;
    function "xor"(Left, Right : DW_Block1024) return  DW_Block1024;

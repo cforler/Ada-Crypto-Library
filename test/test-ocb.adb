@@ -10,6 +10,7 @@ with Ada.Directories;
 with Ada.Containers.Vectors;
 with Crypto.Symmetric.AE;
 with Crypto.Symmetric.KDF_SHA512Crypt;
+with Crypto.Symmetric.KDF_PBKDF2;
 
 package body Test.OCB is
 use Crypto.Types;
@@ -32,8 +33,8 @@ use Crypto.Types;
    Sixteen_Bytes_Full : Bytes(0..15):= (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#,
                                    16#08#, 16#09#, 16#0A#, 16#0B#, 16#0C#, 16#0D#, 16#0E#, 16#0F#);
    Twentyfour_Bytes_Full : Bytes(0..23):= (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#,
-                                   16#08#, 16#09#, 16#0A#, 16#0B#, 16#0C#, 16#0D#, 16#0E#, 16#0F#,
-                                   16#10#, 16#12#, 16#13#, 16#14#, 16#15#, 16#16#, 16#17#, 16#18#);
+                                   	   16#08#, 16#09#, 16#0A#, 16#0B#, 16#0C#, 16#0D#, 16#0E#, 16#0F#,
+                                   	   16#10#, 16#11#, 16#12#, 16#13#, 16#14#, 16#15#, 16#16#, 16#17#);
 
    Key: B_Block128 := (16#00#, 16#01#, 16#02#, 16#03#, 16#04#, 16#05#, 16#06#, 16#07#,
                        16#08#, 16#09#, 16#0A#, 16#0B#, 16#0C#, 16#0D#, 16#0E#, 16#0F#);
@@ -115,7 +116,26 @@ use Crypto.Types;
 
 
    procedure OCB3_Test_Initialize(T : in out Test_Cases.Test_Case'Class) is
+      package dsa renames Crypto.Symmetric.KDF_PBKDF2;
+      B_Output : Bytes(0..19);
+      password : Bytes(0..7) := (16#70#,16#61#,16#73#,16#73#,16#77#,16#6F#,16#72#, 16#64#);
+      salt : Bytes(0..3) := (16#73#, 16#61#, 16#6C#, 16#74#);
+      B_Input : Bytes(0..3):= (16#01#, 16#02#, 16#03#, 16#02#);
+
+
    begin
+
+      dsa.Derive(Salt     => "salt",
+                 Password => "password",
+                 Key      => B_Output,
+                 DK_Len   => 20);
+      Ada.Text_IO.Put_Line("PBKDF2 Output:");
+      for I in B_Output'Range loop
+         Ada.Text_IO.Put(To_Hex(B => B_Output(I)));
+      end loop;
+      Ada.Text_IO.New_Line;
+
+
       Counter.Initialize(This      => Nonce,
                          File_Path => "last_nonce.txt",
                          IV        => zero_iv);
@@ -124,6 +144,8 @@ use Crypto.Types;
                              N_Init          => Nonce,
                              Bytes_Of_N_Read => 12,
                              Taglen          => 16);
+
+
 
 
 
@@ -140,60 +162,153 @@ use Crypto.Types;
 
    begin
 
---        my_Scheme.Encrypt(Plaintext  => Zero_Bytes,
---                          Ciphertext => Sixteen_Bytes_Container,
---                          AD         => Zero_Bytes);
---
---        Assert(Sixteen_Bytes_Container = (16#19#, 16#7B#, 16#9C#, 16#3C#, 16#44#, 16#1D#, 16#3C#, 16#83#,
---               16#EA#, 16#FB#, 16#2B#, 16#EF#, 16#63#, 16#3B#, 16#91#, 16#82#),"First Encryption failed!");
---
---        -------
---
---
---        my_Scheme.Encrypt(Plaintext  => Eight_Bytes_Full,
---                          Ciphertext => Twentyfour_Bytes_Container,
---                          AD         => Eight_Bytes_Full);
---
---        Assert(Twentyfour_Bytes_Container = (16#92#, 16#B6#, 16#57#, 16#13#, 16#0A#, 16#74#, 16#B8#, 16#5A#, 16#16#, 16#DC#, 16#76#, 16#A4#, 16#6D#, 16#47#, 16#E1#, 16#EA#, 16#D5#, 16#37#, 16#20#, 16#9E#, 16#8A#, 16#96#, 16#D1#, 16#4E#),"First Encryption failed!");
---
---        --------
---
---        my_Scheme.Encrypt(Plaintext  => Zero_Bytes,
---                          Ciphertext => Sixteen_Bytes_Container,
---                          AD         => Eight_Bytes_Full);
---
---        Assert(Sixteen_Bytes_Container = (16#98#, 16#B9#, 16#15#, 16#52#, 16#C8#, 16#C0#, 16#09#, 16#18#, 16#50#, 16#44#, 16#E3#, 16#0A#, 16#6E#, 16#B2#, 16#FE#, 16#21#),"First Encryption failed!");
---
---
---        --------
---
---        my_Scheme.Encrypt(Plaintext  => Eight_Bytes_Full,
---                          Ciphertext => Twentyfour_Bytes_Container,
---                          AD         => Zero_Bytes);
---
---        Assert(Twentyfour_Bytes_Container = (16#92#, 16#B6#, 16#57#, 16#13#, 16#0A#, 16#74#, 16#B8#, 16#5A#,
---               				   16#97#, 16#1E#, 16#FF#, 16#CA#, 16#E1#, 16#9A#, 16#D4#, 16#71#,
---               				   16#6F#, 16#88#, 16#E8#, 16#7B#, 16#87#, 16#1F#, 16#BE#, 16#ED#),"First Encryption failed!");
---
---        --------
-
-      my_Scheme.Encrypt(Plaintext  => Sixteen_Bytes_Full,
-                        Ciphertext => Fourty_Bytes_Container,
+      my_Scheme.Encrypt(Plaintext  => Zero_Bytes,
+                        Ciphertext => Sixteen_Bytes_Container,
                         AD         => Zero_Bytes);
 
+      Assert(Sixteen_Bytes_Container = (16#19#, 16#7B#, 16#9C#, 16#3C#, 16#44#, 16#1D#, 16#3C#, 16#83#,
+             				16#EA#, 16#FB#, 16#2B#, 16#EF#, 16#63#, 16#3B#, 16#91#, 16#82#),"First Encryption failed!");
 
-      for I in Fourty_Bytes_Container'Range loop
-         Ada.Text_IO.Put(To_Hex(Fourty_Bytes_Container(I)));
-      end loop;
+      Assert(my_Scheme.Decrypt_And_Verify(Ciphertext => Sixteen_Bytes_Container,
+                                          Plaintext  => Eight_Bytes_Container,
+                                          AD         => Zero_Bytes), "First Decryption Failed");
+      -------
 
+
+      my_Scheme.Encrypt(Plaintext  => Eight_Bytes_Full,
+                        Ciphertext => Twentyfour_Bytes_Container,
+                        AD         => Eight_Bytes_Full);
+
+      Assert(Twentyfour_Bytes_Container = (16#92#, 16#B6#, 16#57#, 16#13#, 16#0A#, 16#74#, 16#B8#, 16#5A#,
+             				   16#16#, 16#DC#, 16#76#, 16#A4#, 16#6D#, 16#47#, 16#E1#, 16#EA#,
+             				   16#D5#, 16#37#, 16#20#, 16#9E#, 16#8A#, 16#96#, 16#D1#, 16#4E#),"First Encryption failed!");
+
+      Assert(my_Scheme.Decrypt_And_Verify(Ciphertext => Twentyfour_Bytes_Container,
+                                          Plaintext  => Eight_Bytes_Container,
+                                          AD         => Eight_Bytes_Full), "First Decryption Failed");
+
+
+      --------
+
+      my_Scheme.Encrypt(Plaintext  => Zero_Bytes,
+                        Ciphertext => Sixteen_Bytes_Container,
+                        AD         => Eight_Bytes_Full);
+
+      Assert(Sixteen_Bytes_Container = (16#98#, 16#B9#, 16#15#, 16#52#, 16#C8#, 16#C0#, 16#09#, 16#18#,
+             				16#50#, 16#44#, 16#E3#, 16#0A#, 16#6E#, 16#B2#, 16#FE#, 16#21#),"First Encryption failed!");
+
+      Assert(my_Scheme.Decrypt_And_Verify(Ciphertext => Sixteen_Bytes_Container,
+                                          Plaintext  => Zero_Bytes,
+                                          AD         => Eight_Bytes_Full), "First Decryption Failed");
+
+      --------
+
+      my_Scheme.Encrypt(Plaintext  => Eight_Bytes_Full,
+                        Ciphertext => Twentyfour_Bytes_Container,
+                        AD         => Zero_Bytes);
+
+      Assert(Twentyfour_Bytes_Container = (16#92#, 16#B6#, 16#57#, 16#13#, 16#0A#, 16#74#, 16#B8#, 16#5A#,
+             				   16#97#, 16#1E#, 16#FF#, 16#CA#, 16#E1#, 16#9A#, 16#D4#, 16#71#,
+             				   16#6F#, 16#88#, 16#E8#, 16#7B#, 16#87#, 16#1F#, 16#BE#, 16#ED#),"First Encryption failed!");
+
+      Assert(my_Scheme.Decrypt_And_Verify(Ciphertext => Twentyfour_Bytes_Container,
+                                          Plaintext  => Eight_Bytes_Container,
+                                          AD         => Zero_Bytes), "First Decryption Failed");
+
+
+      --------
+
+      my_Scheme.Encrypt(Plaintext  => Sixteen_Bytes_Full,
+                        Ciphertext => Thirtytwo_Bytes_Container,
+                        AD         => Sixteen_Bytes_Full);
 
       Assert(Thirtytwo_Bytes_Container = (16#BE#, 16#A5#, 16#E8#, 16#79#, 16#8D#, 16#BE#, 16#71#, 16#10#,
              				  16#03#, 16#1C#, 16#14#, 16#4D#, 16#A0#, 16#B2#, 16#61#, 16#22#,
              				  16#77#, 16#6C#, 16#99#, 16#24#, 16#D6#, 16#72#, 16#3A#, 16#1F#,
              				  16#C4#, 16#52#, 16#45#, 16#32#, 16#AC#, 16#3E#, 16#5B#, 16#EB#),"First Encryption failed!");
 
+      Assert(my_Scheme.Decrypt_And_Verify(Ciphertext => Thirtytwo_Bytes_Container,
+                                          Plaintext  => Sixteen_Bytes_Container,
+                                          AD         => Sixteen_Bytes_Full), "First Decryption Failed");
+
+      --------
+
+      my_Scheme.Encrypt(Plaintext  => Zero_Bytes,
+                        Ciphertext => Sixteen_Bytes_Container,
+                        AD         => Sixteen_Bytes_Full);
+
+      Assert(Sixteen_Bytes_Container = (16#7D#, 16#DB#, 16#8E#, 16#6C#, 16#EA#, 16#68#, 16#14#, 16#86#,
+             				16#62#, 16#12#, 16#50#, 16#96#, 16#19#, 16#B1#, 16#9C#, 16#C6#),"First Encryption failed!");
+
+      Assert(my_Scheme.Decrypt_And_Verify(Ciphertext => Sixteen_Bytes_Container,
+                                          Plaintext  => Zero_Bytes,
+                                          AD         => Sixteen_Bytes_Full), "First Decryption Failed");
+
+      --------
+
+      my_Scheme.Encrypt(Plaintext  => Sixteen_Bytes_Full,
+                        Ciphertext => Thirtytwo_Bytes_Container,
+                        AD         => Zero_Bytes);
+
+      Assert(Thirtytwo_Bytes_Container = (16#BE#, 16#A5#, 16#E8#, 16#79#, 16#8D#, 16#BE#, 16#71#, 16#10#,
+             				  16#03#, 16#1C#, 16#14#, 16#4D#, 16#A0#, 16#B2#, 16#61#, 16#22#,
+             				  16#13#, 16#CC#, 16#8B#, 16#74#, 16#78#, 16#07#, 16#12#, 16#1A#,
+             				  16#4C#, 16#BB#, 16#3E#, 16#4B#, 16#D6#, 16#B4#, 16#56#, 16#AF#),"First Encryption failed!");
+
+      Assert(my_Scheme.Decrypt_And_Verify(Ciphertext => Thirtytwo_Bytes_Container,
+                                          Plaintext  => Sixteen_Bytes_Container,
+                                          AD         => Zero_Bytes), "First Decryption Failed");
+
+      --------
+
+      my_Scheme.Encrypt(Plaintext  => Twentyfour_Bytes_Full,
+                        Ciphertext => Fourty_Bytes_Container,
+                        AD         => Twentyfour_Bytes_Full);
+
+      Assert(Fourty_Bytes_Container = (16#BE#, 16#A5#, 16#E8#, 16#79#, 16#8D#, 16#BE#, 16#71#, 16#10#,
+             			       16#03#, 16#1C#, 16#14#, 16#4D#, 16#A0#, 16#B2#, 16#61#, 16#22#,
+             			       16#FC#, 16#FC#, 16#EE#, 16#7A#, 16#2A#, 16#8D#, 16#4D#, 16#48#,
+             			       16#5F#, 16#A9#, 16#4F#, 16#C3#, 16#F3#, 16#88#, 16#20#, 16#F1#,
+             			       16#DC#, 16#3F#, 16#3D#, 16#1F#, 16#D4#, 16#E5#, 16#5E#, 16#1C#),"First Encryption failed!");
+
+      Assert(my_Scheme.Decrypt_And_Verify(Ciphertext => Fourty_Bytes_Container,
+                                          Plaintext  => Twentyfour_Bytes_Container,
+                                          AD         => Twentyfour_Bytes_Full), "First Decryption Failed");
 
 
+      Assert(True, "Fail at SHA512Crypt Test");
+
+      --------
+
+      my_Scheme.Encrypt(Plaintext  => Zero_Bytes,
+                        Ciphertext => Sixteen_Bytes_Container,
+                        AD         => Twentyfour_Bytes_Full);
+
+      Assert(Sixteen_Bytes_Container = (16#28#, 16#20#, 16#26#, 16#DA#, 16#30#, 16#68#, 16#BC#, 16#9F#,
+             			       16#A1#, 16#18#, 16#68#, 16#1D#, 16#55#, 16#9F#, 16#10#, 16#F6#),"First Encryption failed!");
+
+      Assert(my_Scheme.Decrypt_And_Verify(Ciphertext => Sixteen_Bytes_Container,
+                                          Plaintext  => Eight_Bytes_Container,
+                                          AD         => Twentyfour_Bytes_Full), "First Decryption Failed");
+
+
+      Assert(True, "Fail at SHA512Crypt Test");
+
+      --------
+
+      my_Scheme.Encrypt(Plaintext  => Twentyfour_Bytes_Full,
+                        Ciphertext => Fourty_Bytes_Container,
+                        AD         => Zero_Bytes);
+
+      Assert(Fourty_Bytes_Container = (16#BE#, 16#A5#, 16#E8#, 16#79#, 16#8D#, 16#BE#, 16#71#, 16#10#,
+             			       16#03#, 16#1C#, 16#14#, 16#4D#, 16#A0#, 16#B2#, 16#61#, 16#22#,
+            			       16#FC#, 16#FC#, 16#EE#, 16#7A#, 16#2A#, 16#8D#, 16#4D#, 16#48#,
+             			       16#6E#, 16#F2#, 16#F5#, 16#25#, 16#87#, 16#FD#, 16#A0#, 16#ED#,
+               			       16#97#, 16#DC#, 16#7E#, 16#ED#, 16#E2#, 16#41#, 16#DF#, 16#68#),"First Encryption failed!");
+
+      Assert(my_Scheme.Decrypt_And_Verify(Ciphertext => Fourty_Bytes_Container,
+                                          Plaintext  => Twentyfour_Bytes_Container,
+                                          AD         => Zero_Bytes), "First Decryption Failed");
 
 
       Assert(True, "Fail at SHA512Crypt Test");

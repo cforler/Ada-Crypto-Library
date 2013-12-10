@@ -744,6 +744,13 @@ package body Crypto.Types is
      return W_Block256(To_Words(B));
    end To_W_Block256;
    
+    ---------------------------------------------------------------------------
+   
+   function To_W_Block512(B : Bytes) return W_Block512 is
+   begin
+     return W_Block512(To_Words(B));
+   end To_W_Block512;
+   
    ---------------------------------------------------------------------------
       
    function To_DW_Block256(B : Bytes) return DW_Block256 is
@@ -764,7 +771,20 @@ package body Crypto.Types is
    begin
      return DW_Block512(To_DWords(B));
    end To_DW_Block512;
+      
+   ---------------------------------------------------------------------------
+     
+   function To_DW_Block1024(B : Bytes) return DW_Block1024 is
+   begin
+     return DW_Block1024(To_DWords(B));
+   end To_DW_Block1024;
    
+   ---------------------------------------------------------------------------
+   
+   function "xor"(Left, Right : W_Block160) return  W_Block160 is
+   begin
+      return W_Block160(Words(Left) xor Words(Right));
+   end "xor";
    ---------------------------------------------------------------------------
    
    function "xor"(Left, Right : W_Block512) return  W_Block512 is
