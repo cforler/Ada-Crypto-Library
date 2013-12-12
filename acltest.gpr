@@ -33,18 +33,18 @@ project AclTest is
       "test-cfb_oneway_mode.adb", "test-cfb_oneway_mode.ads", "test-cmac.adb", "test-cmac.ads", "test-counter_generator.adb", "test-counter_generator.ads", "test-ctr_mode.adb", "test-ctr_mode.ads", "test-ctr_oneway_mode.adb", 
       "test-ctr_oneway_mode.ads", "test-dsa.adb", "test-dsa.ads", "test-ecdh.adb", "test-ecdh.ads", "test-ecdsa.adb", "test-ecdsa.ads", "test-ecies.adb", "test-ecies.ads", "test-elliptic_curves.adb", "test-elliptic_curves.ads", 
       "test-elliptic_curves_nss_bf.adb", "test-elliptic_curves_nss_bf.ads", "test-elliptic_curves_zp.adb", "test-elliptic_curves_zp.ads", "test-hash.adb", "test-hmac.adb", "test-hmac.ads", "test-mmh.adb", "test-mmh.ads", 
-      "test-noobcipher.adb", "test-noobcipher.ads", "test-ocb.adb", "test-ocb.adb", "test-ocb.ads", "test-ocb.ads", "test-ofb_mode.adb", "test-ofb_mode.ads", "test-ofb_oneway_mode.adb", "test-ofb_oneway_mode.ads", "test-random.adb", 
-      "test-random.ads", "test-random_generator.adb", "test-random_generator.ads", "test-rmac.adb", "test-rmac.ads", "test-rsa.adb", "test-rsa.ads", "test-serpent.adb", "test-serpent.ads", "test-serpent_oneway.adb", 
-      "test-serpent_oneway.ads", "test-sha1.adb", "test-sha1.ads", "test-sha1_mac.adb", "test-sha1_mac.ads", "test-sha256.adb", "test-sha256.ads", "test-sha256_mac.adb", "test-sha256_mac.ads", "test-sha256_oneway.adb", 
-      "test-sha256_oneway.ads", "test-sha384.adb", "test-sha384.ads", "test-sha384_oneway.adb", "test-sha384_oneway.ads", "test-sha512.adb", "test-sha512.ads", "test-sha512.ads", "test-sha512_mac.adb", "test-sha512_mac.ads", 
-      "test-sha512_oneway.adb", "test-sha512_oneway.ads", "test-sha512crypt.adb", "test-sha512crypt.ads", "test-skein.adb", "test-skein.ads", "test-suite_all.adb", "test-suite_all.ads", "test-suite_asymmetric_ciphers.adb", 
-      "test-suite_asymmetric_ciphers.ads", "test-suite_big_num_all.adb", "test-suite_big_num_all.ads", "test-suite_big_num1.adb", "test-suite_big_num1.ads", "test-suite_big_num2.adb", "test-suite_big_num2.ads", 
-      "test-suite_big_num3.adb", "test-suite_big_num3.ads", "test-suite_big_num4.adb", "test-suite_big_num4.ads", "test-suite_blockciphers.adb", "test-suite_blockciphers.ads", "test-suite_elliptic_curves.adb", 
-      "test-suite_elliptic_curves.ads", "test-suite_hash_function.adb", "test-suite_hash_function.ads", "test-suite_mac.adb", "test-suite_mac.ads", "test-suite_misc.adb", "test-suite_misc.ads", "test-suite_nonces.adb", 
-      "test-suite_nonces.ads", "test-suite_oneway_blockciphers.adb", "test-suite_oneway_blockciphers.ads", "test-symmetric_ciphers.adb", "test-symmetric_mac.adb", "test-symmetric_mac.ads", "test-tdes.adb", "test-tdes.ads", 
-      "test-tdes_oneway.adb", "test-tdes_oneway.ads", "test-template.adb", "test-template.ads", "test-tests.adb", "test-twofish128.adb", "test-twofish128.ads", "test-twofish128_oneway.adb", "test-twofish128_oneway.ads", 
-      "test-twofish192.adb", "test-twofish192.ads", "test-twofish192_oneway.adb", "test-twofish192_oneway.ads", "test-twofish256.adb", "test-twofish256.ads", "test-twofish256_oneway.adb", "test-twofish256_oneway.ads", "test-types.adb", 
-      "test-types.ads", "test-whirlpool.adb", "test-whirlpool.ads", "test-whirlpool_mac.adb", "test-whirlpool_mac.ads", "test-whirlpool_oneway.adb", "test-whirlpool_oneway.ads", "test.ads", "w.adb");
+      "test-noobcipher.adb", "test-noobcipher.ads", "test-ocb.adb", "test-ocb.adb", "test-ocb.ads", "test-ocb.ads", "test-ofb_mode.adb", "test-ofb_mode.ads", "test-ofb_oneway_mode.adb", "test-ofb_oneway_mode.ads", "test-pbkdf2.adb", 
+      "test-pbkdf2.ads", "test-random.adb", "test-random.ads", "test-random_generator.adb", "test-random_generator.ads", "test-rmac.adb", "test-rmac.ads", "test-rsa.adb", "test-rsa.ads", "test-serpent.adb", "test-serpent.ads", 
+      "test-serpent_oneway.adb", "test-serpent_oneway.ads", "test-sha1.adb", "test-sha1.ads", "test-sha1_mac.adb", "test-sha1_mac.ads", "test-sha256.adb", "test-sha256.ads", "test-sha256_mac.adb", "test-sha256_mac.ads", 
+      "test-sha256_oneway.adb", "test-sha256_oneway.ads", "test-sha384.adb", "test-sha384.ads", "test-sha384_oneway.adb", "test-sha384_oneway.ads", "test-sha512.adb", "test-sha512.ads", "test-sha512.ads", "test-sha512_mac.adb", 
+      "test-sha512_mac.ads", "test-sha512_oneway.adb", "test-sha512_oneway.ads", "test-sha512crypt.adb", "test-sha512crypt.ads", "test-skein.adb", "test-skein.ads", "test-suite_all.adb", "test-suite_all.ads", 
+      "test-suite_asymmetric_ciphers.adb", "test-suite_asymmetric_ciphers.ads", "test-suite_big_num_all.adb", "test-suite_big_num_all.ads", "test-suite_big_num1.adb", "test-suite_big_num1.ads", "test-suite_big_num2.adb", 
+      "test-suite_big_num2.ads", "test-suite_big_num3.adb", "test-suite_big_num3.ads", "test-suite_big_num4.adb", "test-suite_big_num4.ads", "test-suite_blockciphers.adb", "test-suite_blockciphers.ads", 
+      "test-suite_elliptic_curves.adb", "test-suite_elliptic_curves.ads", "test-suite_hash_function.adb", "test-suite_hash_function.ads", "test-suite_mac.adb", "test-suite_mac.ads", "test-suite_misc.adb", "test-suite_misc.ads", 
+      "test-suite_nonces.adb", "test-suite_nonces.ads", "test-suite_oneway_blockciphers.adb", "test-suite_oneway_blockciphers.ads", "test-symmetric_ciphers.adb", "test-symmetric_mac.adb", "test-symmetric_mac.ads", "test-tdes.adb", 
+      "test-tdes.ads", "test-tdes_oneway.adb", "test-tdes_oneway.ads", "test-template.adb", "test-template.ads", "test-tests.adb", "test-twofish128.adb", "test-twofish128.ads", "test-twofish128_oneway.adb", 
+      "test-twofish128_oneway.ads", "test-twofish192.adb", "test-twofish192.ads", "test-twofish192_oneway.adb", "test-twofish192_oneway.ads", "test-twofish256.adb", "test-twofish256.ads", "test-twofish256_oneway.adb", 
+      "test-twofish256_oneway.ads", "test-types.adb", "test-types.ads", "test-whirlpool.adb", "test-whirlpool.ads", "test-whirlpool_mac.adb", "test-whirlpool_mac.ads", "test-whirlpool_oneway.adb", "test-whirlpool_oneway.ads", "test.ads", "w.adb");
 
    package Compiler is
       for Default_Switches ("ada") use ("-O2", "-gnatyM9999", "-gnat12");

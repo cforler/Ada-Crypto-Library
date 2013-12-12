@@ -10,7 +10,6 @@ with Ada.Directories;
 with Ada.Containers.Vectors;
 with Crypto.Symmetric.AE;
 with Crypto.Symmetric.KDF_SHA512Crypt;
-with Crypto.Symmetric.KDF_PBKDF2;
 
 package body Test.OCB is
 use Crypto.Types;
@@ -116,7 +115,6 @@ use Crypto.Types;
 
 
    procedure OCB3_Test_Initialize(T : in out Test_Cases.Test_Case'Class) is
-      package dsa renames Crypto.Symmetric.KDF_PBKDF2;
       B_Output : Bytes(0..19);
       password : Bytes(0..7) := (16#70#,16#61#,16#73#,16#73#,16#77#,16#6F#,16#72#, 16#64#);
       salt : Bytes(0..3) := (16#73#, 16#61#, 16#6C#, 16#74#);
@@ -124,15 +122,6 @@ use Crypto.Types;
 
 
    begin
-
-      dsa.Derive(Salt     => "salt",
-                 Password => "password",
-                 Key      => B_Output,
-                 DK_Len   => 20);
-      Ada.Text_IO.Put_Line("PBKDF2 Output:");
-      for I in B_Output'Range loop
-         Ada.Text_IO.Put(To_Hex(B => B_Output(I)));
-      end loop;
       Ada.Text_IO.New_Line;
 
 

@@ -6,6 +6,7 @@ with Test.Whirlpool;
 with Test.Skein;
 with Test.OCB;
 with Test.SHA512Crypt;
+with Test.PBKDF2;
 
 package body Test.Suite_Hash_Function is
    use AUnit.Test_Suites;
@@ -19,6 +20,7 @@ package body Test.Suite_Hash_Function is
    Skein_Test:				aliased Test.Skein.Skein_Test;
    OCB_Test:				aliased Test.OCB.OCB3_Test;
    SHA512Crypt_Test:			aliased Test.SHA512Crypt.SHA512Crypt_Test;
+   PBKDF2_Test:				aliased Test.PBKDF2.PBKDF2_Test;
   
 
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
@@ -28,6 +30,7 @@ package body Test.Suite_Hash_Function is
       Add_Test(Result'Access, Secure_Hash_Algorithm2_384_Test'Access);
       Add_Test(Result'Access, Secure_Hash_Algorithm2_512_Test'Access);
       Add_Test(Result'Access, Whirlpool_Test'Access);
+      Add_Test(Result'Access, PBKDF2_Test'Access);
       Add_Test(Result'Access, Skein_Test'Access);
       Add_Test(Result'Access, SHA512Crypt_Test'Access);
       Add_Test(Result'Access, OCB_Test'Access);
