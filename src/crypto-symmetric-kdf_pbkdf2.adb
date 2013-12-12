@@ -15,6 +15,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
    function Initialize(Parameter: in	Natural) return Boolean is
    begin
+      Rounds := Parameter;
       return true;
    end;
 
@@ -22,22 +23,37 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
                     Password	: in	Bytes;
                     Key		: out	Bytes;
       		    DK_Len	: in 	Natural) is
-      Sec_Parameter : Natural := 2;
+      Sec_Parameter : Natural := Rounds;
       DK_Block_Count : Natural;
       Rest : Natural;
       Result_Bytes : Bytes(0..DK_Len-1) := (others => 0 );
+      Temp_Bytes : Bytes(0..19);
    begin
 
-      DK_Block_Count := DK_Len / 20;
+      DK_Block_Count := Integer(Float'Ceiling(Float(DK_Len) / 20.0));
       Rest := DK_Len - (DK_Block_Count-1) * 20;
 
       --TODO: missing handling for uneven rest
       for I in 0..DK_Block_Count-1 loop
 
-         Result_Bytes(I*20..I*20+19) := To_Bytes(F_Function(Salt     => Salt,
+         if(I = DK_Block_Count-1)
+         then
+            Temp_Bytes := To_Bytes(F_Function(Salt     => Salt,
                                            	 Password => Password,
                                            	 Count    => Sec_Parameter,
                                                  Round    => I+1));
+            Result_Bytes(I*20..I*20+Rest-1) := Temp_Bytes(0..Rest-1);
+         else
+            Result_Bytes(I*20..I*20+19) := To_Bytes(F_Function(Salt     => Salt,
+                                           	 Password => Password,
+                                           	 Count    => Sec_Parameter,
+                                                 Round    => I+1));
+         end if;
+
+
+
+
+
       end loop;
 
       Key := Result_Bytes;

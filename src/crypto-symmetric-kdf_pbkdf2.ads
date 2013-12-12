@@ -33,6 +33,7 @@ package Crypto.Symmetric.KDF_PBKDF2 is
    function Initialize(Parameter	: in	Natural) return Boolean;
 
 private
+   Rounds : Natural;
    function F_Function(Salt	: in 	Bytes;
                        Password	: in	Bytes;
                        Count	: in 	Natural;
