@@ -961,10 +961,10 @@ package body Crypto.Symmetric.AE_OCB3 is
          end loop;
       end if;
       
-      Ada.Text_IO.Put("LAST P BLOCK");
-         for i in Last_P_Block'Range loop
-             Ada.Text_IO.Put(To_Hex(Last_P_Block(i)));
-         end loop;
+--        Ada.Text_IO.Put("LAST P BLOCK");
+--           for i in Last_P_Block'Range loop
+--               Ada.Text_IO.Put(To_Hex(Last_P_Block(i)));
+--           end loop;
       
       if Bytes_Read > 0 and Bytes_Read < Bytes_Per_Block then
          --117
@@ -1096,7 +1096,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_Plaintext(B : in Bytes) is
       begin
-         ada.Text_IO.Put_Line("Get_Bytes_Plaintext");
+--           ada.Text_IO.Put_Line("Get_Bytes_Plaintext");
          for I in B'Range loop
             Plaintext_Vector.Append(B(I));
          end loop;
@@ -1104,7 +1104,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_Ciphertext(B : in Bytes) is
       begin
-          ada.Text_IO.Put_Line("Get_Bytes_Ciphertext");
+--            ada.Text_IO.Put_Line("Get_Bytes_Ciphertext");
          for I in B'Range loop
             Ciphertext_Vector.Append(B(I));
          end loop;
@@ -1112,7 +1112,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_AD(B : in Bytes) is
       begin
-         ada.Text_IO.Put_Line("Get_Bytes_AD");
+--           ada.Text_IO.Put_Line("Get_Bytes_AD");
          for I in B'Range loop
             AD_Vector.Append(B(I));
          end loop;
@@ -1121,9 +1121,9 @@ package body Crypto.Symmetric.AE_OCB3 is
       procedure Give_Bytes_Plaintext(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
-         ada.Text_IO.Put_Line("Give_Bytes_Plaintext");
+--           ada.Text_IO.Put_Line("Give_Bytes_Plaintext");
          Rest := Integer(Plaintext_Vector.Length) - Plaintext_Position;
-         ada.Text_IO.Put_Line(Integer'Image(Rest));
+--           ada.Text_IO.Put_Line(Integer'Image(Rest));
          if Rest >= Bytes_Per_Block then
             Count := Bytes_Per_Block;
             for I in Plaintext_Position..Plaintext_Position+Bytes_Per_Block-1 loop
@@ -1139,11 +1139,11 @@ package body Crypto.Symmetric.AE_OCB3 is
             end loop;
          end if;
          
-         Ada.Text_IO.Put("Plaintext-Bytes: ");
-         for I in B'Range loop
-            Ada.Text_IO.Put(To_Hex(B(I)));   
-         end loop;
-         Ada.Text_IO.Put("Plaintext Bytes Amount" & Natural'Image(Count));
+--           Ada.Text_IO.Put("Plaintext-Bytes: ");
+--           for I in B'Range loop
+--              Ada.Text_IO.Put(To_Hex(B(I)));   
+--           end loop;
+--           Ada.Text_IO.Put("Plaintext Bytes Amount" & Natural'Image(Count));
          
          
       end Give_Bytes_Plaintext;
@@ -1151,7 +1151,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       procedure Give_Bytes_AD(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
-         ada.Text_IO.Put_Line("Give_Bytes_AD");
+--           ada.Text_IO.Put_Line("Give_Bytes_AD");
          Rest := Integer(AD_Vector.Length) - AD_Position;
          if Rest >= Bytes_Per_Block then
             Count := Bytes_Per_Block;
@@ -1173,7 +1173,7 @@ package body Crypto.Symmetric.AE_OCB3 is
          Curs : Vectors_Package.Cursor := Ciphertext_Vector.First;
          Counter : Integer := 0;
       begin
-         ada.Text_IO.Put_Line("Give_Bytes_Ciphertext" & Integer'Image(Integer(Ciphertext_Vector.Length)));
+--           ada.Text_IO.Put_Line("Give_Bytes_Ciphertext" & Integer'Image(Integer(Ciphertext_Vector.Length)));
          
          while(Vectors_Package.Has_Element(Curs)) loop
             B(Counter):= Ciphertext_Vector.Element(Vectors_Package.To_Index(Curs));
@@ -1217,7 +1217,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_Plaintext(B : in Bytes) is
       begin
-         ada.Text_IO.Put_Line("Get_Bytes_Plaintext");
+--           ada.Text_IO.Put_Line("Get_Bytes_Plaintext");
          for I in B'Range loop
             Plaintext_Vector.Append(B(I));
          end loop;
@@ -1225,7 +1225,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_Ciphertext(B : in Bytes) is
       begin
-          ada.Text_IO.Put_Line("Get_Bytes_Ciphertext");
+--            ada.Text_IO.Put_Line("Get_Bytes_Ciphertext");
          for I in B'Range loop
             Ciphertext_Vector.Append(B(I));
          end loop;
@@ -1233,7 +1233,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_AD(B : in Bytes) is
       begin
-         ada.Text_IO.Put_Line("Get_Bytes_AD");
+--           ada.Text_IO.Put_Line("Get_Bytes_AD");
          for I in B'Range loop
             AD_Vector.Append(B(I));
          end loop;
@@ -1242,9 +1242,9 @@ package body Crypto.Symmetric.AE_OCB3 is
       procedure Give_Bytes_Ciphertext(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
-         ada.Text_IO.Put_Line("Give_Bytes_Ciphertext");
+--           ada.Text_IO.Put_Line("Give_Bytes_Ciphertext");
          Rest := Integer(Ciphertext_Vector.Length) - Ciphertext_Position;
-         ada.Text_IO.Put_Line(Integer'Image(Rest));
+--           ada.Text_IO.Put_Line(Integer'Image(Rest));
          if Rest >= Bytes_Per_Block then
             Count := Bytes_Per_Block;
             for I in Ciphertext_Position..Ciphertext_Position+Bytes_Per_Block-1 loop
@@ -1264,7 +1264,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       procedure Give_Bytes_AD(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
-         ada.Text_IO.Put_Line("Give_Bytes_AD");
+--           ada.Text_IO.Put_Line("Give_Bytes_AD");
          Rest := Integer(AD_Vector.Length) - AD_Position;
          if Rest >= Bytes_Per_Block then
             Count := Bytes_Per_Block;
@@ -1286,7 +1286,7 @@ package body Crypto.Symmetric.AE_OCB3 is
          Curs : Vectors_Package.Cursor := Plaintext_Vector.First;
          Counter : Integer := 0;
       begin
-         ada.Text_IO.Put_Line("Give_Bytes_Plaintext" & Integer'Image(Integer(Plaintext_Vector.Length)));
+--           ada.Text_IO.Put_Line("Give_Bytes_Plaintext" & Integer'Image(Integer(Plaintext_Vector.Length)));
          
          while(Vectors_Package.Has_Element(Curs)) loop
             B(Counter):= Plaintext_Vector.Element(Vectors_Package.To_Index(Curs));

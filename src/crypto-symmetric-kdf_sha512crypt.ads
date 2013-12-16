@@ -7,6 +7,8 @@ pragma Elaborate_All (Crypto.Symmetric.KDF);
 
 package Crypto.Symmetric.KDF_SHA512Crypt is
 
+
+
    type salt_type is array(0..9) of Character;
 
    package KDF is new Crypto.Symmetric.KDF(return_type        => W_Block512,
@@ -26,5 +28,14 @@ package Crypto.Symmetric.KDF_SHA512Crypt is
                        Digest_Hash		: in out	DW_Block512);
 
    function Initialize(Parameter	: in	Natural) return Boolean;
+
+   function To_Binary(N: Natural) return String;
+
+   function To_Natural(S : String) return Natural;
+
+   function To_Base64(N : Natural) return Character;
+
+   function Bytes_To_String(B : bytes) return String;
+
 
 end Crypto.Symmetric.KDF_SHA512Crypt;

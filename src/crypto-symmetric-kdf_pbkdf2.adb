@@ -82,11 +82,11 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
 
 
-      Ada.Text_IO.Put_Line("Initial Bytes:");
-         for I in Temp_Bytes'Range loop
-            Ada.Text_IO.Put(To_Hex(B => Temp_Bytes(I)));
-         end loop;
-         Ada.Text_IO.New_Line;
+--        Ada.Text_IO.Put_Line("Initial Bytes:");
+--           for I in Temp_Bytes'Range loop
+--              Ada.Text_IO.Put(To_Hex(B => Temp_Bytes(I)));
+--           end loop;
+--           Ada.Text_IO.New_Line;
 
       Hmac_Package.Final_Sign(Final_Message_Block        => To_W_Block512(Temp_Bytes),
                               Final_Message_Block_Length => Salt'Length+4,
@@ -94,7 +94,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
       Result_Block:= Temp_Block;
 
-      Ada.Text_IO.Put_Line("HMAC used 1");
+--        Ada.Text_IO.Put_Line("HMAC used 1");
       for I in 2..Count loop
          Temp_Bytes := (others => 0);
          Temp_Bytes(0..19) := To_Bytes(W => Temp_Block);
