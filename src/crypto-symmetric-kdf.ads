@@ -9,15 +9,19 @@ generic
 
 package Crypto.Symmetric.KDF is
 
-     procedure Derive(Salt	: in 	String;
-                      Password	: in	String;
-                      Key	: out	return_type) is abstract;
+   type KDF_Scheme is limited interface;
 
-     function Initialize(Parameter	: in	security_parameter) return Boolean is abstract;
+   procedure Derive(This	: in out KDF_Scheme;
+                    Salt	: in 	String;
+                    Password	: in	String;
+                    Key		: out	return_type) is abstract;
 
-     type KDF_Scheme is limited interface;
+   function Initialize(This	: out KDF_Scheme;
+                       Parameter: in security_parameter) return Boolean is abstract;
 
-     Invalid_Key_Type         : exception;
+   Invalid_Key_Type_Exception	: exception;
+
+
 
 private
 

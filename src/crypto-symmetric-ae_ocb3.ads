@@ -64,7 +64,7 @@ package Crypto.Symmetric.AE_OCB3 is
    
    procedure Encrypt(This             : in out AE_OCB;
                      Plaintext        : in     Bytes;
-                     Ciphertext       : out     Bytes;
+                     Ciphertext       : out    Bytes;
                      AD	      	      : in     Bytes);
    
    function Decrypt_And_Verify(This                   : in out AE_OCB;

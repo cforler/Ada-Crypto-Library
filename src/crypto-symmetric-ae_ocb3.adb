@@ -1,6 +1,6 @@
 with Ada.Containers.Indefinite_Vectors;
 with Ada.Containers.Vectors;
-with Ada.Text_IO;
+with Crypto.Non_Debug;	use Crypto.Non_Debug;
 with Crypto.Types;
 
 package body Crypto.Symmetric.AE_OCB3 is
@@ -77,30 +77,30 @@ package body Crypto.Symmetric.AE_OCB3 is
    begin
       BC.Encrypt(Zero_Block, L_Star); --L_*
       Tmp := To_Bytes(L_Star);
-      Ada.Text_IO.Put("L_*");
+      Put("L_*");
       for i in Tmp'Range loop
-          Ada.Text_IO.Put(To_Hex(Tmp(i)));
+          Put(To_Hex(Tmp(i)));
       end loop;
-      Ada.Text_IO.New_Line;
+      New_Line;
 
       L_Dollar := Double_S(L_Star);   --L_$
       Tmp := To_Bytes(L_Dollar);
-      Ada.Text_IO.Put("L_$");
+      Put("L_$");
       for i in Tmp'Range loop
-          Ada.Text_IO.Put(To_Hex(Tmp(i)));
+          Put(To_Hex(Tmp(i)));
       end loop;
-      Ada.Text_IO.New_Line;
+      New_Line;
 
       A(-1) := Double_S(L_Dollar); -- (-1) refers to L[0] in the docu
       for i in 0..31 loop
           A(i) := Double_S(A(i-1));
       end loop;
       Tmp := To_Bytes(A(0));
-      Ada.Text_IO.Put("L_1");
+      Put("L_1");
       for i in Tmp'Range loop
-          Ada.Text_IO.Put(To_Hex(Tmp(i)));
+          Put(To_Hex(Tmp(i)));
       end loop;
-      Ada.Text_IO.New_Line;
+      New_Line;
    end Setup;
 
    -----------------------------------------------------------------
@@ -275,11 +275,11 @@ package body Crypto.Symmetric.AE_OCB3 is
       --113 Offset = Offset XOR L
       Offset := Offset xor This.L_Array(Number_Of_Trailing_Zeros(Count) - 1);
       Tmp := To_Bytes(Offset);
-      Ada.Text_IO.Put("Offset");
+      Put("Offset");
       for i in Tmp'Range loop
-          Ada.Text_IO.Put(To_Hex(Tmp(i)));
+          Put(To_Hex(Tmp(i)));
       end loop;
-      Ada.Text_IO.New_Line;      
+      New_Line;      
 
       --114
       BC.Encrypt(Input xor Offset, Output);
@@ -288,11 +288,11 @@ package body Crypto.Symmetric.AE_OCB3 is
       --115
       Checksum := Checksum xor Input;
       Tmp := To_Bytes(Checksum);
-      Ada.Text_IO.Put("Checksum");
+      Put("Checksum");
       for i in Tmp'Range loop
-          Ada.Text_IO.Put(To_Hex(Tmp(i)));
+          Put(To_Hex(Tmp(i)));
       end loop;
-      Ada.Text_IO.New_Line; 
+      New_Line; 
       Count := Count + 1;
    end Aux_Enc;
 
@@ -651,14 +651,14 @@ package body Crypto.Symmetric.AE_OCB3 is
       declare
          Calculated_Tag: constant Bytes := To_Bytes(T);
       begin
-         Ada.Text_IO.Put_Line("Original Tag:");
+         Put_Line("Original Tag:");
          for I in Tag'First..This.Taglen-1 loop
-            Ada.Text_IO.Put(To_Hex(B => Tag(I)));
+            Put(To_Hex(B => Tag(I)));
          end loop;
-         Ada.Text_IO.New_Line;
-         Ada.Text_IO.Put_Line("Calculated Tag:");
+         New_Line;
+         Put_Line("Calculated Tag:");
          for I in Calculated_Tag'First..This.Taglen-1 loop
-            Ada.Text_IO.Put(To_Hex(B => Calculated_Tag(I)));
+            Put(To_Hex(B => Calculated_Tag(I)));
          end loop;
             
          
@@ -750,11 +750,11 @@ package body Crypto.Symmetric.AE_OCB3 is
             Nonce_Init(Bytes_Per_Block - Bytes_Of_N_Read .. Bytes_Per_Block - 1) := To_Bytes(This.Nonce_Value)(0.. Bytes_Of_N_Read - 1) ;
             Nonce_Init(Bytes_Per_Block - Bytes_Of_N_Read - 1) := 2#0000_0001# ;
             
-            Ada.Text_IO.Put("Nonce");
+            Put("Nonce");
             for i in Nonce_Init'Range loop
-                Ada.Text_IO.Put(Nonce_Init(i)'Img);
+                Put(Nonce_Init(i)'Img);
             end loop;
-            Ada.Text_IO.New_Line; 
+            New_Line; 
             
 
             --107: Top = Nonce AND (1^122 0^6)
@@ -764,30 +764,30 @@ package body Crypto.Symmetric.AE_OCB3 is
             --108: Bottom = Nonce AND (0^122 1^6)
             Tmp_Bottom(Tmp_Bottom'Last) := 2#0011_1111#;
             Bottom := Nonce_Init and Tmp_Bottom;
-            Ada.Text_IO.Put("Bottom");
+            Put("Bottom");
             for i in Bottom'Range loop
-                Ada.Text_IO.Put(Bottom(i)'Img);
+                Put(Bottom(i)'Img);
             end loop;
-            Ada.Text_IO.New_Line;
+            New_Line;
           
 
             --109: Ktop = Ek(Top)
             BC.Encrypt(To_Block(Top), Ktop);
             Tmp := To_Bytes(Ktop);
-            Ada.Text_IO.Put("Ktop");
+            Put("Ktop");
             for i in Tmp'Range loop
-                Ada.Text_IO.Put(To_Hex(Tmp(i)));
+                Put(To_Hex(Tmp(i)));
             end loop;
-            Ada.Text_IO.New_Line;
+            New_Line;
 
             --110-111: Offset = (Stretch<<Bottom)[1..128]
             This.Offset := Stretch_Then_Shift(To_Bytes(Ktop), Integer(Bottom(Bottom'Last)));
             Tmp := To_Bytes(This.Offset);
-            Ada.Text_IO.Put("Initial Offset");
+            Put("Initial Offset");
             for i in Tmp'Range loop
-                Ada.Text_IO.Put(To_Hex(Tmp(i)));
+                Put(To_Hex(Tmp(i)));
             end loop;
-            Ada.Text_IO.New_Line;  
+            New_Line;  
          end if;
    end Init_Encrypt;
 
@@ -904,13 +904,13 @@ package body Crypto.Symmetric.AE_OCB3 is
       Tmp : Block := To_Block(Zero_Bytes xor 2#0000_1111#);--8+4+2+1=15
    begin
 
-      Ada.Text_IO.Put_Line("Test for Double_S");
+      Put_Line("Test for Double_S");
       Tmp1 :=To_Bytes(Double_S(Tmp)); 
       for i in Tmp1'Range loop
-         Ada.Text_IO.Put(Tmp1(i)'Img);
+         Put(Tmp1(i)'Img);
       end loop;
-      Ada.Text_IO.New_Line;
-      Ada.Text_IO.New_Line;
+      New_Line;
+      New_Line;
 
       --read the first block of plaintext
       Read_Plaintext(Prev_Block, Bytes_Read);
@@ -961,20 +961,20 @@ package body Crypto.Symmetric.AE_OCB3 is
          end loop;
       end if;
       
---        Ada.Text_IO.Put("LAST P BLOCK");
+--        Put("LAST P BLOCK");
 --           for i in Last_P_Block'Range loop
---               Ada.Text_IO.Put(To_Hex(Last_P_Block(i)));
+--               Put(To_Hex(Last_P_Block(i)));
 --           end loop;
       
       if Bytes_Read > 0 and Bytes_Read < Bytes_Per_Block then
          --117
             Offset := Offset xor L_Star;
             Tmp1 :=To_Bytes(Offset);
-            Ada.Text_IO.Put("Offset_*"); 
+            Put("Offset_*"); 
             for i in Tmp1'Range loop
-                Ada.Text_IO.Put(Tmp1(i)'Img);
+                Put(Tmp1(i)'Img);
             end loop;
-            Ada.Text_IO.New_Line;
+            New_Line;
          --118
             BC.Encrypt(Offset, Pad);
          declare
@@ -987,11 +987,11 @@ package body Crypto.Symmetric.AE_OCB3 is
          Checksum := Checksum xor Padding_One_Zero(Last_P_Block, Bytes_Read);
          Tmp1 := To_Bytes(Checksum);
 
-         Ada.Text_IO.Put("Checksum_*");
+         Put("Checksum_*");
          for i in Tmp1'Range loop
-             Ada.Text_IO.Put(Tmp1(i)'Img);
+             Put(Tmp1(i)'Img);
          end loop;
-         Ada.Text_IO.New_Line; 
+         New_Line; 
       end if;
       --121
       Offset := Offset xor L_Dollar;
@@ -999,11 +999,11 @@ package body Crypto.Symmetric.AE_OCB3 is
       --122 calculate the Tag
       BC.Encrypt(Checksum xor Offset, Ciphertext);
       Tmp1 := To_Bytes(Ciphertext);
-      Ada.Text_IO.Put("Tag: ");
+      Put("Tag: ");
       for i in Tmp1'Range loop
-         Ada.Text_IO.Put(Tmp1(i)'Img);
+         Put(Tmp1(i)'Img);
       end loop;
-      Ada.Text_IO.New_Line;
+      New_Line;
       
       --Calculating the Hash of the Associated Data, XORing with Checksum
       
@@ -1096,7 +1096,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_Plaintext(B : in Bytes) is
       begin
---           ada.Text_IO.Put_Line("Get_Bytes_Plaintext");
+--           Put_Line("Get_Bytes_Plaintext");
          for I in B'Range loop
             Plaintext_Vector.Append(B(I));
          end loop;
@@ -1104,7 +1104,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_Ciphertext(B : in Bytes) is
       begin
---            ada.Text_IO.Put_Line("Get_Bytes_Ciphertext");
+--            Put_Line("Get_Bytes_Ciphertext");
          for I in B'Range loop
             Ciphertext_Vector.Append(B(I));
          end loop;
@@ -1112,7 +1112,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_AD(B : in Bytes) is
       begin
---           ada.Text_IO.Put_Line("Get_Bytes_AD");
+--           Put_Line("Get_Bytes_AD");
          for I in B'Range loop
             AD_Vector.Append(B(I));
          end loop;
@@ -1121,9 +1121,9 @@ package body Crypto.Symmetric.AE_OCB3 is
       procedure Give_Bytes_Plaintext(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
---           ada.Text_IO.Put_Line("Give_Bytes_Plaintext");
+--           Put_Line("Give_Bytes_Plaintext");
          Rest := Integer(Plaintext_Vector.Length) - Plaintext_Position;
---           ada.Text_IO.Put_Line(Integer'Image(Rest));
+--           Put_Line(Integer'Image(Rest));
          if Rest >= Bytes_Per_Block then
             Count := Bytes_Per_Block;
             for I in Plaintext_Position..Plaintext_Position+Bytes_Per_Block-1 loop
@@ -1139,11 +1139,11 @@ package body Crypto.Symmetric.AE_OCB3 is
             end loop;
          end if;
          
---           Ada.Text_IO.Put("Plaintext-Bytes: ");
+--           Put("Plaintext-Bytes: ");
 --           for I in B'Range loop
---              Ada.Text_IO.Put(To_Hex(B(I)));   
+--              Put(To_Hex(B(I)));   
 --           end loop;
---           Ada.Text_IO.Put("Plaintext Bytes Amount" & Natural'Image(Count));
+--           Put("Plaintext Bytes Amount" & Natural'Image(Count));
          
          
       end Give_Bytes_Plaintext;
@@ -1151,7 +1151,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       procedure Give_Bytes_AD(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
---           ada.Text_IO.Put_Line("Give_Bytes_AD");
+--           Put_Line("Give_Bytes_AD");
          Rest := Integer(AD_Vector.Length) - AD_Position;
          if Rest >= Bytes_Per_Block then
             Count := Bytes_Per_Block;
@@ -1173,7 +1173,7 @@ package body Crypto.Symmetric.AE_OCB3 is
          Curs : Vectors_Package.Cursor := Ciphertext_Vector.First;
          Counter : Integer := 0;
       begin
---           ada.Text_IO.Put_Line("Give_Bytes_Ciphertext" & Integer'Image(Integer(Ciphertext_Vector.Length)));
+--           Put_Line("Give_Bytes_Ciphertext" & Integer'Image(Integer(Ciphertext_Vector.Length)));
          
          while(Vectors_Package.Has_Element(Curs)) loop
             B(Counter):= Ciphertext_Vector.Element(Vectors_Package.To_Index(Curs));
@@ -1217,7 +1217,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_Plaintext(B : in Bytes) is
       begin
---           ada.Text_IO.Put_Line("Get_Bytes_Plaintext");
+--           Put_Line("Get_Bytes_Plaintext");
          for I in B'Range loop
             Plaintext_Vector.Append(B(I));
          end loop;
@@ -1225,7 +1225,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_Ciphertext(B : in Bytes) is
       begin
---            ada.Text_IO.Put_Line("Get_Bytes_Ciphertext");
+--            Put_Line("Get_Bytes_Ciphertext");
          for I in B'Range loop
             Ciphertext_Vector.Append(B(I));
          end loop;
@@ -1233,7 +1233,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       
       procedure Get_Bytes_AD(B : in Bytes) is
       begin
---           ada.Text_IO.Put_Line("Get_Bytes_AD");
+--           Put_Line("Get_Bytes_AD");
          for I in B'Range loop
             AD_Vector.Append(B(I));
          end loop;
@@ -1242,9 +1242,9 @@ package body Crypto.Symmetric.AE_OCB3 is
       procedure Give_Bytes_Ciphertext(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
---           ada.Text_IO.Put_Line("Give_Bytes_Ciphertext");
+--           Put_Line("Give_Bytes_Ciphertext");
          Rest := Integer(Ciphertext_Vector.Length) - Ciphertext_Position;
---           ada.Text_IO.Put_Line(Integer'Image(Rest));
+--           Put_Line(Integer'Image(Rest));
          if Rest >= Bytes_Per_Block then
             Count := Bytes_Per_Block;
             for I in Ciphertext_Position..Ciphertext_Position+Bytes_Per_Block-1 loop
@@ -1264,7 +1264,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       procedure Give_Bytes_AD(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
---           ada.Text_IO.Put_Line("Give_Bytes_AD");
+--           Put_Line("Give_Bytes_AD");
          Rest := Integer(AD_Vector.Length) - AD_Position;
          if Rest >= Bytes_Per_Block then
             Count := Bytes_Per_Block;
@@ -1286,7 +1286,7 @@ package body Crypto.Symmetric.AE_OCB3 is
          Curs : Vectors_Package.Cursor := Plaintext_Vector.First;
          Counter : Integer := 0;
       begin
---           ada.Text_IO.Put_Line("Give_Bytes_Plaintext" & Integer'Image(Integer(Plaintext_Vector.Length)));
+--           Put_Line("Give_Bytes_Plaintext" & Integer'Image(Integer(Plaintext_Vector.Length)));
          
          while(Vectors_Package.Has_Element(Curs)) loop
             B(Counter):= Plaintext_Vector.Element(Vectors_Package.To_Index(Curs));

@@ -2,7 +2,8 @@ with AUnit.Assertions;
 with Crypto.Symmetric.Algorithm.Skein;
 with Crypto.Symmetric.Algorithm.Threefish;
 with Crypto.Types;
-with Ada.text_IO;
+with Crypto.Non_Debug;	use Crypto.Non_Debug;
+
 
 package body Test.Skein is
    use Crypto.Symmetric.Algorithm.Skein;
@@ -124,13 +125,13 @@ package body Test.Skein is
                                             Message_Length => 512,
                                             Result         => Finalresult_Long);
 
-      Ada.text_IO.Put_Line(" ");
-        Ada.text_IO.Put_Line("This is the result of the hashing test");
+      Put_Line(" ");
+        Put_Line("This is the result of the hashing test");
         for i in Finalresult_Short'Range loop
-         Ada.Text_IO.Put(To_Hex(Finalresult_Short(i)));
-            Ada.Text_IO.Put(" ");
+         Put(To_Hex(Finalresult_Short(i)));
+            Put(" ");
             if (i+1) mod 16 = 0 then
-                Ada.Text_IO.Put_LIne(" ");
+                Put_LIne(" ");
             end if;
       end loop;
 
@@ -226,13 +227,13 @@ package body Test.Skein is
                                             Message_Length => 1024,
                                             Result         => Finalresult_Long);
 
-      Ada.text_IO.Put_Line(" ");
-        Ada.text_IO.Put_Line("This is the result of the hashing test");
+      Put_Line(" ");
+        Put_Line("This is the result of the hashing test");
         for i in Finalresult_Short'Range loop
-         Ada.Text_IO.Put(To_Hex(Finalresult_Short(i)));
-            Ada.Text_IO.Put(" ");
+         Put(To_Hex(Finalresult_Short(i)));
+            Put(" ");
             if (i+1) mod 16 = 0 then
-                Ada.Text_IO.Put_LIne(" ");
+                Put_LIne(" ");
             end if;
       end loop;
 
@@ -351,13 +352,13 @@ package body Test.Skein is
                                             Message_Length => 2048,
                                             Result         => Finalresult_Long);
 
-      Ada.text_IO.Put_Line(" ");
-        Ada.text_IO.Put_Line("This is the result of the hashing test");
+      Put_Line(" ");
+        Put_Line("This is the result of the hashing test");
         for i in Finalresult_Short'Range loop
-         Ada.Text_IO.Put(To_Hex(Finalresult_Short(i)));
-            Ada.Text_IO.Put(" ");
+         Put(To_Hex(Finalresult_Short(i)));
+            Put(" ");
             if (i+1) mod 16 = 0 then
-                Ada.Text_IO.Put_LIne(" ");
+                Put_LIne(" ");
             end if;
       end loop;
 

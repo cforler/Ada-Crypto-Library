@@ -787,6 +787,12 @@ package body Crypto.Types is
    end "xor";
    ---------------------------------------------------------------------------
    
+   function "xor"(Left, Right : W_Block256) return  W_Block256 is
+   begin
+      return W_Block256(Words(Left) xor Words(Right));
+   end "xor";
+   ---------------------------------------------------------------------------
+   
    function "xor"(Left, Right : W_Block512) return  W_Block512 is
    begin
       return W_Block512(Words(Left) xor Words(Right));

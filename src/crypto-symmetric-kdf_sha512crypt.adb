@@ -6,22 +6,19 @@ with Ada.Integer_Text_IO;
 
 package body Crypto.Symmetric.KDF_SHA512Crypt is
 
-   procedure Derive(Salt	: in 	salt_type;
+
+
+   procedure Derive(This	: in out SHA512Crypt_KDF;
+                    Salt	: in 	String;
                     Password	: in	String;
                     Key		: out	W_Block512) is
-      return_block : W_Block512:=(Word(1), others=>Word(0));
-   begin
-      key:= return_block;
-   end Derive;
-
-
-   procedure Derive(Salt	: in 	String;
-                    Password	: in	String) is
       package SHA512 renames Crypto.Symmetric.Algorithm.SHA512;
 
 
-      Salt_Bytes : Bytes(0..Salt'Length-1) := To_Bytes(Salt);
-      Password_Bytes : Bytes(0..Password'Length-1) := To_Bytes(Password);
+--        Salt_Bytes : Bytes(0..Salt'Length-1) := To_Bytes(Salt);
+--        Password_Bytes : Bytes(0..Password'Length-1) := To_Bytes(Password);
+      Salt_Bytes : Bytes(0..15) := To_Bytes("saltstringsaltst");
+      Password_Bytes : Bytes(0..11) := To_Bytes("Hello World!");
 
       Digest_A_Bytes : Bytes(0..127):= (others =>0);
       Digest_A_Hash  : DW_Block512;
@@ -58,6 +55,8 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
       Final_Input_Bytes : Bytes(0..2);
 
+      Return_Block : W_Block512 := (others =>0);
+
 
 
    begin
@@ -72,6 +71,8 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                 Digest_Bytes        => Digest_A_Bytes,
                 Digest_Bytes_Length => Digest_A_Length,
                 Digest_Hash         => Digest_A_Hash);
+
+
 
       SHA512.Init(Hash_Value => Digest_B_Hash);
 
@@ -90,12 +91,26 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                 Digest_Bytes_Length => Digest_B_Length,
                 Digest_Hash         => Digest_B_Hash);
 
+
+      Ada.Text_IO.Put_Line("BUFFER CHECK");
+      for I in Digest_B_Bytes'Range loop
+         Ada.Text_IO.Put(To_Hex(Digest_B_Bytes(I)));
+      end loop;
+      Ada.Text_IO.New_Line;
+
+
       Big_B_Block := To_DW_Block1024(B => Digest_B_Bytes);
 
       Digest_B_Hash :=
       SHA512.Final_Round(Last_Message_Block  => Big_B_Block,
                          Last_Message_Length => Digest_B_Length,
                          Hash_Value          => Digest_B_Hash);
+
+      Ada.Text_IO.Put_Line("FIRST CHECK");
+      for I in To_Bytes(Digest_B_Hash)'Range loop
+         Ada.Text_IO.Put(To_Hex(To_Bytes(Digest_B_Hash)(I)));
+      end loop;
+
 
       for I in 0..Integer(Float'Floor(Float(Password_Bytes 'Length)/64.0))-1 loop
          Add_Bytes(Bytes_To_Add        => To_Bytes(Digest_B_Hash),
@@ -129,6 +144,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
          end if;
       end loop;
+
 
 
       -- Finish Digest A
@@ -197,84 +213,84 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                                            Hash_Value          => Digest_DS_Hash);
 
 
-      -- Fill DS in S_Value
-      for I in 0..Integer(Float'Floor(Float(Salt_Bytes 'Length)/64.0))-1 loop
-         S_Value(I*20..I*20+19):=To_Bytes(Digest_DS_Hash);
-      end loop;
-
-      Sixtyfour_Bytes := To_Bytes(D => Digest_DS_Hash);
-
-      S_Value(Integer(Float'Floor(Float(Salt_Bytes 'Length)/64.0))*20..
-              Integer(Float'Floor(Float(Salt_Bytes 'Length)/64.0))+(Salt_Bytes'Length mod 64)-1):=
-        Sixtyfour_Bytes(0..(Salt_Bytes'Length mod 64)-1);
-
-      Bytes_For_Rounds := To_Bytes(Digest_A_Hash);
-
-      for I in 0..4999 loop
-         -- a) start digest C
-         SHA512.Init(Digest_C_Hash);
-
-         -- b) for odd round numbers add the byte sequense P to digest C
-         if not ((I mod 2) = 0) then
-            Add_Bytes(Bytes_To_Add        => P_Value,
-                      Digest_Bytes        => Digest_C_Bytes,
-                      Digest_Bytes_Length => Digest_C_Length,
-                      Digest_Hash         => Digest_C_Hash);
-         end if;
-
-         -- c) for even round numbers add digest A/C
-         if ((I mod 2) = 0) then
-            Add_Bytes(Bytes_To_Add        => Bytes_For_Rounds,
-                      Digest_Bytes        => Digest_C_Bytes,
-                      Digest_Bytes_Length => Digest_C_Length,
-                      Digest_Hash         => Digest_C_Hash);
-         end if;
-
-
-         -- d) for all round numbers not divisible by 3 add the byte sequence S
-         if not((I mod 3) = 0) then
-            Add_Bytes(Bytes_To_Add        => S_Value,
-                      Digest_Bytes        => Digest_C_Bytes,
-                      Digest_Bytes_Length => Digest_C_Length,
-                      Digest_Hash         => Digest_C_Hash);
-         end if;
-
-
-         -- e) for all round numbers not divisible by 7 add the byte sequence P
-         if not((I mod 7) = 0) then
-            Add_Bytes(Bytes_To_Add        => P_Value,
-                      Digest_Bytes        => Digest_C_Bytes,
-                      Digest_Bytes_Length => Digest_C_Length,
-                      Digest_Hash         => Digest_C_Hash);
-         end if;
-
-         -- f) for odd round numbers add digest A/C
-         if not ((I mod 2) = 0) then
-            Add_Bytes(Bytes_To_Add        => Bytes_For_Rounds,
-                      Digest_Bytes        => Digest_C_Bytes,
-                      Digest_Bytes_Length => Digest_C_Length,
-                      Digest_Hash         => Digest_C_Hash);
-         end if;
-
-         -- g) for even round numbers add the byte sequence P
-         if ((I mod 2) = 0) then
-            Add_Bytes(Bytes_To_Add        => P_Value,
-                      Digest_Bytes        => Digest_C_Bytes,
-                      Digest_Bytes_Length => Digest_C_Length,
-                      Digest_Hash         => Digest_C_Hash);
-         end if;
-
-         -- h) finish digest C
-         Big_B_Block := To_DW_Block1024(B => Digest_C_Bytes);
-      	 Digest_C_Hash :=
-           SHA512.Final_Round(Last_Message_Block  => Big_B_Block,
-                              Last_Message_Length => Digest_C_Length,
-                              Hash_Value          => Digest_C_Hash);
-
-         Bytes_For_Rounds := To_Bytes(Digest_C_Hash);
-
-
-      end loop;
+--        -- Fill DS in S_Value
+--        for I in 0..Integer(Float'Floor(Float(Salt_Bytes 'Length)/64.0))-1 loop
+--           S_Value(I*20..I*20+19):=To_Bytes(Digest_DS_Hash);
+--        end loop;
+--
+--        Sixtyfour_Bytes := To_Bytes(D => Digest_DS_Hash);
+--
+--        S_Value(Integer(Float'Floor(Float(Salt_Bytes 'Length)/64.0))*20..
+--                Integer(Float'Floor(Float(Salt_Bytes 'Length)/64.0))+(Salt_Bytes'Length mod 64)-1):=
+--          Sixtyfour_Bytes(0..(Salt_Bytes'Length mod 64)-1);
+--
+--        Bytes_For_Rounds := To_Bytes(Digest_A_Hash);
+--
+--        for I in 0..4999 loop
+--           -- a) start digest C
+--           SHA512.Init(Digest_C_Hash);
+--
+--           -- b) for odd round numbers add the byte sequense P to digest C
+--           if not ((I mod 2) = 0) then
+--              Add_Bytes(Bytes_To_Add        => P_Value,
+--                        Digest_Bytes        => Digest_C_Bytes,
+--                        Digest_Bytes_Length => Digest_C_Length,
+--                        Digest_Hash         => Digest_C_Hash);
+--           end if;
+--
+--           -- c) for even round numbers add digest A/C
+--           if ((I mod 2) = 0) then
+--              Add_Bytes(Bytes_To_Add        => Bytes_For_Rounds,
+--                        Digest_Bytes        => Digest_C_Bytes,
+--                        Digest_Bytes_Length => Digest_C_Length,
+--                        Digest_Hash         => Digest_C_Hash);
+--           end if;
+--
+--
+--           -- d) for all round numbers not divisible by 3 add the byte sequence S
+--           if not((I mod 3) = 0) then
+--              Add_Bytes(Bytes_To_Add        => S_Value,
+--                        Digest_Bytes        => Digest_C_Bytes,
+--                        Digest_Bytes_Length => Digest_C_Length,
+--                        Digest_Hash         => Digest_C_Hash);
+--           end if;
+--
+--
+--           -- e) for all round numbers not divisible by 7 add the byte sequence P
+--           if not((I mod 7) = 0) then
+--              Add_Bytes(Bytes_To_Add        => P_Value,
+--                        Digest_Bytes        => Digest_C_Bytes,
+--                        Digest_Bytes_Length => Digest_C_Length,
+--                        Digest_Hash         => Digest_C_Hash);
+--           end if;
+--
+--           -- f) for odd round numbers add digest A/C
+--           if not ((I mod 2) = 0) then
+--              Add_Bytes(Bytes_To_Add        => Bytes_For_Rounds,
+--                        Digest_Bytes        => Digest_C_Bytes,
+--                        Digest_Bytes_Length => Digest_C_Length,
+--                        Digest_Hash         => Digest_C_Hash);
+--           end if;
+--
+--           -- g) for even round numbers add the byte sequence P
+--           if ((I mod 2) = 0) then
+--              Add_Bytes(Bytes_To_Add        => P_Value,
+--                        Digest_Bytes        => Digest_C_Bytes,
+--                        Digest_Bytes_Length => Digest_C_Length,
+--                        Digest_Hash         => Digest_C_Hash);
+--           end if;
+--
+--           -- h) finish digest C
+--           Big_B_Block := To_DW_Block1024(B => Digest_C_Bytes);
+--        	 Digest_C_Hash :=
+--             SHA512.Final_Round(Last_Message_Block  => Big_B_Block,
+--                                Last_Message_Length => Digest_C_Length,
+--                                Hash_Value          => Digest_C_Hash);
+--
+--           Bytes_For_Rounds := To_Bytes(Digest_C_Hash);
+--
+--
+--        end loop;
 
       Final_Input_Bytes := (Bytes_For_Rounds(42),Bytes_For_Rounds(21),Bytes_For_Rounds(0));
       Final_String(1..4) := Bytes_To_String(B => Final_Input_Bytes);
@@ -293,6 +309,8 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
       ada.Text_IO.Put_Line(Final_String);
 
+
+      Key := Return_Block;
 
 
    end Derive;
@@ -442,8 +460,10 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
    ----------------------------Initialize---------------------------------------
 
-   function Initialize(Parameter	: in	Natural) return Boolean is
+   function Initialize(This		: out SHA512Crypt_KDF;
+                       Parameter	: in	Natural) return Boolean is
    begin
+      This.Security_Parameter := Parameter;
       return true;
    end;
 

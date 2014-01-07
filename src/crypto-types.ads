@@ -294,6 +294,7 @@ package Crypto.Types is
    function "xor"(Left, Right : B_Block64)    return   B_Block64;
    function "xor"(Left, Right : B_Block128)   return   B_Block128;
    function "xor"(Left, Right : W_Block160)   return   W_Block160;
+   function "xor"(Left, Right : W_Block256)   return   W_Block256;
    function "xor"(Left, Right : W_Block512)   return   W_Block512;
    function "xor"(Left, Right : DW_Block512)  return  DW_Block512;
    function "xor"(Left, Right : DW_Block1024) return  DW_Block1024;

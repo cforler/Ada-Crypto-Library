@@ -8,26 +8,35 @@ pragma Elaborate_All (Crypto.Symmetric.KDF);
 package Crypto.Symmetric.KDF_SHA512Crypt is
 
 
-
-   type salt_type is array(0..9) of Character;
-
    package KDF is new Crypto.Symmetric.KDF(return_type        => W_Block512,
                                            security_parameter => Natural,
                                            H                  => Crypto.Symmetric.Hashfunction_SHA512);
 
-   procedure Derive(Salt	: in 	salt_type;
+   type SHA512Crypt_KDF is new KDF.KDF_Scheme with private;
+
+   overriding
+   procedure Derive(This	: in out SHA512Crypt_KDF;
+                    Salt	: in 	String;
                     Password	: in	String;
                     Key		: out	W_Block512);
 
-   procedure Derive(Salt	: in 	String;
-                    Password	: in	String);
+
 
    procedure Add_Bytes(Bytes_To_Add		: in 		Bytes;
                        Digest_Bytes		: in out 	Bytes;
                        Digest_Bytes_Length	: in out	Natural;
                        Digest_Hash		: in out	DW_Block512);
 
-   function Initialize(Parameter	: in	Natural) return Boolean;
+   overriding
+   function Initialize(This	: out SHA512Crypt_KDF;
+                       Parameter: in Natural) return Boolean;
+
+private
+
+   type SHA512Crypt_KDF is new KDF.KDF_Scheme with
+      record
+         Security_Parameter	: Natural;
+      end record;
 
    function To_Binary(N: Natural) return String;
 
