@@ -129,6 +129,8 @@ use Crypto.Types;
       success : Boolean;
       Pbkdf2_Bytes : Bytes(0..63);
 
+      Key_Bytes : Bytes(0..63);
+
 
    begin
 
@@ -181,9 +183,19 @@ use Crypto.Types;
       end loop;
 
 
+      --------------------------------------------------------------------
+      Scrypt.scrypt(Password => "password",
+                    Salt     => "NaCl",
+                    r        => 4,
+                    N        => 8,
+                    p        => 16,
+                    dkLen    => 64,
+                    Key      => Key_Bytes);
 
-
-
+      Ada.Text_IO.Put_Line("----------SCRYPT ERGEBNIS-----------------");
+      for I in Key_Bytes'Range loop
+         Ada.Text_IO.Put(To_Hex(Key_Bytes(I)) &" ");
+      end loop;
 
 
       Assert(True, "Success!");

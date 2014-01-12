@@ -53,6 +53,7 @@ package Crypto.Symmetric.KDF_Scrypt is
 
    procedure scrypt (Password 	: in 	String;
                      Salt 	: in 	String;
+                     r		: in 	Natural;
                      N		: in 	Natural;
                      p		: in	Natural;
                      dkLen	: in	Natural;

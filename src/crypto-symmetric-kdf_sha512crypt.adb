@@ -90,13 +90,55 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                 Digest_Bytes        => Digest_B_Bytes,
                 Digest_Bytes_Length => Digest_B_Length,
                 Digest_Hash         => Digest_B_Hash);
+      Add_Bytes(Bytes_To_Add        => Password_Bytes,
+                Digest_Bytes        => Digest_B_Bytes,
+                Digest_Bytes_Length => Digest_B_Length,
+                Digest_Hash         => Digest_B_Hash);
+      Add_Bytes(Bytes_To_Add        => Password_Bytes,
+                Digest_Bytes        => Digest_B_Bytes,
+                Digest_Bytes_Length => Digest_B_Length,
+                Digest_Hash         => Digest_B_Hash);
+      Add_Bytes(Bytes_To_Add        => Password_Bytes,
+                Digest_Bytes        => Digest_B_Bytes,
+                Digest_Bytes_Length => Digest_B_Length,
+                Digest_Hash         => Digest_B_Hash);
+      Add_Bytes(Bytes_To_Add        => Password_Bytes,
+                Digest_Bytes        => Digest_B_Bytes,
+                Digest_Bytes_Length => Digest_B_Length,
+                Digest_Hash         => Digest_B_Hash);
+      Add_Bytes(Bytes_To_Add        => Password_Bytes,
+                Digest_Bytes        => Digest_B_Bytes,
+                Digest_Bytes_Length => Digest_B_Length,
+                Digest_Hash         => Digest_B_Hash);
+      Add_Bytes(Bytes_To_Add        => Password_Bytes,
+                Digest_Bytes        => Digest_B_Bytes,
+                Digest_Bytes_Length => Digest_B_Length,
+                Digest_Hash         => Digest_B_Hash);
+      Add_Bytes(Bytes_To_Add        => Password_Bytes,
+                Digest_Bytes        => Digest_B_Bytes,
+                Digest_Bytes_Length => Digest_B_Length,
+                Digest_Hash         => Digest_B_Hash);
+      Add_Bytes(Bytes_To_Add        => Password_Bytes,
+                Digest_Bytes        => Digest_B_Bytes,
+                Digest_Bytes_Length => Digest_B_Length,
+                Digest_Hash         => Digest_B_Hash);
+      Add_Bytes(Bytes_To_Add        => Password_Bytes,
+                Digest_Bytes        => Digest_B_Bytes,
+                Digest_Bytes_Length => Digest_B_Length,
+                Digest_Hash         => Digest_B_Hash);
 
 
       Ada.Text_IO.Put_Line("BUFFER CHECK");
-      for I in Digest_B_Bytes'Range loop
+      for I in 0..Digest_B_Length-1 loop
          Ada.Text_IO.Put(To_Hex(Digest_B_Bytes(I)));
       end loop;
       Ada.Text_IO.New_Line;
+
+      Ada.Text_IO.Put_Line("FIRST CHECK");
+      for I in To_Bytes(Digest_B_Hash)'Range loop
+         Ada.Text_IO.Put(To_Hex(To_Bytes(Digest_B_Hash)(I)));
+      end loop;
+
 
 
       Big_B_Block := To_DW_Block1024(B => Digest_B_Bytes);
@@ -106,10 +148,6 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                          Last_Message_Length => Digest_B_Length,
                          Hash_Value          => Digest_B_Hash);
 
-      Ada.Text_IO.Put_Line("FIRST CHECK");
-      for I in To_Bytes(Digest_B_Hash)'Range loop
-         Ada.Text_IO.Put(To_Hex(To_Bytes(Digest_B_Hash)(I)));
-      end loop;
 
 
       for I in 0..Integer(Float'Floor(Float(Password_Bytes 'Length)/64.0))-1 loop
@@ -359,6 +397,14 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       else
          Digest_Bytes(Digest_Bytes_Length..Digest_Bytes_Length+Rest_Space-1)
            := Bytes_To_Add(0..Rest_Space-1);
+
+         Ada.Text_IO.Put_line("Digest_Bytes : ");
+         for I in Digest_Bytes'Range loop
+            ada.Text_IO.Put(To_Hex(Digest_Bytes(I)));
+         end loop;
+
+
+         Ada.Text_IO.Put_Line("ROUND!");
          SHA512.Round(Message_Block => To_DW_Block1024(B => Digest_Bytes),
                       Hash_Value    => Digest_Hash);
          Digest_Bytes := (others => 0);

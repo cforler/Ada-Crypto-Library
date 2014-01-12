@@ -96,6 +96,8 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
       Temp_Bytes(0..Salt'Length-1) := Salt;
       Temp_Bytes(Salt'Length..Salt'Length+3):= To_Bytes(Word(Round))(0..3);
 
+      --TODO!--TODO!--TODO multiple block support
+
       Hmac_Package.Final_Sign(Final_Message_Block        => To_Message_Type(Temp_Bytes),
                               Final_Message_Block_Length => Hmac_Package.H.Message_Block_Length_Type(Salt'Length+4),
                               Tag                        => Temp_Block);

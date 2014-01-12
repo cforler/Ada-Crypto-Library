@@ -1,6 +1,9 @@
 with Crypto.Types;
 use Crypto.Types;
 
+with Crypto.Symmetric.KDF_PBKDF2;
+with Crypto.Symmetric.Mac.Hmac_SHA256;
+
 with Ada.Text_IO;
 with Ada.Integer_Text_IO;
 
@@ -73,14 +76,25 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
       for I in Pre_Output'Range loop
          if I mod 2 = 0 then
-            Output(Counter) := Pre_Output(I);
+            Ada.Text_IO.Put_Line(Integer'Image(Pre_Output'Length) & " " & Integer'Image(I));
+            Output(Counter + Output'First) := Pre_Output(I);
             Counter := Counter+1;
          end if;
       end loop;
+-------------debug
+
+--        for I in Pre_Output'Range loop
+--              Ada.Text_IO.Put_Line(Integer'Image(I));
+--        end loop;
+--        for I in Output'Range loop
+--              Ada.Text_IO.Put_Line(Integer'Image(I));
+--        end loop;
+----------------------/debug
 
       for I in Pre_Output'Range loop
          if I mod 2 = 1 then
-            Output(Counter) := Pre_Output(I);
+            Ada.Text_IO.Put_Line(Integer'Image(Pre_Output'Length) & " " & Integer'Image(I));
+            Output(Counter + Output'First) := Pre_Output(I);
             Counter := Counter+1;
          end if;
       end loop;
@@ -146,11 +160,49 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
    procedure scrypt (Password 	: in 	String;
                      Salt 	: in 	String;
+                     r		: in 	Natural;
                      N		: in 	Natural;
                      p		: in	Natural;
                      dkLen	: in	Natural;
                      Key	: out 	Bytes) is
+
+      package PBKDF2 is new Crypto.Symmetric.KDF_PBKDF2(Hmac_Package    => Crypto.Symmetric.Mac.Hmac_SHA256,
+                                                        To_Message_Type => To_W_Block512,
+                                                        To_Bytes        => To_Bytes,
+                                                        "xor"           => "xor");
+
+      Schema : PBKDF2.PBKDF2_KDF;
+      B_Bytes : Bytes(0..p*128*r-1);
+      B_W_Blocks : W_Block512_Array(0..p*2*r-1);
+
+      Success : Boolean;
+
    begin
+      Success := Schema.Initialize(Parameter => 1);
+      Schema.Derive(Salt     => Salt,
+                    Password => Password,
+                    Key      => B_Bytes,
+                    DK_Len   => p*128*r);
+
+      for I in B_W_Blocks'Range loop
+         B_W_Blocks(I) := To_W_Block512(B_Bytes(I*64..I*64+63));
+      end loop;
+
+      for I in 0..p-1 loop
+         Scrypt_ROMix(Input  => B_W_Blocks(I*2*r..I*2*r+2*r-1),
+                      N      => N,
+                      Output => B_W_Blocks(I*2*r..I*2*r+2*r-1));
+      end loop;
+
+      for I in B_W_Blocks'Range loop
+         B_Bytes(I*64..I*64+63) := To_Bytes(B_W_Blocks(I));
+      end loop;
+
+      Schema.Derive(Salt     => B_Bytes,
+                    Password => To_Bytes(password),
+                    Key      => Key,
+                    DK_Len   => dkLen);
+
 
    end scrypt;
 
