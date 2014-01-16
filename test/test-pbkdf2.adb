@@ -62,7 +62,6 @@ use Crypto.Types;
 
    begin
 
-      Ada.Text_IO.Put_Line("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
       success := Scheme.Initialize(Parameter => 1);
       Scheme.Derive(Salt     => "salt",
              Password => "password",

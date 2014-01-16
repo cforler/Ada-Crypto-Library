@@ -14,5 +14,8 @@ package Test.Scrypt is
 
    	procedure Scrypt_Test_Salsa(T: in out Test_Cases.Test_Case'Class);
    	procedure Scrypt_Test_Block_Mix(T: in out Test_Cases.Test_Case'Class);
+   	procedure Scrypt_Test_ROMix(T: in out Test_Cases.Test_Case'Class);
+   	procedure Scrypt_Test_PBKDF2(T: in out Test_Cases.Test_Case'Class);
+   	procedure Scrypt_Test_SCRYPT(T: in out Test_Cases.Test_Case'Class);
 
 end Test.Scrypt;

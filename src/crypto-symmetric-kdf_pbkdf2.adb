@@ -43,11 +43,14 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
    begin
 
-      Ada.Text_IO.Put_Line("HLEN: " & Integer'Image(hlen));
-
+--        Ada.Text_IO.Put_Line("HLEN: " & Integer'Image(hlen));
+--
+--        Ada.Text_IO.Put_Line("Key :" & Integer'Image(Key'Length) & "Result_Bytes :" & Integer'Image(Result_Bytes'Length));
 
       DK_Block_Count := Integer(Float'Ceiling(Float(DK_Len) / Float(hlen)));
       Rest := DK_Len - (DK_Block_Count-1) * hlen;
+
+--        Ada.Text_IO.Put_Line("DKBK :" & Integer'Image(DK_Block_Count) & "Rest :" & Integer'Image(Rest));
 
       for I in 0..DK_Block_Count-1 loop
 
@@ -65,12 +68,8 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
                                                  Round    => I+1));
          end if;
 
-
-
-
-
       end loop;
-
+      Ada.Text_IO.Put_Line("Key :" & Integer'Image(Key'Length) & " " & "Result_Bytes :" & Integer'Image(Result_Bytes'Length));
       Key := Result_Bytes;
    end Derive;
 
@@ -85,6 +84,10 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
       Temp_Bytes : Bytes(0..mlen-1) := (others =>0);
       Temp_Bytes_Old : Bytes(0..mlen-1) := (others =>0);
       hlen : Integer := Hmac_Package.H.Hash_Type'Size/8;
+      Salt_Bytes : Bytes(0..Salt'Length+4-1);
+
+      Position : Natural := 0;
+
    begin
 
       Temp_Bytes(0..Password'Length-1):=Password;
@@ -92,14 +95,20 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
       --------
 
+      Salt_Bytes := (others => 0);
+      Salt_Bytes(0..Salt'Length-1) := Salt;
+      Salt_Bytes(Salt'Length..Salt'Length+3):= To_Bytes(Word(Round))(0..3);
+
+      while Position + 64 < Salt_Bytes'Length loop
+         Temp_Bytes(0..63) := Salt_Bytes(Position..Position+63);
+         Hmac_Package. Sign(Message_Block => To_Message_Type(Temp_Bytes));
+         Position := Position+64;
+      end loop;
+
       Temp_Bytes := (others => 0);
-      Temp_Bytes(0..Salt'Length-1) := Salt;
-      Temp_Bytes(Salt'Length..Salt'Length+3):= To_Bytes(Word(Round))(0..3);
-
-      --TODO!--TODO!--TODO multiple block support
-
+      Temp_Bytes(0..Salt_Bytes'Length - Position -1) := Salt_Bytes(Position..Salt_Bytes'Length-1);
       Hmac_Package.Final_Sign(Final_Message_Block        => To_Message_Type(Temp_Bytes),
-                              Final_Message_Block_Length => Hmac_Package.H.Message_Block_Length_Type(Salt'Length+4),
+                              Final_Message_Block_Length => Hmac_Package.H.Message_Block_Length_Type(Salt_Bytes'Length - Position),
                               Tag                        => Temp_Block);
 
       Result_Block:= Temp_Block;

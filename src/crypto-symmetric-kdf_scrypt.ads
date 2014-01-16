@@ -35,9 +35,8 @@ package Crypto.Symmetric.KDF_Scrypt is
    function Scrypt_Block_Mix(Input	: in W_Block512_Array) return W_Block512_Array;
 
 
-   procedure Scrypt_ROMix(Input	: in 	W_Block512_Array;
-                          N	: in 	Natural;
-                          Output: out	W_Block512_Array);
+   function Scrypt_ROMix(Input	: in 	W_Block512_Array;
+                          N	: in 	Natural) return W_Block512_Array;
 
 
 
@@ -50,6 +49,8 @@ package Crypto.Symmetric.KDF_Scrypt is
 
    function "xor" (Left : W_Block512_Array;
                    Right: W_Block512_Array) return W_Block512_Array;
+
+   function Reverse_Bits(Input : Byte) return Byte;
 
    procedure scrypt (Password 	: in 	String;
                      Salt 	: in 	String;

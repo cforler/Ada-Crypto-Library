@@ -32,8 +32,8 @@ package body Test.Suite_Hash_Function is
 --        Add_Test(Result'Access, Secure_Hash_Algorithm2_384_Test'Access);
 --        Add_Test(Result'Access, Secure_Hash_Algorithm2_512_Test'Access);
 --        Add_Test(Result'Access, Whirlpool_Test'Access);
---        Add_Test(Result'Access, Scrypt_Test'Access);
-      Add_Test(Result'Access, SHA512Crypt_Test'Access);
+      Add_Test(Result'Access, Scrypt_Test'Access);
+--        Add_Test(Result'Access, SHA512Crypt_Test'Access);
 --        Add_Test(Result'Access, PBKDF2_Test'Access);
 --        Add_Test(Result'Access, Skein_Test'Access);
 --        Add_Test(Result'Access, OCB_Test'Access);

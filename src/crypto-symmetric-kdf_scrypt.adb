@@ -6,6 +6,8 @@ with Crypto.Symmetric.Mac.Hmac_SHA256;
 
 with Ada.Text_IO;
 with Ada.Integer_Text_IO;
+with System; use System;
+
 
 
 package body Crypto.Symmetric.KDF_Scrypt is
@@ -15,22 +17,22 @@ package body Crypto.Symmetric.KDF_Scrypt is
                        Output 	: out	W_Block512) is
 
       X : W_Block512;
+      Input_R : W_Block512;
+      Output_R : W_Block512;
+      Temp_Bytes_A : Bytes(0..3);
    begin
 
-      for I in 0..15 loop
-         X(I) := Input(I);
+      for I in Input'Range loop
+         Temp_Bytes_A := To_Bytes(Input(I));
+         Input_R(I) := To_Word(A => Temp_Bytes_A(3),
+                               B => Temp_Bytes_A(2),
+                               C => Temp_Bytes_A(1),
+                               D => Temp_Bytes_A(0));
       end loop;
 
-
---        Ada.Text_IO.Put_Line("X:");
---        for I in X'Range loop
---           Ada.Text_IO.Put(To_Hex(X(I)));
---           if I mod 4 = 3 then
---              Ada.Text_IO.New_Line;
---           end if;
-
---        end loop;
-
+      for I in 0..15 loop
+         X(I) := Input_R(I);
+      end loop;
 
       for I in 0..3 loop
          X( 4) := X( 4) xor R(X( 0)+X(12), 7);  X( 8) := X( 8) xor R(X( 4)+X( 0), 9);
@@ -52,8 +54,17 @@ package body Crypto.Symmetric.KDF_Scrypt is
       end loop;
 
       for I in 0..15 loop
-         Output(I) := X(I) + Input(I);
+         Output_R(I) := X(I)+Input_R(I);
       end loop;
+
+      for I in Output_R'Range loop
+         Temp_Bytes_A := To_Bytes(Output_R(I));
+         Output(I) := To_Word(A => Temp_Bytes_A(3),
+                               B => Temp_Bytes_A(2),
+                               C => Temp_Bytes_A(1),
+                               D => Temp_Bytes_A(0));
+      end loop;
+
 
    end;
 
@@ -76,7 +87,7 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
       for I in Pre_Output'Range loop
          if I mod 2 = 0 then
-            Ada.Text_IO.Put_Line(Integer'Image(Pre_Output'Length) & " " & Integer'Image(I));
+            --Ada.Text_IO.Put_Line(Integer'Image(Pre_Output'Length) & " " & Integer'Image(I));
             Output(Counter + Output'First) := Pre_Output(I);
             Counter := Counter+1;
          end if;
@@ -93,7 +104,7 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
       for I in Pre_Output'Range loop
          if I mod 2 = 1 then
-            Ada.Text_IO.Put_Line(Integer'Image(Pre_Output'Length) & " " & Integer'Image(I));
+            --Ada.Text_IO.Put_Line(Integer'Image(Pre_Output'Length) & " " & Integer'Image(I));
             Output(Counter + Output'First) := Pre_Output(I);
             Counter := Counter+1;
          end if;
@@ -123,9 +134,8 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
 
 
-   procedure Scrypt_ROMix(Input	: in 	W_Block512_Array;
-                          N	: in 	Natural;
-                          Output: out	W_Block512_Array) is
+   function Scrypt_ROMix(Input	: in 	W_Block512_Array;
+                          N	: in 	Natural) return W_Block512_Array is
 
       type W_Block512_2D_Array is array(Integer range 0..N) of W_Block512_Array(Input'Range);
 
@@ -133,6 +143,11 @@ package body Crypto.Symmetric.KDF_Scrypt is
       X : W_Block512_Array := Input;
       T : W_Block512_Array(Input'Range);
       J : Natural;
+      J_Bytes : Bytes(0..63);
+      J_Byte : Byte;
+      J_Byte_2 : Byte;
+
+      J_Word : Word;
 
    begin
 
@@ -142,20 +157,61 @@ package body Crypto.Symmetric.KDF_Scrypt is
       end loop;
 
       for I in 0..N-1 loop
-         J := Integer(To_Bytes(X(X'Last))(To_Bytes(X(X'Last))'Last)) mod N;
-         --Ada.Integer_Text_IO.put(J);
+
+         J_Bytes := To_Bytes(X(X'Last));
+         J_Byte := J_Bytes(J_Bytes'First);
+         J_Byte_2 := J_Bytes(J_Bytes'First +1);
+         J := (Integer(J_Byte)+Integer(J_Byte_2)*256) mod N;
+
 
          T := X xor V(J);
 
          X := Scrypt_Block_Mix(Input => T);
-
       end loop;
 
-      Output := X;
-
+      return X;
 
 
    end Scrypt_ROMix;
+
+   function Reverse_Bits(Input : Byte) return Byte is
+      Byte0 : Byte :=(2#10000000#);
+      Byte1 : Byte :=(2#01000000#);
+      Byte2 : Byte :=(2#00100000#);
+      Byte3 : Byte :=(2#00010000#);
+      Byte4 : Byte :=(2#00001000#);
+      Byte5 : Byte :=(2#00000100#);
+      Byte6 : Byte :=(2#00000010#);
+      Byte7 : Byte :=(2#00000001#);
+      Return_Byte : Byte :=(2#00000000#);
+   begin
+
+--        Ada.Integer_Text_IO.Put(Integer(Input));
+--        ada.Text_IO.New_Line;
+--        Ada.Integer_Text_IO.Put(Item  => Integer(Input),
+--                                Width => 8,
+--                                Base  => 2);
+--        Ada.Text_IO.New_Line;
+
+      Return_Byte := Return_Byte or Shift_Right(Byte0 and Input, 7);
+      Return_Byte := Return_Byte or Shift_Right(Byte1 and Input, 5);
+      Return_Byte := Return_Byte or Shift_Right(Byte2 and Input, 3);
+      Return_Byte := Return_Byte or Shift_Right(Byte3 and Input, 1);
+      Return_Byte := Return_Byte or Shift_Left(Byte4 and Input, 1);
+      Return_Byte := Return_Byte or Shift_Left(Byte5 and Input, 3);
+      Return_Byte := Return_Byte or Shift_Left(Byte6 and Input, 5);
+      Return_Byte := Return_Byte or Shift_Left(Byte7 and Input, 7);
+
+--        Ada.Integer_Text_IO.Put(Item  => Integer(Return_Byte),
+--                                Width => 8,
+--                                Base  => 2);
+--        ada.Text_IO.New_Line;
+--        Ada.Integer_Text_IO.Put(Integer(Return_Byte));
+--        ada.Text_IO.New_Line;
+
+      return Return_Byte;
+   end;
+
 
 
    procedure scrypt (Password 	: in 	String;
@@ -189,9 +245,8 @@ package body Crypto.Symmetric.KDF_Scrypt is
       end loop;
 
       for I in 0..p-1 loop
-         Scrypt_ROMix(Input  => B_W_Blocks(I*2*r..I*2*r+2*r-1),
-                      N      => N,
-                      Output => B_W_Blocks(I*2*r..I*2*r+2*r-1));
+         B_W_Blocks(I*2*r..I*2*r+2*r-1) :=Scrypt_ROMix(Input  => B_W_Blocks(I*2*r..I*2*r+2*r-1),
+                                                       N      => N);
       end loop;
 
       for I in B_W_Blocks'Range loop
