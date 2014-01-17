@@ -137,20 +137,23 @@ package body Crypto.Symmetric.KDF_Scrypt is
    function Scrypt_ROMix(Input	: in 	W_Block512_Array;
                           N	: in 	Natural) return W_Block512_Array is
 
-      type W_Block512_2D_Array is array(Integer range 0..N) of W_Block512_Array(Input'Range);
+      type W_Block512_2D_Array is array(Integer range 0..N) of W_Block512_Array(0..Input'Last-Input'First);
 
       V : W_Block512_2D_Array;
       X : W_Block512_Array := Input;
       T : W_Block512_Array(Input'Range);
       J : Natural;
       J_Bytes : Bytes(0..63);
-      J_Byte : Byte;
+      J_Byte_1 : Byte;
       J_Byte_2 : Byte;
+      J_Byte_3 : Byte;
+      J_Byte_4 : Byte;
 
       J_Word : Word;
 
    begin
 
+      Ada.Text_IO.Put_Line("Passed Declaration");
       for I in 0..N-1 loop
          V(I) := X;
          X := Scrypt_Block_Mix(Input => X);
@@ -159,13 +162,14 @@ package body Crypto.Symmetric.KDF_Scrypt is
       for I in 0..N-1 loop
 
          J_Bytes := To_Bytes(X(X'Last));
-         J_Byte := J_Bytes(J_Bytes'First);
+         J_Byte_1 := J_Bytes(J_Bytes'First);
          J_Byte_2 := J_Bytes(J_Bytes'First +1);
-         J := (Integer(J_Byte)+Integer(J_Byte_2)*256) mod N;
+         J_Byte_3 := J_Bytes(J_Bytes'First +2);
+         J_Byte_4 := J_Bytes(J_Bytes'First +3);
+         J := (Integer(J_Byte_1)+Integer(J_Byte_2)*2**8+Integer(J_Byte_3)*2**16+Integer(J_Byte_4)*2**24) mod N;
 
 
          T := X xor V(J);
-
          X := Scrypt_Block_Mix(Input => T);
       end loop;
 
@@ -245,6 +249,7 @@ package body Crypto.Symmetric.KDF_Scrypt is
       end loop;
 
       for I in 0..p-1 loop
+         Ada.Text_IO.Put_Line("Scrypt loop "& I'Img & " of " & p'Img);
          B_W_Blocks(I*2*r..I*2*r+2*r-1) :=Scrypt_ROMix(Input  => B_W_Blocks(I*2*r..I*2*r+2*r-1),
                                                        N      => N);
       end loop;

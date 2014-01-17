@@ -15,6 +15,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       package SHA512 renames Crypto.Symmetric.Algorithm.SHA512;
 
 
+
       Salt_Bytes : Bytes(0..9) := To_Bytes("saltstring");
       Password_Bytes : Bytes(0..11) := To_Bytes("Hello world!");
 
@@ -69,11 +70,22 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                 Digest_Bytes_Length => Digest_A_Length,
                 Digest_Hash         => Digest_A_Hash);
 
+      Ada.Text_IO.Put_Line("ADDING:");
+            for I in 0..Password_Bytes'Length-1 loop
+               Ada.Text_IO.Put(To_Hex(Password_Bytes(I)));
+            end loop;
+            Ada.Text_IO.New_Line;
+
       Add_Bytes(Bytes_To_Add        => Salt_Bytes,
                 Digest_Bytes        => Digest_A_Bytes,
                 Digest_Bytes_Length => Digest_A_Length,
                 Digest_Hash         => Digest_A_Hash);
 
+      Ada.Text_IO.Put_Line("ADDING:");
+            for I in 0..Salt_Bytes'Length-1 loop
+               Ada.Text_IO.Put(To_Hex(Salt_Bytes(I)));
+            end loop;
+      Ada.Text_IO.New_Line;
 
 
       SHA512.Init(Hash_Value => Digest_B_Hash);
@@ -99,39 +111,66 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 --        end loop;
 --        Ada.Text_IO.New_Line;
 
-      Big_B_Block := To_DW_Block1024(B => Digest_B_Bytes);
 
-      Digest_B_Hash :=
-      SHA512.Final_Round(Last_Message_Block  => Big_B_Block,
-                         Last_Message_Length => Digest_B_Length,
-                         Hash_Value          => Digest_B_Hash);
 
-      Ada.Text_IO.Put_Line("FIRST CHECK");
-      for I in To_Bytes(Digest_B_Hash)'Range loop
-         Ada.Text_IO.Put(To_Hex(To_Bytes(Digest_B_Hash)(I)));
+      Digest_DP_Hash :=
+      SHA512.Final_Round(Last_Message_Block  => To_DW_Block1024(B => Digest_DP_Bytes),
+                         Last_Message_Length => Digest_DP_Length,
+                         Hash_Value          => Digest_DP_Hash);
+
+
+
+
+--fdbsahofghzwdauzfgbiwaeufdsaw3eafdsajidfhweaifshguwuiaks<yjzdfhjcgbvawukjdshrnygfvberbszuyjzt
+      -------------- 1.5 test
+
+      Digest_A_Hash :=
+        SHA512.Final_Round(Last_Message_Block  => To_DW_Block1024(B => Digest_A_Bytes),
+                           Last_Message_Length => Digest_A_Length,
+                           Hash_Value          => Digest_A_Hash);
+
+      Ada.Text_IO.Put_Line("1.5 CHECK");
+      for I in To_Bytes(Digest_A_Hash)'Range loop
+         Ada.Text_IO.Put(To_Hex(To_Bytes(Digest_A_Hash)(I)));
       end loop;
+      Ada.Text_IO.New_Line;
 
+      ---------------1.5 test
 
       Cnt := Password_Bytes'Length;
 
-      while Cnt>64 loop
-         Add_Bytes(Bytes_To_Add        => To_Bytes(Digest_B_Hash),
-                   Digest_Bytes        => Digest_A_Bytes,
-                   Digest_Bytes_Length => Digest_A_Length,
-                   Digest_Hash         => Digest_A_Hash);
-         Cnt := Cnt - 64;
-      end loop;
+--        while Cnt>64 loop
+--           Add_Bytes(Bytes_To_Add        => To_Bytes(Digest_B_Hash),
+--                     Digest_Bytes        => Digest_A_Bytes,
+--                     Digest_Bytes_Length => Digest_A_Length,
+--                     Digest_Hash         => Digest_A_Hash);
+--           Ada.Text_IO.Put_Line("ADDING:");
+--           for I in To_Bytes(Digest_B_Hash)'Range loop
+--              Ada.Text_IO.Put(To_Hex(To_Bytes(Digest_B_Hash)(I)));
+--           end loop;
+--           Ada.Text_IO.New_Line;
+--
+--           Cnt := Cnt - 64;
+--        end loop;
 
-      Temp_Bytes := To_Bytes(Digest_B_Hash);
+--        Temp_Bytes := To_Bytes(Digest_B_Hash);
+--
+--        Add_Bytes(Bytes_To_Add        => Temp_Bytes(0..Cnt-1),
+--                  Digest_Bytes        => Digest_A_Bytes,
+--                  Digest_Bytes_Length => Digest_A_Length,
+--                  Digest_Hash         => Digest_A_Hash);
+--        Ada.Text_IO.Put_Line("ADDING:");
+--        for I in 0..Cnt-1 loop
+--           Ada.Text_IO.Put(To_Hex(Temp_Bytes(I)));
+--        end loop;
+--        Ada.Text_IO.New_Line;
+--
 
-      Ada.Text_IO.Put_Line(Integer'Image(Temp_Bytes'Last) & " " & Integer'Image(Cnt));
-      Add_Bytes(Bytes_To_Add        => Temp_Bytes(0..Cnt-1),
-                   Digest_Bytes        => Digest_A_Bytes,
-                   Digest_Bytes_Length => Digest_A_Length,
-                   Digest_Hash         => Digest_A_Hash);
+
+
+
       Sixtyfour_Bytes := To_Bytes(D => Digest_B_Hash);
 
-      Ada.Text_IO.Put_Line(To_Binary(N => Password_Bytes'Length));
 
       for I in reverse To_Binary(N => Password_Bytes'Length)'Range loop
          if To_Binary(N => Password_Bytes'Length)(I) = '1' then
@@ -140,6 +179,11 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                       Digest_Bytes        => Digest_A_Bytes,
                       Digest_Bytes_Length => Digest_A_Length,
                       Digest_Hash         => Digest_A_Hash);
+            Ada.Text_IO.Put_Line("ADDING:");
+            for I in 0..Sixtyfour_Bytes'Length-1 loop
+               Ada.Text_IO.Put(To_Hex(Sixtyfour_Bytes(I)));
+            end loop;
+            Ada.Text_IO.New_Line;
             Ada.Text_IO.Put_Line("1");
          else
 
@@ -147,6 +191,11 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                       Digest_Bytes        => Digest_A_Bytes,
                       Digest_Bytes_Length => Digest_A_Length,
                       Digest_Hash         => Digest_A_Hash);
+            Ada.Text_IO.Put_Line("ADDING:");
+            for I in 0..Password_Bytes'Length-1 loop
+               Ada.Text_IO.Put(To_Hex(Password_Bytes(I)));
+            end loop;
+            Ada.Text_IO.New_Line;
             Ada.Text_IO.Put_Line("0");
 
 
@@ -166,62 +215,62 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
          Ada.Text_IO.Put(To_Hex(To_Bytes(Digest_A_Hash)(I)));
       end loop;
 
-      -- Initialize Digest DS
-      SHA512.Init(Hash_Value => Digest_DP_Hash);
-
-
-      -- Add Password password'length times to DS
-      for I in 0..Password_Bytes'Length-1 loop
-         Add_Bytes(Bytes_To_Add        => Password_Bytes,
-                   Digest_Bytes        => Digest_DP_Bytes,
-                   Digest_Bytes_Length => Digest_DP_Length,
-                   Digest_Hash         => Digest_DP_Hash);
-      end loop;
-
-      Big_B_Block := To_DW_Block1024(B => Digest_DP_Bytes);
-
-
-      -- Finish Digest DP
-      Digest_DP_Hash := SHA512.Final_Round(Last_Message_Block  => Big_B_Block,
-                                           Last_Message_Length => Digest_DP_Length,
-                                           Hash_Value          => Digest_DP_Hash);
-
-      for I in 0..Integer(Float'Floor(Float(Password_Bytes 'Length)/64.0))-1 loop
-         P_Value(I*20..I*20+19):=To_Bytes(Digest_DP_Hash);
-      end loop;
-
-      Sixtyfour_Bytes := To_Bytes(D => Digest_DP_Hash);
-
-      P_Value(Integer(Float'Floor(Float(Password_Bytes 'Length)/64.0))*20..
-              Integer(Float'Floor(Float(Password_Bytes 'Length)/64.0))+(Password_Bytes'Length mod 64)-1):=
-        Sixtyfour_Bytes(0..(Password_Bytes'Length mod 64)-1);
-
-      for I in P_Value'Range loop
-         Ada.Text_IO.Put_Line(To_Hex(P_Value(I)));
-      end loop;
-
-      SHA512.Init(Hash_Value => Digest_DS_Hash);
-
-      for I in  To_Bytes(Digest_A_Hash)'range loop
-         ada.Text_IO.Put(to_hex(To_Bytes(Digest_A_Hash)(I)));
-      end loop;
-
-      Sixtyfour_Bytes := To_Bytes(D => Digest_A_Hash);
-      Single_Byte := Sixtyfour_Bytes(0);
-
-      for I in 0..16+Single_Byte-1 loop
-         Add_Bytes(Bytes_To_Add        => Salt_Bytes,
-                   Digest_Bytes        => Digest_DS_Bytes,
-                   Digest_Bytes_Length => Digest_DS_Length,
-                   Digest_Hash         => Digest_DS_Hash);
-      end loop;
-
-      Big_B_Block := To_DW_Block1024(B => Digest_DS_Bytes);
-
-      -- Finish Digest DS
-      Digest_DS_Hash := SHA512.Final_Round(Last_Message_Block  => Big_B_Block,
-                                           Last_Message_Length => Digest_DS_Length,
-                                           Hash_Value          => Digest_DS_Hash);
+--        -- Initialize Digest DS
+--        SHA512.Init(Hash_Value => Digest_DP_Hash);
+--
+--
+--        -- Add Password password'length times to DS
+--        for I in 0..Password_Bytes'Length-1 loop
+--           Add_Bytes(Bytes_To_Add        => Password_Bytes,
+--                     Digest_Bytes        => Digest_DP_Bytes,
+--                     Digest_Bytes_Length => Digest_DP_Length,
+--                     Digest_Hash         => Digest_DP_Hash);
+--        end loop;
+--
+--        Big_B_Block := To_DW_Block1024(B => Digest_DP_Bytes);
+--
+--
+--        -- Finish Digest DP
+--        Digest_DP_Hash := SHA512.Final_Round(Last_Message_Block  => Big_B_Block,
+--                                             Last_Message_Length => Digest_DP_Length,
+--                                             Hash_Value          => Digest_DP_Hash);
+--
+--        for I in 0..Integer(Float'Floor(Float(Password_Bytes 'Length)/64.0))-1 loop
+--           P_Value(I*20..I*20+19):=To_Bytes(Digest_DP_Hash);
+--        end loop;
+--
+--        Sixtyfour_Bytes := To_Bytes(D => Digest_DP_Hash);
+--
+--        P_Value(Integer(Float'Floor(Float(Password_Bytes 'Length)/64.0))*20..
+--                Integer(Float'Floor(Float(Password_Bytes 'Length)/64.0))+(Password_Bytes'Length mod 64)-1):=
+--          Sixtyfour_Bytes(0..(Password_Bytes'Length mod 64)-1);
+--
+--        for I in P_Value'Range loop
+--           Ada.Text_IO.Put_Line(To_Hex(P_Value(I)));
+--        end loop;
+--
+--        SHA512.Init(Hash_Value => Digest_DS_Hash);
+--
+--        for I in  To_Bytes(Digest_A_Hash)'range loop
+--           ada.Text_IO.Put(to_hex(To_Bytes(Digest_A_Hash)(I)));
+--        end loop;
+--
+--        Sixtyfour_Bytes := To_Bytes(D => Digest_A_Hash);
+--        Single_Byte := Sixtyfour_Bytes(0);
+--
+--        for I in 0..16+Single_Byte-1 loop
+--           Add_Bytes(Bytes_To_Add        => Salt_Bytes,
+--                     Digest_Bytes        => Digest_DS_Bytes,
+--                     Digest_Bytes_Length => Digest_DS_Length,
+--                     Digest_Hash         => Digest_DS_Hash);
+--        end loop;
+--
+--        Big_B_Block := To_DW_Block1024(B => Digest_DS_Bytes);
+--
+--        -- Finish Digest DS
+--        Digest_DS_Hash := SHA512.Final_Round(Last_Message_Block  => Big_B_Block,
+--                                             Last_Message_Length => Digest_DS_Length,
+--                                             Hash_Value          => Digest_DS_Hash);
 
 
 --        -- Fill DS in S_Value
