@@ -8,6 +8,7 @@ use Crypto.Symmetric.KDF_Scrypt;
 with Crypto.Symmetric.KDF_PBKDF2;
 with Crypto.Symmetric.Mac.Hmac_SHA256;
 with Crypto.Debug; use Crypto.Debug;
+with Crypto.Symmetric.Algorithm.SHA512;
 
 
 package body Test.Scrypt is
@@ -303,6 +304,7 @@ use Crypto.Types;
 
    procedure Scrypt_Test_SCRYPT(T : in out Test_Cases.Test_Case'Class) is
 
+
       Key_Size : Natural := 64;
       Key_Bytes : Bytes(0..Key_Size-1);
 
@@ -325,46 +327,50 @@ use Crypto.Types;
          16#6f#, 16#f1#, 16#09#, 16#27#, 16#9d#, 16#98#, 16#30#, 16#da#,
          16#c7#, 16#27#, 16#af#, 16#b9#, 16#4a#, 16#83#, 16#ee#, 16#6d#,
          16#83#, 16#60#, 16#cb#, 16#df#, 16#a2#, 16#cc#, 16#06#, 16#40#);
+      Ideal_Three : Bytes(0..63) :=
+        (16#70#, 16#23#, 16#bd#, 16#cb#, 16#3a#, 16#fd#, 16#73#, 16#48#,
+         16#46#, 16#1c#, 16#06#, 16#cd#, 16#81#, 16#fd#, 16#38#, 16#eb#,
+         16#fd#, 16#a8#, 16#fb#, 16#ba#, 16#90#, 16#4f#, 16#8e#, 16#3e#,
+         16#a9#, 16#b5#, 16#43#, 16#f6#, 16#54#, 16#5d#, 16#a1#, 16#f2#,
+         16#d5#, 16#43#, 16#29#, 16#55#, 16#61#, 16#3f#, 16#0f#, 16#cf#,
+         16#62#, 16#d4#, 16#97#, 16#05#, 16#24#, 16#2a#, 16#9a#, 16#f9#,
+         16#e6#, 16#1e#, 16#85#, 16#dc#, 16#0d#, 16#65#, 16#1e#, 16#40#,
+         16#df#, 16#cf#, 16#01#, 16#7b#, 16#45#, 16#57#, 16#58#, 16#87#);
 
-      begin
+   begin
 
-         ------------------------------------------------------------------
---           Scrypt.scrypt(Password => "",
---                         Salt     => "",
---                         r        => 1,
---                         N        => 16,
---                         p        => 1,
---                         dkLen    => Key_Size,
---                         Key      => Key_Bytes);
---
---        Assert(Key_Bytes = Ideal_One, "Scrypt 1 failed");
---
---        Scrypt.scrypt(Password => "password",
---                      Salt     => "NaCl",
---                      r        => 8,
---                      N        => 1024,
---                      p        => 16,
---                      dkLen    => Key_Size,
---                      Key      => Key_Bytes);
---
---        Assert(Key_Bytes = Ideal_Two, "Scrypt 1 failed");
---
-      Scrypt.scrypt(Password => "pleaseletmein",
-                    Salt     => "SodiumChloride",
-                    r        => 8,
-                    N        => 2**11,
+      ------------------------------------------------------------------
+      Scrypt.scrypt(Password => "",
+                    Salt     => "",
+                    r        => 1,
+                    N        => 16,
                     p        => 1,
                     dkLen    => Key_Size,
                     Key      => Key_Bytes);
 
-      --Assert(Key_Bytes = Ideal_Two, "Scrypt 1 failed");
+      Assert(Key_Bytes = Ideal_One, "Scrypt 1 failed");
 
-      Ada.Text_IO.Put_Line("----------SCRYPT ERGEBNIS-----------");
-      for I in Key_Bytes'Range loop
-            Ada.Text_IO.Put(To_Hex(Key_Bytes(I)) &" ");
-            if I mod 16 = 15 then Ada.Text_IO.New_Line;
-            end if;
-         end loop;
+      Scrypt.scrypt(Password => "password",
+                    Salt     => "NaCl",
+                    r        => 8,
+                    N        => 1024,
+                    p        => 16,
+                    dkLen    => Key_Size,
+                    Key      => Key_Bytes);
+
+      Assert(Key_Bytes = Ideal_Two, "Scrypt 2 failed");
+
+      Scrypt.scrypt(Password => "pleaseletmein",
+                    Salt     => "SodiumChloride",
+                    r        => 8,
+                    N        => 2**14,
+                    p        => 1,
+                    dkLen    => Key_Size,
+                    Key      => Key_Bytes);
+
+
+      Assert(Key_Bytes = Ideal_Three, "Scrypt 3 failed");
+
 
       end Scrypt_Test_SCRYPT;
 

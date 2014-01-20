@@ -45,7 +45,7 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
    ---------------------------------------------------------------------------
 
    procedure Round(Message_Block : in DW_Block1024;
-                          Hash_Value    : in out DW_Block512) is
+                   Hash_Value    : in out DW_Block512) is
    begin
       Round_SHA2(Message_Block, Hash_Value);
    end Round;

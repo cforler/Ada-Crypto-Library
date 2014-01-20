@@ -137,7 +137,7 @@ package body Crypto.Symmetric.KDF_Scrypt is
    function Scrypt_ROMix(Input	: in 	W_Block512_Array;
                           N	: in 	Natural) return W_Block512_Array is
 
-      type W_Block512_2D_Array is array(Integer range 0..N) of W_Block512_Array(0..Input'Last-Input'First);
+      type W_Block512_2D_Array is array(Integer range 0..N) of W_Block512_Array(Input'Range);
 
       V : W_Block512_2D_Array;
       X : W_Block512_Array := Input;
@@ -230,6 +230,8 @@ package body Crypto.Symmetric.KDF_Scrypt is
                                                         To_Message_Type => To_W_Block512,
                                                         To_Bytes        => To_Bytes,
                                                         "xor"           => "xor");
+
+
 
       Schema : PBKDF2.PBKDF2_KDF;
       B_Bytes : Bytes(0..p*128*r-1);

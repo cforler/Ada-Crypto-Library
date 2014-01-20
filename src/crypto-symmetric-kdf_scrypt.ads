@@ -10,6 +10,8 @@ package Crypto.Symmetric.KDF_Scrypt is
 
    array_size_not_equal_exception : exception ;
 
+   --Minimum_Storage_Size : constant := 11_000_000;
+
 
 
 --     package KDF is new Crypto.Symmetric.KDF(return_type        => W_Block512,

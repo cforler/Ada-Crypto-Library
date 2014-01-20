@@ -54,5 +54,9 @@ project AclTest is
       for Default_Switches ("ada") use ("-j4");
    end Builder;
 
+   package Linker is
+      for Default_Switches ("ada") use ("-Wl,--stack=0x2000000");
+   end Linker;
+
 end AclTest;
 
