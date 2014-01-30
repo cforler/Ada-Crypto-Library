@@ -139,7 +139,11 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
       type W_Block512_2D_Array is array(Integer range 0..N) of W_Block512_Array(Input'Range);
 
-      V : W_Block512_2D_Array;
+      type pointy is access W_Block512_2D_Array;
+
+      V : pointy := new W_Block512_2D_Array;
+
+      --V : W_Block512_2D_Array;
       X : W_Block512_Array := Input;
       T : W_Block512_Array(Input'Range);
       J : Natural;

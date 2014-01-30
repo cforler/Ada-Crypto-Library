@@ -23,6 +23,14 @@
 
 package  Crypto.Symmetric.algorithm.Sha_Utils is
 
+   -- Interface to allow multiple Instances of SHA with different Current_Message_Length
+   type Generic_Interface is Interface;
+   type Sha_Utils_Interface is new Generic_Interface with
+      record
+         Current_Message_Length : Message_Length128;
+      end record;
+
+
    -- padding a 512-bit message block.
    -- Input: M := 512-bit Messageblock filled with "0"
    --        L := Length oft the Message in the Messageblock < 512
@@ -56,6 +64,33 @@ package  Crypto.Symmetric.algorithm.Sha_Utils is
 
    -- Inital Procedure for SHA384 and SHA512
    procedure Init_SHA2;
+
+
+   --Additional similar procedures/functions for interface version
+
+   procedure Padding512(This	       : in out Sha_Utils_Interface;
+                        Message_Block  : in out W_Block512;
+                        Message_Length : in Message_Length64;
+                        MP : out W_Block512);
+
+   procedure Padding1024(This	       : in out Sha_Utils_Interface;
+                         Message_Block : in out DW_Block1024;
+                         MP            : out DW_Block1024);
+
+   procedure Round_SHA2(This	      : in out Sha_Utils_Interface;
+                        Message_Block : in DW_Block1024;
+                        Hash_Value    : in out DW_Block512);
+
+   function Final_Round_SHA2(This	      	  : in out Sha_Utils_Interface;
+                             Message_Block        : in DW_Block1024;
+                             Message_Block_Length : in Message_Block_Length1024;
+                             Hash_Value           : in DW_Block512)
+                             return DW_Block512;
+
+   procedure Init_SHA2(This : in out Sha_Utils_Interface);
+
+
+
 
 
    ---------------------------------------------------------------------------

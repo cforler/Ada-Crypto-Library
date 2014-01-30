@@ -294,4 +294,72 @@ package body Crypto.Symmetric.Algorithm.Sha_Utils is
       Current_Message_Length.M2:=0;
    end Init_SHA2;
 
-  end  Crypto.Symmetric.Algorithm.SHA_Utils;
+   ---------------------------------------------------------------------------
+
+   procedure Padding512(This	       : in out Sha_Utils_Interface;
+                        Message_Block  : in out W_Block512;
+                        Message_Length : in Message_Length64;
+                        MP : out W_Block512) is
+   begin
+      Current_Message_Length := This.Current_Message_Length;
+      Padding512(Message_Block  => Message_Block,
+                 Message_Length => Message_Length,
+                 MP             => MP);
+      This.Current_Message_Length := Current_Message_Length;
+   end;
+
+   ---------------------------------------------------------------------------
+
+   procedure Padding1024(This	       : in out Sha_Utils_Interface;
+                         Message_Block : in out DW_Block1024;
+                         MP            : out DW_Block1024) is
+   begin
+      Current_Message_Length := This.Current_Message_Length;
+      Padding1024(Message_Block => Message_Block,
+                  MP            => MP);
+      This.Current_Message_Length := Current_Message_Length;
+   end;
+
+   ---------------------------------------------------------------------------
+
+   procedure Round_SHA2(This	      : in out Sha_Utils_Interface;
+                        Message_Block : in DW_Block1024;
+                        Hash_Value    : in out DW_Block512) is
+   begin
+      Current_Message_Length := This.Current_Message_Length;
+      Round_SHA2(Message_Block => Message_Block,
+                 Hash_Value    => Hash_Value);
+      This.Current_Message_Length := Current_Message_Length;
+   end;
+
+   ---------------------------------------------------------------------------
+
+      function Final_Round_SHA2(This	      	  : in out Sha_Utils_Interface;
+                             Message_Block        : in DW_Block1024;
+                             Message_Block_Length : in Message_Block_Length1024;
+                             Hash_Value           : in DW_Block512)
+                                return DW_Block512 is
+      Return_Block : DW_Block512;
+   begin
+      Current_Message_Length := This.Current_Message_Length;
+      Return_Block := Final_Round_SHA2(Message_Block        => Message_Block,
+                                       Message_Block_Length => Message_Block_Length,
+                                       Hash_Value           => Hash_Value);
+      This.Current_Message_Length := Current_Message_Length;
+      return Return_Block;
+
+   end;
+
+   ---------------------------------------------------------------------------
+
+   procedure Init_SHA2(This : in out Sha_Utils_Interface) is
+   begin
+      Current_Message_Length := This.Current_Message_Length;
+      Init_SHA2;
+      This.Current_Message_Length := Current_Message_Length;
+   end;
+
+
+
+
+   end  Crypto.Symmetric.Algorithm.SHA_Utils;

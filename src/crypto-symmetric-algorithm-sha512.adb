@@ -22,8 +22,7 @@
 
 -- All the procedures of this package based on FIPS 180-2
 
-with Crypto.Symmetric.Algorithm.SHA_Utils;
-use Crypto.Symmetric.Algorithm.SHA_Utils;
+
 with GNAT.OS_Lib; use GNAT.OS_Lib;
 
 package body Crypto.Symmetric.Algorithm.SHA512 is
@@ -50,11 +49,11 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
       Round_SHA2(Message_Block, Hash_Value);
    end Round;
 
-    ---------------------------------------------------------------------------
+   ---------------------------------------------------------------------------
 
    function Final_Round(Last_Message_Block  : DW_Block1024;
-                         Last_Message_Length : Message_Block_Length1024;
-                         Hash_Value          : DW_Block512)
+                        Last_Message_Length : Message_Block_Length1024;
+                        Hash_Value          : DW_Block512)
                         return DW_Block512 Is
    begin
       return Final_Round_SHA2(Last_Message_Block,
@@ -63,6 +62,43 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
 
    end Final_Round;
 
+   ---------------------------------------------------------------------------
+   
+   procedure Init(This : in out Sha512_Interface) is
+   begin
+      This.Utils_Interface.Init_SHA2;
+      This.Hash_Value(0) := 16#6a09e667f3bcc908#;
+      This.Hash_Value(1) := 16#bb67ae8584caa73b#;
+      This.Hash_Value(2) := 16#3c6ef372fe94f82b#;
+      This.Hash_Value(3) := 16#a54ff53a5f1d36f1#;
+      This.Hash_Value(4) := 16#510e527fade682d1#;
+      This.Hash_Value(5) := 16#9b05688c2b3e6c1f#;
+      This.Hash_Value(6) := 16#1f83d9abfb41bd6b#;
+      This.Hash_Value(7) := 16#5be0cd19137e2179#;
+
+   end Init;
+   
+   ---------------------------------------------------------------------------
+   
+   procedure Round(This 	: in out 	Sha512_Interface;
+                   Message_Block: in 		DW_Block1024) is
+   begin
+      This.Utils_Interface.Round_SHA2(Message_Block, This.Hash_Value);
+   end Round;
+   
+   ---------------------------------------------------------------------------
+   
+   function Final_Round(This 		    : in out Sha512_Interface;
+                        Last_Message_Block  : DW_Block1024;
+                        Last_Message_Length : Message_Block_Length1024)
+                        return DW_Block512 is
+         begin
+      return This.Utils_Interface.Final_Round_SHA2(Message_Block        => Last_Message_Block,
+                                                   Message_Block_Length => Last_Message_Length,
+                                                   Hash_Value           => This.Hash_Value);
+
+   end Final_Round;
+   
    ---------------------------------------------------------------------------
 
    procedure Hash(Message : in Bytes; Hash_Value : out DW_Block512) is
@@ -74,12 +110,12 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
       Init(Hash_Value);
 
       for I in 1..K loop
-	 declare
-	    T : constant DWords :=  To_DWords(Message(LM..LM+127));
-	 begin
-	       Round(DW_Block1024(T), Hash_Value);
-	 end;
-	 LM := LM+128;	 
+         declare
+            T : constant DWords :=  To_DWords(Message(LM..LM+127));
+         begin
+            Round(DW_Block1024(T), Hash_Value);
+         end;
+         LM := LM+128;	 
       end loop;
 
       if L /=  0 then
@@ -125,11 +161,11 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
          Size := Read(Fd, Buf'Address , Buf'Last);
 
          if Size = Buf'Last then
-	    declare 
-	       T : constant  DWords := To_DWords(Buf(0..127));
-	    begin
-	       Round_SHA2( DW_Block1024(T),Hash_Value);
-	    end;
+            declare 
+               T : constant  DWords := To_DWords(Buf(0..127));
+            begin
+               Round_SHA2( DW_Block1024(T),Hash_Value);
+            end;
          elsif
            Size < 0 then raise FILE_READ_ERROR;
          else
