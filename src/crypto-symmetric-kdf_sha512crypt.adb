@@ -2,20 +2,30 @@ with Ada; use Ada;
 with Crypto.Symmetric.Algorithm.SHA512;
 with Ada.Text_IO;
 with Ada.Integer_Text_IO;
-with Crypto.Non_Debug; use Crypto.Non_Debug;
+with Crypto.Debug_Put;
 
 
 package body Crypto.Symmetric.KDF_SHA512Crypt is
 
+   --Interface and core function
+   procedure Derive(This	: in out SHA512Crypt_KDF;
+                    Salt	: in 	Bytes;
+                    Password	: in	Bytes;
+                    Key		: out	S5C_String) is
+   begin
+      derive(This     => This,
+             Salt     => To_String(Salt),
+             Password => To_String(Password),
+             Key      => Key);
+   end Derive;
 
 
+   --Interface and core function
    procedure Derive(This	: in out SHA512Crypt_KDF;
                     Salt	: in 	String;
                     Password	: in	String;
                     Key		: out	S5C_String) is
       package SHA512 renames Crypto.Symmetric.Algorithm.SHA512;
-
-
 
       Salt_Bytes : Bytes(0..Salt'Length-1) := To_Bytes(Salt);
       Password_Bytes : Bytes(0..Password'Length-1) := To_Bytes(Password);
@@ -68,8 +78,6 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
       Temp_Bytes : Bytes(0..63);
 
-
-
    begin
 
       Digest_A_Hash.Init;
@@ -80,22 +88,22 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                 Digest_Bytes_Length => Digest_A_Length,
                 Digest_Hash         => Digest_A_Hash);
 
-      Put_Line("ADDING:");
+      Error_Output.Put_Line("ADDING:");
       for I in 0..Password_Bytes'Length-1 loop
-         Put(To_Hex(Password_Bytes(I)));
+         Error_Output.Put(To_Hex(Password_Bytes(I)));
       end loop;
-      New_Line;
+      Error_Output.New_Line;
 
       Add_Bytes(Bytes_To_Add        => Salt_Bytes,
                 Digest_Bytes        => Digest_A_Bytes,
                 Digest_Bytes_Length => Digest_A_Length,
                 Digest_Hash         => Digest_A_Hash);
 
-      Put_Line("ADDING:");
+      Error_Output.Put_Line("ADDING:");
       for I in Salt_Bytes'Range loop
-         Put(To_Hex(Salt_Bytes(I)));
+         Error_Output.Put(To_Hex(Salt_Bytes(I)));
       end loop;
-      New_Line;
+      Error_Output.New_Line;
 
 
       Digest_B_Hash.Init;
@@ -119,11 +127,11 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                                                         Last_Message_Length => Digest_B_Length);
 
 
-      Put_Line("Point A :");
+      Error_Output.Put_Line("Point A :");
       for I in to_bytes(Digest_B_Hash_Result)'range loop
-         Put(To_Hex(to_bytes(Digest_B_Hash_Result)(I)));
+         Error_Output.Put(To_Hex(to_bytes(Digest_B_Hash_Result)(I)));
       end loop;
-      New_Line;
+      Error_Output.New_Line;
 
       Cnt := Password_Bytes'Length;
 
@@ -132,11 +140,11 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                    Digest_Bytes        => Digest_A_Bytes,
                    Digest_Bytes_Length => Digest_A_Length,
                    Digest_Hash         => Digest_A_Hash);
-         Put_Line("ADDING:");
+         Error_Output.Put_Line("ADDING:");
          for I in To_Bytes(Digest_B_Hash_Result)'Range loop
-            Put(To_Hex(To_Bytes(Digest_B_Hash_Result)(I)));
+            Error_Output.Put(To_Hex(To_Bytes(Digest_B_Hash_Result)(I)));
          end loop;
-         New_Line;
+         Error_Output.New_Line;
 
          Cnt := Cnt - 64;
       end loop;
@@ -147,25 +155,11 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                 Digest_Bytes        => Digest_A_Bytes,
                 Digest_Bytes_Length => Digest_A_Length,
                 Digest_Hash         => Digest_A_Hash);
-      Put_Line("ADDING:");
+      Error_Output.Put_Line("ADDING:");
       for I in 0..Cnt-1 loop
-         Put(To_Hex(Temp_Bytes(I)));
+         Error_Output.Put(To_Hex(Temp_Bytes(I)));
       end loop;
-      New_Line;
-
-
-      --        Digest_A_Hash_Result :=
-      --          Digest_A_Hash.Final_Round(Last_Message_Block  => To_DW_Block1024(Digest_A_Bytes),
-      --                                    Last_Message_Length => Digest_A_Length);
-      --
-      --        Put_Line("Point B:");
-      --        for I in To_Bytes(Digest_A_Hash_Result)'Range loop
-      --           Put(To_Hex(To_Bytes(Digest_A_Hash_Result)(I)));
-      --        end loop;
-      --        New_Line;
-
-
-
+      Error_Output.New_Line;
 
       Sixtyfour_Bytes := To_Bytes(D => Digest_B_Hash_Result);
 
@@ -177,24 +171,24 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                       Digest_Bytes        => Digest_A_Bytes,
                       Digest_Bytes_Length => Digest_A_Length,
                       Digest_Hash         => Digest_A_Hash);
-            Put_Line("ADDING:");
+            Error_Output.Put_Line("ADDING:");
             for I in 0..Sixtyfour_Bytes'Length-1 loop
-               Put(To_Hex(Sixtyfour_Bytes(I)));
+               Error_Output.Put(To_Hex(Sixtyfour_Bytes(I)));
             end loop;
-            New_Line;
-            Put_Line("1");
+            Error_Output.New_Line;
+            Error_Output.Put_Line("1");
          else
 
             Add_Bytes(Bytes_To_Add        => Password_Bytes,
                       Digest_Bytes        => Digest_A_Bytes,
                       Digest_Bytes_Length => Digest_A_Length,
                       Digest_Hash         => Digest_A_Hash);
-            Put_Line("ADDING:");
+            Error_Output.Put_Line("ADDING:");
             for I in 0..Password_Bytes'Length-1 loop
-               Put(To_Hex(Password_Bytes(I)));
+               Error_Output.Put(To_Hex(Password_Bytes(I)));
             end loop;
-            New_Line;
-            Put_Line("0");
+            Error_Output.New_Line;
+            Error_Output.Put_Line("0");
 
 
          end if;
@@ -207,11 +201,11 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Digest_A_Hash_Result := Digest_A_Hash.Final_Round(Last_Message_Block  => Big_B_Block,
                                                         Last_Message_Length => Digest_A_Length);
 
-      Put_Line("Point C : ");
+      Error_Output.Put_Line("Point C : ");
       for I in To_Bytes(Digest_A_Hash_Result)'Range loop
-         Put(To_Hex(To_Bytes(Digest_A_Hash_Result)(I)));
+         Error_Output.Put(To_Hex(To_Bytes(Digest_A_Hash_Result)(I)));
       end loop;
-      New_Line;
+      Error_Output.New_Line;
 
       -- Initialize Digest DP
       Digest_DP_Hash.Init;
@@ -232,26 +226,24 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Digest_DP_Hash_Result := Digest_DP_Hash.Final_Round(Last_Message_Block  => Big_B_Block,
                                                           Last_Message_Length => Digest_DP_Length);
 
-      Put_Line("Point D : ");
+      Error_Output.Put_Line("Point D : ");
       for I in To_Bytes(Digest_DP_Hash_Result)'Range loop
-         Put(To_Hex(To_Bytes(Digest_DP_Hash_Result)(I)));
+         Error_Output.Put(To_Hex(To_Bytes(Digest_DP_Hash_Result)(I)));
       end loop;
-
-      -----------------Korrekt---------------------------------------------
 
       Digest_DP_Hash_Result_Bytes := To_Bytes(Digest_DP_Hash_Result);
 
       for I in P_Value'Range loop
-         Put_Line(I'Img);
+         Error_Output.Put_Line(I'Img);
          P_Value(I) := Digest_DP_Hash_Result_Bytes(I mod 64);
       end loop;
 
 
-      Put_Line("Point E:");
+      Error_Output.Put_Line("Point E:");
       for I in P_Value'Range loop
-         Put(To_Hex(P_Value(I)));
+         Error_Output.Put(To_Hex(P_Value(I)));
       end loop;
-      New_Line;
+      Error_Output.New_Line;
 
       Digest_DS_Hash.Init;
 
@@ -271,26 +263,23 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Digest_DS_Hash_Result := Digest_DS_Hash.Final_Round(Last_Message_Block  => Big_B_Block,
                                                           Last_Message_Length => Digest_DS_Length);
 
-      Put_Line("Point F : ");
+      Error_Output.Put_Line("Point F : ");
       for I in to_bytes(Digest_DS_Hash_Result)'Range loop
-         Put(To_Hex(to_bytes(Digest_DS_Hash_Result)(I)));
+         Error_Output.Put(To_Hex(to_bytes(Digest_DS_Hash_Result)(I)));
       end loop;
-
 
       Digest_DS_Hash_Result_Bytes := To_Bytes(Digest_DS_Hash_Result);
 
       for I in S_Value'Range loop
-         Put_Line(I'Img);
+         Error_Output.Put_Line(I'Img);
          S_Value(I) := Digest_DS_Hash_Result_Bytes(I mod 64);
       end loop;
 
-
-      Put_Line("Point G:");
+      Error_Output.Put_Line("Point G:");
       for I in S_Value'Range loop
-         Put(To_Hex(S_Value(I)));
+         Error_Output.Put(To_Hex(S_Value(I)));
       end loop;
-      New_Line;
-
+      Error_Output.New_Line;
 
       Bytes_For_Rounds := To_Bytes(Digest_A_Hash_Result);
 
@@ -300,7 +289,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
          -- b) for odd round numbers add the byte sequense P to digest C
          if I mod 2 /= 0 then
-            Put_Line("Case A");
+            Error_Output.Put_Line("Case A");
             Add_Bytes(Bytes_To_Add        => P_Value,
                       Digest_Bytes        => Digest_C_Bytes,
                       Digest_Bytes_Length => Digest_C_Length,
@@ -309,13 +298,12 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
          -- c) for even round numbers add digest A/C
          if I mod 2 = 0 then
-            Put_Line("Case B");
+            Error_Output.Put_Line("Case B");
             Add_Bytes(Bytes_To_Add        => Bytes_For_Rounds,
                       Digest_Bytes        => Digest_C_Bytes,
                       Digest_Bytes_Length => Digest_C_Length,
                       Digest_Hash         => Digest_C_Hash);
          end if;
-
 
          -- d) for all round numbers not divisible by 3 add the byte sequence S
          if I mod 3 /= 0 then
@@ -324,7 +312,6 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                       Digest_Bytes_Length => Digest_C_Length,
                       Digest_Hash         => Digest_C_Hash);
          end if;
-
 
          -- e) for all round numbers not divisible by 7 add the byte sequence P
          if I mod 7 /= 0 then
@@ -336,7 +323,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
          -- f) for odd round numbers add digest A/C
          if I mod 2 /= 0 then
-            Put_Line("Case C");
+            Error_Output.Put_Line("Case C");
             Add_Bytes(Bytes_To_Add        => Bytes_For_Rounds,
                       Digest_Bytes        => Digest_C_Bytes,
                       Digest_Bytes_Length => Digest_C_Length,
@@ -345,7 +332,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
          -- g) for even round numbers add the byte sequence P
          if I mod 2 = 0 then
-            Put_Line("Case D");
+            Error_Output.Put_Line("Case D");
             Add_Bytes(Bytes_To_Add        => P_Value,
                       Digest_Bytes        => Digest_C_Bytes,
                       Digest_Bytes_Length => Digest_C_Length,
@@ -363,14 +350,13 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
          Digest_C_Bytes := (others => 0);
          Digest_C_Length := 0;
 
-
       end loop;
 
-      Put_Line("Point H:");
+      Error_Output.Put_Line("Point H:");
       for I in Bytes_For_Rounds'Range loop
-         Put(To_Hex(Bytes_For_Rounds(I)));
+         Error_Output.Put(To_Hex(Bytes_For_Rounds(I)));
       end loop;
-      New_Line;
+      Error_Output.New_Line;
 
 
       Final_Input_Bytes := (Bytes_For_Rounds(0),Bytes_For_Rounds(21),Bytes_For_Rounds(42));
@@ -439,7 +425,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Final_Input_Bytes := (0,0,Bytes_For_Rounds(63));
       Final_String(85..88) := Bytes_To_String(B => Final_Input_Bytes);
 
-      Put_Line(Final_String);
+      Error_Output.Put_Line(Final_String);
 
 
       Key := Final_String(1..86);
@@ -447,9 +433,22 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
    end Derive;
 
-   ----------------------------- Add Bytes -------------------------------------
+
+   --Initializing Security_Parameter, used for round count
+   function Initialize(This		: out SHA512Crypt_KDF;
+                       Parameter	: in	Natural) return Boolean is
+   begin
+      if Parameter < 1000 then This.Security_Parameter := 1000;
+      else if parameter > 999999999 then This.Security_Parameter := 999999999;
+         else
+            This.Security_Parameter := Parameter;
+         end if;
+      end if;
+      return true;
+   end;
 
 
+   --Adding Bytes to Digest
    procedure Add_Bytes(Bytes_To_Add		: in 		Bytes;
                        Digest_Bytes		: in out 	Bytes;
                        Digest_Bytes_Length	: in out	Natural;
@@ -458,28 +457,22 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Debug : Boolean := false;
    begin
 
-      --Ada.Integer_Text_IO.Put(Bytes_To_Add'Length);
-
       Rest_Space := 128 - Digest_Bytes_Length;
 
-      if debug then
-         Put_line("Rest Space: ");
-         Ada.Integer_Text_IO.Put(Integer(Rest_Space));
-         New_Line;
+      Error_Output.Put_line("Rest Space: ");
+      Error_Output.Put(Integer(Rest_Space));
+      Error_Output.New_Line;
 
-         Put_line("Add Length: ");
-         Ada.Integer_Text_IO.Put(Integer(Bytes_To_Add'Length));
-         New_Line;
+      Error_Output.Put_line("Add Length: ");
+      Error_Output.Put(Integer(Bytes_To_Add'Length));
+      Error_Output.New_Line;
 
-         Put_line("Bytes to add: ");
-         if True then
-            for I in Bytes_To_Add'Range loop
-               Put(To_Hex(Bytes_To_Add(I)));
-            end loop;
-         end if;
+      Error_Output.Put_line("Bytes to add: ");
+      for I in Bytes_To_Add'Range loop
+         Error_Output.Put(To_Hex(Bytes_To_Add(I)));
+      end loop;
 
-         New_Line;
-      end if;
+      Error_Output.New_Line;
 
 
 
@@ -491,38 +484,38 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
          Digest_Bytes(Digest_Bytes_Length..Digest_Bytes_Length+Rest_Space-1)
            := Bytes_To_Add(0..Rest_Space-1);
 
-         --           Put_line("Digest_Bytes : ");
-         --           for I in Digest_Bytes'Range loop
-         --              Put(To_Hex(Digest_Bytes(I)));
-         --           end loop;
+                  Error_Output.Put_line("Digest_Bytes : ");
+                  for I in Digest_Bytes'Range loop
+                     Error_Output.Put(To_Hex(Digest_Bytes(I)));
+                  end loop;
 
 
-         --           Put_Line("ROUND!");
+                  Error_Output.Put_Line("ROUND!");
 
          Digest_Hash.Round(Message_Block => To_DW_Block1024(B => Digest_Bytes));
          Digest_Bytes := (others => 0);
          if debug then
 
-            Put_line("digest_byte range");
+            Error_Output.Put_line("digest_byte range");
             Ada.Integer_Text_IO.Put(Integer(Bytes_To_Add'Length-Rest_Space-1));
-            New_Line;
+            Error_Output.New_Line;
 
-            Put_line("from range");
-            Ada.Integer_Text_IO.Put(Integer(Rest_Space));
-            New_Line;
+            Error_Output.Put_line("from range");
+            Error_Output.Put(Integer(Rest_Space));
+            Error_Output.New_Line;
 
-            Put_line("to range");
-            Ada.Integer_Text_IO.Put(Integer(Bytes_To_Add'Length-1));
-            New_Line;
+            Error_Output.Put_line("to range");
+            Error_Output.Put(Integer(Bytes_To_Add'Length-1));
+            Error_Output.New_Line;
          end if;
 
 
          Digest_Bytes(0..Bytes_To_Add'Length-Rest_Space-1) := Bytes_To_Add(Rest_Space .. Bytes_To_Add'Length-1);
          Digest_Bytes_Length := Bytes_To_Add'Length-Rest_Space;
          if debug then
-            Put("new digest bytes: ");
+            Error_Output.Put("new digest bytes: ");
             for I in Digest_Bytes'Range loop
-               Put(To_Hex(Digest_Bytes(I)));
+               Error_Output.Put(To_Hex(Digest_Bytes(I)));
             end loop;
          end if;
 
@@ -530,8 +523,8 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
    end Add_Bytes;
 
-   ----------------- Bytes to String -------------------------------------------
 
+   --translates 3 bytes into base64 4 char string
    function Bytes_To_String(B : bytes) return String is
       Bits_String : String(1..24) := "000000000000000000000000";
       Bits_1 : String(1..8) := (others=>'0');
@@ -548,13 +541,13 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Bits_3(9-To_Binary(N => Natural(B(2)))'Length..8) := To_Binary(N => Natural(B(2)));
 
 
-      Put_Line("Three Binarys :");
-      Put_Line(Integer(B(0))'Img);
-      Put_Line(Bits_1);
-      Put_Line(Integer(B(1))'Img);
-      Put_Line(Bits_2);
-      Put_Line(Integer(B(2))'Img);
-      Put_Line(Bits_3);
+      Error_Output.Put_Line("Three Binarys :");
+      Error_Output.Put_Line(Integer(B(0))'Img);
+      Error_Output.Put_Line(Bits_1);
+      Error_Output.Put_Line(Integer(B(1))'Img);
+      Error_Output.Put_Line(Bits_2);
+      Error_Output.Put_Line(Integer(B(2))'Img);
+      Error_Output.Put_Line(Bits_3);
 
       for I in 1..8 loop
          Bits_1_Reverse(9-I) := Bits_1(I);
@@ -577,18 +570,14 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
    end;
 
 
-
-   -------------- To Binary ----------------------------------------------------
-
+   --returns a string of 1 and 0 from a number
    function To_Binary(N: Natural) return String is
       S: String(1 .. 1000); -- more than plenty!
       Left:  Positive := S'First;
       Right: Positive := S'Last;
       package IIO is new Ada.Text_IO.Integer_IO(Integer);
    begin
-      IIO.Put(To => S, Item => N, Base => 2); -- This is the conversion!
-      -- Now S is a String with many spaces and some "2#...#" somewhere.
-      -- We only need the "..." part without spaces or base markers.
+      IIO.Put(To => S, Item => N, Base => 2);
       while S(Left) /= '#' loop
          Left := Left + 1;
       end loop;
@@ -598,44 +587,28 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       return S(Left+1 .. Right-1);
    end To_Binary;
 
-   -------- To Natural ---------------------------------------------------------
 
-
+   --returns a number from a string of 1 and 0
    function To_Natural(S : String) return Natural is
       Output: Natural:= 0;
    begin
-      Put_Line(S);
+      Error_Output.Put_Line(S);
       for I in S'Range loop
          if S(I) = '1' then
             Output:= Output + 2**((S'Length+1-I)-1+S'First-1);
          end if;
       end loop;
-      Put_Line(Integer'Image(Output));
+      Error_Output.Put_Line(Integer'Image(Output));
       return Output;
    end;
 
-   ---------------------- To Base 64 -------------------------------------------
+
+   --translates number into base64 string
    function To_Base64(N : Natural) return Character is
       Base : String := "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
    begin
       return Base(N+1);
    end;
-
-
-   ----------------------------Initialize---------------------------------------
-
-   function Initialize(This		: out SHA512Crypt_KDF;
-                       Parameter	: in	Natural) return Boolean is
-   begin
-      if Parameter < 1000 then This.Security_Parameter := 1000;
-      else if parameter > 999999999 then This.Security_Parameter := 999999999;
-         else
-            This.Security_Parameter := Parameter;
-         end if;
-      end if;
-      return true;
-   end;
-
 
 
 end Crypto.Symmetric.KDF_SHA512Crypt;

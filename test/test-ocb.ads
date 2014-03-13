@@ -16,6 +16,4 @@ package Test.OCB is
 
 	procedure OCB3_Test_Encryption(T: in out Test_Cases.Test_Case'Class);
 
-	procedure OCB3_Test_Exceptions(T: in out Test_Cases.Test_Case'Class);
-
 end Test.OCB;

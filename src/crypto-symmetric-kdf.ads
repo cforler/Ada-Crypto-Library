@@ -1,4 +1,5 @@
 with Crypto.Types;
+use Crypto.Types;
 with Crypto.Symmetric.Hashfunction;
 
 generic
@@ -14,6 +15,11 @@ package Crypto.Symmetric.KDF is
    procedure Derive(This	: in out KDF_Scheme;
                     Salt	: in 	String;
                     Password	: in	String;
+                    Key		: out	return_type) is abstract;
+
+   procedure Derive(This	: in out KDF_Scheme;
+                    Salt	: in 	Bytes;
+                    Password	: in	Bytes;
                     Key		: out	return_type) is abstract;
 
    function Initialize(This	: out KDF_Scheme;

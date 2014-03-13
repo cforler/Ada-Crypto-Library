@@ -2,7 +2,6 @@ with AUnit.Assertions;
 with Crypto.Symmetric.Algorithm.Skein;
 with Crypto.Symmetric.Algorithm.Threefish;
 with Crypto.Types;
-with Crypto.Non_Debug;	use Crypto.Non_Debug;
 
 
 package body Test.Skein is
@@ -125,13 +124,13 @@ package body Test.Skein is
                                             Message_Length => 512,
                                             Result         => Finalresult_Long);
 
-      Put_Line(" ");
-        Put_Line("This is the result of the hashing test");
+      Error_Output.Put_Line(" ");
+        Error_Output.Put_Line("This is the result of the hashing test");
         for i in Finalresult_Short'Range loop
-         Put(To_Hex(Finalresult_Short(i)));
-            Put(" ");
+         Error_Output.Put(To_Hex(Finalresult_Short(i)));
+            Error_Output.Put(" ");
             if (i+1) mod 16 = 0 then
-                Put_LIne(" ");
+                Error_Output.Put_LIne(" ");
             end if;
       end loop;
 
@@ -227,13 +226,13 @@ package body Test.Skein is
                                             Message_Length => 1024,
                                             Result         => Finalresult_Long);
 
-      Put_Line(" ");
-        Put_Line("This is the result of the hashing test");
+      Error_Output.Put_Line(" ");
+        Error_Output.Put_Line("This is the result of the hashing test");
         for i in Finalresult_Short'Range loop
-         Put(To_Hex(Finalresult_Short(i)));
-            Put(" ");
+         Error_Output.Put(To_Hex(Finalresult_Short(i)));
+            Error_Output.Put(" ");
             if (i+1) mod 16 = 0 then
-                Put_LIne(" ");
+                Error_Output.Put_LIne(" ");
             end if;
       end loop;
 
@@ -352,13 +351,13 @@ package body Test.Skein is
                                             Message_Length => 2048,
                                             Result         => Finalresult_Long);
 
-      Put_Line(" ");
-        Put_Line("This is the result of the hashing test");
+      Error_Output.Put_Line(" ");
+        Error_Output.Put_Line("This is the result of the hashing test");
         for i in Finalresult_Short'Range loop
-         Put(To_Hex(Finalresult_Short(i)));
-            Put(" ");
+         Error_Output.Put(To_Hex(Finalresult_Short(i)));
+            Error_Output.Put(" ");
             if (i+1) mod 16 = 0 then
-                Put_LIne(" ");
+                Error_Output.Put_LIne(" ");
             end if;
       end loop;
 

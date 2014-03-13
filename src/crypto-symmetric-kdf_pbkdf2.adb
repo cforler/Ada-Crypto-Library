@@ -2,9 +2,9 @@ with Ada.Text_IO;
 
 
 
-
 package body Crypto.Symmetric.KDF_PBKDF2 is
 
+   --Interface function for static 64 Bytes Output
    procedure Derive(This	: in out PBKDF2_KDF;
                     Salt	: in 	String;
                     Password	: in	String;
@@ -19,6 +19,22 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
       Key := To_W_Block512(B);
    end Derive;
 
+   --Interface function for static 64 Bytes Output
+   procedure Derive(This	: in out PBKDF2_KDF;
+                    Salt	: in 	Bytes;
+                    Password	: in	Bytes;
+                    Key		: out	W_Block512) is
+      B : Bytes(0..63);
+   begin
+      Derive(This     => This,
+             Salt     => Salt,
+             Password => Password,
+             Key      => B,
+             DK_Len   => 64);
+      Key := To_W_Block512(B);
+   end Derive;
+
+   --function for setting security parameter, used here for setting round count in F_Function
    function Initialize(This	: out PBKDF2_KDF;
                        Parameter: in Natural) return Boolean is
    begin
@@ -26,7 +42,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
       return true;
    end Initialize;
 
-
+   --actual derivation function, pure PBKDF2
    procedure Derive(This	: in out PBKDF2_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
@@ -34,8 +50,6 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
                     DK_Len	: in 	Natural) is
 
       hlen : Integer := Hmac_Package.H.Hash_Type'Size/8;
-
-      Sec_Parameter : Natural := This.Security_Parameter;
       DK_Block_Count : Natural;
       Rest : Natural;
       Result_Bytes : Bytes(0..DK_Len-1) := (others => 0 );
@@ -43,37 +57,39 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
    begin
 
---        Ada.Text_IO.Put_Line("HLEN: " & Integer'Image(hlen));
---
---        Ada.Text_IO.Put_Line("Key :" & Integer'Image(Key'Length) & "Result_Bytes :" & Integer'Image(Result_Bytes'Length));
+      Error_Output.Put_Line("HLEN: " & Integer'Image(hlen));
 
+      Error_Output.Put_Line("Key :" & Integer'Image(Key'Length) & "Result_Bytes :" & Integer'Image(Result_Bytes'Length));
+
+      --calculating amount of blocks required to fill key given the hash length
       DK_Block_Count := Integer(Float'Ceiling(Float(DK_Len) / Float(hlen)));
       Rest := DK_Len - (DK_Block_Count-1) * hlen;
 
---        Ada.Text_IO.Put_Line("DKBK :" & Integer'Image(DK_Block_Count) & "Rest :" & Integer'Image(Rest));
+      Error_Output.Put_Line("DKBK :" & Integer'Image(DK_Block_Count) & "Rest :" & Integer'Image(Rest));
 
+      --looping through blocks of the key, applying F_Function
       for I in 0..DK_Block_Count-1 loop
 
          if(I = DK_Block_Count-1)
          then
             Temp_Bytes := To_Bytes(F_Function(Salt     => Salt,
                                            	 Password => Password,
-                                           	 Count    => Sec_Parameter,
+                                           	 Count    => This.Security_Parameter,
                                                  Round    => I+1));
             Result_Bytes(I*hlen..I*hlen+Rest-1) := Temp_Bytes(0..Rest-1);
          else
             Result_Bytes(I*hlen..I*hlen+hlen-1) := To_Bytes(F_Function(Salt     => Salt,
                                            	 Password => Password,
-                                           	 Count    => Sec_Parameter,
+                                           	 Count    => This.Security_Parameter,
                                                  Round    => I+1));
          end if;
 
       end loop;
-      Ada.Text_IO.Put_Line("Key :" & Integer'Image(Key'Length) & " " & "Result_Bytes :" & Integer'Image(Result_Bytes'Length));
+      Error_Output.Put_Line("Key :" & Integer'Image(Key'Length) & " " & "Result_Bytes :" & Integer'Image(Result_Bytes'Length));
       Key := Result_Bytes;
    end Derive;
 
-
+   --Internal function for applying PRF multiple times
    function F_Function(Salt	: in 	Bytes;
                        Password	: in	Bytes;
                        Count	: in 	Natural;
@@ -92,8 +108,6 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
       Temp_Bytes(0..Password'Length-1):=Password;
       Hmac_Package.Init(Key => To_Message_Type(Temp_Bytes));
-
-      --------
 
       Salt_Bytes := (others => 0);
       Salt_Bytes(0..Salt'Length-1) := Salt;
@@ -127,6 +141,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
       return Result_Block;
    end;
 
+   --function for utility, accepting strings and key length (in Bytes)
    procedure Derive(This	: in out PBKDF2_KDF;
                     Salt	: in 	String;
                     Password	: in	String;

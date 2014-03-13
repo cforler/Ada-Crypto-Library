@@ -12,10 +12,6 @@ package Test.PBKDF2 is
 
 	function Name(T: PBKDF2_Test) return Test_String;
 
-	procedure PBKDF2_Test_Add_Bytes(T: in out Test_Cases.Test_Case'Class);
-
-	procedure PBKDF2_Test_Encryption(T: in out Test_Cases.Test_Case'Class);
-
-	procedure PBKDF2_Test_Exceptions(T: in out Test_Cases.Test_Case'Class);
+	procedure PBKDF2_Test_One(T: in out Test_Cases.Test_Case'Class);
 
 end Test.PBKDF2;

@@ -1,6 +1,5 @@
 with Ada.Containers.Indefinite_Vectors;
 with Ada.Containers.Vectors;
-with Crypto.Non_Debug;	use Crypto.Non_Debug;
 with Crypto.Types;
 
 package body Crypto.Symmetric.AE_OCB3 is
@@ -77,30 +76,30 @@ package body Crypto.Symmetric.AE_OCB3 is
    begin
       BC.Encrypt(Zero_Block, L_Star); --L_*
       Tmp := To_Bytes(L_Star);
-      Put("L_*");
+      Error_Output.Put("L_*");
       for i in Tmp'Range loop
-          Put(To_Hex(Tmp(i)));
+          Error_Output.Put(To_Hex(Tmp(i)));
       end loop;
-      New_Line;
+      Error_Output.New_Line;
 
       L_Dollar := Double_S(L_Star);   --L_$
       Tmp := To_Bytes(L_Dollar);
-      Put("L_$");
+      Error_Output.Put("L_$");
       for i in Tmp'Range loop
-          Put(To_Hex(Tmp(i)));
+          Error_Output.Put(To_Hex(Tmp(i)));
       end loop;
-      New_Line;
+      Error_Output.New_Line;
 
       A(-1) := Double_S(L_Dollar); -- (-1) refers to L[0] in the docu
       for i in 0..31 loop
           A(i) := Double_S(A(i-1));
       end loop;
       Tmp := To_Bytes(A(0));
-      Put("L_1");
+      Error_Output.Put("L_1");
       for i in Tmp'Range loop
-          Put(To_Hex(Tmp(i)));
+          Error_Output.Put(To_Hex(Tmp(i)));
       end loop;
-      New_Line;
+      Error_Output.New_Line;
    end Setup;
 
    -----------------------------------------------------------------
@@ -275,11 +274,11 @@ package body Crypto.Symmetric.AE_OCB3 is
       --113 Offset = Offset XOR L
       Offset := Offset xor This.L_Array(Number_Of_Trailing_Zeros(Count) - 1);
       Tmp := To_Bytes(Offset);
-      Put("Offset");
+      Error_Output.Put("Offset");
       for i in Tmp'Range loop
-          Put(To_Hex(Tmp(i)));
+          Error_Output.Put(To_Hex(Tmp(i)));
       end loop;
-      New_Line;      
+      Error_Output.New_Line;      
 
       --114
       BC.Encrypt(Input xor Offset, Output);
@@ -288,11 +287,11 @@ package body Crypto.Symmetric.AE_OCB3 is
       --115
       Checksum := Checksum xor Input;
       Tmp := To_Bytes(Checksum);
-      Put("Checksum");
+      Error_Output.Put("Checksum");
       for i in Tmp'Range loop
-          Put(To_Hex(Tmp(i)));
+          Error_Output.Put(To_Hex(Tmp(i)));
       end loop;
-      New_Line; 
+      Error_Output.New_Line; 
       Count := Count + 1;
    end Aux_Enc;
 
@@ -651,14 +650,14 @@ package body Crypto.Symmetric.AE_OCB3 is
       declare
          Calculated_Tag: constant Bytes := To_Bytes(T);
       begin
-         Put_Line("Original Tag:");
+         Error_Output.Put_Line("Original Tag:");
          for I in Tag'First..This.Taglen-1 loop
-            Put(To_Hex(B => Tag(I)));
+            Error_Output.Put(To_Hex(B => Tag(I)));
          end loop;
-         New_Line;
-         Put_Line("Calculated Tag:");
+         Error_Output.New_Line;
+         Error_Output.Put_Line("Calculated Tag:");
          for I in Calculated_Tag'First..This.Taglen-1 loop
-            Put(To_Hex(B => Calculated_Tag(I)));
+            Error_Output.Put(To_Hex(B => Calculated_Tag(I)));
          end loop;
             
          
@@ -750,11 +749,11 @@ package body Crypto.Symmetric.AE_OCB3 is
             Nonce_Init(Bytes_Per_Block - Bytes_Of_N_Read .. Bytes_Per_Block - 1) := To_Bytes(This.Nonce_Value)(0.. Bytes_Of_N_Read - 1) ;
             Nonce_Init(Bytes_Per_Block - Bytes_Of_N_Read - 1) := 2#0000_0001# ;
             
-            Put("Nonce");
+            Error_Output.Put("Nonce");
             for i in Nonce_Init'Range loop
-                Put(Nonce_Init(i)'Img);
+                Error_Output.Put(Nonce_Init(i)'Img);
             end loop;
-            New_Line; 
+            Error_Output.New_Line; 
             
 
             --107: Top = Nonce AND (1^122 0^6)
@@ -764,30 +763,30 @@ package body Crypto.Symmetric.AE_OCB3 is
             --108: Bottom = Nonce AND (0^122 1^6)
             Tmp_Bottom(Tmp_Bottom'Last) := 2#0011_1111#;
             Bottom := Nonce_Init and Tmp_Bottom;
-            Put("Bottom");
+            Error_Output.Put("Bottom");
             for i in Bottom'Range loop
-                Put(Bottom(i)'Img);
+                Error_Output.Put(Bottom(i)'Img);
             end loop;
-            New_Line;
+            Error_Output.New_Line;
           
 
             --109: Ktop = Ek(Top)
             BC.Encrypt(To_Block(Top), Ktop);
             Tmp := To_Bytes(Ktop);
-            Put("Ktop");
+            Error_Output.Put("Ktop");
             for i in Tmp'Range loop
-                Put(To_Hex(Tmp(i)));
+                Error_Output.Put(To_Hex(Tmp(i)));
             end loop;
-            New_Line;
+            Error_Output.New_Line;
 
             --110-111: Offset = (Stretch<<Bottom)[1..128]
             This.Offset := Stretch_Then_Shift(To_Bytes(Ktop), Integer(Bottom(Bottom'Last)));
             Tmp := To_Bytes(This.Offset);
-            Put("Initial Offset");
+            Error_Output.Put("Initial Offset");
             for i in Tmp'Range loop
-                Put(To_Hex(Tmp(i)));
+                Error_Output.Put(To_Hex(Tmp(i)));
             end loop;
-            New_Line;  
+            Error_Output.New_Line;  
          end if;
    end Init_Encrypt;
 
@@ -904,13 +903,13 @@ package body Crypto.Symmetric.AE_OCB3 is
       Tmp : Block := To_Block(Zero_Bytes xor 2#0000_1111#);--8+4+2+1=15
    begin
 
-      Put_Line("Test for Double_S");
+      Error_Output.Put_Line("Test for Double_S");
       Tmp1 :=To_Bytes(Double_S(Tmp)); 
       for i in Tmp1'Range loop
-         Put(Tmp1(i)'Img);
+         Error_Output.Put(Tmp1(i)'Img);
       end loop;
-      New_Line;
-      New_Line;
+      Error_Output.New_Line;
+      Error_Output.New_Line;
 
       --read the first block of plaintext
       Read_Plaintext(Prev_Block, Bytes_Read);
@@ -970,11 +969,11 @@ package body Crypto.Symmetric.AE_OCB3 is
          --117
             Offset := Offset xor L_Star;
             Tmp1 :=To_Bytes(Offset);
-            Put("Offset_*"); 
+            Error_Output.Put("Offset_*"); 
             for i in Tmp1'Range loop
-                Put(Tmp1(i)'Img);
+                Error_Output.Put(Tmp1(i)'Img);
             end loop;
-            New_Line;
+            Error_Output.New_Line;
          --118
             BC.Encrypt(Offset, Pad);
          declare
@@ -987,11 +986,11 @@ package body Crypto.Symmetric.AE_OCB3 is
          Checksum := Checksum xor Padding_One_Zero(Last_P_Block, Bytes_Read);
          Tmp1 := To_Bytes(Checksum);
 
-         Put("Checksum_*");
+         Error_Output.Put("Checksum_*");
          for i in Tmp1'Range loop
-             Put(Tmp1(i)'Img);
+             Error_Output.Put(Tmp1(i)'Img);
          end loop;
-         New_Line; 
+         Error_Output.New_Line; 
       end if;
       --121
       Offset := Offset xor L_Dollar;
@@ -999,11 +998,11 @@ package body Crypto.Symmetric.AE_OCB3 is
       --122 calculate the Tag
       BC.Encrypt(Checksum xor Offset, Ciphertext);
       Tmp1 := To_Bytes(Ciphertext);
-      Put("Tag: ");
+      Error_Output.Put("Tag: ");
       for i in Tmp1'Range loop
-         Put(Tmp1(i)'Img);
+         Error_Output.Put(Tmp1(i)'Img);
       end loop;
-      New_Line;
+      Error_Output.New_Line;
       
       --Calculating the Hash of the Associated Data, XORing with Checksum
       

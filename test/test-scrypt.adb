@@ -7,8 +7,8 @@ with Crypto.Symmetric.KDF_Scrypt;
 use Crypto.Symmetric.KDF_Scrypt;
 with Crypto.Symmetric.KDF_PBKDF2;
 with Crypto.Symmetric.Mac.Hmac_SHA256;
-with Crypto.Debug; use Crypto.Debug;
 with Crypto.Symmetric.Algorithm.SHA512;
+with Crypto.Symmetric.Hashfunction_Object_SHA512;
 
 
 package body Test.Scrypt is
@@ -34,10 +34,10 @@ use Crypto.Types;
 		use Test_Cases.Registration;
 	begin
       		Register_Routine(T, Scrypt_Test_Salsa'Access,"Salsa 20/8 for Scrypt");
-      		Register_Routine(T, Scrypt_Test_Block_Mix'Access,"Block Mix for Scrypt");
-      		Register_Routine(T, Scrypt_Test_ROMix'Access,"Rom Mix for Scrypt");
-      		Register_Routine(T, Scrypt_Test_PBKDF2'Access,"PBKDF2 for Scrypt");
-      		Register_Routine(T, Scrypt_Test_SCRYPT'Access,"SCRYPT for Scrypt");
+--        		Register_Routine(T, Scrypt_Test_Block_Mix'Access,"Block Mix for Scrypt");
+--        		Register_Routine(T, Scrypt_Test_ROMix'Access,"Rom Mix for Scrypt");
+--        		Register_Routine(T, Scrypt_Test_PBKDF2'Access,"PBKDF2 for Scrypt");
+--        		Register_Routine(T, Scrypt_Test_SCRYPT'Access,"SCRYPT for Scrypt");
 
 	end Register_Tests;
 
@@ -47,9 +47,13 @@ use Crypto.Types;
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 
-	function Name(T : Scrypt_Test) return Test_String is
-	begin
-		return new String'("Scrypt Test");
+   function Name(T : Scrypt_Test) return Test_String is
+      HS : Crypto.Symmetric.Hashfunction_Object_SHA512.Scheme;
+   begin
+      HS.Initialize;
+
+      return new String'("Scrypt Test");
+
 	end Name;
 
 
@@ -145,34 +149,34 @@ use Crypto.Types;
    begin
 
 
-      Put_Line("sha512crypt block mix:");
+      Error_Output.Put_Line("sha512crypt block mix:");
 
       Output := Scrypt.Scrypt_Block_Mix(Input  => Input);
 
       Assert(To_W_Block512(Output_Ideal_A) = Output(0), "First Message Part wrong");
       Assert(To_W_Block512(Output_Ideal_B) = Output(1), "Second Message Part wrong");
 
-      New_Line;
-      Put_Line("--------------------------------------------");
+      Error_Output.New_Line;
+      Error_Output.Put_Line("--------------------------------------------");
       for I in Output(0)'Range loop
-         Put(To_Hex(Output(0)(I)));
+         Error_Output.Put(To_Hex(Output(0)(I)));
          if I mod 16 = 15 then
-            New_Line;
+            Error_Output.New_Line;
          end if;
       end loop;
 
-      New_Line;
-      Put_Line("--------------------------------------------");
+      Error_Output.New_Line;
+      Error_Output.Put_Line("--------------------------------------------");
 
       for I in Output(1)'Range loop
-         Put(To_Hex(Output(1)(I)));
+         Error_Output.Put(To_Hex(Output(1)(I)));
          if I mod 16 = 15 then
-            New_Line;
+            Error_Output.New_Line;
          end if;
       end loop;
 
-      New_Line;
-      Put_Line("--------------------------------------------");
+      Error_Output.New_Line;
+      Error_Output.Put_Line("--------------------------------------------");
 
    end Scrypt_Test_Block_Mix;
 
@@ -228,11 +232,11 @@ use Crypto.Types;
       Assert(To_W_Block512(Output_Ideal_A) = Output(0), "First ROMix Output false");
       Assert(To_W_Block512(Output_Ideal_B) = Output(1), "Second ROMix Output false");
 
-      Put_Line("Output ROMix");
+      Error_Output.Put_Line("Output ROMix");
       for I in Output(0)'Range loop
-         Put(To_Hex(Output(0)(I)));
+         Error_Output.Put(To_Hex(Output(0)(I)));
          if I mod 4 = 3 then
-            New_Line;
+            Error_Output.New_Line;
          end if;
 
       end loop;

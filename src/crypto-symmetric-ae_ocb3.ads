@@ -2,6 +2,7 @@ with Crypto.Symmetric.AE;
 with Crypto.Types.Nonces;
 with Crypto.Symmetric.Blockcipher;
 with Crypto.Types; use Crypto.Types;
+with Crypto.Debug_Put;
 
 generic
    with package BC is new Crypto.Symmetric.Blockcipher(<>);
@@ -21,6 +22,8 @@ package Crypto.Symmetric.AE_OCB3 is
                                          Block    => Block,
                                          N        => N);
    use AE;
+   
+   package Error_Output is new Crypto.Debug_Put(b => false);
 
    type AE_OCB is new AE.AE_Scheme with private;
    Bytes_Per_Block : constant Positive := Block'Size / 8;

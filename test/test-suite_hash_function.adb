@@ -23,6 +23,7 @@ package body Test.Suite_Hash_Function is
    SHA512Crypt_Test:			aliased Test.SHA512Crypt.SHA512Crypt_Test;
    PBKDF2_Test:				aliased Test.PBKDF2.PBKDF2_Test;
    Scrypt_Test:				aliased Test.Scrypt.Scrypt_Test;
+   SHA512_Test:				aliased Test.SHA512.SHA_Test;
   
 
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
@@ -33,10 +34,11 @@ package body Test.Suite_Hash_Function is
 --        Add_Test(Result'Access, Secure_Hash_Algorithm2_512_Test'Access);
 --        Add_Test(Result'Access, Whirlpool_Test'Access);
       Add_Test(Result'Access, Scrypt_Test'Access);
---        Add_Test(Result'Access, SHA512Crypt_Test'Access);
---        Add_Test(Result'Access, PBKDF2_Test'Access);
+      Add_Test(Result'Access, SHA512Crypt_Test'Access);
+      Add_Test(Result'Access, PBKDF2_Test'Access);
 --        Add_Test(Result'Access, Skein_Test'Access);
 --        Add_Test(Result'Access, OCB_Test'Access);
+--  	  Add_Test(Result'Access, SHA512_Test'Access);
       
       
       return Result'Access;
