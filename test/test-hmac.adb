@@ -1,6 +1,8 @@
 with AUnit.Assertions;
 with Crypto.Symmetric.Mac.Hmac_SHA256;
 with Crypto.Symmetric.Mac.Hmac_SHA512;
+with Crypto.Symmetric.Mac.Hmac_SHA512_Object;
+with Crypto.Symmetric.Mac.Hmac_SHA256_Object;
 with Crypto.Types;
 with Ada.Text_IO;
 
@@ -50,7 +52,10 @@ use Crypto.Types;
 
    procedure Hmac_Test1(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      use Crypto.Symmetric.Mac.Hmac_SHA256;
+--        use Crypto.Symmetric.Mac.Hmac_SHA256;
+      use Crypto.Symmetric.Mac.Hmac_SHA256_Object;
+
+      My_Context : HMAC_Context;
       Key_1 : W_Block512 :=
         (16#0b_0b_0b_0b#, 16#0b_0b_0b_0b#, 16#0b_0b_0b_0b#, 16#0b_0b_0b_0b#,
          16#0b_0b_0b_0b#, others => 0); -- 20 Bytes
@@ -65,8 +70,8 @@ use Crypto.Types;
          16#88_1d_c2_00#, 16#c9_83_3d_a7#, 16#26_e9_37_6c#, 16#2e_32_cf_f7#);
 
    begin
-      Init(Key_1);
-      Final_Sign(Message_1, 8, Tag_SHA_1);
+      My_Context.Init(Key_1);
+      My_Context.Final_Sign(Message_1, 8, Tag_SHA_1);
 
       Assert(Tag_SHA_1 = Tag_SHA,"Symmetric Hmac SHA256 Test failed!");
 
@@ -133,7 +138,11 @@ use Crypto.Types;
 
    procedure Hmac_Test4(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      use Crypto.Symmetric.Mac.Hmac_SHA512;
+      --use Crypto.Symmetric.Mac.Hmac_SHA512;
+      use Crypto.Symmetric.Mac.Hmac_SHA512_Object;
+
+      My_Context : HMAC_Context;
+
       Key_4 : DW_Block1024 :=
         (16#01_02_03_04_05_06_07_08#, 16#09_0a_0b_0c_0d_0e_0f_10#,
          16#11_12_13_14_15_16_17_18#, 16#19_00_00_00_00_00_00_00#,
@@ -153,8 +162,9 @@ use Crypto.Types;
          16#a9_1c_a5_c1_1a_a2_5e_b4#, 16#d6_79_27_5c_c5_78_80_63#,
          16#a5_f1_97_41_12_0c_4f_2d#, 16#e2_ad_eb_eb_10_a2_98_dd#);
    begin
-      Init(Key_4);
-      Final_Sign(Message_4, 50, Tag_SHA_4);
+      My_Context.Init(Key => Key_4);
+      My_Context.Final_Sign(Message_4, 50, Tag_SHA_4);
+      My_Context.Final_Sign(Message_4, 50, Tag_SHA_4);
 
       Assert(Tag_SHA_4 = Tag_SHA,"Symmetric Hmac SHA512 Test failed!");
 

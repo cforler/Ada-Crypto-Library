@@ -13,9 +13,10 @@ package Test.Scrypt is
 
 	function Name(T: Scrypt_Test) return Test_String;
 
+   	procedure Failing_XOR;
+   	procedure Failing_Power;
 
-
-
+   	procedure Scrypt_Test_Exceptions(T: in out Test_Cases.Test_Case'Class);
    	procedure Scrypt_Test_Salsa(T: in out Test_Cases.Test_Case'Class);
    	procedure Scrypt_Test_Block_Mix(T: in out Test_Cases.Test_Case'Class);
    	procedure Scrypt_Test_ROMix(T: in out Test_Cases.Test_Case'Class);

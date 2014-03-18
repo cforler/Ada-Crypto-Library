@@ -22,7 +22,18 @@
 
 -- This SHA-256 implementation is based on fips-180-2
 
+with Crypto.Symmetric.Algorithm.Sha_Utils;
+
 package Crypto.Symmetric.Algorithm.SHA256 is
+   
+   type Generic_Interface is Interface;
+   type SHA256_Interface is new Generic_Interface with
+      record
+         Utils_Interface : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Interface;
+         Hash_Value : W_Block256;
+         Current_Message_Length : Message_Length64;
+      end record;
+   
    -- low level API
    procedure Init(Hash_Value : out W_Block256);
    
@@ -32,7 +43,18 @@ package Crypto.Symmetric.Algorithm.SHA256 is
    function Final_Round(Last_Message_Block  : W_Block512;
                         Last_Message_Length : Message_Block_Length512;
                         Hash_Value          : W_Block256)
-                       return W_Block256;
+                        return W_Block256;
+   
+   -- low level API with object
+   procedure Init(This 		: in out SHA256_Interface);
+
+   procedure Round(This 	: in out 	SHA256_Interface;
+                   Message_Block: in 		W_Block512);
+
+   function Final_Round(This 		    : in out SHA256_Interface;
+                        Last_Message_Block  : W_Block512;
+                        Last_Message_Length : Message_Block_Length512)
+                        return W_Block256;
 
    -- high level API
    procedure Hash(Message : in Bytes;  Hash_Value :  out W_Block256);

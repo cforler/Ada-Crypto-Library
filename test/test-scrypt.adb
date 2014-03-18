@@ -12,57 +12,59 @@ with Crypto.Symmetric.Hashfunction_Object_SHA512;
 
 
 package body Test.Scrypt is
-use Crypto.Types;
+   use Crypto.Types;
 
-------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------
--------------------------------- Type - Declaration --------------------------------
-------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
+   -------------------------------- Type - Declaration --------------------------------
+   ------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
 
 
    package Scrypt renames Crypto.Symmetric.KDF_Scrypt;
 
 
-------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------
----------------------------- Register PBKDF2 Test 1 ----------------------------
-------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
+   ---------------------------- Register PBKDF2 Test 1 ----------------------------
+   ------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
 
-	procedure Register_Tests(T : in out Scrypt_Test) is
-		use Test_Cases.Registration;
-	begin
-      		Register_Routine(T, Scrypt_Test_Salsa'Access,"Salsa 20/8 for Scrypt");
---        		Register_Routine(T, Scrypt_Test_Block_Mix'Access,"Block Mix for Scrypt");
---        		Register_Routine(T, Scrypt_Test_ROMix'Access,"Rom Mix for Scrypt");
---        		Register_Routine(T, Scrypt_Test_PBKDF2'Access,"PBKDF2 for Scrypt");
---        		Register_Routine(T, Scrypt_Test_SCRYPT'Access,"SCRYPT for Scrypt");
+   procedure Register_Tests(T : in out Scrypt_Test) is
+      use Test_Cases.Registration;
+   begin
+      Register_Routine(T, Scrypt_Test_Salsa'Access,"Salsa 20/8 for Scrypt");
+      Register_Routine(T, Scrypt_Test_Block_Mix'Access,"Block Mix for Scrypt");
+      Register_Routine(T, Scrypt_Test_ROMix'Access,"Rom Mix for Scrypt");
+      Register_Routine(T, Scrypt_Test_PBKDF2'Access,"PBKDF2 for Scrypt");
+      Register_Routine(T, Scrypt_Test_SCRYPT'Access,"SCRYPT for Scrypt");
+      Register_Routine(T, Scrypt_Test_Exceptions'Access,"Exceptions for Scrypt");
 
-	end Register_Tests;
 
-------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------
------------------------------- Name PBKDF2 Test ------------------------------
-------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------
+   end Register_Tests;
+
+   ------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
+   ------------------------------ Name PBKDF2 Test ------------------------------
+   ------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
 
    function Name(T : Scrypt_Test) return Test_String is
-      HS : Crypto.Symmetric.Hashfunction_Object_SHA512.Scheme;
+      HS : Crypto.Symmetric.Hashfunction_Object_SHA512.Hash_Context;
    begin
       HS.Initialize;
 
       return new String'("Scrypt Test");
 
-	end Name;
+   end Name;
 
 
-------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------
------------------------------------- Start Tests -----------------------------------
-------------------------------------------------------------------------------------
--------------------------------------- Test 1 --------------------------------------
-------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
+   ------------------------------------ Start Tests -----------------------------------
+   ------------------------------------------------------------------------------------
+   -------------------------------------- Test 1 --------------------------------------
+   ------------------------------------------------------------------------------------
 
 
    procedure Scrypt_Test_Salsa(T : in out Test_Cases.Test_Case'Class) is
@@ -95,7 +97,7 @@ use Crypto.Types;
                                             Output => Salsa_Output);
 
 
-     Assert(To_Bytes(Salsa_Output) = Salsa_Output_Ideal, "Success!");
+      Assert(To_Bytes(Salsa_Output) = Salsa_Output_Ideal, "Success!");
 
    end Scrypt_Test_Salsa;
 
@@ -146,8 +148,9 @@ use Crypto.Types;
       Output : W_Block512_Array(0..1);
       Input : W_Block512_Array(0..1) := (To_W_Block512(Input_Bytes_A), To_W_Block512(Input_Bytes_B));
 
-   begin
+      Test_Context : Crypto.Symmetric.Hashfunction_Object_SHA512.Hash_Context;
 
+   begin
 
       Error_Output.Put_Line("sha512crypt block mix:");
 
@@ -250,8 +253,8 @@ use Crypto.Types;
 
 
       package PBKDF2 is new Crypto.Symmetric.KDF_PBKDF2(Hmac_Package    => Crypto.Symmetric.Mac.Hmac_SHA256,
-                                                	To_Message_Type => To_W_Block512,
-                                                	To_Bytes        => Crypto.Types.To_Bytes,
+                                                        To_Message_Type => To_W_Block512,
+                                                        To_Bytes        => Crypto.Types.To_Bytes,
                                                         "xor"           => Crypto.Types."xor");
 
       Ideal_A : Bytes(0..63) :=
@@ -376,9 +379,47 @@ use Crypto.Types;
       Assert(Key_Bytes = Ideal_Three, "Scrypt 3 failed");
 
 
-      end Scrypt_Test_SCRYPT;
+   end Scrypt_Test_SCRYPT;
 
 
-      ------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------
+
+   procedure Failing_XOR is
+      A : W_Block512_Array(0..1);
+      B : W_Block512_Array(0..2);
+   begin
+      A := A xor B;
+   end Failing_XOR;
+
+
+   ------------------------------------------------------------------------------------
+
+
+   procedure Failing_Power is
+      Key_Size : Natural := 64;
+      Key_Bytes : Bytes(0..Key_Size-1);
+   begin
+      Scrypt.scrypt(Password => "pleaseletmein",
+                    Salt     => "SodiumChloride",
+                    r        => 8,
+                    N        => 9,
+                    p        => 1,
+                    dkLen    => Key_Size,
+                    Key      => Key_Bytes);
+   end Failing_Power;
+
+
+
+   ------------------------------------------------------------------------------------
+
+
+
+   procedure Scrypt_Test_Exceptions(T: in out Test_Cases.Test_Case'Class) is
+   begin
+      Assert_Exception(Failing_XOR'Access, "Range Exception failed");
+      Assert_Exception(Failing_Power'Access, "Power 2 Exception failed");
+
+   end Scrypt_Test_Exceptions;
+
 
 end Test.Scrypt;

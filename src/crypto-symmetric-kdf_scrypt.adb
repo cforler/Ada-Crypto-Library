@@ -75,7 +75,10 @@ package body Crypto.Symmetric.KDF_Scrypt is
    begin
 
       --basic test whether N=2^x
-      if N mod 2 /= 0 and N /=1 then
+
+
+
+      if not IsPowerOfTwo(N) then
          raise N_not_power_of_2_exception;
       end if;
 
@@ -131,7 +134,7 @@ package body Crypto.Symmetric.KDF_Scrypt is
    begin
 
       --basic test whether N=2^x
-      if N mod 2 /= 0 and N /=1 then
+      if not IsPowerOfTwo(N) then
          raise N_not_power_of_2_exception;
       end if;
 
@@ -280,6 +283,15 @@ package body Crypto.Symmetric.KDF_Scrypt is
       return Output;
 
    end "xor";
+
+   --power of two test (rudimentary)
+   function IsPowerOfTwo(value : Natural) return Boolean is
+   begin
+      return value mod 2 = 0;
+   end IsPowerOfTwo;
+
+
+
 
 
 end Crypto.Symmetric.KDF_Scrypt;

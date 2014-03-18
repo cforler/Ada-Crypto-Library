@@ -284,6 +284,105 @@ package body Crypto.Symmetric.Algorithm.SHA256 is
    end F_Hash;
 
    ---------------------------------------------------------------------------
+   
+   procedure Init(This 		: in out SHA256_Interface) is
+   begin
+      This.Current_Message_Length:=0;
+      This.Hash_Value(0) := 16#6a09e667#;
+      This.Hash_Value(1) := 16#Bb67ae85#;
+      This.Hash_Value(2) := 16#3c6ef372#;
+      This.Hash_Value(3) := 16#A54ff53a#;
+      This.Hash_Value(4) := 16#510e527f#;
+      This.Hash_Value(5) := 16#9b05688c#;
+      This.Hash_Value(6) := 16#1f83d9ab#;
+      This.Hash_Value(7) := 16#5be0cd19#;
+   end Init;
+      
+
+   procedure Round(This 	: in out 	SHA256_Interface;
+                   Message_Block: in 		W_Block512) is
+      A, B, C, D, E, F, G, H : Word; -- Working variables;
+      W : Words(0..63);
+   begin
+
+      This.Current_Message_Length := This.Current_Message_Length + 512;
+
+      if This.Current_Message_Length = 0  then
+         raise SHA256_Constraint_Error;
+      end if;
+
+      -- Prepare the message schedule
+      W(Message_Block'Range) := Words(Message_Block);
+      for T in 16..63 loop
+         W(T) := S1(W(T-2)) + W(T-7) + S0(W(T-15)) + W(T-16);
+      end loop;
+
+      -- Initialize the eight working variables
+      A := This.Hash_Value(0);
+      B := This.Hash_Value(1);
+      C := This.Hash_Value(2);
+      D := This.Hash_Value(3);
+      E := This.Hash_Value(4);
+      F := This.Hash_Value(5);
+      G := This.Hash_Value(6);
+      H := This.Hash_Value(7);
+
+      for T in W'Range loop
+         declare
+            T1, T2 : Word;
+         begin
+            T1 := H + Sum1(E) + Ch(E,F,G) + K(T) + W(T);
+            T2 := Sum0(A) + Maj(A,B,C);
+            H  := G ;
+            G  := F;
+            F  := E;
+            E  := D + T1;
+            D  := C;
+            C  := B;
+            B  := A;
+            A  := T1 + T2;
+         end;
+      end loop;
+
+      -- Compute the ith intermediate hash value Hash_Value^{(i)}
+      This.Hash_Value(0) := This.Hash_Value(0) + A;
+      This.Hash_Value(1) := This.Hash_Value(1) + B;
+      This.Hash_Value(2) := This.Hash_Value(2) + C;
+      This.Hash_Value(3) := This.Hash_Value(3) + D;
+      This.Hash_Value(4) := This.Hash_Value(4) + E;
+      This.Hash_Value(5) := This.Hash_Value(5) + F;
+      This.Hash_Value(6) := This.Hash_Value(6) + G;
+      This.Hash_Value(7) := This.Hash_Value(7) + H;
+
+   end Round;
+
+   function Final_Round(This 		    : in out SHA256_Interface;
+                        Last_Message_Block  : W_Block512;
+                        Last_Message_Length : Message_Block_Length512)
+                        return W_Block256 is
+
+      MP : W_Block512;
+      MF : W_Block512 := Last_Message_Block;
+      H  : W_Block256 := This.Hash_Value;
+   begin
+      -- If the last_message Block is a full block
+      if Last_Message_Length = Message_Block_Length512'Last then
+         Round(MF, H);
+         MF := (others => 0);
+      else
+         This.Current_Message_Length := This.Current_Message_Length +
+           Message_Length64(Last_Message_Length)*8;
+      end if;
+
+      Padding512(MF, This.Current_Message_Length, MP);
+      Round(MF, H);
+
+      if Is_Zero( Words(MP) ) = False then
+         Round(MP, H);
+      end if;
+      return H;
+   end Final_Round;
+
 
 
 end Crypto.Symmetric.Algorithm.SHA256;

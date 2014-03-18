@@ -1,5 +1,6 @@
 with AUnit.Assertions; 
 with Crypto.Symmetric.Hashfunction_SHA256;
+with Crypto.Symmetric.Hashfunction_Object_SHA256;
 with Crypto.Types;
 
 package body Test.SHA256 is 
@@ -54,7 +55,7 @@ package body Test.SHA256 is
 	procedure SHA256_Test1(T: in out Test_Cases.Test_Case'Class) is
 		use AUnit.Assertions; 
 		use Crypto.Symmetric.Hashfunction_SHA256;
-		use Crypto.Types;	
+      		use Crypto.Types;	
 	begin
 		
 		Result_SHA256 := (16#ba7816bf#, 16#8f01cfea#, 16#414140de#, 16#5dae2223#,

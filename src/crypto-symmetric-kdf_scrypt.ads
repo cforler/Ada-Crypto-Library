@@ -65,6 +65,9 @@ package Crypto.Symmetric.KDF_Scrypt is
    function "xor" (Left : W_Block512_Array;
                    Right: W_Block512_Array) return W_Block512_Array;
 
+   --power of two test (rudimentary)
+   function IsPowerOfTwo(value : Natural) return Boolean;
+
 
 
 private

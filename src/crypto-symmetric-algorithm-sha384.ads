@@ -1,3 +1,4 @@
+with Crypto.Symmetric.Algorithm.Sha_Utils;
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU General Public License as
 -- published by the Free Software Foundation; either version 2 of the
@@ -22,7 +23,17 @@
 
 -- This SHA-384 implementation is based on fips-180-2
 
+
+
 package Crypto.Symmetric.Algorithm.SHA384 is
+
+
+   type Generic_Interface is Interface;
+   type SHA384_Interface is new Generic_Interface with
+      record
+         Utils_Interface : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Interface;
+         Hash_Value : DW_Block512;
+      end record;
 
    -- low level API
 
@@ -34,7 +45,19 @@ package Crypto.Symmetric.Algorithm.SHA384 is
    function Final_Round(Last_Message_Block  : DW_Block1024;
                         Last_Message_Length : Message_Block_Length1024;
                         Hash_Value          : DW_Block512)
-                       return DW_Block384;
+                        return DW_Block384;
+
+
+   -- low level API with object
+   procedure Init(This 		: in out SHA384_Interface);
+
+   procedure Round(This 	: in out 	SHA384_Interface;
+                   Message_Block: in 		DW_Block1024);
+
+   function Final_Round(This 		    : in out SHA384_Interface;
+                        Last_Message_Block  : DW_Block1024;
+                        Last_Message_Length : Message_Block_Length1024)
+                        return DW_Block384;
 
    -- high level API
 

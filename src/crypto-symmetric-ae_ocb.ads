@@ -4,6 +4,7 @@ with Crypto.Symmetric.Blockcipher;
 with Crypto.Types; use Crypto.Types;
 
 generic
+
    with package BC is new Crypto.Symmetric.Blockcipher(<>);
    with package N is new Crypto.Types.Nonces(BC.Block);
 

@@ -153,6 +153,36 @@ package body  Crypto.Symmetric.Algorithm.SHA384 is
       Hash_Value := Final_Round(M, Message_Block_Length1024(Size), H);
 
    end F_Hash;
+   
+   procedure Init(This 		: in out SHA384_Interface) is
+   begin
+      This.Utils_Interface.Init_SHA2;
+      This.Hash_Value(0) := 16#cbbb9d5dc1059ed8#;
+      This.Hash_Value(1) := 16#629a292a367cd507#;
+      This.Hash_Value(2) := 16#9159015a3070dd17#;
+      This.Hash_Value(3) := 16#152fecd8f70e5939#;
+      This.Hash_Value(4) := 16#67332667ffc00b31#;
+      This.Hash_Value(5) := 16#8eb44a8768581511#;
+      This.Hash_Value(6) := 16#db0c2e0d64f98fa7#;
+      This.Hash_Value(7) := 16#47b5481dbefa4fa4#;
+   end Init;
+
+   procedure Round(This 	: in out 	SHA384_Interface;
+                   Message_Block: in 		DW_Block1024) is
+   begin
+      Round_SHA2(Message_Block, This.Hash_Value);
+   end Round;
+
+   function Final_Round (This 		    : in out SHA384_Interface;
+                        Last_Message_Block  : DW_Block1024;
+                        Last_Message_Length : Message_Block_Length1024)
+                         return DW_Block384 is
+      H : constant DWords(DW_Block384'Range) := DWords(Final_Round_SHA2(Last_Message_Block,
+									Last_Message_Length,
+									This.Hash_Value))(0..5);
+   begin
+      return DW_Block384(H);
+   end Final_Round;   
 
 
 end  Crypto.Symmetric.Algorithm.SHA384;
