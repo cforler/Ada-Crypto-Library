@@ -102,12 +102,15 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
       hlen : Integer := Hmac_Package.H.Hash_Type'Size/8;
       Salt_Bytes : Bytes(0..Salt'Length+4-1);
 
+      use Hmac_Package;
+      Context : HMAC_Context;
+
       Position : Natural := 0;
 
    begin
 
       Temp_Bytes(0..Password'Length-1):=Password;
-      Hmac_Package.Init(Key => To_Message_Type(Temp_Bytes));
+      Context.Init(Key => To_Message_Type(Temp_Bytes));
 
       Salt_Bytes := (others => 0);
       Salt_Bytes(0..Salt'Length-1) := Salt;
@@ -115,13 +118,13 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
       while Position + 64 < Salt_Bytes'Length loop
          Temp_Bytes(0..63) := Salt_Bytes(Position..Position+63);
-         Hmac_Package. Sign(Message_Block => To_Message_Type(Temp_Bytes));
+         Context. Sign(Message_Block => To_Message_Type(Temp_Bytes));
          Position := Position+64;
       end loop;
 
       Temp_Bytes := (others => 0);
       Temp_Bytes(0..Salt_Bytes'Length - Position -1) := Salt_Bytes(Position..Salt_Bytes'Length-1);
-      Hmac_Package.Final_Sign(Final_Message_Block        => To_Message_Type(Temp_Bytes),
+      Context.Final_Sign(Final_Message_Block        => To_Message_Type(Temp_Bytes),
                               Final_Message_Block_Length => Hmac_Package.H.Message_Block_Length_Type(Salt_Bytes'Length - Position),
                               Tag                        => Temp_Block);
 
@@ -130,7 +133,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
       for I in 2..Count loop
          Temp_Bytes := (others => 0);
          Temp_Bytes(0..hlen-1) := Crypto.Symmetric.KDF_PBKDF2.To_Bytes(Temp_Block);
-         Hmac_Package.Final_Sign(Final_Message_Block        => To_Message_Type(Temp_Bytes),
+         Context.Final_Sign(Final_Message_Block        => To_Message_Type(Temp_Bytes),
                                  Final_Message_Block_Length => Hmac_Package.H.Message_Block_Length_Type(hlen),
                                  Tag                        => Temp_Block);
 

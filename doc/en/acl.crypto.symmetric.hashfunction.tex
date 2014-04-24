@@ -16,14 +16,18 @@ hash functions.
    type Hash_Type                 is private;
    type Message_Type              is private;
    type Message_Block_Length_Type is range <>;
+	 type Internal_Scheme		  is private;
+	
    with function Generic_To_Bytes(DWord_Array : Hash_Type)
    								      return Bytes is <>;
-   with procedure Init(Hash_Value : out Hash_Type) is <>;
-   with procedure Round(Message_Block: in     Message_Type;
-                        Hash_Value   : in out Hash_Type) is <>;
-   with function Final_Round(Last_Message_Block : Message_Type;
-                 Last_Message_Length : Message_Block_Length_Type;
-                 Hash_Value  : Hash_Type) return Hash_Type is <>;
+												
+   with procedure Init(This : in out Internal_Scheme) is <>;
+   with procedure Round(This : in out Internal_Scheme;
+                        Message_Block : in     Message_Type) is <>;
+   with function Final_Round(This : in out Internal_Scheme;
+                             Last_Message_Block  : Message_Type;
+                             Last_Message_Length : Message_Block_Length_Type)
+                            return Hash_Type is <>;
    with procedure Hash(Message    : in   Bytes;
                        Hash_Value : out  Hash_Type) is <>;
    with procedure Hash(Message    : in   String;
@@ -50,16 +54,16 @@ $H:=F\_Hash("/bin/ls")$; returns a hash value of "$/bin/ls$".
 \subsubsection*{Low-Level-API}
 The Low-Level-API consists of the following operations.
 \begin{itemize}
-\item One procedure \texttt{Init()} initializes or reinitializes the
-  hash function. Every time before a message is to be hashed, this
+\item One procedure \texttt{Initialize()} initializes or reinitializes the hash function. Every time before a message is to be hashed, this
   procedure should be called.
 \begin{lstlisting}{}
-  procedure Init;
+  procedure Initialize(This : in out Hash_Context);
 \end{lstlisting}
-\item One procedure \texttt{Round()} can be called iteratively to hash
+\item One procedure \texttt{Update()} can be called iteratively to hash
   message blocks.
 \begin{lstlisting}{}
-  procedure Round(Message_Block : in Message_Type);
+  procedure Update(This : in out Hash_Context;
+                   Message_Block : in Message_Type);
 \end{lstlisting}
 \item Function \texttt{Final\_Round()} pads and hashs a message block
   \texttt{Last\_Message\_Block}. Because of padding, the length of the
@@ -68,9 +72,10 @@ The Low-Level-API consists of the following operations.
   block of type \texttt{Message\_Type}. The returning value of the
   function is corresponding to the final hash value of the message.
 \begin{lstlisting}{}
- function Final_Round(Last_Message_Block:Message_Type;
-        	    Last_Message_Length:Message_Block_Length_Type)
-        			 	  			 			return Hash_Type;
+ function Final_Round(This : in out Hash_Context;
+                      Last_Message_Block  : Message_Type;
+                      Last_Message_Length : Message_Block_Length_Type)
+                       return Hash_Type;
 \end{lstlisting}
 \end{itemize}
 
@@ -107,22 +112,24 @@ This example gives the SHA-256 hash value of $/bin/ls$.
 
   procedure Example_Hash_LL is
     package WIO is new Ada.Text_IO.Modular_IO(Word);
-    package SHA256 is new Crypto.Symmetric.Hashfunction
-    			      (Hash_Type    => W_Block256,
-			    		 Message_Type => W_Block512,
-		             Message_Block_Length_Type => 
-				             Crypto.Types.Message_Block_Length512,
-    			       Generic_To_Bytes => Crypto.Types.To_Bytes);
+		package SHA256 is new Crypto.Symmetric.Hashfunction
+								(Hash_Type                 => W_Block256,
+                 Message_Type              => W_Block512,
+                 Message_Block_Length_Type => 
+								     Crypto.Types.Message_Block_Length512,
+                 Internal_Scheme           => Sha256_Interface,
+                 Generic_To_Bytes	     => Crypto.Types.To_Bytes);
     Message : String :=("All your base are belong to us! ");
     W : Words := To_Words(To_Bytes(Message));
     M : W_Block512 := (others => 0);
     H : W_Block256;
+		H_Context : SHA256.Hash_Context;
   begin
     for I in W'Range loop
       M(I) := W(I);
     end loop;
-    SHA256.Init;
-    H := SHA256.Final_Round(M, Message'Last);
+    H_Context.Initialize;
+    H := H_Context.Final_Round(M, Message'Last);
     for I in W_Block256'Range loop
       WIO.Put(H(I), Base=>16);
       New_Line;

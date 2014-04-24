@@ -46,7 +46,6 @@ package body Test.PBKDF2 is
 
    procedure PBKDF2_Test_One(T : in out Test_Cases.Test_Case'Class) is
 
-      --    Sixteen_Bytes_Container : Bytes(0..15);
       Twenty_Bytes_Container : Bytes(0..19);
       Twentyfive_Bytes_Container : Bytes(0..24);
       success : Boolean;

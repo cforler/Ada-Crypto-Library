@@ -1,4 +1,5 @@
 with Crypto.Symmetric.AE;
+with Crypto.Symmetric.AE.AD;
 with Crypto.Types.Nonces;
 with Crypto.Symmetric.Blockcipher;
 with Crypto.Types; use Crypto.Types;
@@ -15,17 +16,20 @@ generic
    with function Shift_Right (Value: BC.Block; Amount: Natural) return BC.Block; -- Used to generate the irreducible polynomial L(-1).
    with function To_Byte_Word (X: Word) return Byte_Word;                        -- Used to convert Blockcounter into Bytes.
 
-package Crypto.Symmetric.AE_OCB3 is
+package Crypto.Symmetric.AEAD_OCB3 is
    use BC;
 
    package AE is new Crypto.Symmetric.AE(Key_Type => Key_Type,
                                          Block    => Block,
                                          N        => N);
+
+   package AEAD is new AE.AD;
    use AE;
-   
+
    package Error_Output is new Crypto.Debug_Put(b => false);
 
-   type AE_OCB is new AE.AE_Scheme with private;
+   type AEAD_OCB is new AE.AE_Scheme and AEAD.AEAD_Scheme with private;
+
    Bytes_Per_Block : constant Positive := Block'Size / 8;
 
    ---------------------------------------------
@@ -33,63 +37,76 @@ package Crypto.Symmetric.AE_OCB3 is
    ---------------------------------------------
 
    overriding
-   procedure Init_Encrypt(This   : out    AE_OCB;
+   procedure Init_Encrypt(This   : out    AEAD_OCB;
                           Key    : in     Key_Type;
                           Nonce  : in out N.Nonce'Class);
 
    overriding
-   procedure Init_Decrypt(This        : out AE_OCB;
+   procedure Init_Decrypt(This        : out AEAD_OCB;
                           Key         : in  Key_Type;
                           Nonce_Value : in  Block);
 
    overriding
-   procedure Encrypt(This             : in out AE_OCB;
+   procedure Encrypt(This             : in out AEAD_OCB;
                      Read_Plaintext   : in     Callback_Reader;
                      Write_Ciphertext : in     Callback_Writer);
 
 
    overriding
-   function Decrypt_And_Verify(This                   : in out AE_OCB;
+   function Decrypt_And_Verify(This                   : in out AEAD_OCB;
                                Read_Ciphertext        : in     Callback_Reader;
                                Read_Ciphertext_Again  : in     Callback_Reader := null;
                                Write_Plaintext        : in     Callback_Writer)
                                return Boolean;
 
-   
+   overriding
+   procedure Encrypt(This             : in out AEAD_OCB;
+                     Read_Header      : in     Callback_Reader;
+                     Read_Plaintext   : in     Callback_Reader;
+                     Write_Ciphertext : in     Callback_Writer);
+
+   overriding
+   function Decrypt_And_Verify(This                   : in out AEAD_OCB;
+                               Read_Header            : in     Callback_Reader;
+                               Read_Ciphertext        : in     Callback_Reader;
+                               Read_Ciphertext_Again  : in     Callback_Reader := null;
+                               Write_Plaintext        : in     Callback_Writer)
+                                  return Boolean;
+
    --------------------------------------------------
    -- Encryption / Decryption with Associated Data --
    --------------------------------------------------
-   
-   procedure Encrypt(This             : in out AE_OCB;
+
+   procedure Encrypt(This             : in out AEAD_OCB;
                      Read_Plaintext   : in     Callback_Reader;
                      Write_Ciphertext : in     Callback_Writer;
                      Read_AD	      : in     Callback_Reader);
-   
-   procedure Encrypt(This             : in out AE_OCB;
+
+   procedure Encrypt(This             : in out AEAD_OCB;
                      Plaintext        : in     Bytes;
                      Ciphertext       : out    Bytes;
                      AD	      	      : in     Bytes);
-   
-   function Decrypt_And_Verify(This                   : in out AE_OCB;
+
+   function Decrypt_And_Verify(This                   : in out AEAD_OCB;
                                Read_Ciphertext        : in     Callback_Reader;
                                Read_Ciphertext_Again  : in     Callback_Reader := null;
                                Write_Plaintext        : in     Callback_Writer;
                                Read_AD	      	      : in     Callback_Reader)
                                return Boolean;
-   
-   function Decrypt_And_Verify(This                   : in out AE_OCB;
+
+   function Decrypt_And_Verify(This                   : in out AEAD_OCB;
                                Ciphertext             : in     Bytes;
                                Plaintext              : out    Bytes;
                                AD	      	      : in     Bytes)
                                return Boolean;
-   
+
    ---------------------------------------------
    ---- additional functions and procedures ----
    ---------------------------------------------
 
    -- Add parameter Bytes_Of_N_Read
    not overriding
-   procedure Init_Encrypt(This   : out    AE_OCB;
+   procedure Init_Encrypt(This   : out    AEAD_OCB;
                           Key    : in     Key_Type;
                           N_Init           : in out N.Nonce'Class;
                           Bytes_Of_N_Read  : in     Positive;
@@ -97,28 +114,28 @@ package Crypto.Symmetric.AE_OCB3 is
 
    -- Add parameter Bytes_Of_N_Read
    not overriding
-   procedure Init_Decrypt(This                : out    AE_OCB;
+   procedure Init_Decrypt(This                : out    AEAD_OCB;
                           Key                 : in     Key_Type;
                           N_Init              : in     Block;
                           Bytes_Of_N_Read     : in     Positive;
                           Taglen              : in     Positive);
-   
+
    procedure EmptyReader(B : out Bytes; Count: out Natural);
-   
+
 
 private
-   
-   --"Hashing" for Associated Data
-   function Hash_AD(This     	  : in  AE_OCB;
-                    Read_AD 	  : in	Callback_Reader) return Block;
-   
 
-   
-   
+   --"Hashing" for Associated Data
+   function Hash_AD(This     	  : in  AEAD_OCB;
+                    Read_AD 	  : in	Callback_Reader) return Block;
+
+
+
+
    type Block_Array is array (-1..31) of BC.Block;
    subtype Taglength_Range is Positive range 1..Bytes_Per_Block;
-   
-   type AE_OCB is new AE.AE_Scheme with
+
+   type AEAD_OCB is new AE.AE_Scheme and AEAD.AEAD_Scheme with
       record
          Nonce_Value : BC.Block;
          Offset      : BC.Block;
@@ -129,4 +146,4 @@ private
    Blocklength_Not_Supported: exception;
    Noncelength_Not_Supported: exception;
 
-end Crypto.Symmetric.AE_OCB3;
+end Crypto.Symmetric.AEAD_OCB3;

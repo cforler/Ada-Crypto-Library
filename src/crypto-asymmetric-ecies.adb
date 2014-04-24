@@ -141,8 +141,11 @@ package body Crypto.Asymmetric.ECIES is
       Tmp_W512 : W_Block512;
       tmp_N    : Natural := 1;
       tmp_C    : Natural := 0;
+      
+      Context : HMAC_Context;
+      
    begin
-      Init(Mac_Key);
+      Context.Init(Mac_Key);
       if (tmp_N + 4) < Cipher.Message_Block_Count then
 	 for I in 0 .. 3 loop
 	    tmp_B128 := Cipher.Cipher_Map.Element(tmp_N + I);
@@ -157,7 +160,7 @@ package body Crypto.Asymmetric.ECIES is
 					tmp_B128(14), tmp_B128(15));
 	 end loop;
 	 
-	 Sign(tmp_W512);
+	 Context.Sign(tmp_W512);
 	 tmp_N := tmp_N +4;
       else
 	 tmp_C := Cipher.Message_Block_Count - tmp_N;
@@ -186,7 +189,7 @@ package body Crypto.Asymmetric.ECIES is
 					tmp_B128(14), tmp_B128(15));
 	 end loop;
 	 
-	 Final_Sign(tmp_W512, (tmp_C*16), Mac);
+	 Context.Final_Sign(tmp_W512, (tmp_C*16), Mac);
       end if;
    end Mac_Compute;
    

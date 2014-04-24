@@ -33,22 +33,35 @@ generic
      (Source : in H.Hash_Type; Dest : out H.Message_Type) is <>;
 
 package Crypto.Symmetric.Mac.Hmac is
+
    use H;
 
-    procedure Init(Key : in Message_Type);
+   type Generic_Context is Interface;
+   type HMAC_Context is new Generic_Context with
+      record
+         HS : Hash_Context;
+         K : Message_Type;
+      end record;
 
-    procedure Sign(Message_Block : in Message_Type);
+
+   procedure Init(This : in out HMAC_Context;
+                  Key : in Message_Type);
+
+   procedure Sign(This : in out HMAC_Context;
+                  Message_Block : in Message_Type);
 
     procedure Final_Sign
-      (Final_Message_Block        : in Message_Type;
+     (This : in out HMAC_Context;
+      Final_Message_Block        : in Message_Type;
        Final_Message_Block_Length : in Message_Block_Length_Type;
        Tag                        : out Hash_Type);
 
 
-    procedure Verify(Message_Block : in Message_Type);
+   procedure Verify(This : in out HMAC_Context;
+                    Message_Block : in Message_Type);
 
-    function Final_Verify
-      (Final_Message_Block        : Message_Type;
+    function Final_Verify(This : in out HMAC_Context;
+      Final_Message_Block        : Message_Type;
        Final_Message_Block_Length : Message_Block_Length_Type;
        Tag                        : Hash_Type) return Boolean;
 

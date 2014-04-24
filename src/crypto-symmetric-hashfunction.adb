@@ -25,28 +25,30 @@ package body  Crypto.Symmetric.Hashfunction is
 
    H : Hash_Type;
 
+   ---------------------------------------------------------------------------
+
+   procedure Initialize(This : in out Hash_Context) is
+   begin
+      Init(This.HS);
+   end Initialize;
 
    ---------------------------------------------------------------------------
 
-   procedure Init is
+   procedure Update(This : in out Hash_Context;
+                    Message_Block : in Message_Type) is
    begin
-      Init(H);
-   end Init;
-
-   ---------------------------------------------------------------------------
-
-   procedure Update(Message_Block : in Message_Type) is
-   begin
-      Round(Message_Block, H);
+      Round(This          => This.HS,
+            Message_Block => Message_Block);
    end Update;
 
    ---------------------------------------------------------------------------
 
-   function Final_Round(Last_Message_Block  : Message_Type;
+   function Final_Round(This : in out Hash_Context;
+                        Last_Message_Block  : Message_Type;
                         Last_Message_Length : Message_Block_Length_Type)
                         return Hash_Type is
    begin
-      return Final_Round(Last_Message_Block, Last_Message_Length, H);
+      return Final_Round(This.HS, Last_Message_Block, Last_Message_Length);
    end Final_Round;
 
 
@@ -73,13 +75,13 @@ package body  Crypto.Symmetric.Hashfunction is
       F_Hash(Filename, H);
       return H;
    end F_Hash;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function To_Bytes(Hash : Hash_Type) return Bytes is
    begin
       return Generic_To_Bytes(Hash);
    end To_Bytes;
-     
-      
+
+
    end Crypto.Symmetric.Hashfunction;

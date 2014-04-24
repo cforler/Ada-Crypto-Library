@@ -74,12 +74,14 @@ package body Test.Whirlpool_MAC is
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_Whirlpool;
 
+      Context : Crypto.Symmetric.Mac.Hmac_Whirlpool.HMAC_Context;
+      
    begin
 
-   	   Init(Key1);
-   	   Final_Sign(Message1, 26, Tag);
+   	   Context.Init(Key1);
+   	   Context.Final_Sign(Message1, 26, Tag);
 
-       Assert((Tag = Temp) or (Final_Verify(Message1, 26, Tag)), "Final Signature with Whirlpool MAC failed.");
+       Assert((Tag = Temp) or (Context.Final_Verify(Message1, 26, Tag)), "Final Signature with Whirlpool MAC failed.");
 
    end Whirlpool_MAC_Test1;
 

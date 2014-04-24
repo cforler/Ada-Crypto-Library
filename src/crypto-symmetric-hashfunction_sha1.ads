@@ -29,13 +29,8 @@ use Crypto.Symmetric.Algorithm.SHA1;
 pragma Elaborate_All (Crypto.Symmetric.Hashfunction);
 
 package Crypto.Symmetric.Hashfunction_SHA1 is
-   new Crypto.Symmetric.Hashfunction(
-			   Hash_Type     => Crypto.Types.W_Block160,
-                           Message_Type  =>  Crypto.Types.W_Block512,
-                           Message_Block_Length_Type => 
-			     Crypto.Types.Message_Block_Length512,
-			   Generic_To_Bytes => Crypto.Types.To_Bytes
-                          );
-
-
-
+  new Crypto.Symmetric.Hashfunction(Hash_Type                 => Crypto.Types.W_Block160,
+                                    Message_Type              => Crypto.Types.W_Block512,
+                                    Message_Block_Length_Type => Crypto.Types.Message_Block_Length512,
+                                    Internal_Scheme           => Sha1_Interface,
+                                    Generic_To_Bytes	     => Crypto.Types.To_Bytes);

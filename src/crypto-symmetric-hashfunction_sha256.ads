@@ -24,17 +24,14 @@ with Crypto.Types;
 with Crypto.Symmetric.Algorithm.SHA256;
 with Crypto.Symmetric.Hashfunction;
 
+use Crypto.Types;
 use Crypto.Symmetric.Algorithm.SHA256;
 
+
 pragma Elaborate_All (Crypto.Symmetric.Hashfunction);
-
 package Crypto.Symmetric.Hashfunction_SHA256 is
-   new Crypto.Symmetric.Hashfunction(Hash_Type    => Crypto.Types.W_Block256,
-                           Message_Type => Crypto.Types.W_Block512,
-                           Message_Block_Length_Type =>
-                             Crypto.Types.Message_Block_Length512,
-			   Generic_To_Bytes => Crypto.Types.To_Bytes
-                          );
-
-
-
+  new Crypto.Symmetric.Hashfunction(Hash_Type                 => W_Block256,
+                                           Message_Type              => W_Block512,
+                                           Message_Block_Length_Type => Crypto.Types.Message_Block_Length512,
+                                           Internal_Scheme           => Sha256_Interface,
+                                           Generic_To_Bytes	     => To_Bytes);

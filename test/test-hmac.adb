@@ -1,8 +1,6 @@
 with AUnit.Assertions;
 with Crypto.Symmetric.Mac.Hmac_SHA256;
 with Crypto.Symmetric.Mac.Hmac_SHA512;
-with Crypto.Symmetric.Mac.Hmac_SHA512_Object;
-with Crypto.Symmetric.Mac.Hmac_SHA256_Object;
 with Crypto.Types;
 with Ada.Text_IO;
 
@@ -52,8 +50,7 @@ use Crypto.Types;
 
    procedure Hmac_Test1(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
---        use Crypto.Symmetric.Mac.Hmac_SHA256;
-      use Crypto.Symmetric.Mac.Hmac_SHA256_Object;
+      use Crypto.Symmetric.Mac.Hmac_SHA256;
 
       My_Context : HMAC_Context;
       Key_1 : W_Block512 :=
@@ -84,6 +81,8 @@ use Crypto.Types;
       use AUnit.Assertions;
       use Crypto.Symmetric.Mac.Hmac_SHA256;
 
+      Context : HMAC_Context;
+
       Key_2 : W_Block512 := (16#4a_65_66_65#, others => 0);
 
       Message_2 : W_Block512 :=
@@ -96,8 +95,8 @@ use Crypto.Types;
         (16#5b_dc_c1_46#, 16#bf_60_75_4e#, 16#6a_04_24_26#, 16#08_95_75_c7#,
          16#5a_00_3f_08#, 16#9d_27_39_83#, 16#9d_ec_58_b9#, 16#64_ec_38_43#);
    begin
-      Init(Key_2);
-      Final_Sign(Message_2, 28, Tag_SHA_2);
+      Context.Init(Key_2);
+      Context.Final_Sign(Message_2, 28, Tag_SHA_2);
 
       Assert(Tag_SHA_2 = Tag_SHA,"Symmetric Hmac SHA256 Test failed!");
 
@@ -109,6 +108,8 @@ use Crypto.Types;
    procedure Hmac_Test3(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       use Crypto.Symmetric.Mac.Hmac_SHA256;
+
+      Context : HMAC_Context;
 
       Key_3 : W_Block512 :=
         (16#aa_aa_aa_aa#, 16#aa_aa_aa_aa#, 16#aa_aa_aa_aa#, 16#aa_aa_aa_aa#,
@@ -126,8 +127,8 @@ use Crypto.Types;
         (16#77_3e_a9_1e#, 16#36_80_0e_46#, 16#85_4d_b8_eb#, 16#d0_91_81_a7#,
          16#29_59_09_8b#, 16#3e_f8_c1_22#, 16#d9_63_55_14#, 16#ce_d5_65_fe#);
    begin
-      Init(Key_3);
-      Final_Sign(Message_3, 50, Tag_SHA_3);
+      Context.Init(Key_3);
+      Context.Final_Sign(Message_3, 50, Tag_SHA_3);
 
       Assert(Tag_SHA_3 = Tag_SHA,"Symmetric Hmac SHA256 Test failed!");
 
@@ -138,8 +139,7 @@ use Crypto.Types;
 
    procedure Hmac_Test4(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      --use Crypto.Symmetric.Mac.Hmac_SHA512;
-      use Crypto.Symmetric.Mac.Hmac_SHA512_Object;
+      use Crypto.Symmetric.Mac.Hmac_SHA512;
 
       My_Context : HMAC_Context;
 
@@ -176,6 +176,8 @@ use Crypto.Types;
    procedure Hmac_Test5(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       use Crypto.Symmetric.Mac.Hmac_SHA512;
+
+      Context : HMAC_Context;
       Key_5 : DW_Block1024 :=
         (16#0c_0c_0c_0c_0c_0c_0c_0c#, 16#0c_0c_0c_0c_0c_0c_0c_0c#,
          16#0c_0c_0c_0c_00_00_00_00#, others => 0); -- 20 Bytes
@@ -191,8 +193,8 @@ use Crypto.Types;
                                  16#89#, 16#1d#, 16#87#, 16#a6#); -- Standard Tag
       Trunc : Bytes(1..16);
    begin
-      Init(Key_5);
-      Final_Sign(Message_5, 20, Tag_SHA_5);
+      Context.Init(Key_5);
+      Context.Final_Sign(Message_5, 20, Tag_SHA_5);
       Trunc := To_Bytes(Tag_SHA_5)(1..16);
 
       Assert(Trunc = Tag_SHA ,"Symmetric Hmac SHA512 Test failed!");

@@ -88,12 +88,14 @@ package body Test.SHA512_MAC is
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA512;
 
+      Context : HMAC_Context;
+      
    begin
 
-   	   Init(Key1);
-   	   Final_Sign(Message1, 8, Tag);
+   	   Context.Init(Key1);
+   	   Context.Final_Sign(Message1, 8, Tag);
 
-       Assert((Tag = Temp) or (Final_Verify(Message1, 8, Tag)), "Final Signature with SHA512 MAC failed.");
+       Assert((Tag = Temp) or (Context.Final_Verify(Message1, 8, Tag)), "Final Signature with SHA512 MAC failed.");
 
    end SHA512_MAC_Test1;
 
@@ -105,6 +107,8 @@ package body Test.SHA512_MAC is
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA512;
 
+      Context : HMAC_Context;
+      
    begin
    	   
    	   Temp := (16#16_4b_7a_7b_Fc_F8_19_E2#, 16#E3_95_Fb_E7_3b_56_E0_A3#,
@@ -112,10 +116,10 @@ package body Test.SHA512_MAC is
                 16#97_58_Bf_75_C0_5a_99_4a#, 16#6d_03_4f_65_F8_F0_E6_Fd#,
                 16#Ca_Ea_B1_A3_4d_4a_6b_4b#, 16#63_6e_07_0a_38_Bc_E7_37#);
 
-   	   Init(Key2);
-   	   Final_Sign(Message2, 28, Tag);
+   	   Context.Init(Key2);
+   	   Context.Final_Sign(Message2, 28, Tag);
 
-       Assert((Tag = Temp) or (Final_Verify(Message2, 28, Tag)), "Final Signature with SHA512 MAC failed.");
+       Assert((Tag = Temp) or (Context.Final_Verify(Message2, 28, Tag)), "Final Signature with SHA512 MAC failed.");
 
    end SHA512_MAC_Test2;
 ------------------------------------------------------------------------------------
@@ -125,6 +129,8 @@ package body Test.SHA512_MAC is
    procedure SHA512_MAC_Test3(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA512;
+      
+      Context : HMAC_Context;
 
    begin
    	   
@@ -133,10 +139,10 @@ package body Test.SHA512_MAC is
                 16#Bf_3e_84_82_79_A7_22_C8#, 16#06_B4_85_A4_7e_67_C8_07#,
                 16#B9_46_A3_37_Be_E8_94_26#, 16#74_27_88_59_E1_32_92_Fb#);
 
-   	   Init(Key3);
-   	   Final_Sign(Message3, 50, Tag);
+   	   Context.Init(Key3);
+   	   Context.Final_Sign(Message3, 50, Tag);
 
-       Assert((Tag = Temp) or (Final_Verify(Message3, 50, Tag)), "Final Signature with SHA1 MAC failed.");
+       Assert((Tag = Temp) or (Context.Final_Verify(Message3, 50, Tag)), "Final Signature with SHA1 MAC failed.");
    
    end SHA512_MAC_Test3;
 

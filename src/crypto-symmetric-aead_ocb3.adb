@@ -2,7 +2,7 @@ with Ada.Containers.Indefinite_Vectors;
 with Ada.Containers.Vectors;
 with Crypto.Types;
 
-package body Crypto.Symmetric.AE_OCB3 is
+package body Crypto.Symmetric.AEAD_OCB3 is
 
    -- useful constants
    Zero_Bytes: constant Bytes(0..(Bytes_Per_Block - 1)) := (others => 0);
@@ -12,7 +12,7 @@ package body Crypto.Symmetric.AE_OCB3 is
    Store_Internally: Boolean := False;
 
    --Hui
-   L_Star, L_Dollar : Block := Zero_Block;  
+   L_Star, L_Dollar : Block := Zero_Block;
    Nonce_Init : Bytes := Zero_Bytes;
    AD : Block := Zero_Block; -- no AD, Hash(AD) returns zeros();
 
@@ -67,7 +67,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       end if;
       return To_Block_Type(Result);
    end Double_S;
-   
+
    -----------------------------------------------------------------
    -- This procedure should be run before encryption and decryption.
    procedure Setup(Key: in  Key_Type;
@@ -110,25 +110,25 @@ package body Crypto.Symmetric.AE_OCB3 is
       L : Bytes := Value;
       R : Bytes(0..Bytes_Per_Block*2);
    begin
-      
---        --stretch 
---        L := To_Bytes(Shift_Left(K, Amount));    
---    
---        --110
---        K := K xor Shift_Left(K, 8); -- specified in docu      
---        R := To_Bytes(Shift_Right(K, Bytes_Per_Block*8 - Amount));      
---  
---        --Shift
---        L := To_Bytes(To_Block(L) xor To_Block(R)); 
 
-      
+--        --stretch
+--        L := To_Bytes(Shift_Left(K, Amount));
+--
+--        --110
+--        K := K xor Shift_Left(K, 8); -- specified in docu
+--        R := To_Bytes(Shift_Right(K, Bytes_Per_Block*8 - Amount));
+--
+--        --Shift
+--        L := To_Bytes(To_Block(L) xor To_Block(R));
+
+
       R(0..Bytes_Per_Block-1) := Value;
-      R(Bytes_Per_Block..Bytes_Per_Block+7) 
-        := Value(0..7) 
+      R(Bytes_Per_Block..Bytes_Per_Block+7)
+        := Value(0..7)
         xor Value(1..8);
-      
+
       R:=Shift_Left(R, Amount);
-      
+
       return To_Block(R(1..Bytes_Per_Block));
    end Stretch_Then_Shift;
 
@@ -165,7 +165,7 @@ package body Crypto.Symmetric.AE_OCB3 is
 
    -- This procedure seperates the last Ciphertext block and the Tag (out of
    -- one or two blocks).
-   procedure Extract(This       : in     AE_OCB;
+   procedure Extract(This       : in     AEAD_OCB;
                      A          : in     Bytes;
                      B          : in     Bytes := Zero_Bytes;
                      Bytes_Read : in     Natural;  -- Bytes_Read never zero when calling this procedure!
@@ -262,7 +262,7 @@ package body Crypto.Symmetric.AE_OCB3 is
    -- This procedure is called every time a block must be encrypted.
    -- Also the Offset, Checksum and the number of encrypted blocks
    -- will be updated. The encrypted block will be written.
-   procedure Aux_Enc (This     :  in     AE_OCB;
+   procedure Aux_Enc (This     :  in     AEAD_OCB;
                       Offset   :  in out Block;
                       Checksum :  in out Block;
                       Count    :  in out Positive;
@@ -278,7 +278,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       for i in Tmp'Range loop
           Error_Output.Put(To_Hex(Tmp(i)));
       end loop;
-      Error_Output.New_Line;      
+      Error_Output.New_Line;
 
       --114
       BC.Encrypt(Input xor Offset, Output);
@@ -291,7 +291,7 @@ package body Crypto.Symmetric.AE_OCB3 is
       for i in Tmp'Range loop
           Error_Output.Put(To_Hex(Tmp(i)));
       end loop;
-      Error_Output.New_Line; 
+      Error_Output.New_Line;
       Count := Count + 1;
    end Aux_Enc;
 
@@ -301,20 +301,20 @@ package body Crypto.Symmetric.AE_OCB3 is
    -- Also the Offset, Checksum and the number of decrypted blocks
    -- will be updated. The decrypted block will be first masked
    -- and then written.
-   procedure Aux_Dec (This     :  in     AE_OCB;
+   procedure Aux_Dec (This     :  in     AEAD_OCB;
                       Offset   :  in out Block;
                       Checksum :  in out Block;
                       Count    :  in out Positive;
                       Input    :  in     Block;
                       Output   :  in out Block) is
    begin
-      --313 
-      Offset := Offset xor This.L_Array(Number_Of_Trailing_Zeros(Count) - 1);    
+      --313
+      Offset := Offset xor This.L_Array(Number_Of_Trailing_Zeros(Count) - 1);
 
       --314
       BC.Decrypt(Input xor Offset, Output);
       Output := Output xor Offset;
-     
+
       --315
       Checksum := Checksum xor Output;
       Count := Count + 1;
@@ -324,7 +324,7 @@ package body Crypto.Symmetric.AE_OCB3 is
 
    -- This procedure decrypt and write each Ciphertext block. It won't
    -- be called, if the calculated Tag isn't the same as the specified.
-   procedure Write_Decrypted_Plaintext(This                  : in AE_OCB;
+   procedure Write_Decrypted_Plaintext(This                  : in AEAD_OCB;
                                        Read_Ciphertext_Again : in Callback_Reader;
                                        Write_Plaintext       : in Callback_Writer;
                                        Dec_Bool              : in Boolean;
@@ -343,7 +343,7 @@ package body Crypto.Symmetric.AE_OCB3 is
    begin
       Read_Ciphertext_Again(First_Block, Bytes_Read);
       if Bytes_Read = 0 then
-	 raise  Constraint_Error with "Invalid_Ciphertext_Error";	 
+	 raise  Constraint_Error with "Invalid_Ciphertext_Error";
       elsif
          Bytes_Read < Bytes_Per_Block then
          null;
@@ -409,7 +409,7 @@ package body Crypto.Symmetric.AE_OCB3 is
    ----
    -----------------------------------------------------------------
 
-   procedure Init_Encrypt(This   : out    AE_OCB;
+   procedure Init_Encrypt(This   : out    AEAD_OCB;
                           Key    : in     Key_Type;
                           Nonce  : in out N.Nonce'Class) is
    begin
@@ -421,7 +421,7 @@ package body Crypto.Symmetric.AE_OCB3 is
 
    -----------------------------------------------------------------
 
-   procedure Init_Decrypt(This        : out AE_OCB;
+   procedure Init_Decrypt(This        : out AEAD_OCB;
                           Key         : in  Key_Type;
                           Nonce_Value : in  Block) is
    begin
@@ -434,14 +434,14 @@ package body Crypto.Symmetric.AE_OCB3 is
 
    -----------------------------------------------------------------
 
-   procedure Encrypt(This             : in out AE_OCB;
+   procedure Encrypt(This             : in out AEAD_OCB;
                      Read_Plaintext   : in     Callback_Reader;
                      Write_Ciphertext : in     Callback_Writer) is
 
-      
-        
+
+
       Empty_Callback_Reader : Callback_Reader := EmptyReader'Access;
-      
+
    begin
       Encrypt(This             => This,
               Read_Plaintext   => Read_Plaintext,
@@ -450,14 +450,14 @@ package body Crypto.Symmetric.AE_OCB3 is
 
    end Encrypt;
 
-   
-   
-   
-   
-   
+
+
+
+
+
    -----------------------------------------------------------------
 
-   function Aux_Decrypt(This                   : in AE_OCB;
+   function Aux_Decrypt(This                   : in AEAD_OCB;
                         Read_Ciphertext        : in Callback_Reader;
                         Read_Ciphertext_Again  : in Callback_Reader;
                         Write_Plaintext        : in Callback_Writer;
@@ -500,7 +500,7 @@ package body Crypto.Symmetric.AE_OCB3 is
                  Dec        => Dec_Bool);
       else
          Read_Ciphertext(Second_Block, Bytes_Read);
-         
+
          if Bytes_Read < Bytes_Per_Block then
             if Bytes_Read = 0 then
                -- First_Block was the last block and filled up
@@ -603,16 +603,16 @@ package body Crypto.Symmetric.AE_OCB3 is
                  Output   => Plaintext);
       end if;
 
-     
-      
-      
+
+
+
       if Last_B_Bytelen = 0 then
          null;
-         
-      elsif Last_B_Bytelen < Bytes_Per_Block then 
+
+      elsif Last_B_Bytelen < Bytes_Per_Block then
        --317
       Offset := Offset xor L_Star;
-       
+
       --318
       BC.Encrypt(Offset, Pad);
          declare
@@ -621,9 +621,9 @@ package body Crypto.Symmetric.AE_OCB3 is
             --319
             Last_P_Block(0..Bytes_Read-1) := Last_C_Block(0..Bytes_Read-1) xor C(0 .. Bytes_Read-1);
          end;
-         --320 
-         Checksum := Checksum xor Padding_One_Zero(Last_P_Block, Bytes_Read);   
-         
+         --320
+         Checksum := Checksum xor Padding_One_Zero(Last_P_Block, Bytes_Read);
+
       else
          Aux_Dec(This     => This,
                  Offset   => Offset,
@@ -631,22 +631,22 @@ package body Crypto.Symmetric.AE_OCB3 is
                  Count    => Blockcount,
                  Input    => To_Block_Type(Last_C_Block),
                  Output   => Plaintext);
-         
+
          Masked_Plaintext.Append(New_Item => Last_C_Block);
          Last_B_Bytelen := 0;
       end if;
-      
+
       --321
       Offset := Offset xor L_Dollar;
-      
+
       --322 Final -> Tag
-      BC.Encrypt(Checksum xor Offset, T);      
-     
+      BC.Encrypt(Checksum xor Offset, T);
+
       --"Hashing" of the Associated Data
       T := T xor Hash_AD(This    => This,
                          Read_AD => Read_AD);
-      
-      
+
+
       declare
          Calculated_Tag: constant Bytes := To_Bytes(T);
       begin
@@ -659,8 +659,8 @@ package body Crypto.Symmetric.AE_OCB3 is
          for I in Calculated_Tag'First..This.Taglen-1 loop
             Error_Output.Put(To_Hex(B => Calculated_Tag(I)));
          end loop;
-            
-         
+
+
          if Tag(Tag'First..This.Taglen-1) = Calculated_Tag(Calculated_Tag'First..This.Taglen-1) then
             Verification_Bool := True;
             Write_Decrypted_Plaintext(This, Read_Ciphertext_Again, Write_Plaintext, Dec_Bool, Last_P_Block, Last_B_Bytelen);
@@ -671,17 +671,17 @@ package body Crypto.Symmetric.AE_OCB3 is
 
    end Aux_Decrypt;
 
-   
-   
+
+
    -----------------------------------------------------------------
-   
-   function Aux_Decrypt(This                   : in AE_OCB;
+
+   function Aux_Decrypt(This                   : in AEAD_OCB;
                         Read_Ciphertext        : in Callback_Reader;
                         Read_Ciphertext_Again  : in Callback_Reader;
                         Write_Plaintext        : in Callback_Writer)
                         return Boolean is
    begin
-      
+
       return Aux_Decrypt(This		       => This,
                          Read_Ciphertext       => Read_Ciphertext,
                   	 Read_Ciphertext_Again => Read_Ciphertext_Again,
@@ -689,11 +689,11 @@ package body Crypto.Symmetric.AE_OCB3 is
                          Read_AD	       => null);
    end Aux_Decrypt;
    -----------------------------------------------------------------
-   
-   
-   
 
-   function Decrypt_And_Verify(This                   : in out AE_OCB;
+
+
+
+   function Decrypt_And_Verify(This                   : in out AEAD_OCB;
                                Read_Ciphertext        : in     Callback_Reader;
                                Read_Ciphertext_Again  : in     Callback_Reader := null;
                                Write_Plaintext        : in     Callback_Writer)
@@ -724,7 +724,7 @@ package body Crypto.Symmetric.AE_OCB3 is
    ----
    -----------------------------------------------------------------
 
-   procedure Init_Encrypt(This                : out    AE_OCB;
+   procedure Init_Encrypt(This                : out    AEAD_OCB;
                           Key                 : in     Key_Type;
                           N_Init              : in out N.Nonce'Class;
                           Bytes_Of_N_Read     : in     Positive;
@@ -734,7 +734,7 @@ package body Crypto.Symmetric.AE_OCB3 is
          Tmp_Bottom : Bytes := Zero_Bytes;
          Ktop : Block := Zero_Block;
          Tmp : Bytes(0..(Bytes_Per_Block - 1));
-   begin  
+   begin
          --102
          if Bytes_Of_N_Read > 16 then
             raise Noncelength_Not_Supported;
@@ -744,17 +744,17 @@ package body Crypto.Symmetric.AE_OCB3 is
             This.Nonce_Value := N_Init.Update;
             This.Taglen := Taglen;
             --Generate_L(This.L_Array);
-            
+
             --106: Nonce_Init = 0^(127- |N|) 1 N
             Nonce_Init(Bytes_Per_Block - Bytes_Of_N_Read .. Bytes_Per_Block - 1) := To_Bytes(This.Nonce_Value)(0.. Bytes_Of_N_Read - 1) ;
             Nonce_Init(Bytes_Per_Block - Bytes_Of_N_Read - 1) := 2#0000_0001# ;
-            
+
             Error_Output.Put("Nonce");
             for i in Nonce_Init'Range loop
                 Error_Output.Put(Nonce_Init(i)'Img);
             end loop;
-            Error_Output.New_Line; 
-            
+            Error_Output.New_Line;
+
 
             --107: Top = Nonce AND (1^122 0^6)
             Tmp_Top(Tmp_Top'Last) := 2#1100_0000#;
@@ -768,7 +768,7 @@ package body Crypto.Symmetric.AE_OCB3 is
                 Error_Output.Put(Bottom(i)'Img);
             end loop;
             Error_Output.New_Line;
-          
+
 
             --109: Ktop = Ek(Top)
             BC.Encrypt(To_Block(Top), Ktop);
@@ -786,13 +786,13 @@ package body Crypto.Symmetric.AE_OCB3 is
             for i in Tmp'Range loop
                 Error_Output.Put(To_Hex(Tmp(i)));
             end loop;
-            Error_Output.New_Line;  
+            Error_Output.New_Line;
          end if;
    end Init_Encrypt;
 
    -----------------------------------------------------------------
 
-   procedure Init_Decrypt(This                : out    AE_OCB;
+   procedure Init_Decrypt(This                : out    AEAD_OCB;
                           Key                 : in     Key_Type;
                           N_Init              : in     Block;
                           Bytes_Of_N_Read     : in     Positive;
@@ -800,7 +800,7 @@ package body Crypto.Symmetric.AE_OCB3 is
          Top, Bottom : Bytes := Zero_Bytes;
          Tmp_Top : Bytes(0..(Bytes_Per_Block - 1)) := (others => 2#1111_1111#);
          Tmp_Bottom : Bytes := Zero_Bytes;
-         Ktop : Block := Zero_Block;    
+         Ktop : Block := Zero_Block;
    begin
       --302
       if Bytes_Of_N_Read > 16 then
@@ -810,11 +810,11 @@ package body Crypto.Symmetric.AE_OCB3 is
          Setup(Key, This.L_Array);
          This.Nonce_Value := N_Init;
          This.Taglen := Taglen;
-     
+
       --306
          Nonce_Init(Bytes_Per_Block - Bytes_Of_N_Read .. Bytes_Per_Block - 1) := To_Bytes(This.Nonce_Value)(0.. Bytes_Of_N_Read - 1) ;
          Nonce_Init(Bytes_Per_Block - Bytes_Of_N_Read - 1) := 2#0000_0001# ;
-            
+
       --307
          Tmp_Top(Tmp_Top'Last) := 2#1100_0000#;
          Top := Nonce_Init and Tmp_Top;
@@ -822,34 +822,34 @@ package body Crypto.Symmetric.AE_OCB3 is
       --308
          Tmp_Bottom(Tmp_Bottom'Last) := 2#0011_1111#;
          Bottom := Nonce_Init and Tmp_Bottom;
-        
+
       --309
          BC.Encrypt(To_Block(Top), Ktop);
 
       --310-311
-         This.Offset := Stretch_Then_Shift(To_Bytes(Ktop), Integer(Bottom(Bottom'Last)));         
+         This.Offset := Stretch_Then_Shift(To_Bytes(Ktop), Integer(Bottom(Bottom'Last)));
       end if;
    end Init_Decrypt;
-   
-   
-   function Hash_AD(This     	  : in  AE_OCB;
+
+
+   function Hash_AD(This     	  : in  AEAD_OCB;
                   Read_AD 	  : in	Callback_Reader) return Block is
       Curr_Block: Bytes := Zero_Bytes;
       Curr_Encrypted: Block := Zero_Block;
       Return_Block: Bytes := Zero_Bytes;
       Bytes_Read: Natural;
       Count : Natural := 0;
-      
+
       Offset : Block := Zero_Block;
       Sum    : Block;
-      
-      
+
+
    begin
-      
-      if Read_AD = null then 
-         return Zero_Block; 
+
+      if Read_AD = null then
+         return Zero_Block;
       end if;
-      
+
       loop
          Read_AD(Curr_Block, Bytes_Read);
          Count := Count+1;
@@ -864,26 +864,28 @@ package body Crypto.Symmetric.AE_OCB3 is
             exit;
          else
             exit;
-         end if;   
+         end if;
       end loop;
-      
+
       if Count = 1 and Bytes_Read = 0 then
          Sum := Zero_Block;
       else
         Sum := To_Block(Return_Block);
       end if;
-   
+
       return Sum;
-   
+
    end Hash_AD;
-   
-      
+
+
    ------------------------------------------------------------------------
-   
-   procedure Encrypt(This             : in out AE_OCB;
+
+   procedure Encrypt(This             : in out AEAD_OCB;
                      Read_Plaintext   : in     Callback_Reader;
                      Write_Ciphertext : in     Callback_Writer;
-                     Read_AD	      : in     Callback_Reader) is
+                     Read_AD	      : in     Callback_Reader)
+
+   is
 
       Bytes_Read: Natural;
       Ciphertext : Block;
@@ -904,7 +906,7 @@ package body Crypto.Symmetric.AE_OCB3 is
    begin
 
       Error_Output.Put_Line("Test for Double_S");
-      Tmp1 :=To_Bytes(Double_S(Tmp)); 
+      Tmp1 :=To_Bytes(Double_S(Tmp));
       for i in Tmp1'Range loop
          Error_Output.Put(Tmp1(i)'Img);
       end loop;
@@ -932,7 +934,7 @@ package body Crypto.Symmetric.AE_OCB3 is
                Prev_Block := Curr_Block;
 
             elsif Bytes_Read = 0 then
-               
+
                Aux_Enc(This       => This,
                        Offset     => Offset,
                        Checksum   => Checksum,
@@ -940,7 +942,7 @@ package body Crypto.Symmetric.AE_OCB3 is
                        Count      => Blockcount,
                        Input      => To_Block_Type(Prev_Block),
                        Output     => Ciphertext);
-               
+
                --Last_P_Block := Prev_Block;
                -- Assigning is important for later use:
                Bytes_Read := Bytes_Per_Block;
@@ -959,17 +961,17 @@ package body Crypto.Symmetric.AE_OCB3 is
 
          end loop;
       end if;
-      
+
 --        Put("LAST P BLOCK");
 --           for i in Last_P_Block'Range loop
 --               Put(To_Hex(Last_P_Block(i)));
 --           end loop;
-      
+
       if Bytes_Read > 0 and Bytes_Read < Bytes_Per_Block then
          --117
             Offset := Offset xor L_Star;
             Tmp1 :=To_Bytes(Offset);
-            Error_Output.Put("Offset_*"); 
+            Error_Output.Put("Offset_*");
             for i in Tmp1'Range loop
                 Error_Output.Put(Tmp1(i)'Img);
             end loop;
@@ -982,7 +984,7 @@ package body Crypto.Symmetric.AE_OCB3 is
          --119
             Last_C_Block(0..Bytes_Read-1) := Last_P_Block(0..Bytes_Read-1) xor C(C'First..C'First+Bytes_Read-1);
          end;
-         --120 
+         --120
          Checksum := Checksum xor Padding_One_Zero(Last_P_Block, Bytes_Read);
          Tmp1 := To_Bytes(Checksum);
 
@@ -990,11 +992,11 @@ package body Crypto.Symmetric.AE_OCB3 is
          for i in Tmp1'Range loop
              Error_Output.Put(Tmp1(i)'Img);
          end loop;
-         Error_Output.New_Line; 
+         Error_Output.New_Line;
       end if;
       --121
       Offset := Offset xor L_Dollar;
-      
+
       --122 calculate the Tag
       BC.Encrypt(Checksum xor Offset, Ciphertext);
       Tmp1 := To_Bytes(Ciphertext);
@@ -1003,12 +1005,12 @@ package body Crypto.Symmetric.AE_OCB3 is
          Error_Output.Put(Tmp1(i)'Img);
       end loop;
       Error_Output.New_Line;
-      
+
       --Calculating the Hash of the Associated Data, XORing with Checksum
-      
+
       Ciphertext := Ciphertext xor Hash_AD(This    => This,
                                            Read_AD => Read_AD);
-      
+
       -- concatenate the last block and Tag (if necessary)
       declare
          C: constant Bytes := To_Bytes(Ciphertext);
@@ -1041,16 +1043,16 @@ package body Crypto.Symmetric.AE_OCB3 is
       end;
 
    end Encrypt;
-   
-   function Decrypt_And_Verify(This                   : in out AE_OCB;
+
+   function Decrypt_And_Verify(This                   : in out AEAD_OCB;
                                Read_Ciphertext        : in     Callback_Reader;
                                Read_Ciphertext_Again  : in     Callback_Reader := null;
                                Write_Plaintext        : in     Callback_Writer;
                                Read_AD	      	      : in     Callback_Reader)
                                return Boolean is
-      
+
       RCA: constant Callback_Reader := Read_Masked_Plaintext'Access;
-      
+
    begin
       if Read_Ciphertext_Again = null then
 
@@ -1070,29 +1072,29 @@ package body Crypto.Symmetric.AE_OCB3 is
       end if;
 
    end Decrypt_And_Verify;
-   
-   
-   
+
+
+
    procedure EmptyReader(B : out Bytes; Count: out Natural) is
    begin
       Count := 0;
       B := (others=>0);
    end;
-   
-   procedure Encrypt(This             : in out AE_OCB;
+
+   procedure Encrypt(This             : in out AEAD_OCB;
                      Plaintext        : in     Bytes;
                      Ciphertext       : out    Bytes;
                      AD	      	      : in     Bytes) is
-      
+
       package Vectors_Package is new Ada.Containers.Vectors(Index_Type   => Natural,
                                                             Element_Type => Byte);
       Ciphertext_Vector : Vectors_Package.Vector;
       Plaintext_Vector : Vectors_Package.Vector;
       AD_Vector : Vectors_Package.Vector;
-      
+
       Plaintext_Position : Natural := 0;
       AD_Position : Natural := 0;
-      
+
       procedure Get_Bytes_Plaintext(B : in Bytes) is
       begin
 --           Put_Line("Get_Bytes_Plaintext");
@@ -1100,7 +1102,7 @@ package body Crypto.Symmetric.AE_OCB3 is
             Plaintext_Vector.Append(B(I));
          end loop;
       end;
-      
+
       procedure Get_Bytes_Ciphertext(B : in Bytes) is
       begin
 --            Put_Line("Get_Bytes_Ciphertext");
@@ -1108,7 +1110,7 @@ package body Crypto.Symmetric.AE_OCB3 is
             Ciphertext_Vector.Append(B(I));
          end loop;
       end;
-      
+
       procedure Get_Bytes_AD(B : in Bytes) is
       begin
 --           Put_Line("Get_Bytes_AD");
@@ -1116,7 +1118,7 @@ package body Crypto.Symmetric.AE_OCB3 is
             AD_Vector.Append(B(I));
          end loop;
       end;
-      
+
       procedure Give_Bytes_Plaintext(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
@@ -1137,16 +1139,16 @@ package body Crypto.Symmetric.AE_OCB3 is
                B(I-Plaintext_Position):= Plaintext_Vector.Element(Index => I);
             end loop;
          end if;
-         
+
 --           Put("Plaintext-Bytes: ");
 --           for I in B'Range loop
---              Put(To_Hex(B(I)));   
+--              Put(To_Hex(B(I)));
 --           end loop;
 --           Put("Plaintext Bytes Amount" & Natural'Image(Count));
-         
-         
+
+
       end Give_Bytes_Plaintext;
-      
+
       procedure Give_Bytes_AD(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
@@ -1167,53 +1169,53 @@ package body Crypto.Symmetric.AE_OCB3 is
             end loop;
          end if;
       end Give_Bytes_AD;
-      
+
       procedure Give_Bytes_Ciphertext(B : out Bytes) is
          Curs : Vectors_Package.Cursor := Ciphertext_Vector.First;
          Counter : Integer := 0;
       begin
 --           Put_Line("Give_Bytes_Ciphertext" & Integer'Image(Integer(Ciphertext_Vector.Length)));
-         
+
          while(Vectors_Package.Has_Element(Curs)) loop
             B(Counter):= Ciphertext_Vector.Element(Vectors_Package.To_Index(Curs));
             Counter := Counter+1;
             Vectors_Package.Next(Curs);
          end loop;
-         
+
       end Give_Bytes_Ciphertext;
    begin
-      
+
       Get_Bytes_Plaintext(B => Plaintext);
       Get_Bytes_AD(B => AD);
-      
-      
+
+
       Encrypt(This             => This,
               Read_Plaintext   => Give_Bytes_Plaintext'Unrestricted_Access ,
               Write_Ciphertext => Get_Bytes_Ciphertext'Unrestricted_Access,
               Read_AD          => Give_Bytes_AD'Unrestricted_Access);
-      
-      
+
+
       Give_Bytes_Ciphertext(B => Ciphertext);
-      
+
    end Encrypt;
-   
-   function Decrypt_And_Verify(This                   : in out AE_OCB;
+
+   function Decrypt_And_Verify(This                   : in out AEAD_OCB;
                                Ciphertext             : in     Bytes;
                                Plaintext              : out    Bytes;
                                AD	      	      : in     Bytes)
-                               return Boolean is 
+                               return Boolean is
       Verfied : Boolean := False;
-      
+
       package Vectors_Package is new Ada.Containers.Vectors(Index_Type   => Natural,
                                                             Element_Type => Byte);
-      
+
       Ciphertext_Vector : Vectors_Package.Vector;
       Plaintext_Vector : Vectors_Package.Vector;
       AD_Vector : Vectors_Package.Vector;
-      
+
       Ciphertext_Position : Natural := 0;
       AD_Position : Natural := 0;
-      
+
       procedure Get_Bytes_Plaintext(B : in Bytes) is
       begin
 --           Put_Line("Get_Bytes_Plaintext");
@@ -1221,7 +1223,7 @@ package body Crypto.Symmetric.AE_OCB3 is
             Plaintext_Vector.Append(B(I));
          end loop;
       end;
-      
+
       procedure Get_Bytes_Ciphertext(B : in Bytes) is
       begin
 --            Put_Line("Get_Bytes_Ciphertext");
@@ -1229,7 +1231,7 @@ package body Crypto.Symmetric.AE_OCB3 is
             Ciphertext_Vector.Append(B(I));
          end loop;
       end;
-      
+
       procedure Get_Bytes_AD(B : in Bytes) is
       begin
 --           Put_Line("Get_Bytes_AD");
@@ -1237,7 +1239,7 @@ package body Crypto.Symmetric.AE_OCB3 is
             AD_Vector.Append(B(I));
          end loop;
       end;
-      
+
       procedure Give_Bytes_Ciphertext(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
@@ -1259,7 +1261,7 @@ package body Crypto.Symmetric.AE_OCB3 is
             end loop;
          end if;
       end Give_Bytes_Ciphertext;
-      
+
       procedure Give_Bytes_AD(B : out Bytes; Count: out Natural) is
          Rest : Natural;
       begin
@@ -1280,41 +1282,65 @@ package body Crypto.Symmetric.AE_OCB3 is
             end loop;
          end if;
       end Give_Bytes_AD;
-      
+
       procedure Give_Bytes_Plaintext(B : out Bytes) is
          Curs : Vectors_Package.Cursor := Plaintext_Vector.First;
          Counter : Integer := 0;
       begin
 --           Put_Line("Give_Bytes_Plaintext" & Integer'Image(Integer(Plaintext_Vector.Length)));
-         
+
          while(Vectors_Package.Has_Element(Curs)) loop
             B(Counter):= Plaintext_Vector.Element(Vectors_Package.To_Index(Curs));
             Counter := Counter+1;
             Vectors_Package.Next(Curs);
          end loop;
-         
+
       end Give_Bytes_Plaintext;
-      
+
    begin
-      
+
       Get_Bytes_Ciphertext(B => Ciphertext);
       Get_Bytes_AD(B => AD);
-      
+
       Verfied:=
       Decrypt_And_Verify(This       	 => This,
                          Read_Ciphertext => Give_Bytes_Ciphertext'Unrestricted_Access,
                          Write_Plaintext => Get_Bytes_Plaintext'Unrestricted_Access,
                          Read_AD         => Give_Bytes_AD'Unrestricted_Access);
-      
+
       Give_Bytes_Plaintext(B => Plaintext);
-      
+
       return Verfied;
    end  Decrypt_And_Verify;
-   
-     
-   
-   
-      
+
+   procedure Encrypt(This             : in out AEAD_OCB;
+                     Read_Header      : in     Callback_Reader;
+                     Read_Plaintext   : in     Callback_Reader;
+                     Write_Ciphertext : in     Callback_Writer) is
+   begin
+      Encrypt(This             => This,
+              Read_Plaintext   => Read_Plaintext,
+              Write_Ciphertext => Write_Ciphertext,
+              Read_AD          => Read_Header);
+   end Encrypt;
+
+   function Decrypt_And_Verify(This                   : in out AEAD_OCB;
+                               Read_Header            : in     Callback_Reader;
+                               Read_Ciphertext        : in     Callback_Reader;
+                               Read_Ciphertext_Again  : in     Callback_Reader := null;
+                               Write_Plaintext        : in     Callback_Writer)
+                               return Boolean is
+   begin
+      return Decrypt_And_Verify(This                  => This,
+                                Read_Ciphertext       => Read_Ciphertext,
+                                Read_Ciphertext_Again => Read_Ciphertext_Again,
+                                Write_Plaintext       => Write_Plaintext,
+                                Read_AD               => Read_Header);
+   end Decrypt_And_Verify;
 
 
-end Crypto.Symmetric.AE_OCB3;
+
+
+
+
+end Crypto.Symmetric.AEAD_OCB3;

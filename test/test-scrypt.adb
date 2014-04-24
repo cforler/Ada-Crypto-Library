@@ -8,7 +8,7 @@ use Crypto.Symmetric.KDF_Scrypt;
 with Crypto.Symmetric.KDF_PBKDF2;
 with Crypto.Symmetric.Mac.Hmac_SHA256;
 with Crypto.Symmetric.Algorithm.SHA512;
-with Crypto.Symmetric.Hashfunction_Object_SHA512;
+with Crypto.Symmetric.Hashfunction_SHA512;
 
 
 package body Test.Scrypt is
@@ -50,7 +50,7 @@ package body Test.Scrypt is
    ------------------------------------------------------------------------------------
 
    function Name(T : Scrypt_Test) return Test_String is
-      HS : Crypto.Symmetric.Hashfunction_Object_SHA512.Hash_Context;
+      HS : Crypto.Symmetric.Hashfunction_SHA512.Hash_Context;
    begin
       HS.Initialize;
 
@@ -148,7 +148,7 @@ package body Test.Scrypt is
       Output : W_Block512_Array(0..1);
       Input : W_Block512_Array(0..1) := (To_W_Block512(Input_Bytes_A), To_W_Block512(Input_Bytes_B));
 
-      Test_Context : Crypto.Symmetric.Hashfunction_Object_SHA512.Hash_Context;
+      Test_Context : Crypto.Symmetric.Hashfunction_SHA512.Hash_Context;
 
    begin
 

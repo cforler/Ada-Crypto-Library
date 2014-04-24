@@ -32,6 +32,85 @@ package body Crypto.Symmetric.Algorithm.Skein is
 
    package threefish renames Crypto.Symmetric.Algorithm.Threefish;
 
+   -- low level API with object
+   procedure Init(This 		: in out Skein_512_Interface) is
+      State : Bytes(0..64);
+      Mode : threefish.Skein_Mode := m512;
+   begin
+      Init(Mode  => Mode,
+           N_0   => 512,
+           State => State);
+      This.Hash_Value :=To_W_Block512(State);
+   end Init;
+
+
+   procedure Round(This 	: in out 	Skein_512_Interface;
+                   Message_Block: in 		W_Block512) is
+      State : Bytes(0..64);
+      Mode : threefish.Skein_Mode := m512;
+   begin
+      Update(Mode           => Mode,
+             Old_State      => To_Bytes(This.Hash_Value),
+             Message        => To_Bytes(Message_Block),
+             Message_Length => 512,
+             New_State      => State);
+      This.Hash_Value := To_W_Block512(State);
+   end Round;
+
+
+   function Final_Round(This 		    : in out Skein_512_Interface;
+                        Last_Message_Block  : W_Block512;
+                        Last_Message_Length : Natural)
+                        return W_Block512 is
+      State : Bytes(0..64);
+      Mode : threefish.Skein_Mode := m512;
+   begin
+      Final(Mode      => Mode,
+            Old_State => To_Bytes(This.Hash_Value),
+            N_0       => Last_Message_Length,
+            New_State => State);
+      return To_W_Block512(State);
+   end Final_Round;
+
+   -- high level API
+
+   procedure Hash(Message : in String; Hash_Value : out W_Block512) is
+      State : Bytes(0..64);
+      Mode : threefish.Skein_Mode := m512;
+   begin
+      Hash(Mode           => Mode,
+           N_0            => 512,
+           Message        => To_Bytes(Message),
+           Message_Length => Message'Length*8,
+           Result         => State);
+      Hash_Value := To_W_Block512(State);
+   end Hash;
+
+
+   procedure Hash(Message : in Bytes;  Hash_Value : out W_Block512)is
+      State : Bytes(0..64);
+      Mode : threefish.Skein_Mode := m512;
+   begin
+
+      Hash(Mode           => Mode,
+           N_0            => 512,
+           Message        => Message,
+           Message_Length => Message'Length*8,
+           Result         => State);
+      Hash_Value := To_W_Block512(State);
+   end Hash;
+
+
+   --correct implementation missing
+   procedure F_Hash(Filename : in String; Hash_Value : out W_Block512) is
+   begin
+      null;
+   end F_Hash;
+
+
+
+
+
    procedure Set_Bit
      (b        : in out Byte;
       Position : in Natural;

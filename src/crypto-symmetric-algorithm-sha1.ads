@@ -1,3 +1,4 @@
+with Crypto.Symmetric.Algorithm.Sha_Utils;
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU General Public License as
 -- published by the Free Software Foundation; either version 2 of the
@@ -26,6 +27,27 @@ package Crypto.Symmetric.Algorithm.SHA1 is
 
    subtype Sha1_Type is Natural range 0..79;
 
+   type Generic_Interface is Interface;
+   type SHA1_Interface is new Generic_Interface with
+      record
+         Utils_Interface : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Interface;
+         Hash_Value : W_Block160;
+         Current_Message_Length : Message_Length64;
+      end record;
+   
+   ---------------------------------------------------------------------------
+   
+   -- low level API with object
+   procedure Init(This 		: in out SHA1_Interface);
+
+   procedure Round(This 	: in out 	SHA1_Interface;
+                   Message_Block: in 		W_Block512);
+
+   function Final_Round(This 		    : in out SHA1_Interface;
+                        Last_Message_Block  : W_Block512;
+                        Last_Message_Length : Message_Block_Length512)
+                        return W_Block160;
+   
    ---------------------------------------------------------------------------
 
    -- low level API

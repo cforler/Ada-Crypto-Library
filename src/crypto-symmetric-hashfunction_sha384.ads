@@ -20,13 +20,18 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Crypto.Symmetric.MAC.Hmac;
-with Crypto.Symmetric.Hashfunction_SHA256;
+with Crypto.Types;
+with Crypto.Symmetric.Algorithm.SHA384;
+with Crypto.Symmetric.Hashfunction;
 
-pragma Elaborate_All (Crypto.Symmetric.Mac.Hmac);
+use Crypto.Types;
+use Crypto.Symmetric.Algorithm.SHA384;
 
-package Crypto.Symmetric.Mac.Hmac_SHA256 is
-  new Crypto.Symmetric.Mac.Hmac(H      => Crypto.Symmetric.Hashfunction_SHA256,
-                                       Copy   => Crypto.Symmetric.Mac.Copy,
-                                       Fill36 => Crypto.Symmetric.Mac.Fill36,
-                                       Fill5C => Crypto.Symmetric.Mac.Fill5C);
+
+pragma Elaborate_All (Crypto.Symmetric.Hashfunction);
+package Crypto.Symmetric.Hashfunction_SHA384 is
+  new Crypto.Symmetric.Hashfunction(Hash_Type                 => DW_Block384,
+                                           Message_Type              => DW_Block1024,
+                                           Message_Block_Length_Type => Crypto.Types.Message_Block_Length1024,
+                                           Internal_Scheme           => Sha384_Interface,
+                                           Generic_To_Bytes	     => To_Bytes);

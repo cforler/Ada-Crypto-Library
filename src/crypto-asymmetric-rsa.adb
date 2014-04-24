@@ -300,6 +300,9 @@ package body Crypto.Asymmetric.RSA is
         (First+(M_Hash_Rounds*(M'Length+1))-1);
 
       T : Bytes(1..(Last_Round+1)*Hlen);
+      
+      Context : SHA1.Hash_Context;
+
    begin
 
       if Seed_Words'Length < M'Length then
@@ -308,14 +311,14 @@ package body Crypto.Asymmetric.RSA is
 
       -- 3
       for C in 0..Last_Round loop
-         SHA1.Init;
+         Context.Initialize;
 
          -- 3a
          if Seed_Words'Length < M'Length then
             -- Hash (MGF_Seed || C)
             M(Seed_Words'Last+1) := Word(C);
 
-            H := SHA1.Final_Round(W_Block512(M), M_Final_Length);
+            H := Context.Final_Round(W_Block512(M), M_Final_Length);
          else
 
             if C > Natural(Byte'Last) then
@@ -323,7 +326,7 @@ package body Crypto.Asymmetric.RSA is
             end if;
 
             for I in 1..M_Hash_Rounds  loop
-               SHA1.Update( W_Block512(Seed_Words(First+((I-1)*(M'Length+1))..
+               Context.Update( W_Block512(Seed_Words(First+((I-1)*(M'Length+1))..
 						   (First+(I*(M'Length+1))-2))));
             end loop;
 
@@ -333,7 +336,7 @@ package body Crypto.Asymmetric.RSA is
             M(Seed_Words'Last-Seed_Words_Final_Begin+1) :=
               Shift_Left(Word(C),(MGF_Seed'Length mod 4)*8);
 
-            H := SHA1.Final_Round(W_Block512(M),M_Final_Length);
+            H := Context.Final_Round(W_Block512(M),M_Final_Length);
         end if;
 
         --3b

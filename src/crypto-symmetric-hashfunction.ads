@@ -23,21 +23,25 @@
 with Crypto.Types; use Crypto.Types;
 
 generic
+
    type Hash_Type                 is private;
    type Message_Type              is private;
    type Message_Block_Length_Type is range <>;
-   
+
+   type Internal_Scheme		  is private;
+
+
    with function Generic_To_Bytes(DWord_Array : Hash_Type) return Bytes is <>;
-   
-   with procedure Init(Hash_Value : out Hash_Type) is <>;
 
-   with procedure Round(Message_Block : in     Message_Type;
-                        Hash_Value    : in out Hash_Type) is <>;
 
-   with function Final_Round(Last_Message_Block  : Message_Type;
-                             Last_Message_Length :
-                             Message_Block_Length_Type;
-                             Hash_Value          : Hash_Type)
+
+   with procedure Init(This : in out Internal_Scheme) is <>;
+   with procedure Round(This : in out Internal_Scheme;
+                        Message_Block : in     Message_Type) is <>;
+
+   with function Final_Round(This : in out Internal_Scheme;
+                             Last_Message_Block  : Message_Type;
+                             Last_Message_Length : Message_Block_Length_Type)
                             return Hash_Type is <>;
 
    with procedure Hash(Message    : in Bytes;
@@ -48,24 +52,33 @@ generic
 
    with procedure F_Hash(Filename : in String;
                          Hash_Value : out  Hash_Type) is <>;
-   
+
 
 package Crypto.Symmetric.Hashfunction is
+
+   type Generic_Context is Interface;
+   type Hash_Context is new Generic_Context with
+      record
+         HS : Internal_Scheme;
+      end record;
+
    function Hash  (Message  : Bytes)  return Hash_Type;
    function Hash  (Message  : String) return Hash_Type;
    function F_Hash(Filename : String) return Hash_Type;
-   
+
    function To_Bytes(Hash : Hash_Type) return Bytes;
 
-   procedure Init;
-   procedure Update(Message_Block : in Message_Type);
-   function Final_Round(Last_Message_Block  : Message_Type;
+   procedure Initialize(This : in out Hash_Context);
+   procedure Update(This : in out Hash_Context;
+                    Message_Block : in Message_Type);
+   function Final_Round(This : in out Hash_Context;
+                        Last_Message_Block  : Message_Type;
                         Last_Message_Length : Message_Block_Length_Type)
                        return Hash_Type;
 
 
 private
-   pragma Inline(Init, Round, Final_Round, Hash, F_Hash);
+   --     pragma Inline(Init, Round, Final_Round, Hash, F_Hash);
+   pragma Inline(Initialize);
    pragma Optimize (Time);
 end Crypto.Symmetric.Hashfunction;
-

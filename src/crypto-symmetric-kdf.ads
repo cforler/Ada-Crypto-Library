@@ -25,7 +25,6 @@ package Crypto.Symmetric.KDF is
    function Initialize(This	: out KDF_Scheme;
                        Parameter: in security_parameter) return Boolean is abstract;
 
-   Invalid_Key_Type_Exception	: exception;
 
 
 

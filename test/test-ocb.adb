@@ -1,5 +1,5 @@
 with AUnit.Assertions; use AUnit.Assertions;
-with Crypto.Symmetric.AE_OCB3;
+with Crypto.Symmetric.AEAD_OCB3;
 with Crypto.Symmetric.Blockcipher_AES128;
 with Crypto.Types;
 with Crypto.Types.Nonces;
@@ -69,7 +69,7 @@ package body Test.OCB is
 
    package AES_128 renames Crypto.Symmetric.Blockcipher_AES128;
 
-   package OCB3 is new Crypto.Symmetric.AE_OCB3(BC            => AES_128,
+   package OCB3 is new Crypto.Symmetric.AEAD_OCB3(BC            => AES_128,
                                                 N             => N,
                                                 "xor"         => "xor",
                                                 To_Block_Type => To_B_Block128,
@@ -78,7 +78,7 @@ package body Test.OCB is
                                                 Shift_Right   => Shift_Right,
                                                 To_Byte_Word  => To_Bytes);
 
-   my_Scheme : OCB3.AE_OCB;
+   my_Scheme : OCB3.AEAD_OCB;
 
    ------------------------------------------------------------------------------------
    ------------------------------------------------------------------------------------

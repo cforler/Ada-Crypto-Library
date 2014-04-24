@@ -291,4 +291,155 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
 
    ---------------------------------------------------------------------------
    
+   procedure Init(This : in out SHA1_Interface) is
+   begin
+      This.Current_Message_Length:=0;
+      This.Hash_Value(0):=16#67452301#;
+      This.Hash_Value(1):=16#EfCdAb89#;
+      This.Hash_Value(2):=16#98BaDcFe#;
+      This.Hash_Value(3):=16#10325476#;
+      This.Hash_Value(4):=16#C3D2E1F0#;
+   end Init;
+   ---------------------------------------------------------------------------
+
+   -- FIPS 180-2 page 17-18 + loop unrolling   
+   
+   procedure Round(This 	: in out 	SHA1_Interface;
+                   Message_Block: in 		W_Block512) is
+      SHA1_Constant1 : constant Word := 16#5a827999#;
+      SHA1_Constant2 : constant Word := 16#6ed9eba1#;
+      SHA1_Constant3 : constant Word := 16#8f1bbcdc#;
+      SHA1_Constant4 : constant Word := 16#Ca62c1d6#;
+
+      W : W_Block512:=Message_Block;
+      MASK : constant WORD:=15;
+      A, B, C, D, E, Z, S : Word;
+   begin
+
+      --0
+      This.Current_Message_Length := Current_Message_Length + 512;
+
+      if This.Current_Message_Length = 0  then
+         raise SHA1_Constraint_Error;
+      end if;
+
+      --2
+      A:=This.Hash_Value(0);
+      B:=This.Hash_Value(1);
+      C:=This.Hash_Value(2);
+      D:=This.Hash_Value(3);
+      E:=This.Hash_Value(4);
+
+      --3
+      for T in Word'First..15 loop
+         S := T and MASK;
+         Z:= Rotate_Left(A,5) + Ch(B,C,D) + E + SHA1_Constant1 + W(Integer(S));
+         E:=D;
+         D:=C;
+         C:=Rotate_Left(B,30);
+         B:=A;
+         A:=Z;
+      end loop;
+
+      for T in Word(16)..19 loop
+         S := T and MASK;
+         W(Integer(S)):=Rotate_Left((W(Integer((S+13) and MASK)) xor
+                                     W(Integer((S+8) and MASK)) xor
+                                     W(Integer((S+2) and MASK)) xor
+                                     W(Integer(S))),1);
+         Z := Rotate_Left(A,5) + Ch(B,C,D) + E + SHA1_Constant1 +
+           W(Integer(S));
+         E:=D;
+         D:=C;
+         C:=Rotate_Left(B,30);
+         B:=A;
+         A:=Z;
+      end loop;
+
+
+      for T in Word(20)..39 loop
+         S := T and MASK;
+         W(Integer(S)):=Rotate_Left((W(Integer((S+13) and MASK)) xor
+                                     W(Integer((S+8) and MASK)) xor
+                                     W(Integer((S+2) and MASK)) xor
+                                     W(Integer(S))),1);
+         Z := Rotate_Left(A,5) + Parity(B,C,D) + E + SHA1_Constant2 +
+           W(Integer(S));
+         E:=D;
+         D:=C;
+         C:=Rotate_Left(B,30);
+         B:=A;
+         A:=Z;
+      end loop;
+
+
+      for T in Word(40)..59 loop
+         S := T and MASK;
+         W(Integer(S)):=Rotate_Left((W(Integer((S+13) and MASK)) xor
+                                     W(Integer((S+8) and MASK)) xor
+                                     W(Integer((S+2) and MASK)) xor
+                                     W(Integer(S))),1);
+         Z := Rotate_Left(A,5) + May(B,C,D) + E + SHA1_Constant3 +
+           W(Integer(S));
+         E:=D;
+         D:=C;
+         C:=Rotate_Left(B,30);
+         B:=A;
+         A:=Z;
+      end loop;
+
+
+      for T in Word(60)..79 loop
+         S := T and MASK;
+         W(Integer(S)):=Rotate_Left((W(Integer((S+13) and MASK)) xor
+                                     W(Integer((S+8) and MASK)) xor
+                                     W(Integer((S+2) and MASK)) xor
+                                     W(Integer(S))),1);
+         Z := Rotate_Left(A,5) + Parity(B,C,D) + E + SHA1_Constant4 +
+           W(Integer(S));
+         E:=D;
+         D:=C;
+         C:=Rotate_Left(B,30);
+         B:=A;
+         A:=Z;
+      end loop;
+
+      --4
+      This.Hash_Value(0):=A+This.Hash_Value(0);
+      This.Hash_Value(1):=B+This.Hash_Value(1);
+      This.Hash_Value(2):=C+This.Hash_Value(2);
+      This.Hash_Value(3):=D+This.Hash_Value(3);
+      This.Hash_Value(4):=E+This.Hash_Value(4);
+   end Round;
+
+   -----------------------------------------------------------------------
+   
+   function Final_Round(This 		    : in out SHA1_Interface;
+                        Last_Message_Block  : W_Block512;
+                        Last_Message_Length : Message_Block_Length512) return W_Block160 is
+
+      H  : W_Block160 := This.Hash_Value;
+      MF : W_Block512 := Last_Message_Block;
+      MP : W_Block512;
+   begin
+      -- If the last_message Block is a full block
+      if Last_Message_Length = Message_Block_Length512'Last then
+         This.Round(MF);
+         MF := (others => 0);
+      else
+         This.Current_Message_Length := This.Current_Message_Length +
+           Message_Length64(Last_Message_Length)*8;
+      end if;
+
+      This.Utils_Interface.Padding512(MF, This.Current_Message_Length, MP);
+      This.Round(MF);
+
+      if Is_Zero(Words(MP)) = False then
+         This.Round(MP);
+      end if;
+
+      return H;
+
+   end Final_Round;
+   
 end Crypto.Symmetric.Algorithm.SHA1;

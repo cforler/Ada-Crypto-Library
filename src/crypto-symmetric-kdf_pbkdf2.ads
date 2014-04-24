@@ -27,7 +27,6 @@ package Crypto.Symmetric.KDF_PBKDF2 is
    type PBKDF2_KDF is new KDF.KDF_Scheme with private;
 
 
-
    --Interface function for static 64 Bytes Output
    overriding
    procedure Derive(This	: in out PBKDF2_KDF;

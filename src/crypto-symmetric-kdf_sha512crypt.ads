@@ -38,15 +38,16 @@ package Crypto.Symmetric.KDF_SHA512Crypt is
    function Initialize(This	: out SHA512Crypt_KDF;
                        Parameter: in Natural) return Boolean;
 
+
+
+
+
    --Adding Bytes to Digest
    procedure Add_Bytes(Bytes_To_Add		: in 		Bytes;
                        Digest_Bytes		: in out 	Bytes;
                        Digest_Bytes_Length	: in out	Natural;
                        Digest_Hash		: in out	Crypto.Symmetric.Algorithm.SHA512.Sha512_Interface);
-
-
 private
-
    type SHA512Crypt_KDF is new KDF.KDF_Scheme with
       record
          Security_Parameter	: Natural;

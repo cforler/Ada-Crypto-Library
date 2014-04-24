@@ -79,12 +79,14 @@ package body Test.SHA256_MAC is
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA256;
 
+      Context : HMAC_Context;
+      
    begin
 
-   	   Init(Key1);
-   	   Final_Sign(Message1, 8, Tag);
+   	   Context.Init(Key1);
+   	   Context.Final_Sign(Message1, 8, Tag);
 
-       Assert((Tag = Temp) or (Final_Verify(Message1, 8, Tag)), "Final Signature with SHA256 MAC failed.");
+       Assert((Tag = Temp) or (Context.Final_Verify(Message1, 8, Tag)), "Final Signature with SHA256 MAC failed.");
 
    end SHA256_MAC_Test1;
 
@@ -95,16 +97,18 @@ package body Test.SHA256_MAC is
    procedure SHA256_MAC_Test2(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA256;
+      
+      Context : HMAC_Context;
 
    begin
    	   
    	   Temp := (16#5b_Dc_C1_46#, 16#Bf_60_75_4e#, 16#6a_04_24_26#,
                 16#08_95_75_C7#, 16#5a_00_3f_08#, 16#9d_27_39_83#,
                 16#9d_Ec_58_B9#, 16#64_Ec_38_43#);
-   	   Init(Key2);
-   	   Final_Sign(Message2, 28, Tag);
+   	   Context.Init(Key2);
+   	   Context.Final_Sign(Message2, 28, Tag);
 
-       Assert((Tag = Temp) or (Final_Verify(Message2, 28, Tag)), "Final Signature with SHA256 MAC failed.");
+       Assert((Tag = Temp) or (Context.Final_Verify(Message2, 28, Tag)), "Final Signature with SHA256 MAC failed.");
 
    end SHA256_MAC_Test2;
 ------------------------------------------------------------------------------------
@@ -115,15 +119,17 @@ package body Test.SHA256_MAC is
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA256;
 
+      Context : HMAC_Context;
+      
    begin
    	   
    	   Temp := (16#77_3e_A9_1e#, 16#36_80_0e_46#, 16#85_4d_B8_Eb#,
                 16#D0_91_81_A7#, 16#29_59_09_8b#, 16#3e_F8_C1_22#,
                 16#D9_63_55_14#, 16#Ce_D5_65_Fe#);
-   	   Init(Key3);
-   	   Final_Sign(Message3, 50, Tag);
+   	   Context.Init(Key3);
+   	   Context.Final_Sign(Message3, 50, Tag);
 
-       Assert((Tag = Temp) or (Final_Verify(Message3, 50, Tag)), "Final Signature with SHA256 MAC failed.");
+       Assert((Tag = Temp) or (Context.Final_Verify(Message3, 50, Tag)), "Final Signature with SHA256 MAC failed.");
    
    end SHA256_MAC_Test3;
 

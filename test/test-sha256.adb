@@ -1,6 +1,5 @@
 with AUnit.Assertions; 
 with Crypto.Symmetric.Hashfunction_SHA256;
-with Crypto.Symmetric.Hashfunction_Object_SHA256;
 with Crypto.Types;
 
 package body Test.SHA256 is 

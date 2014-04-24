@@ -22,36 +22,39 @@
 
 package body Crypto.Symmetric.Mac.Hmac is
 
-   K : Message_Type;
-
    ---------------------------------------------------------------------------
 
-   procedure Reset is
+   procedure Reset(This : in out HMAC_Context) is
       Ipad : Message_Type;
    begin
       Fill36(Ipad);
-      Init;
-      Update(K xor Ipad);
+      Initialize(This.HS);
+      Update(This          => This.HS,
+             Message_Block => This.K xor Ipad);
    end Reset;
 
    ---------------------------------------------------------------------------
 
-   procedure Init(Key : in Message_Type) is
+   procedure Init(This : in out HMAC_Context;
+                  Key : in Message_Type) is
    begin
-      K := Key;
-      Reset;
+      This.K := Key;
+      Reset(This);
    end Init;
 
    ---------------------------------------------------------------------------
 
-   procedure Sign(Message_Block : in Message_Type) is
+   procedure Sign(This : in out HMAC_Context;
+                  Message_Block : in Message_Type) is
    begin
-      Update(Message_Block);
+      Update(This          => This.HS,
+             Message_Block => Message_Block);
    end Sign;
 
    ---------------------------------------------------------------------------
 
-   procedure Final_Sign(Final_Message_Block : in Message_Type;
+   procedure Final_Sign(This : in out HMAC_Context;
+                        Final_Message_Block : in Message_Type;
                         Final_Message_Block_Length :
                         in Message_Block_Length_Type;
                         Tag : out Hash_Type) is
@@ -59,30 +62,38 @@ package body Crypto.Symmetric.Mac.Hmac is
       Final : Message_Type;
       Len   : Message_Block_Length_Type;
    begin
-      Tag :=  Final_Round(Final_Message_Block, Final_Message_Block_Length);
+      Tag :=  Final_Round(This                => This.HS,
+                          Last_Message_Block  => Final_Message_Block,
+                          Last_Message_Length => Final_Message_Block_Length);
 
       Fill5C(Opad);
-      Init;
-      Update(K xor Opad);
+      Initialize(This.HS);
+      Update(This.HS,
+             This.K xor Opad);
 
       Copy(Tag,Final);
       Len := Tag'Size/8;
 
-      Tag :=  Final_Round(Final, Len);
+      Tag :=  Final_Round(This                => This.HS,
+                          Last_Message_Block  => Final,
+                          Last_Message_Length => Len);
 
-      Reset;
+      Reset(This);
    end Final_Sign;
 
    ---------------------------------------------------------------------------
 
-   procedure Verify(Message_Block : in Message_Type) is
+   procedure Verify(This : in out HMAC_Context;
+                    Message_Block : in Message_Type) is
    begin
-      Update(Message_Block);
+      Update(This.HS,
+             Message_Block);
    end Verify;
 
    ---------------------------------------------------------------------------
 
-   function Final_Verify(Final_Message_Block : in Message_Type;
+   function Final_Verify(This : in out HMAC_Context;
+                         Final_Message_Block : in Message_Type;
                          Final_Message_Block_Length :
                          in Message_Block_Length_Type;
                          Tag : in Hash_Type)
@@ -91,18 +102,18 @@ package body Crypto.Symmetric.Mac.Hmac is
       Final : Message_Type;
       Len   : Message_Block_Length_Type;
       Tag2  : Hash_Type :=
-        Final_Round(Final_Message_Block, Final_Message_Block_Length);
+        Final_Round(This.HS,Final_Message_Block, Final_Message_Block_Length);
    begin
       Fill5C(Opad);
-      Init;
-      Update(K xor Opad);
+      Initialize(This.HS);
+      Update(This.HS, This.K xor Opad);
 
       Copy(Tag2,Final);
       Len := Tag'Size/8;
 
-      Tag2 :=  Final_Round(Final, Len);
+      Tag2 :=  Final_Round(This.HS,Final, Len);
 
-      Reset;
+      Reset(This);
 
       return Tag = Tag2;
 

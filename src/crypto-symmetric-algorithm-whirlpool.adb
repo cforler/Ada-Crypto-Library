@@ -354,5 +354,232 @@ package body Crypto.Symmetric.Algorithm.Whirlpool is
    end F_Hash;
 
    ---------------------------------------------------------------------------
+   
+   procedure Init(This 		: in out Whirlpool_Interface) is
+   begin
+      This.Current_Message_Length := (others => 0);
+      This.Hash_Value             := (others => 0);
+   end Init;
+   
+   
+      ---------------------------------------------------------------------------
+   
+   procedure Padding(This	    : in out Whirlpool_Interface;
+                     Message_Block  : in out DW_Block512;
+                     MP : out DW_Block512) is
+      A : Natural; -- which Block
+      T : Word := 0;
+      L : constant Word := Word(This.Current_Message_Length(0) and 511);
+   begin
+      MP :=(others=>0);
+
+      --Append the "1"-Bit
+      A := Natural(Shift_Right(L, 6));
+      Message_Block(A):=
+        Message_Block(A) or Shift_Left(1,Natural(63-(L and 63)));
+
+      -- compute K
+      for K in Word'Range loop
+         if ((L + 1 + K) and 511)  = 256 then
+            T:= K + L + 256;
+            exit;
+         end if;
+      end loop;
+
+      if T < 512 then
+         -- The Message Block_size is ok.
+         Message_Block(DW_Block512'Last)   := This.Current_Message_Length(0);
+         Message_Block(DW_Block512'Last-1) := This.Current_Message_Length(1);
+         Message_Block(DW_Block512'Last-2) := This.Current_Message_Length(2);
+         Message_Block(DW_Block512'Last-3) := This.Current_Message_Length(3);
+
+         -- The Message Block_size is too short
+         -- Let's allocate another empty message block and padd the message.
+      else
+         MP(DW_Block512'Last)   := This.Current_Message_Length(0);
+         MP(DW_Block512'Last-1) := This.Current_Message_Length(1);
+         MP(DW_Block512'Last-2) := This.Current_Message_Length(2);
+         MP(DW_Block512'Last-3) := This.Current_Message_Length(3);
+      end if;
+   end Padding;
+   ---------------------------------------------------------------------------
+   
+   procedure Round(This 	: in out 	Whirlpool_Interface;
+                   Message_Block: in 		DW_Block512) is
+      State : DW_Block512;
+      K     : DW_Block512 := This.Hash_Value;
+      L     : DW_Block512 := This.Hash_Value;
+   begin
+      This.Current_Message_Length(0) := This.Current_Message_Length(0) + 512;
+
+      if  This.Current_Message_Length(0) = 0 then
+         This.Current_Message_Length(1) := This.Current_Message_Length(1) + 1;
+         if  This.Current_Message_Length(1) = 0 then
+            This.Current_Message_Length(2) := This.Current_Message_Length(2) + 1;
+            if  This.Current_Message_Length(2) = 0 then
+               This.Current_Message_Length(3) := This.Current_Message_Length(3) + 1;
+               if This.Current_Message_Length(3) = 0  then
+                  raise Whirlpool_Constraint_Error;
+               end if;
+            end if;
+         end if;
+      end if;
+
+      --  compute and apply K^0 to the cipher state:
+      State(0) := Message_Block(0) xor K(0);
+      State(1) := Message_Block(1) xor K(1);
+      State(2) := Message_Block(2) xor K(2);
+      State(3) := Message_Block(3) xor K(3);
+      State(4) := Message_Block(4) xor K(4);
+      State(5) := Message_Block(5) xor K(5);
+      State(6) := Message_Block(6) xor K(6);
+      State(7) := Message_Block(7) xor K(7);
+
+       -- iterate over all rounds:
+      for I in 1..R loop
+         --  compute K^r from K^{r-1}:
+         L(0) :=
+           C0(Byte0(K(0))) xor  C1(Byte1(K(7))) xor C2(Byte2(K(6))) xor
+           C3(Byte3(K(5))) xor  C4(Byte4(K(4))) xor C5(Byte5(K(3))) xor
+           C6(Byte6(K(2))) xor  C7(Byte7(K(1))) xor Rc(I);
+
+          L(1) :=
+           C0(Byte0(K(1))) xor  C1(Byte1(K(0))) xor C2(Byte2(K(7))) xor
+           C3(Byte3(K(6))) xor  C4(Byte4(K(5))) xor C5(Byte5(K(4))) xor
+           C6(Byte6(K(3))) xor  C7(Byte7(K(2)));
+
+          L(2) :=
+            C0(Byte0(K(2))) xor  C1(Byte1(K(1))) xor C2(Byte2(K(0))) xor
+            C3(Byte3(K(7))) xor  C4(Byte4(K(6))) xor C5(Byte5(K(5))) xor
+            C6(Byte6(K(4))) xor  C7(Byte7(K(3)));
+
+          L(3) :=
+            C0(Byte0(K(3))) xor  C1(Byte1(K(2))) xor C2(Byte2(K(1))) xor
+            C3(Byte3(K(0))) xor  C4(Byte4(K(7))) xor C5(Byte5(K(6))) xor
+            C6(Byte6(K(5))) xor  C7(Byte7(K(4)));
+
+          L(4) :=
+            C0(Byte0(K(4))) xor  C1(Byte1(K(3))) xor C2(Byte2(K(2))) xor
+            C3(Byte3(K(1))) xor  C4(Byte4(K(0))) xor C5(Byte5(K(7))) xor
+            C6(Byte6(K(6))) xor  C7(Byte7(K(5)));
+
+          L(5) :=
+            C0(Byte0(K(5))) xor  C1(Byte1(K(4))) xor C2(Byte2(K(3))) xor
+            C3(Byte3(K(2))) xor  C4(Byte4(K(1))) xor C5(Byte5(K(0))) xor
+            C6(Byte6(K(7))) xor  C7(Byte7(K(6)));
+
+          L(6) :=
+            C0(Byte0(K(6))) xor  C1(Byte1(K(5))) xor C2(Byte2(K(4))) xor
+            C3(Byte3(K(3))) xor  C4(Byte4(K(2))) xor C5(Byte5(K(1))) xor
+            C6(Byte6(K(0))) xor  C7(Byte7(K(7)));
+
+          L(7) :=
+            C0(Byte0(K(7))) xor  C1(Byte1(K(6))) xor C2(Byte2(K(5))) xor
+            C3(Byte3(K(4))) xor  C4(Byte4(K(3))) xor C5(Byte5(K(2))) xor
+            C6(Byte6(K(1))) xor  C7(Byte7(K(0)));
+
+          K := L;
+
+          -- apply the r-th round transformation:
+          L(0) :=
+            C0(Byte0(State(0))) xor C1(Byte1(State(7))) xor
+            C2(Byte2(State(6))) xor C3(Byte3(State(5))) xor
+            C4(Byte4(State(4))) xor C5(Byte5(State(3))) xor
+            C6(Byte6(State(2))) xor C7(Byte7(State(1))) xor
+            K(0);
+
+          L(1) :=
+            C0(Byte0(State(1))) xor C1(Byte1(State(0))) xor
+            C2(Byte2(State(7))) xor C3(Byte3(State(6))) xor
+            C4(Byte4(State(5))) xor C5(Byte5(State(4))) xor
+            C6(Byte6(State(3))) xor C7(Byte7(State(2))) xor
+            K(1);
+
+          L(2) :=
+            C0(Byte0(State(2))) xor C1(Byte1(State(1))) xor
+            C2(Byte2(State(0))) xor C3(Byte3(State(7))) xor
+            C4(Byte4(State(6))) xor C5(Byte5(State(5))) xor
+            C6(Byte6(State(4))) xor C7(Byte7(State(3))) xor
+            K(2);
+
+          L(3) :=
+            C0(Byte0(State(3))) xor C1(Byte1(State(2))) xor
+            C2(Byte2(State(1))) xor C3(Byte3(State(0))) xor
+            C4(Byte4(State(7))) xor C5(Byte5(State(6))) xor
+            C6(Byte6(State(5))) xor C7(Byte7(State(4))) xor
+            K(3);
+
+          L(4) :=
+            C0(Byte0(State(4))) xor C1(Byte1(State(3))) xor
+            C2(Byte2(State(2))) xor C3(Byte3(State(1))) xor
+            C4(Byte4(State(0))) xor C5(Byte5(State(7))) xor
+            C6(Byte6(State(6))) xor C7(Byte7(State(5))) xor
+            K(4);
+
+          L(5) :=
+            C0(Byte0(State(5))) xor C1(Byte1(State(4))) xor
+            C2(Byte2(State(3))) xor C3(Byte3(State(2))) xor
+            C4(Byte4(State(1))) xor C5(Byte5(State(0))) xor
+            C6(Byte6(State(7))) xor C7(Byte7(State(6))) xor
+            K(5);
+
+          L(6) :=
+            C0(Byte0(State(6))) xor C1(Byte1(State(5))) xor
+            C2(Byte2(State(4))) xor C3(Byte3(State(3))) xor
+            C4(Byte4(State(2))) xor C5(Byte5(State(1))) xor
+            C6(Byte6(State(0))) xor C7(Byte7(State(7))) xor
+            K(6);
+
+          L(7) :=
+            C0(Byte0(State(7))) xor C1(Byte1(State(6))) xor
+            C2(Byte2(State(5))) xor C3(Byte3(State(4))) xor
+            C4(Byte4(State(3))) xor C5(Byte5(State(2))) xor
+            C6(Byte6(State(1))) xor C7(Byte7(State(0))) xor
+            K(7);
+
+          State := L;
+      end loop;
+
+      -- apply the Miyaguchi-Preneel compression function:
+      This.Hash_Value := DW_Block512(DWords(This.Hash_Value) xor DWords(State) 
+				  xor DWords(Message_Block));
+
+   end Round;
+   
+   function Final_Round(This 		    : in out Whirlpool_Interface;
+                        Last_Message_Block  : DW_Block512;
+                        Last_Message_Length : Message_Block_Length512)
+                        return DW_Block512 is
+      MP : DW_Block512;
+      Mf : DW_Block512 := Last_Message_Block;  -- Final message block
+      H  : DW_Block512  := This.Hash_Value;
+   begin
+      if  Last_Message_Length = Message_Block_Length512'Last then
+         This.Round(Message_Block => MF);
+         MF := (others => 0);
+      else
+         -- Current_Message_Length(0) + Last_Message_Length /= 0 because
+         -- Last_Message_Length < 512
+         This.Current_Message_Length(0) := This.Current_Message_Length(0) +
+           Shift_Left(DWord(Last_Message_Length),3);
+      end if;
+
+      Padding(This	    => This,
+              Message_Block => MF,
+              MP            => MP);
+      This.Round(Message_Block => MF);
+
+      if Is_Zero( DWords(MP) ) = False then
+         This.Round(Message_Block => MF);
+      end if;
+
+      return H;
+
+   end Final_Round;
+
+
+
+   
+      
 
 end Crypto.Symmetric.Algorithm.Whirlpool;

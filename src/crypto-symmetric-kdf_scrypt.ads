@@ -50,7 +50,10 @@ package Crypto.Symmetric.KDF_Scrypt is
                      dkLen	: in	Natural;
                      Key	: out 	Bytes);
 
-   --Block rearrangement, used by Scrypt_Block_Mix
+
+
+
+      --Block rearrangement, used by Scrypt_Block_Mix
    function Scrypt_ROMix(Input	: in 	W_Block512_Array;
                          N	: in 	Natural) return W_Block512_Array;
 
@@ -68,10 +71,7 @@ package Crypto.Symmetric.KDF_Scrypt is
    --power of two test (rudimentary)
    function IsPowerOfTwo(value : Natural) return Boolean;
 
-
-
-private
-
+   private
    type Scrypt_KDF is new KDF.KDF_Scheme with
       record
          Security_Parameter	: Natural;

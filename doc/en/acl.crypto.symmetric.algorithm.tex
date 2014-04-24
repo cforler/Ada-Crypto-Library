@@ -250,16 +250,16 @@ string.\\
 \subsubsection*{Low-Level-API}
 The Low-Level-API of a hash function has:
 \begin{itemize}
-\item One procedure \texttt{Init()}; it initializes the hash value (\texttt{Hash\_Value}).\\
+\item One procedure \texttt{Init()}; it initializes the hash context (\texttt{This}).\\
 \textbf{Example:}
 \begin{lstlisting}{}
-  procedure Init(Hash_Value : out W_Block160);
+	procedure Init(This 		: in out Hash_Interface);
 \end{lstlisting}
 \item One procedure \texttt{Round()}; a message block (not the last block) will be hashed.\\
 \textbf{Example:}
 \begin{lstlisting}{}
-  procedure Round(Message_Block : in     W_Block512;
-                  Hash_Value    : in out W_Block160);
+	procedure Round(This 					: in out 	Hash_Interface;
+                  Message_Block : in 		  W_Block512);
 \end{lstlisting}
 \item One function \texttt{Final\_Round()}; the last message block
   (\texttt{Last\_Message\_Block}) will be inflated and the final hash
@@ -269,10 +269,10 @@ The Low-Level-API of a hash function has:
 
 \noindent\textbf{Example:}
 \begin{lstlisting}{}
-  function Final_Round
-           (Last_Message_Block  : W_Block512;
-            Last_Message_Length : Message_Block_Length512;
-            Hash_Value          : W_Block160) return W_Block160;
+ function Final_Round(This 		    : in out Hash_Interface;
+										Last_Message_Block  : W_Block512;
+										Last_Message_Length : Message_Block_Length512)
+										return W_Block160;
 \end{lstlisting}
 \end{itemize}
 
@@ -296,13 +296,13 @@ than SHA-256.
   procedure Hash(Message : in Bytes  ; Hash_Value : out W_Block160);
   procedure F_Hash(Filename: in String; Hash_Value : out W_Block160);
   -- low level API
-  procedure Init(Hash_Value     : out    W_Block160);
-  procedure Round(Message_Block : in     W_Block512;
-                  Hash_Value    : in out W_Block160);
-  function Final_Round
-           (Last_Message_Block  : W_Block512;
-            Last_Message_Length : Message_Block_Length512;
-            Hash_Value          : W_Block160) return W_Block160;
+	procedure Init(This 		: in out SHA1_Interface);
+	procedure Round(This 	: in out 	SHA1_Interface;
+								 Message_Block: in 		W_Block512);
+	function Final_Round(This 		    : in out SHA1_Interface;
+											Last_Message_Block  : W_Block512;
+											Last_Message_Length : Message_Block_Length512)
+											return W_Block160;
 \end{lstlisting}
 \textbf{Exceptions:}
 \begin{itemize}
@@ -330,14 +330,13 @@ replaced by this new generation of SHA-2 hash family.
   procedure Hash(Message : in String; Hash_Value : out W_Block256);
   procedure F_Hash(Filename: in String; Hash_Value : out W_Block256);
   -- low level API
-  procedure Init(Hash_Value     : out    W_Block256);
-  procedure Round(Message_Block : in     W_Block512;
-                  Hash_Value    : in out W_Block256);
-  function Final_Round
-           (Last_Message_Block : W_Block512;
-            Last_Message_Length: Message_Block_Length512;
-            Hash_Value         : W_Block256) return W_Block256;
-\end{lstlisting}
+	procedure Init(This 		: in out SHA256_Interface);
+	procedure Round(This 	: in out 	SHA256_Interface;
+								 Message_Block: in 		W_Block512);
+	function Final_Round(This 		    : in out SHA256_Interface;
+											Last_Message_Block  : W_Block512;
+											Last_Message_Length : Message_Block_Length512)
+											return W_Block256;\end{lstlisting}
 \textbf{Exceptions:}
 \begin{itemize}
 \item If the message length is greater than $2^{64}-1024$:\quad
@@ -368,13 +367,14 @@ one.
   procedure Hash(Message : in String; Hash_Value : out DW_Block512);
   procedure F_Hash(Filename: in String; Hash_Value: out DW_Block512); 
   -- low level API
-  procedure Init(Hash_Value     : out    DW_Block512);
-  procedure Round(Message_Block : in     DW_Block1024;
-                  Hash_Value    : in out DW_Block512);
-  function Final_Round
-           (Last_Message_Block  : DW_Block1024;
-            Last_Message_Length : Message_Block_Length1024;
-            Hash_Value          : DW_Block512) return DW_Block512;
+	procedure Init(This 		: in out Sha512_Interface);
+	procedure Round(This 	: in out 	Sha512_Interface;
+								 Message_Block: in 		DW_Block1024);
+	function Final_Round(This 		    : in out Sha512_Interface;
+											Last_Message_Block  : DW_Block1024;
+											Last_Message_Length : Message_Block_Length1024)
+											return DW_Block512;
+
 \end{lstlisting}
 \textbf{Exceptions:}
 \begin{itemize}
@@ -407,13 +407,14 @@ should be avoided using.
   procedure Hash(Message : in String; Hash_Value : out DW_Block384);
   procedure F_Hash(Filename: in String;Hash_Value : out DW_Block384);
   -- low level API
-  procedure Init(Hash_Value     : out    DW_Block512);
-  procedure Round(Message_Block : in     DW_Block1024;
-                  Hash_Value    : in out DW_Block512);
-  function Final_Round
-           (Last_Message_Block  : DW_Block1024;
-            Last_Message_Length : Message_Block_Length1024;
-            Hash_Value          : DW_Block512) return DW_Block384;
+	procedure Init(This 		: in out SHA384_Interface);
+	procedure Round(This 	: in out 	SHA384_Interface;
+								 Message_Block: in 		DW_Block1024);
+	function Final_Round(This 		    : in out SHA384_Interface;
+											Last_Message_Block  : DW_Block1024;
+											Last_Message_Length : Message_Block_Length1024)
+											return DW_Block384;
+
 \end{lstlisting}
 \textbf{Exceptions:}
 \begin{itemize}
@@ -444,13 +445,14 @@ american crypto-standard, then you should consider using Whirlpool.
   procedure F_Hash(Filename   :in  String;
                    Hash_Value :out DW_Block512);
   -- low level API
-  procedure Init(Hash_Value     : out    DW_Block512);
-  procedure Round(Message_Block : in     DW_Block512;
-                  Hash_Value    : in out DW_Block512);
-  function Final_Round
-           (Last_Message_Block : DW_Block512;
-            Last_Message_Length: Message_Block_Length512;
-            Hash_Value         : DW_Block512) return DW_Block512;
+	procedure Init(This 		: in out Whirlpool_Interface);
+	procedure Round(This 	: in out 	Whirlpool_Interface;
+								 Message_Block: in 		DW_Block512);
+	function Final_Round(This 		    : in out Whirlpool_Interface;
+											Last_Message_Block  : DW_Block512;
+											Last_Message_Length : Message_Block_Length512)
+											return DW_Block512;
+
 \end{lstlisting}
 \textbf{Exceptions:}
 \begin{itemize}

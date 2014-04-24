@@ -80,13 +80,15 @@ package body Test.SHA1_MAC is
    procedure SHA1_MAC_Test1(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA1;
+      
+      Context : Crypto.Symmetric.MAC.HMAC_SHA1.HMAC_Context;
 
    begin
 
-   	   Init(Key1);
-   	   Final_Sign(Message1, 8, Tag);
+   	   Context.Init(Key1);
+   	   Context.Final_Sign(Message1, 8, Tag);
 
-       Assert((Tag = Temp) or (Final_Verify(Message1, 8, Tag)), "Final Signature with SHA1 MAC failed.");
+       Assert((Tag = Temp) or (Context.Final_Verify(Message1, 8, Tag)), "Final Signature with SHA1 MAC failed.");
 
    end SHA1_MAC_Test1;
 
@@ -98,14 +100,16 @@ package body Test.SHA1_MAC is
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA1;
 
+      Context : Crypto.Symmetric.MAC.HMAC_SHA1.HMAC_Context;
+      
    begin
    	   
    	   Temp := (16#Ef_Fc_Df_6a#, 16#E5_Eb_2f_A2#, 16#D2_74_16_D5#,
                16#F1_84_Df_9c#, 16#25_9a_7c_79#);
-   	   Init(Key2);
-   	   Final_Sign(Message2, 28, Tag);
+   	   Context.Init(Key2);
+   	   Context.Final_Sign(Message2, 28, Tag);
 
-       Assert((Tag = Temp) or (Final_Verify(Message2, 28, Tag)), "Final Signature with SHA1 MAC failed.");
+       Assert((Tag = Temp) or (Context.Final_Verify(Message2, 28, Tag)), "Final Signature with SHA1 MAC failed.");
 
    end SHA1_MAC_Test2;
 
@@ -117,14 +121,16 @@ package body Test.SHA1_MAC is
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA1;
 
+      Context : Crypto.Symmetric.MAC.HMAC_SHA1.HMAC_Context;
+      
    begin
    	   
    	   Temp := (16#12_5d_73_42#, 16#B9_Ac_11_Cd#, 16#91_A3_9a_F4#,
                16#8a_A1_7b_4f#, 16#63_F1_75_D3#);
-   	   Init(Key3);
-   	   Final_Sign(Message3, 50, Tag);
+   	   Context.Init(Key3);
+   	   Context.Final_Sign(Message3, 50, Tag);
 
-       Assert((Tag = Temp) or (Final_Verify(Message3, 50, Tag)), "Final Signature with SHA1 MAC failed.");
+       Assert((Tag = Temp) or (Context.Final_Verify(Message3, 50, Tag)), "Final Signature with SHA1 MAC failed.");
    
    end SHA1_MAC_Test3;
 

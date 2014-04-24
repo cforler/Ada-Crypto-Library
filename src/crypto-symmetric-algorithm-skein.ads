@@ -29,6 +29,41 @@ use  Crypto.Symmetric.Algorithm.Threefish;
 
 package Crypto.Symmetric.Algorithm.Skein is
 
+   --Interface fixed to Skein 512 mode, 256 and 1024 mode available as well
+
+   type Generic_Interface is Interface;
+   type Skein_512_Interface is new Generic_Interface with
+      record
+         Hash_Value : W_Block512;
+      end record;
+
+   ---------------------------------------------------------------------------
+
+   -- low level API with object
+   procedure Init(This 		: in out Skein_512_Interface);
+
+   procedure Round(This 	: in out 	Skein_512_Interface;
+                   Message_Block: in 		W_Block512);
+
+   function Final_Round(This 		    : in out Skein_512_Interface;
+                        Last_Message_Block  : W_Block512;
+                        Last_Message_Length : Natural)
+                        return W_Block512;
+
+   ---------------------------------------------------------------------------
+
+   -- high level API
+
+   procedure Hash(Message : in String; Hash_Value : out W_Block512);
+
+   procedure Hash(Message : in Bytes;  Hash_Value : out W_Block512);
+
+   procedure F_Hash(Filename : in String; Hash_Value : out W_Block512);
+
+-------------------------------------------------------------------------
+
+
+
    --sometimes we need to set a single Bit inside of a Byte
    procedure Set_Bit
      (b        : in out Byte;
