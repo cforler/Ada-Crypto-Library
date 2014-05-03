@@ -1,0 +1,21 @@
+\chapter{Crypto.Debug\_Put}
+The package \texttt{Debug\_Put} provides a means of more differentiated debug output. The package is instantiated with true or false, and depending on the value, the function outputs the text on the debug output, or it does nothing. \linebreak
+The advantage of this is the possibility to instantiate the package multiple times and this way having separated switches for multiple output packages when debugging
+\section{Generic part}
+\begin{lstlisting}{}
+generic
+   b : in Boolean := true;
+\end{lstlisting}
+\section{Functions}
+\begin{lstlisting}{}
+  procedure Put_Line(S : in String);
+  procedure Put(S : in String);
+  procedure Put(Item  : Integer;
+      Width : Field := Ada.Integer_Text_IO.Default_Width;
+                 Base  : Number_Base := Default_Base);
+\end{lstlisting}
+\begin{itemize}
+	\item The procedure \texttt{Put\_Line()} puts the line \texttt{S} to debug output, followed by a line break, or does nothing, if \texttt{b} is false.
+	\item The procedure \texttt{Put()} puts the line \texttt{S} to debug output, or does nothing, if \texttt{b} is false.
+	\item The procedure \texttt{Put()} puts the integer number Item to debug output, base \texttt{Number\_Base}, or does nothing, if \texttt{b} is false.
+\end{itemize}
