@@ -35,7 +35,7 @@ package Crypto.Symmetric.Hashfunction_Whirlpool is
                                     Message_Block_Length_Type =>
                                     Crypto.Types.Message_Block_Length512,
                                     Generic_To_Bytes => To_Bytes,
-                                    Internal_Scheme           => Whirlpool_Interface
+                                    Internal_Context           => Whirlpool_Context
                                    );
 
 

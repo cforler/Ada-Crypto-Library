@@ -148,7 +148,6 @@ package body Test.Scrypt is
       Output : W_Block512_Array(0..1);
       Input : W_Block512_Array(0..1) := (To_W_Block512(Input_Bytes_A), To_W_Block512(Input_Bytes_B));
 
-      Test_Context : Crypto.Symmetric.Hashfunction_SHA512.Hash_Context;
 
    begin
 
@@ -279,14 +278,13 @@ package body Test.Scrypt is
 
 
       PBKDF2_Scheme : PBKDF2.PBKDF2_KDF;
-      success : Boolean;
       Pbkdf2_Bytes : Bytes(0..63);
 
 
 
    begin
 
-      success := PBKDF2_Scheme.Initialize(Parameter => 1);
+      PBKDF2_Scheme.Initialize(Parameter => 1);
 
       PBKDF2_Scheme.Derive(Salt     => "salt",
                            Password => "passwd",
@@ -294,7 +292,7 @@ package body Test.Scrypt is
                            DK_Len   => 64);
       Assert(Ideal_A = Pbkdf2_Bytes, "Success!");
 
-      success := PBKDF2_Scheme.Initialize(Parameter => 80000);
+      PBKDF2_Scheme.Initialize(Parameter => 80000);
 
       PBKDF2_Scheme.Derive(Salt     => "NaCl",
                            Password => "Password",

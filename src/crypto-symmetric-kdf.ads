@@ -3,27 +3,27 @@ use Crypto.Types;
 with Crypto.Symmetric.Hashfunction;
 
 generic
-   type return_type is private;
-   type security_parameter is private;
+   type Return_Type is private;
+   type Security_Parameter is private;
 
    with package H is new Crypto.Symmetric.Hashfunction(<>);
 
 package Crypto.Symmetric.KDF is
 
-   type KDF_Scheme is limited interface;
+   type KDF_Scheme is abstract tagged null record;
 
-   procedure Derive(This	: in out KDF_Scheme;
+   procedure Derive(This	: in out KDF_Scheme'Class;
                     Salt	: in 	String;
                     Password	: in	String;
-                    Key		: out	return_type) is abstract;
+                    Key		: out	Return_Type);
 
    procedure Derive(This	: in out KDF_Scheme;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
-                    Key		: out	return_type) is abstract;
+                    Key		: out	Return_Type) is abstract;
 
-   function Initialize(This	: out KDF_Scheme;
-                       Parameter: in security_parameter) return Boolean is abstract;
+   procedure Initialize(This	: out KDF_Scheme;
+                       Parameter: in Security_Parameter) is abstract;
 
 
 

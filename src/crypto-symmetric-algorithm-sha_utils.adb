@@ -296,7 +296,7 @@ package body Crypto.Symmetric.Algorithm.Sha_Utils is
 
    ---------------------------------------------------------------------------
 
-   procedure Padding512(This	       : in out Sha_Utils_Interface;
+   procedure Padding512(This	       : in out Sha_Utils_Context;
                         Message_Block  : in out W_Block512;
                         Message_Length : in Message_Length64;
                         MP : out W_Block512) is
@@ -310,7 +310,7 @@ package body Crypto.Symmetric.Algorithm.Sha_Utils is
 
    ---------------------------------------------------------------------------
 
-   procedure Padding1024(This	       : in out Sha_Utils_Interface;
+   procedure Padding1024(This	       : in out Sha_Utils_Context;
                          Message_Block : in out DW_Block1024;
                          MP            : out DW_Block1024) is
    begin
@@ -322,7 +322,7 @@ package body Crypto.Symmetric.Algorithm.Sha_Utils is
 
    ---------------------------------------------------------------------------
 
-   procedure Round_SHA2(This	      : in out Sha_Utils_Interface;
+   procedure Round_SHA2(This	      : in out Sha_Utils_Context;
                         Message_Block : in DW_Block1024;
                         Hash_Value    : in out DW_Block512) is
    begin
@@ -334,7 +334,7 @@ package body Crypto.Symmetric.Algorithm.Sha_Utils is
 
    ---------------------------------------------------------------------------
 
-      function Final_Round_SHA2(This	      	  : in out Sha_Utils_Interface;
+      function Final_Round_SHA2(This	      	  : in out Sha_Utils_Context;
                              Message_Block        : in DW_Block1024;
                              Message_Block_Length : in Message_Block_Length1024;
                              Hash_Value           : in DW_Block512)
@@ -352,7 +352,7 @@ package body Crypto.Symmetric.Algorithm.Sha_Utils is
 
    ---------------------------------------------------------------------------
 
-   procedure Init_SHA2(This : in out Sha_Utils_Interface) is
+   procedure Init_SHA2(This : in out Sha_Utils_Context) is
    begin
       Current_Message_Length := This.Current_Message_Length;
       Init_SHA2;

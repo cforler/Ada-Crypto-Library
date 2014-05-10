@@ -17,22 +17,15 @@ generic
 package Crypto.Symmetric.KDF_PBKDF2 is
 
 
-   package Error_Output is new Crypto.Debug_Put(b => false);
+   package Error_Output is new Crypto.Debug_Put(b => true);
 
-   package KDF is new Crypto.Symmetric.KDF(return_type        => W_Block512,
-                                           security_parameter => Natural,
+   package KDF is new Crypto.Symmetric.KDF(Return_Type        => W_Block512,
+                                           Security_Parameter => Natural,
                                            H                  => Hmac_Package.H);
    use KDF;
 
    type PBKDF2_KDF is new KDF.KDF_Scheme with private;
 
-
-   --Interface function for static 64 Bytes Output
-   overriding
-   procedure Derive(This	: in out PBKDF2_KDF;
-                    Salt	: in 	String;
-                    Password	: in	String;
-                    Key		: out	W_Block512);
 
    --Interface function for static 64 Bytes Output
    overriding
@@ -57,8 +50,8 @@ package Crypto.Symmetric.KDF_PBKDF2 is
 
    --function for setting security parameter, used here for setting round count in F_Function
    overriding
-   function Initialize(This	: out PBKDF2_KDF;
-                       Parameter: in Natural) return Boolean;
+   procedure Initialize(This	: out PBKDF2_KDF;
+                       Parameter: in Natural);
 
 private
 

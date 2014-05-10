@@ -14,19 +14,13 @@ package Crypto.Symmetric.KDF_Scrypt is
    array_size_not_equal_exception : exception ;
    N_not_power_of_2_exception : exception;
 
-   package KDF is new Crypto.Symmetric.KDF(return_type        => W_Block512,
-                                           security_parameter => Natural,
+   package KDF is new Crypto.Symmetric.KDF(Return_Type        => W_Block512,
+                                           Security_Parameter => Natural,
                                            H                  => Crypto.Symmetric.Hashfunction_SHA512);
    use KDF;
 
    type Scrypt_KDF is new KDF.KDF_Scheme with private;
 
-   --Interface function for static 64 Bytes Output, assuming p=8, r=8 and N=Security_Parameter
-   overriding
-   procedure Derive(This	: in out Scrypt_KDF;
-                    Salt	: in 	String;
-                    Password	: in	String;
-                    Key		: out	W_Block512);
 
    --Interface function for static 64 Bytes Output, assuming p=8, r=8 and N=Security_Parameter
    overriding
@@ -37,8 +31,8 @@ package Crypto.Symmetric.KDF_Scrypt is
 
    --function for setting security parameter, used here for setting round count
    overriding
-   function Initialize(This	: out Scrypt_KDF;
-                       Parameter: in Natural) return Boolean;
+   procedure Initialize(This	: out Scrypt_KDF;
+                       Parameter: in Natural);
 
 
    --core scrypt function

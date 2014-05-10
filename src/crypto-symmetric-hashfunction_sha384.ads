@@ -33,5 +33,5 @@ package Crypto.Symmetric.Hashfunction_SHA384 is
   new Crypto.Symmetric.Hashfunction(Hash_Type                 => DW_Block384,
                                            Message_Type              => DW_Block1024,
                                            Message_Block_Length_Type => Crypto.Types.Message_Block_Length1024,
-                                           Internal_Scheme           => Sha384_Interface,
+                                           Internal_Context           => SHA384_Context,
                                            Generic_To_Bytes	     => To_Bytes);

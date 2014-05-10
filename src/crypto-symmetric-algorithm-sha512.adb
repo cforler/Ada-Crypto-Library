@@ -64,9 +64,9 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
 
    ---------------------------------------------------------------------------
    
-   procedure Init(This : in out Sha512_Interface) is
+   procedure Init(This : in out Sha512_Context) is
    begin
-      This.Utils_Interface.Init_SHA2;
+      This.Utils_Context.Init_SHA2;
       This.Hash_Value(0) := 16#6a09e667f3bcc908#;
       This.Hash_Value(1) := 16#bb67ae8584caa73b#;
       This.Hash_Value(2) := 16#3c6ef372fe94f82b#;
@@ -80,20 +80,20 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
    
    ---------------------------------------------------------------------------
    
-   procedure Round(This 	: in out 	Sha512_Interface;
+   procedure Round(This 	: in out 	Sha512_Context;
                    Message_Block: in 		DW_Block1024) is
    begin
-      This.Utils_Interface.Round_SHA2(Message_Block, This.Hash_Value);
+      This.Utils_Context.Round_SHA2(Message_Block, This.Hash_Value);
    end Round;
    
    ---------------------------------------------------------------------------
    
-   function Final_Round(This 		    : in out Sha512_Interface;
+   function Final_Round(This 		    : in out Sha512_Context;
                         Last_Message_Block  : DW_Block1024;
                         Last_Message_Length : Message_Block_Length1024)
                         return DW_Block512 is
          begin
-      return This.Utils_Interface.Final_Round_SHA2(Message_Block        => Last_Message_Block,
+      return This.Utils_Context.Final_Round_SHA2(Message_Block        => Last_Message_Block,
                                                    Message_Block_Length => Last_Message_Length,
                                                    Hash_Value           => This.Hash_Value);
 

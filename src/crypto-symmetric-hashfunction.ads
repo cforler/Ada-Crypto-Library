@@ -28,18 +28,18 @@ generic
    type Message_Type              is private;
    type Message_Block_Length_Type is range <>;
 
-   type Internal_Scheme		  is private;
+   type Internal_Context		  is private;
 
 
    with function Generic_To_Bytes(DWord_Array : Hash_Type) return Bytes is <>;
 
 
 
-   with procedure Init(This : in out Internal_Scheme) is <>;
-   with procedure Round(This : in out Internal_Scheme;
+   with procedure Init(This : in out Internal_Context) is <>;
+   with procedure Round(This : in out Internal_Context;
                         Message_Block : in     Message_Type) is <>;
 
-   with function Final_Round(This : in out Internal_Scheme;
+   with function Final_Round(This : in out Internal_Context;
                              Last_Message_Block  : Message_Type;
                              Last_Message_Length : Message_Block_Length_Type)
                             return Hash_Type is <>;
@@ -59,7 +59,7 @@ package Crypto.Symmetric.Hashfunction is
    type Generic_Context is Interface;
    type Hash_Context is new Generic_Context with
       record
-         HS : Internal_Scheme;
+         HS : Internal_Context;
       end record;
 
    function Hash  (Message  : Bytes)  return Hash_Type;

@@ -48,7 +48,9 @@ package body Test.PBKDF2 is
 
       Twenty_Bytes_Container : Bytes(0..19);
       Twentyfive_Bytes_Container : Bytes(0..24);
-      success : Boolean;
+
+
+
       package PBKDF2 is new Crypto.Symmetric.KDF_PBKDF2(Hmac_Package    => Crypto.Symmetric.Mac.Hmac_SHA1,
                                                         To_Message_Type => To_W_Block512,
                                                         To_Bytes        => To_Bytes ,
@@ -57,17 +59,18 @@ package body Test.PBKDF2 is
 
    begin
 
-      success := Scheme.Initialize(Parameter => 1);
+      Scheme.Initialize(Parameter => 1);
       Scheme.Derive(Salt     => "salt",
                     Password => "password",
                     Key      => Twenty_Bytes_Container,
                     DK_Len   => 20);
 
+
       Assert(Twenty_Bytes_Container(0..19)=(16#0c#, 16#60#, 16#c8#, 16#0f#, 16#96#, 16#1f#, 16#0e#, 16#71#,
              16#f3#, 16#a9#, 16#b5#, 16#24#, 16#af#, 16#60#, 16#12#, 16#06#,
              16#2f#, 16#e0#, 16#37#, 16#a6#), "PBKDF2 failed. (Parameter 1)");
 
-      success := Scheme.Initialize(Parameter => 2);
+      Scheme.Initialize(Parameter => 2);
 
       Scheme.Derive(Salt     => "salt",
                     Password => "password",
@@ -79,7 +82,7 @@ package body Test.PBKDF2 is
              16#d8#, 16#de#, 16#89#, 16#57#), "PBKDF2 failed. (Parameter 2)");
 
 
-      success := Scheme.Initialize(Parameter => 4096);
+      Scheme.Initialize(Parameter => 4096);
 
       Scheme.Derive(Salt     => "salt",
                     Password => "password",
@@ -90,7 +93,7 @@ package body Test.PBKDF2 is
              16#be#, 16#ad#, 16#49#, 16#d9#, 16#26#, 16#f7#, 16#21#, 16#d0#,
              16#65#, 16#a4#, 16#29#, 16#c1#), "PBKDF2 failed. (Parameter 4096)");
 
-      success := Scheme.Initialize(Parameter => 4096);
+      Scheme.Initialize(Parameter => 4096);
 
       Scheme.Derive(Salt     => "saltSALTsaltSALTsaltSALTsaltSALTsalt",
                     Password => "passwordPASSWORDpassword",

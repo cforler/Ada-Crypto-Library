@@ -33,7 +33,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
    package threefish renames Crypto.Symmetric.Algorithm.Threefish;
 
    -- low level API with object
-   procedure Init(This 		: in out Skein_512_Interface) is
+   procedure Init(This 		: in out Skein_512_Context) is
       State : Bytes(0..64);
       Mode : threefish.Skein_Mode := m512;
    begin
@@ -44,7 +44,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
    end Init;
 
 
-   procedure Round(This 	: in out 	Skein_512_Interface;
+   procedure Round(This 	: in out 	Skein_512_Context;
                    Message_Block: in 		W_Block512) is
       State : Bytes(0..64);
       Mode : threefish.Skein_Mode := m512;
@@ -58,7 +58,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
    end Round;
 
 
-   function Final_Round(This 		    : in out Skein_512_Interface;
+   function Final_Round(This 		    : in out Skein_512_Context;
                         Last_Message_Block  : W_Block512;
                         Last_Message_Length : Natural)
                         return W_Block512 is

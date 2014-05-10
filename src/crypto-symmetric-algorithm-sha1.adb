@@ -291,7 +291,7 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
 
    ---------------------------------------------------------------------------
    
-   procedure Init(This : in out SHA1_Interface) is
+   procedure Init(This : in out SHA1_Context) is
    begin
       This.Current_Message_Length:=0;
       This.Hash_Value(0):=16#67452301#;
@@ -304,7 +304,7 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
 
    -- FIPS 180-2 page 17-18 + loop unrolling   
    
-   procedure Round(This 	: in out 	SHA1_Interface;
+   procedure Round(This 	: in out 	SHA1_Context;
                    Message_Block: in 		W_Block512) is
       SHA1_Constant1 : constant Word := 16#5a827999#;
       SHA1_Constant2 : constant Word := 16#6ed9eba1#;
@@ -317,7 +317,7 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
    begin
 
       --0
-      This.Current_Message_Length := Current_Message_Length + 512;
+      This.Current_Message_Length := This.Current_Message_Length + 512;
 
       if This.Current_Message_Length = 0  then
          raise SHA1_Constraint_Error;
@@ -414,7 +414,7 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
 
    -----------------------------------------------------------------------
    
-   function Final_Round(This 		    : in out SHA1_Interface;
+   function Final_Round(This 		    : in out SHA1_Context;
                         Last_Message_Block  : W_Block512;
                         Last_Message_Length : Message_Block_Length512) return W_Block160 is
 
@@ -431,14 +431,14 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
            Message_Length64(Last_Message_Length)*8;
       end if;
 
-      This.Utils_Interface.Padding512(MF, This.Current_Message_Length, MP);
+      This.Utils_Context.Padding512(MF, This.Current_Message_Length, MP);
       This.Round(MF);
 
       if Is_Zero(Words(MP)) = False then
          This.Round(MP);
       end if;
 
-      return H;
+      return This.Hash_Value;
 
    end Final_Round;
    

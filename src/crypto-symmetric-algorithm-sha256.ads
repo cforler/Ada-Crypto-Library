@@ -27,9 +27,9 @@ with Crypto.Symmetric.Algorithm.Sha_Utils;
 package Crypto.Symmetric.Algorithm.SHA256 is
    
    type Generic_Interface is Interface;
-   type SHA256_Interface is new Generic_Interface with
+   type SHA256_Context is new Generic_Interface with
       record
-         Utils_Interface : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Interface;
+         Utils_Context : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Context;
          Hash_Value : W_Block256;
          Current_Message_Length : Message_Length64;
       end record;
@@ -46,12 +46,12 @@ package Crypto.Symmetric.Algorithm.SHA256 is
                         return W_Block256;
    
    -- low level API with object
-   procedure Init(This 		: in out SHA256_Interface);
+   procedure Init(This 		: in out SHA256_Context);
 
-   procedure Round(This 	: in out 	SHA256_Interface;
+   procedure Round(This 	: in out 	SHA256_Context;
                    Message_Block: in 		W_Block512);
 
-   function Final_Round(This 		    : in out SHA256_Interface;
+   function Final_Round(This 		    : in out SHA256_Context;
                         Last_Message_Block  : W_Block512;
                         Last_Message_Length : Message_Block_Length512)
                         return W_Block256;

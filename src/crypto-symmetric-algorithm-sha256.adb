@@ -285,7 +285,7 @@ package body Crypto.Symmetric.Algorithm.SHA256 is
 
    ---------------------------------------------------------------------------
    
-   procedure Init(This 		: in out SHA256_Interface) is
+   procedure Init(This 		: in out SHA256_Context) is
    begin
       This.Current_Message_Length:=0;
       This.Hash_Value(0) := 16#6a09e667#;
@@ -299,7 +299,7 @@ package body Crypto.Symmetric.Algorithm.SHA256 is
    end Init;
       
 
-   procedure Round(This 	: in out 	SHA256_Interface;
+   procedure Round(This 	: in out 	SHA256_Context;
                    Message_Block: in 		W_Block512) is
       A, B, C, D, E, F, G, H : Word; -- Working variables;
       W : Words(0..63);
@@ -356,7 +356,7 @@ package body Crypto.Symmetric.Algorithm.SHA256 is
 
    end Round;
 
-   function Final_Round(This 		    : in out SHA256_Interface;
+   function Final_Round(This 		    : in out SHA256_Context;
                         Last_Message_Block  : W_Block512;
                         Last_Message_Length : Message_Block_Length512)
                         return W_Block256 is

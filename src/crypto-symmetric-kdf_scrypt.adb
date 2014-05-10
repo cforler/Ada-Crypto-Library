@@ -14,13 +14,13 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
    --Interface function for static 64 Bytes Output, assuming p=8, r=8 and N=Security_Parameter
    procedure Derive(This	: in out Scrypt_KDF;
-                    Salt	: in 	String;
-                    Password	: in	String;
+                    Salt	: in 	Bytes;
+                    Password	: in	Bytes;
                     Key		: out	W_Block512) is
       Output_Bytes : Bytes(0..127);
    begin
-      scrypt(Password => Password,
-             Salt     => Salt,
+      scrypt(Password => To_String(ASCII => Password),
+             Salt     => To_String(ASCII => Salt),
              r        => 8,
              N        => 2**This.Security_Parameter,
              p        => 8,
@@ -30,25 +30,11 @@ package body Crypto.Symmetric.KDF_Scrypt is
    end Derive;
 
 
-   --Interface function for static 64 Bytes Output, assuming p=8, r=8 and N=Security_Parameter
-   procedure Derive(This	: in out Scrypt_KDF;
-                    Salt	: in 	Bytes;
-                    Password	: in	Bytes;
-                    Key		: out	W_Block512) is
-   begin
-      Derive(This     => This,
-             Salt     => To_String(ASCII => Salt),
-             Password => To_String(ASCII => Password),
-             Key      => Key);
-   end Derive;
-
-
    --function for setting security parameter, used here for setting round count
-   function Initialize(This	: out Scrypt_KDF;
-                       Parameter: in Natural) return Boolean is
+   procedure Initialize(This	: out Scrypt_KDF;
+                       Parameter: in Natural) is
    begin
       This.Security_Parameter := Parameter;
-      return true;
    end Initialize;
 
 
@@ -70,8 +56,6 @@ package body Crypto.Symmetric.KDF_Scrypt is
       B_Bytes : Bytes(0..p*128*r-1);
       B_W_Blocks : W_Block512_Array(0..p*2*r-1);
 
-      Success : Boolean;
-
    begin
 
       --basic test whether N=2^x
@@ -83,7 +67,7 @@ package body Crypto.Symmetric.KDF_Scrypt is
       end if;
 
 
-      Success := Schema.Initialize(Parameter => 1);
+      Schema.Initialize(Parameter => 1);
       Schema.Derive(Salt     => Salt,
                     Password => Password,
                     Key      => B_Bytes,

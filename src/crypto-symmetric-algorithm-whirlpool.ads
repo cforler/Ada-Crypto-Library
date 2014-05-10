@@ -25,7 +25,7 @@ package Crypto.Symmetric.Algorithm.Whirlpool is
 
 
    type Generic_Interface is Interface;
-   type Whirlpool_Interface is new Generic_Interface with
+   type Whirlpool_Context is new Generic_Interface with
       record
          Hash_Value : DW_Block512;
          Current_Message_Length : Message_Length256;
@@ -44,12 +44,12 @@ package Crypto.Symmetric.Algorithm.Whirlpool is
                         return DW_Block512;
 
       -- low level API with object
-   procedure Init(This 		: in out Whirlpool_Interface);
+   procedure Init(This 		: in out Whirlpool_Context);
 
-   procedure Round(This 	: in out 	Whirlpool_Interface;
+   procedure Round(This 	: in out 	Whirlpool_Context;
                    Message_Block: in 		DW_Block512);
 
-   function Final_Round(This 		    : in out Whirlpool_Interface;
+   function Final_Round(This 		    : in out Whirlpool_Context;
                         Last_Message_Block  : DW_Block512;
                         Last_Message_Length : Message_Block_Length512)
                         return DW_Block512;

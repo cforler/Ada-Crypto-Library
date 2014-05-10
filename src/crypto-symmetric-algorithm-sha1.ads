@@ -28,9 +28,9 @@ package Crypto.Symmetric.Algorithm.SHA1 is
    subtype Sha1_Type is Natural range 0..79;
 
    type Generic_Interface is Interface;
-   type SHA1_Interface is new Generic_Interface with
+   type SHA1_Context is new Generic_Interface with
       record
-         Utils_Interface : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Interface;
+         Utils_Context : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Context;
          Hash_Value : W_Block160;
          Current_Message_Length : Message_Length64;
       end record;
@@ -38,12 +38,12 @@ package Crypto.Symmetric.Algorithm.SHA1 is
    ---------------------------------------------------------------------------
    
    -- low level API with object
-   procedure Init(This 		: in out SHA1_Interface);
+   procedure Init(This 		: in out SHA1_Context);
 
-   procedure Round(This 	: in out 	SHA1_Interface;
+   procedure Round(This 	: in out 	SHA1_Context;
                    Message_Block: in 		W_Block512);
 
-   function Final_Round(This 		    : in out SHA1_Interface;
+   function Final_Round(This 		    : in out SHA1_Context;
                         Last_Message_Block  : W_Block512;
                         Last_Message_Length : Message_Block_Length512)
                         return W_Block160;

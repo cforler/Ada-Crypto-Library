@@ -32,7 +32,7 @@ package Crypto.Symmetric.Algorithm.Skein is
    --Interface fixed to Skein 512 mode, 256 and 1024 mode available as well
 
    type Generic_Interface is Interface;
-   type Skein_512_Interface is new Generic_Interface with
+   type Skein_512_Context is new Generic_Interface with
       record
          Hash_Value : W_Block512;
       end record;
@@ -40,12 +40,12 @@ package Crypto.Symmetric.Algorithm.Skein is
    ---------------------------------------------------------------------------
 
    -- low level API with object
-   procedure Init(This 		: in out Skein_512_Interface);
+   procedure Init(This 		: in out Skein_512_Context);
 
-   procedure Round(This 	: in out 	Skein_512_Interface;
+   procedure Round(This 	: in out 	Skein_512_Context;
                    Message_Block: in 		W_Block512);
 
-   function Final_Round(This 		    : in out Skein_512_Interface;
+   function Final_Round(This 		    : in out Skein_512_Context;
                         Last_Message_Block  : W_Block512;
                         Last_Message_Length : Natural)
                         return W_Block512;

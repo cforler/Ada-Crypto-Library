@@ -29,9 +29,9 @@ package Crypto.Symmetric.Algorithm.SHA384 is
 
 
    type Generic_Interface is Interface;
-   type SHA384_Interface is new Generic_Interface with
+   type SHA384_Context is new Generic_Interface with
       record
-         Utils_Interface : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Interface;
+         Utils_Context : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Context;
          Hash_Value : DW_Block512;
       end record;
 
@@ -49,12 +49,12 @@ package Crypto.Symmetric.Algorithm.SHA384 is
 
 
    -- low level API with object
-   procedure Init(This 		: in out SHA384_Interface);
+   procedure Init(This 		: in out SHA384_Context);
 
-   procedure Round(This 	: in out 	SHA384_Interface;
+   procedure Round(This 	: in out 	SHA384_Context;
                    Message_Block: in 		DW_Block1024);
 
-   function Final_Round(This 		    : in out SHA384_Interface;
+   function Final_Round(This 		    : in out SHA384_Context;
                         Last_Message_Block  : DW_Block1024;
                         Last_Message_Length : Message_Block_Length1024)
                         return DW_Block384;

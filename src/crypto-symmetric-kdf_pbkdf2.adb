@@ -4,20 +4,6 @@ with Ada.Text_IO;
 
 package body Crypto.Symmetric.KDF_PBKDF2 is
 
-   --Interface function for static 64 Bytes Output
-   procedure Derive(This	: in out PBKDF2_KDF;
-                    Salt	: in 	String;
-                    Password	: in	String;
-                    Key		: out	W_Block512) is
-      B : Bytes(0..63);
-   begin
-      Derive(This     => This,
-             Salt     => Salt,
-             Password => Password,
-             Key      => B,
-             DK_Len   => 64);
-      Key := To_W_Block512(B);
-   end Derive;
 
    --Interface function for static 64 Bytes Output
    procedure Derive(This	: in out PBKDF2_KDF;
@@ -35,11 +21,10 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
    end Derive;
 
    --function for setting security parameter, used here for setting round count in F_Function
-   function Initialize(This	: out PBKDF2_KDF;
-                       Parameter: in Natural) return Boolean is
+   procedure Initialize(This	: out PBKDF2_KDF;
+                       Parameter: in Natural)is
    begin
       This.Security_Parameter := Parameter;
-      return true;
    end Initialize;
 
    --actual derivation function, pure PBKDF2
@@ -56,6 +41,10 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
       Temp_Bytes : Bytes(0..hlen-1);
 
    begin
+
+      Error_Output.Put_Line("Password: " & To_String(Password));
+      Error_Output.Put_Line("Salt: " & To_String(Salt));
+      Error_Output.Put_Line("Parameter: " & Integer'Image(This.Security_Parameter));
 
       Error_Output.Put_Line("HLEN: " & Integer'Image(hlen));
 
@@ -118,7 +107,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
       while Position + 64 < Salt_Bytes'Length loop
          Temp_Bytes(0..63) := Salt_Bytes(Position..Position+63);
-         Context. Sign(Message_Block => To_Message_Type(Temp_Bytes));
+         Context.Sign(Message_Block => To_Message_Type(Temp_Bytes));
          Position := Position+64;
       end loop;
 

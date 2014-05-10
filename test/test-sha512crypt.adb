@@ -67,7 +67,7 @@ package body Test.SHA512Crypt is
       Bytes_To_Add_C : Bytes(0..127) := (Others=>3);
       Digest_Bytes_Ideal : Bytes(0..127) := (others => 0);
 
-      Digest_Hash : Crypto.Symmetric.Algorithm.SHA512.Sha512_Interface;
+      Digest_Hash : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
 
    begin
 
@@ -128,13 +128,12 @@ package body Test.SHA512Crypt is
    procedure SHA512Crypt_Test_Encryption(T : in out Test_Cases.Test_Case'Class) is
       Derived_Key, Ideal_Key : S5C.S5C_String;
       Scheme : S5C.SHA512Crypt_KDF;
-      success : Boolean;
 
    begin
 
       --Truncating Salt missing
 
-      success:=Scheme.Initialize(Parameter => 5000);
+      Scheme.Initialize(Parameter => 5000);
       Scheme.Derive(Salt     => "saltstring",
                     Password => "Hello world!",
                     Key      => Derived_Key);
@@ -144,7 +143,7 @@ package body Test.SHA512Crypt is
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
-      success:=Scheme.Initialize(Parameter => 10000);
+      Scheme.Initialize(Parameter => 10000);
       Scheme.Derive(Salt     => "saltstringsaltst",
                     Password => "Hello world!",
                     Key      => Derived_Key);
@@ -153,7 +152,7 @@ package body Test.SHA512Crypt is
       Ada.Text_IO.Put_Line(Derived_Key);
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
-      success:=Scheme.Initialize(Parameter => 5000);
+      Scheme.Initialize(Parameter => 5000);
       Scheme.Derive(Salt     => "toolongsaltstrin",
                     Password => "This is just a test",
                     Key      => Derived_Key);
@@ -173,7 +172,7 @@ package body Test.SHA512Crypt is
 --        Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
-      success:=Scheme.Initialize(Parameter => 77777);
+      Scheme.Initialize(Parameter => 77777);
       Scheme.Derive(Salt     => "short",
                     Password => "we have a short salt string but not a short password",
                     Key      => Derived_Key);
@@ -183,7 +182,7 @@ package body Test.SHA512Crypt is
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
-      success:=Scheme.Initialize(Parameter => 123456);
+      Scheme.Initialize(Parameter => 123456);
       Scheme.Derive(Salt     => "asaltof16chars..",
                     Password => "a short string",
                     Key      => Derived_Key);
@@ -193,7 +192,7 @@ package body Test.SHA512Crypt is
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
-      success:=Scheme.Initialize(Parameter => 10);
+      Scheme.Initialize(Parameter => 10);
       Scheme.Derive(Salt     => "roundstoolow",
                     Password => "the minimum number is still observed",
                     Key      => Derived_Key);
@@ -216,8 +215,8 @@ package body Test.SHA512Crypt is
       Hash1 : DW_Block512;
       Hash2 : DW_Block512;
 
-      SHA512One : Crypto.Symmetric.Algorithm.SHA512.Sha512_Interface;
-      SHA512Two : Crypto.Symmetric.Algorithm.SHA512.Sha512_Interface;
+      SHA512One : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
+      SHA512Two : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
 
    begin
       SHA512One.Init;

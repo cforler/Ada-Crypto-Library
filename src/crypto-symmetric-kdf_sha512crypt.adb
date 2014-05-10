@@ -12,49 +12,36 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
                     Key		: out	S5C_String) is
-   begin
-      derive(This     => This,
-             Salt     => To_String(Salt),
-             Password => To_String(Password),
-             Key      => Key);
-   end Derive;
-
-
-   --Interface and core function
-   procedure Derive(This	: in out SHA512Crypt_KDF;
-                    Salt	: in 	String;
-                    Password	: in	String;
-                    Key		: out	S5C_String) is
       package SHA512 renames Crypto.Symmetric.Algorithm.SHA512;
 
-      Salt_Bytes : Bytes(0..Salt'Length-1) := To_Bytes(Salt);
-      Password_Bytes : Bytes(0..Password'Length-1) := To_Bytes(Password);
+      Salt_Bytes : Bytes(0..Salt'Length-1) := Salt(Salt'Range);
+      Password_Bytes : Bytes(0..Password'Length-1) := Password(Password'Range);
 
       Digest_A_Bytes : Bytes(0..127):= (others =>0);
-      Digest_A_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Interface;
+      Digest_A_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
       Digest_A_Hash_Result  : DW_Block512;
       Digest_A_Length: Natural := 0;
 
       Digest_B_Bytes : Bytes(0..127):= (others =>0);
-      Digest_B_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Interface;
+      Digest_B_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
       Digest_B_Hash_Result : DW_Block512;
       Digest_B_Length: Natural := 0;
 
       Digest_C_Bytes : Bytes(0..127):= (others =>0);
-      Digest_C_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Interface;
+      Digest_C_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
       Digest_C_Hash_Result  : DW_Block512;
       Digest_C_Length: Natural := 0;
 
       Bytes_For_Rounds : Bytes(0..63);
 
       Digest_DP_Bytes : Bytes(0..127):= (others =>0);
-      Digest_DP_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Interface;
+      Digest_DP_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
       Digest_DP_Hash_Result : DW_Block512;
       Digest_DP_Hash_Result_Bytes : Bytes(0..63);
       Digest_DP_Length: Natural := 0;
 
       Digest_DS_Bytes : Bytes(0..127):= (others =>0);
-      Digest_DS_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Interface;
+      Digest_DS_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
       Digest_DS_Hash_Result : DW_Block512;
       Digest_DS_Hash_Result_Bytes : Bytes(0..63);
       Digest_DS_Length: Natural := 0;
@@ -434,9 +421,10 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
    end Derive;
 
 
+
    --Initializing Security_Parameter, used for round count
-   function Initialize(This		: out SHA512Crypt_KDF;
-                       Parameter	: in	Natural) return Boolean is
+   procedure Initialize(This		: out SHA512Crypt_KDF;
+                       Parameter	: in	Natural) is
    begin
       if Parameter < 1000 then This.Security_Parameter := 1000;
       else if parameter > 999999999 then This.Security_Parameter := 999999999;
@@ -444,7 +432,6 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
             This.Security_Parameter := Parameter;
          end if;
       end if;
-      return true;
    end;
 
 
@@ -452,7 +439,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
    procedure Add_Bytes(Bytes_To_Add		: in 		Bytes;
                        Digest_Bytes		: in out 	Bytes;
                        Digest_Bytes_Length	: in out	Natural;
-                       Digest_Hash		: in out	Crypto.Symmetric.Algorithm.SHA512.Sha512_Interface) is
+                       Digest_Hash		: in out	Crypto.Symmetric.Algorithm.SHA512.Sha512_Context) is
       Rest_Space : Natural;
       Debug : Boolean := false;
    begin

@@ -27,10 +27,10 @@ use Crypto.Symmetric.Algorithm.SHA_Utils;
 
 package Crypto.Symmetric.Algorithm.SHA512 is
 
-   type Generic_Interface is Interface;
-   type Sha512_Interface is new Generic_Interface with
+   type Generic_Context is Interface;
+   type Sha512_Context is new Generic_Context with
       record
-         Utils_Interface : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Interface;
+         Utils_Context : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Context;
          Hash_Value : DW_Block512;
       end record;
 
@@ -48,12 +48,12 @@ package Crypto.Symmetric.Algorithm.SHA512 is
                         return DW_Block512;
 
    -- low level API with object
-   procedure Init(This 		: in out Sha512_Interface);
+   procedure Init(This 		: in out Sha512_Context);
 
-   procedure Round(This 	: in out 	Sha512_Interface;
+   procedure Round(This 	: in out 	Sha512_Context;
                    Message_Block: in 		DW_Block1024);
 
-   function Final_Round(This 		    : in out Sha512_Interface;
+   function Final_Round(This 		    : in out Sha512_Context;
                         Last_Message_Block  : DW_Block1024;
                         Last_Message_Length : Message_Block_Length1024)
                         return DW_Block512;
