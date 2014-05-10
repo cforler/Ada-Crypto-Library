@@ -284,20 +284,21 @@ package body Test.Scrypt is
 
    begin
 
-      PBKDF2_Scheme.Initialize(Parameter => 1);
+      PBKDF2_Scheme.Initialize(Key_Length  => 64,
+                               Round_Count => 1);
+
 
       PBKDF2_Scheme.Derive(Salt     => "salt",
                            Password => "passwd",
-                           Key      => Pbkdf2_Bytes,
-                           DK_Len   => 64);
+                           Key      => Pbkdf2_Bytes);
       Assert(Ideal_A = Pbkdf2_Bytes, "Success!");
 
-      PBKDF2_Scheme.Initialize(Parameter => 80000);
+      PBKDF2_Scheme.Initialize(Key_Length  => 64,
+                               Round_Count => 80000);
 
       PBKDF2_Scheme.Derive(Salt     => "NaCl",
                            Password => "Password",
-                           Key      => Pbkdf2_Bytes,
-                           DK_Len   => 64);
+                           Key      => Pbkdf2_Bytes);
       Assert(Ideal_B = Pbkdf2_Bytes, "Success!");
 
 

@@ -15,7 +15,6 @@ package Crypto.Symmetric.KDF_Scrypt is
    N_not_power_of_2_exception : exception;
 
    package KDF is new Crypto.Symmetric.KDF(Return_Type        => W_Block512,
-                                           Security_Parameter => Natural,
                                            H                  => Crypto.Symmetric.Hashfunction_SHA512);
    use KDF;
 
@@ -32,8 +31,14 @@ package Crypto.Symmetric.KDF_Scrypt is
    --function for setting security parameter, used here for setting round count
    overriding
    procedure Initialize(This	: out Scrypt_KDF;
-                       Parameter: in Natural);
+                       Key_Length: in Natural);
 
+
+   procedure Initialize (This	: out Scrypt_KDF;
+                         r		: in 	Natural;
+                         N		: in 	Natural;
+                         p		: in	Natural;
+                         dkLen	: in	Natural);
 
    --core scrypt function
    procedure scrypt (Password 	: in 	String;
@@ -44,10 +49,7 @@ package Crypto.Symmetric.KDF_Scrypt is
                      dkLen	: in	Natural;
                      Key	: out 	Bytes);
 
-
-
-
-      --Block rearrangement, used by Scrypt_Block_Mix
+   --Block rearrangement, used by Scrypt_Block_Mix
    function Scrypt_ROMix(Input	: in 	W_Block512_Array;
                          N	: in 	Natural) return W_Block512_Array;
 
@@ -68,7 +70,11 @@ package Crypto.Symmetric.KDF_Scrypt is
    private
    type Scrypt_KDF is new KDF.KDF_Scheme with
       record
-         Security_Parameter	: Natural;
+         r 			: Natural :=8;
+         N 			: Natural :=8;
+         p 			: Natural :=8;
+         dkLen 			: Natural;
+
       end record;
 
 

@@ -3,8 +3,7 @@ use Crypto.Types;
 with Crypto.Symmetric.Hashfunction;
 
 generic
-   type Return_Type is private;
-   type Security_Parameter is private;
+   type Return_Type(<>) is private;
 
    with package H is new Crypto.Symmetric.Hashfunction(<>);
 
@@ -23,7 +22,7 @@ package Crypto.Symmetric.KDF is
                     Key		: out	Return_Type) is abstract;
 
    procedure Initialize(This	: out KDF_Scheme;
-                       Parameter: in Security_Parameter) is abstract;
+                        Key_Length : in Natural) is abstract;
 
 
 

@@ -124,6 +124,7 @@ package Crypto.Types is
    subtype Hex_Word  is String (Hex_Word_Range);
    subtype Hex_DWord is String (Hex_DWord_Range);
 
+   subtype Base64_String is String(1..86);
 
    subtype Message_Block_Length256  is Natural range 0 ..  32;
    subtype Message_Block_Length512  is Natural range 0 ..  64;

@@ -9,26 +9,36 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
    procedure Derive(This	: in out PBKDF2_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
-                    Key		: out	W_Block512) is
-      B : Bytes(0..63);
+                    Key		: out	Bytes) is
    begin
-      Derive(This     => This,
+      PBKDF2(This     => This,
              Salt     => Salt,
              Password => Password,
-             Key      => B,
-             DK_Len   => 64);
-      Key := To_W_Block512(B);
+             Key      => Key,
+             DK_Len   => This.Key_Length);
    end Derive;
 
-   --function for setting security parameter, used here for setting round count in F_Function
+
    procedure Initialize(This	: out PBKDF2_KDF;
-                       Parameter: in Natural)is
+                        Key_Length: in Natural) is
    begin
-      This.Security_Parameter := Parameter;
+      This.Key_Length:=Key_Length;
    end Initialize;
 
+
+   --function for setting Key Length and security parameter, used here for setting round count in F_Function
+   procedure Initialize(This		: out PBKDF2_KDF;
+                        Key_Length	: in Natural;
+                        Round_Count	: in Natural) is
+   begin
+      This.Key_Length:=Key_Length;
+      This.Round_Count:=Round_Count;
+   end Initialize;
+
+
+
    --actual derivation function, pure PBKDF2
-   procedure Derive(This	: in out PBKDF2_KDF;
+   procedure PBKDF2(This	: in out PBKDF2_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
                     Key		: out	Bytes;
@@ -44,7 +54,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
       Error_Output.Put_Line("Password: " & To_String(Password));
       Error_Output.Put_Line("Salt: " & To_String(Salt));
-      Error_Output.Put_Line("Parameter: " & Integer'Image(This.Security_Parameter));
+      Error_Output.Put_Line("Parameter: " & Integer'Image(This.Round_Count));
 
       Error_Output.Put_Line("HLEN: " & Integer'Image(hlen));
 
@@ -63,20 +73,20 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
          then
             Temp_Bytes := To_Bytes(F_Function(Salt     => Salt,
                                            	 Password => Password,
-                                           	 Count    => This.Security_Parameter,
+                                           	 Count    => This.Round_Count,
                                                  Round    => I+1));
             Result_Bytes(I*hlen..I*hlen+Rest-1) := Temp_Bytes(0..Rest-1);
          else
             Result_Bytes(I*hlen..I*hlen+hlen-1) := To_Bytes(F_Function(Salt     => Salt,
                                            	 Password => Password,
-                                           	 Count    => This.Security_Parameter,
+                                           	 Count    => This.Round_Count,
                                                  Round    => I+1));
          end if;
 
       end loop;
       Error_Output.Put_Line("Key :" & Integer'Image(Key'Length) & " " & "Result_Bytes :" & Integer'Image(Result_Bytes'Length));
       Key := Result_Bytes;
-   end Derive;
+   end PBKDF2;
 
    --Internal function for applying PRF multiple times
    function F_Function(Salt	: in 	Bytes;
@@ -140,7 +150,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
                     Key		: out	Bytes;
                     DK_Len	: in 	Natural) is
    begin
-      Derive(This     => This,
+      PBKDF2(This     => This,
              Salt     => To_Bytes(Salt),
              Password => To_Bytes(Password),
              Key      => Key,

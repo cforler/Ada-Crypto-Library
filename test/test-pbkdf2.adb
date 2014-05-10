@@ -58,47 +58,47 @@ package body Test.PBKDF2 is
       Scheme : PBKDF2.PBKDF2_KDF;
 
    begin
-
-      Scheme.Initialize(Parameter => 1);
+      Scheme.Initialize(Key_Length  => 20,
+                        Round_Count => 1);
       Scheme.Derive(Salt     => "salt",
                     Password => "password",
-                    Key      => Twenty_Bytes_Container,
-                    DK_Len   => 20);
+                    Key      => Twenty_Bytes_Container);
 
 
       Assert(Twenty_Bytes_Container(0..19)=(16#0c#, 16#60#, 16#c8#, 16#0f#, 16#96#, 16#1f#, 16#0e#, 16#71#,
              16#f3#, 16#a9#, 16#b5#, 16#24#, 16#af#, 16#60#, 16#12#, 16#06#,
              16#2f#, 16#e0#, 16#37#, 16#a6#), "PBKDF2 failed. (Parameter 1)");
 
-      Scheme.Initialize(Parameter => 2);
+      Scheme.Initialize(Key_Length  => 20,
+                        Round_Count => 2);
+
 
       Scheme.Derive(Salt     => "salt",
                     Password => "password",
-                    Key      => Twenty_Bytes_Container,
-                    DK_Len   => 20);
+                    Key      => Twenty_Bytes_Container);
 
       Assert(Twenty_Bytes_Container(0..19)=(16#ea#, 16#6c#, 16#01#, 16#4d#, 16#c7#, 16#2d#, 16#6f#, 16#8c#,
              16#cd#, 16#1e#, 16#d9#, 16#2a#, 16#ce#, 16#1d#, 16#41#, 16#f0#,
              16#d8#, 16#de#, 16#89#, 16#57#), "PBKDF2 failed. (Parameter 2)");
 
-
-      Scheme.Initialize(Parameter => 4096);
+      Scheme.Initialize(Key_Length  => 20,
+                        Round_Count => 4096);
 
       Scheme.Derive(Salt     => "salt",
                     Password => "password",
-                    Key      => Twenty_Bytes_Container,
-                    DK_Len   => 20);
+                    Key      => Twenty_Bytes_Container);
 
       Assert(Twenty_Bytes_Container(0..19)=(16#4b#, 16#00#, 16#79#, 16#01#, 16#b7#, 16#65#, 16#48#, 16#9a#,
              16#be#, 16#ad#, 16#49#, 16#d9#, 16#26#, 16#f7#, 16#21#, 16#d0#,
              16#65#, 16#a4#, 16#29#, 16#c1#), "PBKDF2 failed. (Parameter 4096)");
 
-      Scheme.Initialize(Parameter => 4096);
+      Scheme.Initialize(Key_Length  => 25,
+                        Round_Count => 4096);
+
 
       Scheme.Derive(Salt     => "saltSALTsaltSALTsaltSALTsaltSALTsalt",
                     Password => "passwordPASSWORDpassword",
-                    Key      => Twentyfive_Bytes_Container,
-                    DK_Len   => 25);
+                    Key      => Twentyfive_Bytes_Container);
 
       Assert(Twentyfive_Bytes_Container(0..24)=(16#3d#, 16#2e#, 16#ec#, 16#4f#, 16#e4#, 16#1c#, 16#84#, 16#9b#,
              16#80#, 16#c8#, 16#d8#, 16#36#, 16#62#, 16#c0#, 16#e4#, 16#4a#,

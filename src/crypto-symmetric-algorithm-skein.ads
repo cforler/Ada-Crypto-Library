@@ -62,9 +62,18 @@ package Crypto.Symmetric.Algorithm.Skein is
 
 -------------------------------------------------------------------------
 
+   --simplified all-in-one-call for Skein
+   --no key or treehashing is used here
+   procedure Hash
+     (Mode           : in Skein_Mode;
+      N_0            : in Natural;
+      Message        : in Bytes;
+      Message_Length : in Natural;
+      Result         : out Bytes);
 
+private
 
-   --sometimes we need to set a single Bit inside of a Byte
+    --sometimes we need to set a single Bit inside of a Byte
    procedure Set_Bit
      (b        : in out Byte;
       Position : in Natural;
@@ -148,7 +157,9 @@ package Crypto.Symmetric.Algorithm.Skein is
 
    type Bytes_Access is access Bytes;
 
-   --calculates a new Byte-Aray for a given length of Bits
+
+
+     --calculates a new Byte-Aray for a given length of Bits
    --the most significant not ued Bit is set to 1
    --all other unused Bits are set to 0
    function Message_Bit_Padding
@@ -299,6 +310,8 @@ package Crypto.Symmetric.Algorithm.Skein is
       N_0       : in Natural;
       New_State : out Bytes);
 
+
+
    --all-in-one-call for Skein
    --here an array of tuples (T,M) is used as inputs
    procedure Hash
@@ -323,15 +336,6 @@ package Crypto.Symmetric.Algorithm.Skein is
       Message        : in Bytes;
       Message_Length : in Natural;
       Type_Value     : in Byte;
-      Result         : out Bytes);
-
-   --simplified all-in-one-call for Skein
-   --no key or treehashing is used here
-   procedure Hash
-     (Mode           : in Skein_Mode;
-      N_0            : in Natural;
-      Message        : in Bytes;
-      Message_Length : in Natural;
       Result         : out Bytes);
 
 end Crypto.Symmetric.Algorithm.Skein;

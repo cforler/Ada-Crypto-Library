@@ -22,7 +22,7 @@ package body Crypto.Symmetric.KDF_Scrypt is
       scrypt(Password => To_String(ASCII => Password),
              Salt     => To_String(ASCII => Salt),
              r        => 8,
-             N        => 2**This.Security_Parameter,
+             N        => 8,
              p        => 8,
              dkLen    => 128,
              Key      => Output_Bytes);
@@ -32,10 +32,24 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
    --function for setting security parameter, used here for setting round count
    procedure Initialize(This	: out Scrypt_KDF;
-                       Parameter: in Natural) is
+                       Key_Length: in Natural) is
    begin
-      This.Security_Parameter := Parameter;
+      This.dkLen := Key_Length;
    end Initialize;
+
+
+   procedure Initialize (This	: out Scrypt_KDF;
+                         r		: in 	Natural;
+                         N		: in 	Natural;
+                         p		: in	Natural;
+                         dkLen	: in	Natural) is
+   begin
+      This.dkLen := dkLen;
+      This.r := r;
+      This.N := N;
+      This.p := p;
+   end Initialize;
+
 
 
    --core scrypt function
@@ -66,12 +80,11 @@ package body Crypto.Symmetric.KDF_Scrypt is
          raise N_not_power_of_2_exception;
       end if;
 
-
-      Schema.Initialize(Parameter => 1);
+      Schema.Initialize(Key_Length  => p*128*r,
+                        Round_Count => 1);
       Schema.Derive(Salt     => Salt,
                     Password => Password,
-                    Key      => B_Bytes,
-                    DK_Len   => p*128*r);
+                    Key      => B_Bytes);
 
       for I in B_W_Blocks'Range loop
          B_W_Blocks(I) := To_W_Block512(B_Bytes(I*64..I*64+63));
@@ -87,7 +100,7 @@ package body Crypto.Symmetric.KDF_Scrypt is
          B_Bytes(I*64..I*64+63) := To_Bytes(B_W_Blocks(I));
       end loop;
 
-      Schema.Derive(Salt     => B_Bytes,
+      Schema.PBKDF2(Salt     => B_Bytes,
                     Password => To_Bytes(password),
                     Key      => Key,
                     DK_Len   => dkLen);

@@ -11,7 +11,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
    procedure Derive(This	: in out SHA512Crypt_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
-                    Key		: out	S5C_String) is
+                    Key		: out	Base64_String) is
       package SHA512 renames Crypto.Symmetric.Algorithm.SHA512;
 
       Salt_Bytes : Bytes(0..Salt'Length-1) := Salt(Salt'Range);
@@ -270,7 +270,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
       Bytes_For_Rounds := To_Bytes(Digest_A_Hash_Result);
 
-      for I in 0..This.Security_Parameter-1 loop
+      for I in 0..This.Round_Count-1 loop
          -- a) start digest C
          Digest_C_Hash.Init;
 
@@ -422,17 +422,34 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
 
 
-   --Initializing Security_Parameter, used for round count
-   procedure Initialize(This		: out SHA512Crypt_KDF;
-                       Parameter	: in	Natural) is
+   --function for setting Key Length
+   procedure Initialize(This	: out SHA512Crypt_KDF;
+                        Key_Length: in Natural) is
    begin
-      if Parameter < 1000 then This.Security_Parameter := 1000;
-      else if parameter > 999999999 then This.Security_Parameter := 999999999;
+      if(Key_Length>86) then
+         Ada.Text_IO.Put_Line("Keys longer than 86 are not supported, reducing to 86");
+         This.Key_Length := 86;
+      else
+         This.Key_Length := Key_Length;
+      end if;
+
+   end Initialize;
+
+
+   --function for setting Key Length and security parameter, used here for setting round count in F_Function
+   procedure Initialize(This		: out SHA512Crypt_KDF;
+                        Key_Length	: in Natural;
+                        Round_Count	: in Natural) is
+   begin
+      if Round_Count < 1000 then This.Round_Count := 1000;
+      else if Round_Count > 999999999 then This.Round_Count := 999999999;
          else
-            This.Security_Parameter := Parameter;
+            This.Round_Count := Round_Count;
          end if;
       end if;
-   end;
+      This.Initialize(Key_Length => Key_Length);
+
+   end Initialize;
 
 
    --Adding Bytes to Digest

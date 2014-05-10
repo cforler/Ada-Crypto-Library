@@ -126,14 +126,17 @@ package body Test.SHA512Crypt is
    ------------------------------------------------------------------------------------
 
    procedure SHA512Crypt_Test_Encryption(T : in out Test_Cases.Test_Case'Class) is
-      Derived_Key, Ideal_Key : S5C.S5C_String;
+      Derived_Key, Ideal_Key : Base64_String;
       Scheme : S5C.SHA512Crypt_KDF;
 
    begin
 
+
       --Truncating Salt missing
 
-      Scheme.Initialize(Parameter => 5000);
+      Scheme.Initialize(Key_Length  => 86,
+                        Round_Count => 5000);
+
       Scheme.Derive(Salt     => "saltstring",
                     Password => "Hello world!",
                     Key      => Derived_Key);
@@ -143,7 +146,8 @@ package body Test.SHA512Crypt is
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
-      Scheme.Initialize(Parameter => 10000);
+      Scheme.Initialize(Key_Length  => 86,
+                        Round_Count => 10000);
       Scheme.Derive(Salt     => "saltstringsaltst",
                     Password => "Hello world!",
                     Key      => Derived_Key);
@@ -152,7 +156,8 @@ package body Test.SHA512Crypt is
       Ada.Text_IO.Put_Line(Derived_Key);
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
-      Scheme.Initialize(Parameter => 5000);
+      Scheme.Initialize(Key_Length  => 86,
+                        Round_Count => 5000);
       Scheme.Derive(Salt     => "toolongsaltstrin",
                     Password => "This is just a test",
                     Key      => Derived_Key);
@@ -162,17 +167,8 @@ package body Test.SHA512Crypt is
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
---        success:=Scheme.Initialize(Parameter => 1400);
---        Scheme.Derive(Salt     => "anotherlongsalts",
---                      Password => "a very much longer text to encrypt.  This one even stretches over morethan one line.",
---                      Key      => Derived_Key);
---        Ideal_Key := "POfYwTEok97VWcjxIiSOjiykti.o/pQs.wPvMxQ6Fm7I6IoYN3CmLs66x9t0oSwbtEW7o7UmJEiDwGqd8p4ur1";
---
---        Ada.Text_IO.Put_Line(Derived_Key);
---        Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
-
-
-      Scheme.Initialize(Parameter => 77777);
+      Scheme.Initialize(Key_Length  => 86,
+                        Round_Count => 77777);
       Scheme.Derive(Salt     => "short",
                     Password => "we have a short salt string but not a short password",
                     Key      => Derived_Key);
@@ -182,7 +178,8 @@ package body Test.SHA512Crypt is
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
-      Scheme.Initialize(Parameter => 123456);
+      Scheme.Initialize(Key_Length  => 86,
+                        Round_Count => 123456);
       Scheme.Derive(Salt     => "asaltof16chars..",
                     Password => "a short string",
                     Key      => Derived_Key);
@@ -192,7 +189,8 @@ package body Test.SHA512Crypt is
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
-      Scheme.Initialize(Parameter => 10);
+      Scheme.Initialize(Key_Length  => 86,
+                        Round_Count => 10);
       Scheme.Derive(Salt     => "roundstoolow",
                     Password => "the minimum number is still observed",
                     Key      => Derived_Key);

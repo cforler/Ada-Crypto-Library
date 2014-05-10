@@ -16,11 +16,7 @@ generic
                        Right: Hmac_Package.H.Hash_Type) return Hmac_Package.H.Hash_Type;
 package Crypto.Symmetric.KDF_PBKDF2 is
 
-
-   package Error_Output is new Crypto.Debug_Put(b => true);
-
-   package KDF is new Crypto.Symmetric.KDF(Return_Type        => W_Block512,
-                                           Security_Parameter => Natural,
+   package KDF is new Crypto.Symmetric.KDF(Return_Type        => Bytes,
                                            H                  => Hmac_Package.H);
    use KDF;
 
@@ -32,28 +28,28 @@ package Crypto.Symmetric.KDF_PBKDF2 is
    procedure Derive(This	: in out PBKDF2_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
-                    Key		: out	W_Block512);
-
-   --function for utility, accepting strings and key length (in Bytes)
-   procedure Derive(This	: in out PBKDF2_KDF;
-                    Salt	: in 	String;
-                    Password	: in	String;
-                    Key		: out	Bytes;
-                    DK_Len	: in 	Natural);
+                    Key		: out	Bytes);
 
    --actual derivation function, pure PBKDF2
-   procedure Derive(This	: in out PBKDF2_KDF;
+   procedure PBKDF2(This	: in out PBKDF2_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
                     Key		: out	Bytes;
       		    DK_Len	: in 	Natural);
 
-   --function for setting security parameter, used here for setting round count in F_Function
+   --function for setting Key Length
    overriding
    procedure Initialize(This	: out PBKDF2_KDF;
-                       Parameter: in Natural);
+                        Key_Length: in Natural);
+
+   --function for setting Key Length and security parameter, used here for setting round count in F_Function
+   procedure Initialize(This		: out PBKDF2_KDF;
+                        Key_Length	: in Natural;
+                        Round_Count	: in Natural);
 
 private
+
+   package Error_Output is new Crypto.Debug_Put(b => true);
 
    --Internal function for applying PRF multiple times
    function F_Function(Salt	: in 	Bytes;
@@ -63,7 +59,8 @@ private
 
    type PBKDF2_KDF is new KDF.KDF_Scheme with
       record
-         Security_Parameter	: Natural;
+         Round_Count		: Natural := 4096;
+         Key_Length		: Natural := 64;
       end record;
 
 end Crypto.Symmetric.KDF_PBKDF2;
