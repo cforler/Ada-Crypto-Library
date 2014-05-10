@@ -269,7 +269,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
 
    function Get_Current_Tweak
      (T_S       : in Bytes;
-      N_M       : in Skein_Message_Length;      --Number of Bytes in Input
+      N_M       : in DWord;      --Number of Bytes in Input
                                                 --Message
       Index     : in Natural;    --index of Message Block we are curently
                                  --working on
@@ -291,7 +291,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
       --add min(N_M, (i+1)*N_b)
       --we really need to add here because in case of treehashing
       --there will already be some "countings" here
-      if Skein_Message_Length ((Index + 1) * N_b) < N_M then
+      if DWord ((Index + 1) * N_b) < N_M then
          Current_Tweak (0 .. 7) := Current_Tweak (0 .. 7) +
                                    (Index + 1) * N_b;
       --Current_Tweak(0..7) := Natural_To_Bytes((Index+1)*N_b,8);
@@ -384,7 +384,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
          Current_Tweak :=
             Get_Current_Tweak
               (T_S       => T_S,
-               N_M       => Skein_Message_Length (N_M),  --we normaly dont
+               N_M       => DWord (N_M),  --we normaly dont
                                                          --need a special
                                                          --variable here!!!
                Index     => Bytes_Processed /

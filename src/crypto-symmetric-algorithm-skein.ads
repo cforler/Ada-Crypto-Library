@@ -79,10 +79,6 @@ private
       Position : in Natural;
       Value    : in Boolean);
 
-   --a special type for the length of Skein Input Message lengths (in Bytes)
-   --Attention, this should be 2**96 but this is not supportet atm
-   --we need to get this rigth!!!
-   type Skein_Message_Length is mod 2 ** 64;
 
    --also Input-Messages of length mod 8 != 0 are allowed, so we need
    --a special type for this.
@@ -184,7 +180,7 @@ private
    --return a modified Tweak for given parameters
    function Get_Current_Tweak
      (T_S       : in Bytes;
-      N_M       : in Skein_Message_Length;      --Number of Bytes in Input
+      N_M       : in DWord;      --Number of Bytes in Input
                                                 --Message
       Index     : in Natural;    --index of Message Block we are curently
                                  --working on
@@ -218,8 +214,7 @@ private
          Result_Access       : in out Bytes_Access;
          Result_First        : in Natural;
          Result_Last         : in Natural;
-         Length_Access       : in out Skein_Tree_Message_Length_Counter_Access)
-;
+         Length_Access       : in out Skein_Tree_Message_Length_Counter_Access);
    end Tree_UBI_Task;
 
    --calculates the UBI in tree-hashing mode
