@@ -111,7 +111,7 @@ Subtype \texttt{S5C\_String} is the fixed-length output string, The round count,
 SCrypt relies on a group of nested functions for deriving a Key from a Salt and a Password Input. It uses the additional parameters Cost Parameter and Parallelization Parameter in the Computation for adjusting the CPU and Memory costs.
 \subsubsection*{Types}
 \begin{lstlisting}{}
-package KDF is new Crypto.Symmetric.KDF(Return_Type        => W_Block512,
+package KDF is new Crypto.Symmetric.KDF(Return_Type        => Bytes,
                                            H                  => Crypto.Symmetric.Hashfunction_SHA512);
 
 type Scrypt_KDF is new KDF.KDF_Scheme with private;
@@ -144,7 +144,7 @@ Scrypt can return arbitrary key lengthes. One Initialize is provided only with t
    procedure Derive(This	: in out Scrypt_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
-                    Key		: out	W_Block512);
+                    Key		: out	Bytes);
    overriding
    procedure Initialize(This	: out Scrypt_KDF;
                        Key_Length: in Natural);

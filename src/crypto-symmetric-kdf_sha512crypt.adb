@@ -437,7 +437,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Error_Output.Put_Line(Final_String);
 
 
-      Key := Final_String(1..86);
+      Key := Final_String(1..This.Key_Length);
 
 
    end Derive;

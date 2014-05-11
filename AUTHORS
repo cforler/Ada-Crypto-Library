@@ -1,7 +1,7 @@
 Thomas Knapke      : Nonces, Tweakable Blockciphers, AE Schemes, AEAD, Schemes,
        		         CMAC, Symmetric Utils
 Bastian Weber      : AUnit-Tests
-Heinrich Schilling : AUnit-Tests
+Heinrich Schilling : AUnit-Tests, KDF Schemes, OCB3, Hash Contexts, Debug_Put, Skein
 Anne 'Yu' Barshun  : AUnit-Tests
 Hui Xue            : AUnit-Tests, english documentation
 Markus G. Kuhn     : Serpent256

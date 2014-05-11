@@ -1,0 +1,1151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0049)http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00 -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head profile="http://dublincore.org/documents/2008/08/04/dc-html/"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="robots" content="index,follow">
+    <meta name="creator" content="rfcmarkup version 1.107">
+    <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.Relation.Replaces" content="draft-krovetz-ocb">
+<meta name="DC.Identifier" content="urn:ietf:id:irtf-cfrg-ocb">
+<meta name="DC.Date.Issued" content="2000-00-20">
+<meta name="DC.Creator" content="Krovetz, Ted">
+<meta name="DC.Creator" content="Rogaway, Phillip">
+<meta name="DC.Description.Abstract" content="This document specifies OCB, a shared-key blockcipher-based encryption\nscheme that provides confidentiality and authenticity for plaintexts\nand authenticity for associated data. This document is a product of\nthe Crypto Forum Research Group (CFRG).">
+<meta name="DC.Title" content="The Offset Codebook (OCB) Authenticated-Encryption Algorithm">
+
+    <link rel="icon" href="http://tools.ietf.org/images/id.png" type="image/png">
+    <link rel="shortcut icon" href="http://tools.ietf.org/images/id.png" type="image/png">
+    <title>draft-irtf-cfrg-ocb-00 - The Offset Codebook (OCB) Authenticated-Encryption Algorithm</title>
+    
+    
+    <style type="text/css">
+	body {
+	    margin: 0px 8px;
+            font-size: 1em;
+	}
+        h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	    font-weight: bold;
+            line-height: 0pt;
+            display: inline;
+            white-space: pre;
+            font-family: monospace;
+            font-size: 1em;
+	    font-weight: bold;
+        }
+        pre {
+            font-size: 1em;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+	.pre {
+	    white-space: pre;
+	    font-family: monospace;
+	}
+	.header{
+	    font-weight: bold;
+	}
+        .newpage {
+            page-break-before: always;
+        }
+        .invisible {
+            text-decoration: none;
+            color: white;
+        }
+        a.selflink {
+          color: black;
+          text-decoration: none;
+        }
+        @media print {
+            body {
+                font-family: monospace;
+                font-size: 10.5pt;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                font-size: 1em;
+            }
+        
+            a:link, a:visited {
+                color: inherit;
+                text-decoration: none;
+            }
+            .noprint {
+                display: none;
+            }
+        }
+	@media screen {
+	    .grey, .grey a:link, .grey a:visited {
+		color: #777;
+	    }
+            .docinfo {
+                background-color: #EEE;
+            }
+            .top {
+                border-top: 7px solid #EEE;
+            }
+            .bgwhite  { background-color: white; }
+            .bgred    { background-color: #F44; }
+            .bggrey   { background-color: #666; }
+            .bgbrown  { background-color: #840; }            
+            .bgorange { background-color: #FA0; }
+            .bgyellow { background-color: #EE0; }
+            .bgmagenta{ background-color: #F4F; }
+            .bgblue   { background-color: #66F; }
+            .bgcyan   { background-color: #4DD; }
+            .bggreen  { background-color: #4F4; }
+
+            .legend   { font-size: 90%; }
+            .cplate   { font-size: 70%; border: solid grey 1px; }
+	}
+    </style>
+    <!--[if IE]>
+    <style>
+    body {
+       font-size: 13px;
+       margin: 10px 10px;
+    }
+    </style>
+    <![endif]-->
+
+    <script type="text/javascript"><!--
+    function addHeaderTags() {
+	var spans = document.getElementsByTagName("span");
+	for (var i=0; i < spans.length; i++) {
+	    var elem = spans[i];
+	    if (elem) {
+		var level = elem.getAttribute("class");
+                if (level == "h1" || level == "h2" || level == "h3" || level == "h4" || level == "h5" || level == "h6") {
+                    elem.innerHTML = "<"+level+">"+elem.innerHTML+"</"+level+">";		
+                }
+	    }
+	}
+    }
+    var legend_html = "Colour legend:<br />      <table>         <tr><td>Unknown:</td>                   <td><span class='cplate bgwhite'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Draft:</td>                     <td><span class='cplate bgred'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Informational:</td>             <td><span class='cplate bgorange'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Experimental:</td>              <td><span class='cplate bgyellow'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Best Common Practice:</td>      <td><span class='cplate bgmagenta'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Proposed Standard:</td>         <td><span class='cplate bgblue'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Draft Standard (old designation):</td> <td><span class='cplate bgcyan'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Internet Standard:</td>         <td><span class='cplate bggreen'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Historic:</td>                  <td><span class='cplate bggrey'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Obsolete:</td>                  <td><span class='cplate bgbrown'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>     </table>";
+    function showElem(id) {
+        var elem = document.getElementById(id);
+        elem.innerHTML = eval(id+"_html");
+        elem.style.visibility='visible';
+    }
+    function hideElem(id) {
+        var elem = document.getElementById(id);
+        elem.style.visibility='hidden';        
+        elem.innerHTML = "";
+    }
+    // -->
+    </script>
+</head>
+<body onload="addHeaderTags()">
+   <div style="height: 13px;">
+      <div onmouseover="this.style.cursor=&#39;pointer&#39;;" onclick="showElem(&#39;legend&#39;);" onmouseout="hideElem(&#39;legend&#39;)" style="height: 6px; position: absolute; cursor: pointer;" class="pre noprint docinfo bgred" title="Click for colour legend.">                                                                        </div>
+      <div id="legend" class="docinfo noprint pre legend" style="position: absolute; top: 4px; left: 4ex; visibility: hidden; background-color: white; padding: 4px 9px 5px 7px; border: 1px solid rgb(51, 68, 85);" onmouseover="showElem(&#39;legend&#39;);" onmouseout="hideElem(&#39;legend&#39;);"></div>
+   </div>
+<span class="pre noprint docinfo top">[<a href="http://tools.ietf.org/html/" title="Document search and retrieval page">Docs</a>] [<a href="http://tools.ietf.org/id/draft-irtf-cfrg-ocb-00.txt" title="Plaintext version of this document">txt</a>|<a href="http://tools.ietf.org/pdf/draft-irtf-cfrg-ocb-00.txt" title="PDF version of this document">pdf</a>|<a href="http://tools.ietf.org/id/draft-irtf-cfrg-ocb-00.xml" title="XML source for this document">xml</a>|<a href="http://tools.ietf.org/id/draft-irtf-cfrg-ocb-00.html" title="HTML version of this document, from XML2RFC">html</a>] [<a href="https://datatracker.ietf.org/doc/draft-irtf-cfrg-ocb" title="IESG Datatracker information for this document">Tracker</a>] [<a href="http://tools.ietf.org/wg/cfrg" title="The working group handling this document">WG</a>] [<a href="mailto:draft-irtf-cfrg-ocb@tools.ietf.org?subject=draft-irtf-cfrg-ocb%20" title="Send email to the document authors">Email</a>] [<a href="http://tools.ietf.org/rfcdiff?difftype=--hwdiff&url2=draft-irtf-cfrg-ocb-00.txt" title="Inline diff (wdiff)">Diff1</a>] [<a href="http://tools.ietf.org/rfcdiff?url2=draft-irtf-cfrg-ocb-00.txt" title="Side-by-side diff">Diff2</a>] [<a href="http://tools.ietf.org/idnits?url=http://tools.ietf.org/id/draft-irtf-cfrg-ocb-00.txt" title="Run an idnits check of this document">Nits</a>] </span><br>
+<span class="pre noprint docinfo">                                                                        </span><br>
+<span class="pre noprint docinfo">Versions: (<a href="http://tools.ietf.org/html/draft-krovetz-ocb" title="Precursor">draft-krovetz-ocb</a>)  <a href="./draft-irtf-cfrg-ocb-00 - The Offset Codebook (OCB) Authenticated-Encryption Algorithm_files/draft-irtf-cfrg-ocb-00 - The Offset Codebook (OCB) Authenticated-Encryption Algorithm.htm">00</a> <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-01">01</a> <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-02">02</a> <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-03">03</a> <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-04">04</a>                           
+          <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-05">05</a> <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-06">06</a> <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-07">07</a>                                                      </span><br>
+<span class="pre noprint docinfo">                                                                        </span><br>
+<pre>Internet Engineering Task Force                               T. Krovetz
+Internet-Draft                                          Sacramento State
+Intended status: Informational                                P. Rogaway
+Expires: February 09, 2013                                      UC Davis
+                                                         August 10, 2012
+
+               <span class="h1"><h1>The OCB Authenticated-Encryption Algorithm</h1></span>
+                         <span class="h1"><h1>draft-irtf-cfrg-ocb-00</h1></span>
+
+Abstract
+
+   This document specifies OCB, a shared-key blockcipher-based
+   encryption scheme that provides privacy and authenticity for
+   plaintexts and authenticity for associated data.
+
+Status of this Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of <a href="http://tools.ietf.org/html/bcp78">BCP 78</a> and <a href="http://tools.ietf.org/html/bcp79">BCP 79</a>.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at <a href="http://datatracker.ietf.org/drafts/current/">http://datatracker.ietf.org/drafts/current/</a>.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on February 09, 2013.
+
+Copyright Notice
+
+   Copyright (c) 2012 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to <a href="http://tools.ietf.org/html/bcp78">BCP 78</a> and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (<a href="http://trustee.ietf.org/license-info">http://trustee.ietf.org/</a>
+   <a href="http://trustee.ietf.org/license-info">license-info</a>) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Simplified BSD License text
+   as described in Section 4.e of the <a href="http://trustee.ietf.org/license-info">Trust Legal Provisions</a> and are
+   provided without warranty as described in the Simplified BSD License.
+
+Table of Contents
+
+   <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-1">1</a>.  Introduction . . . . . . . . . . . . . . . . . . . . . . . . .  <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-2">2</a>
+   <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-2">2</a>.  Notation and Basic Operations  . . . . . . . . . . . . . . . .  <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-3">3</a>
+   <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3">3</a>.  OCB Global Parameters  . . . . . . . . . . . . . . . . . . . .  <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-4">4</a>
+     <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">3.1</a>.  Named OCB Parameter Sets and <a href="http://tools.ietf.org/html/rfc5116">RFC 5116</a> Constants  . . . . .  <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-4">4</a>
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013                [Page 1]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-2" id="page-2" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-2" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+   <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-4">4</a>.  OCB Algorithms . . . . . . . . . . . . . . . . . . . . . . . .  <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-5">5</a>
+     <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-4.1">4.1</a>.  Associated-Data Processing: HASH . . . . . . . . . . . . .  <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-5">5</a>
+     <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-4.2">4.2</a>.  Encryption: OCB-ENCRYPT  . . . . . . . . . . . . . . . . .  <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-6">6</a>
+     <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-4.3">4.3</a>.  Decryption: OCB-DECRYPT  . . . . . . . . . . . . . . . . .  <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-9">9</a>
+   <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-5">5</a>.  Security Considerations  . . . . . . . . . . . . . . . . . . . <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-11">11</a>
+   <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-6">6</a>.  IANA Considerations  . . . . . . . . . . . . . . . . . . . . . <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-13">13</a>
+   <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-7">7</a>.  Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-13">13</a>
+   <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-8">8</a>.  References . . . . . . . . . . . . . . . . . . . . . . . . . . <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-13">13</a>
+     <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-8.1">8.1</a>.  Normative References . . . . . . . . . . . . . . . . . . . <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-13">13</a>
+     <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-8.2">8.2</a>.  Informative References . . . . . . . . . . . . . . . . . . <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-14">14</a>
+   <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#appendix-A">Appendix A</a>. Sample Results . . . . . . . . . . . . . . . . . . . . <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-14">14</a>
+   Authors' Addresses . . . . . . . . . . . . . . . . . . . . . . . . <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-17">17</a>
+
+<span class="h2"><h2><a class="selflink" name="section-1" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-1">1</a>.  Introduction</h2></span>
+
+   Schemes for authenticated encryption (AE) simultaneously provide for
+   privacy and authentication.  While this goal would traditionally be
+   achieved by melding separate encryption and authentication
+   mechanisms, each using its own key, integrated AE schemes intertwine
+   what is needed for privacy and what is needed for authenticity.  By
+   conceptualizing AE as a single cryptographic goal, AE schemes are
+   less likely to be misused than conventional encryption schemes.
+   Also, integrated AE schemes can be significantly faster than what one
+   sees from composing separate privacy and authenticity means.
+
+   When an AE scheme allows for the authentication of unencrypted data
+   at the same time that a plaintext is being encrypted and
+   authenticated, the scheme is an authenticated encryption with
+   associated data (AEAD) scheme.  Associated data can be useful when,
+   for example, a network packet has unencrypted routing information and
+   an encrypted payload.
+
+   OCB is an AEAD scheme that depends on a blockcipher.  This document
+   fully defines OCB encryption and decryption except for the choice of
+   the blockcipher and the length of authentication tag that is part of
+   the ciphertext.  The blockcipher must have a 128-bit blocksize.  Each
+   choice of blockcipher and tag length specifies a different variant of
+   OCB. Several AES-based variants are defined in <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a>.
+
+   OCB encryption and decryption employ a nonce N, which must be
+   selected as a new value for each message encrypted.  OCB requires the
+   associated data A to be specified when one encrypts or decrypts, but
+   it may be zero-length.  The plaintext P and the associated data A can
+   have any bitlength.  The ciphertext C one gets by encrypting P in the
+   presence of A consists of a ciphertext-core having the same length as
+   P, plus an authentication tag.  One can view the resulting ciphertext
+   as either the pair (ciphertext-core, tag) or their concatenation
+   (ciphertext-core || tag), the difference being purely how one
+   assembles and parses ciphertexts.  This document uses concatenation.
+
+
+
+
+
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013                [Page 2]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-3" id="page-3" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-3" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+   OCB encryption protects the privacy of P and the authenticity of A,
+   N, and P. It does this using, on average, about a + m + 1.02
+   blockcipher calls, where a is the blocklength of A and m is the
+   blocklength of P and the nonce N is implemented as a counter (if N is
+   random then OCB uses a + m + 2 blockcipher calls). If A is fixed
+   during a session then, after preprocessing, there is effectively no
+   cost to having A authenticated on subsequent encryptions, and the
+   mode will average m + 1.02 blockcipher calls.  OCB requires a single
+   key K for the underlying blockcipher, and all blockcipher calls are
+   keyed by K. OCB is on-line: one need not know the length of A or P to
+   proceed with encryption, nor need one know the length of A or C to
+   proceed with decryption.  OCB is parallelizable: the bulk of its
+   blockcipher calls can be performed simultaneously.  Computational
+   work beyond blockcipher calls consists of a small and fixed number of
+   logical operations per call.  OCB enjoys provable security: the mode
+   of operation is secure assuming that the underlying blockcipher is
+   secure.  As with most modes of operation, security degrades in the
+   square of the number of blocks of texts divided by two to the
+   blocklength.
+
+   The version of OCB defined in this document is a refinement of two
+   prior schemes.  The original OCB version was published in 2001 [OCB1]
+   and was listed as an optional component in IEEE 802.11i.  A second
+   version was published in 2004 [OCB2] and is specified in ISO 19772.
+   The scheme described here is called OCB3 in the 2011 paper describing
+   the mode [OCB3]; it shall be referred to simply as OCB throughout
+   this document.  See [OCB3] for complete references, timing
+   information, and a discussion of the differences between the
+   algorithms.
+
+<span class="h2"><h2><a class="selflink" name="section-2" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-2">2</a>.  Notation and Basic Operations</h2></span>
+
+   There are two types of variables used in this specification, strings
+   and integers.  Although most data processed by implementations of OCB
+   will be byte-oriented, a number of bit-level operations are used in
+   this specification, and so strings are here considered strings of
+   bits rather than strings of bytes.  String variables are always
+   written with an initial upper-case letter while integer variables are
+   written in all lower-case.  Following C's convention, a single equals
+   ("=") indicates variable assignment and double equals ("==") is the
+   equality relation.  Whenever a variable is followed by an underscore
+   ("_"), the underscore is intended to denote a subscript, with the
+   subscripted expression requiring evaluation to resolve the meaning of
+   the variable.  For example, when i == 2, then P_i refers to the
+   variable P_2.
+
+   c^i         The integer c raised to the i-th power.
+
+   bitlen(S)   The length of string S in bits (eg, bitlen(101) == 3).
+
+   zeros(n)    The string made of n zero-bits.
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013                [Page 3]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-4" id="page-4" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-4" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+   ntz(n)      The number of trailing zero bits in the base-2
+               representation of the positive integer n.  More formally,
+               ntz(n) is the largest integer x for which 2^x divides n.
+
+   S xor T     The string that is the bitwise exclusive-or of S and T.
+               Strings S and T will always have the same length.
+
+   S[i]        The i-th bit of the string S (indices begin at 1).
+
+   S[i..j]     The substring of S consisting of bits i through j,
+               inclusive.
+
+   S || T      String S concatenated with string T (eg, 000 || 111 ==
+               000111).
+
+   str2num(S)  The base-2 integral interpretation of bitstring S (eg,
+               str2num(1110) == 14).
+
+   double(S)   If S[1] == 0 then double(S) == (S[2..128] || 0);
+               otherwise double(S) == (S[2..128] || 0) xor (zeros(120)
+               || 10000111).
+
+<span class="h2"><h2><a class="selflink" name="section-3" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3">3</a>.  OCB Global Parameters</h2></span>
+
+   To be complete, the algorithms in this document require specification
+   of two global parameters: a blockcipher operating on 128-bit blocks
+   and the length of authentication tags in use.
+
+   Specifying a blockcipher implicitly defines the following symbols.
+
+   KEYLEN         The blockcipher's key length, in bits.
+
+   ENCIPHER(K,P)  The blockcipher function mapping 128-bit plaintext
+                  block P to its corresponding ciphertext block using
+                  KEYLEN-bit key K.
+
+   DECIPHER(K,C)  The inverse blockcipher function mapping 128-bit
+                  ciphertext block C to its corresponding plaintext
+                  block using KEYLEN-bit key K.
+
+   As an example, if 128-bit authentication tags and AES with 192-bit
+   keys are to be used, then KEYLEN is 192, ENCIPHER refers to the
+   AES-192 cipher, DECIPHER refers to the AES-192 inverse cipher, and
+   TAGLEN is 128 [AES].
+
+<span class="h3"><h3><a class="selflink" name="section-3.1" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">3.1</a>.  Named OCB Parameter Sets and <a href="http://tools.ietf.org/html/rfc5116">RFC 5116</a> Constants</h3></span>
+
+   The following table gives names to common OCB global parameter sets.
+   Each of the AES variants is defined in [AES].
+
+
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013                [Page 4]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-5" id="page-5" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-5" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+         +----------------------------+-------------+--------+
+         | Name                       | Blockcipher | TAGLEN |
+         +----------------------------+-------------+--------+
+         | AEAD_AES_128_OCB_TAGLEN128 |   AES-128   |  128   |
+         | AEAD_AES_128_OCB_TAGLEN96  |   AES-128   |   96   |
+         | AEAD_AES_128_OCB_TAGLEN64  |   AES-128   |   64   |
+         | AEAD_AES_192_OCB_TAGLEN128 |   AES-192   |  128   |
+         | AEAD_AES_192_OCB_TAGLEN96  |   AES-192   |   96   |
+         | AEAD_AES_192_OCB_TAGLEN64  |   AES-192   |   64   |
+         | AEAD_AES_256_OCB_TAGLEN128 |   AES-256   |  128   |
+         | AEAD_AES_256_OCB_TAGLEN96  |   AES-256   |   96   |
+         | AEAD_AES_256_OCB_TAGLEN64  |   AES-256   |   64   |
+         +----------------------------+-------------+--------+
+
+   <a href="http://tools.ietf.org/html/rfc5116">RFC 5116</a> defines an interface for authenticated encryption schemes
+   [<a href="http://tools.ietf.org/html/rfc5116">RFC5116</a>].  <a href="http://tools.ietf.org/html/rfc5116">RFC 5116</a> requires the specification of certain constants
+   for each named AEAD scheme.  For each of the OCB parameter sets
+   listed above: P_MAX, A_MAX, and C_MAX are all unbounded; N_MIN is 1
+   byte and N_MAX is 15 bytes.  The parameter-sets indicating the use of
+   AES-128, AES-192 and AES-256 have K_LEN equal to 16, 24 and 32 bytes,
+   respectively.
+
+<span class="h2"><h2><a class="selflink" name="section-4" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-4">4</a>.  OCB Algorithms</h2></span>
+
+   OCB is described in this section using pseudocode.  Given any
+   collection of inputs of the required types, following the pseuduocode
+   description for a function will produce the correct output of the
+   promised type.
+
+<span class="h3"><h3><a class="selflink" name="section-4.1" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-4.1">4.1</a>.  Associated-Data Processing: HASH</h3></span>
+
+   OCB has the ability to authenticate unencrypted associated data at
+   the same time that it provides for authentication and encrypts a
+   plaintext.  The following hash function is central to providing this
+   functionality.  If an application has no associated data, then the
+   associated data should be considered to exist and to be the empty
+   string.  HASH, conveniently, always returns zeros(128) when the
+   associated data is the empty string.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013                [Page 5]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-6" id="page-6" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-6" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+   Function name:
+     HASH
+   Input:
+     K, string of KEYLEN bits                      // Key
+     A, string of any length                       // Associated data
+   Output:
+     Sum, string of 128 bits                       // Hash result
+
+   Sum is defined as follows.
+
+     //
+     // Key-dependent variables
+     //
+     L_* = ENCIPHER(K, zeros(128))
+     L_$ = double(L_*)
+     L_0 = double(L_$)
+     L_i = double(L_{i-1}) for every integer i &gt; 0
+
+     //
+     // Consider A as a sequence of 128-bit blocks
+     //
+     Let m be the largest integer so that 128m &lt;= bitlen(A)
+     Let A_1, A_2, ..., A_m and A_* be strings so that
+       A == A_1 || A_2 || ... || A_m || A_*, and
+       bitlen(A_i) == 128 for each 1 &lt;= i &lt;= m.
+       Note: A_* may possibly be the empty string.
+
+     //
+     // Process any whole blocks
+     //
+     Sum_0 = zeros(128)
+     Offset_0 = zeros(128)
+     for each 1 &lt;= i &lt;= m
+        Offset_i = Offset_{i-1} xor L_{ntz(i)}
+        Sum_i = Sum_{i-1} xor ENCIPHER(K, A_i xor Offset_i)
+     end for
+
+     //
+     // Process any final partial block; compute final hash value
+     //
+     if bitlen(A_*) &gt; 0 then
+        Offset_* = Offset_m xor L_*
+        CipherInput = (A_* || 1 || zeros(127-bitlen(A_*))) xor Offset_*
+        Sum = Sum_m xor ENCIPHER(K, CipherInput)
+     else
+        Sum = Sum_m
+     end if
+
+<span class="h3"><h3><a class="selflink" name="section-4.2" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-4.2">4.2</a>.  Encryption: OCB-ENCRYPT</h3></span>
+
+
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013                [Page 6]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-7" id="page-7" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-7" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+   This function computes a ciphertext (which includes a bundled
+   authentication tag) when given a plaintext, associated data, nonce
+   and key.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013                [Page 7]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-8" id="page-8" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-8" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+   Function name:
+     OCB-ENCRYPT
+   Input:
+     K, string of KEYLEN bits                      // Key
+     N, string of fewer than 128 bits              // Nonce
+     A, string of any length                       // Associated data
+     P, string of any length                       // Plaintext
+   Output:
+     C, string of length bitlen(P) + TAGLEN bits   // Ciphertext
+
+   C is defined as follows.
+
+     //
+     // Key-dependent variables
+     //
+     L_* = ENCIPHER(K, zeros(128))
+     L_$ = double(L_*)
+     L_0 = double(L_$)
+     L_i = double(L_{i-1}) for every integer i &gt; 0
+
+     //
+     // Consider P as a sequence of 128-bit blocks
+     //
+     Let m be the largest integer so that 128m &lt;= bitlen(P)
+     Let P_1, P_2, ..., P_m and P_* be strings so that
+       P == P_1 || P_2 || ... || P_m || P_*, and
+       bitlen(P_i) == 128 for each 1 &lt;= i &lt;= m.
+       Note: P_* may possibly be the empty string.
+
+     //
+     // Nonce-dependent and per-encryption variables
+     //
+     Nonce = zeros(127-bitlen(N)) || 1 || N
+     bottom = str2num(Nonce[123..128])
+     Ktop = ENCIPHER(K, Nonce[1..122] || zeros(6))
+     Stretch = Ktop || (Ktop[1..64] xor Ktop[9..72])
+     Offset_0 = Stretch[1+bottom..128+bottom]
+     Checksum_0 = zeros(128)
+
+     //
+     // Process any whole blocks
+     //
+     for each 1 &lt;= i &lt;= m
+        Offset_i = Offset_{i-1} xor L_{ntz(i)}
+        C_i = Offset_i xor ENCIPHER(K, P_i xor Offset_i)
+        Checksum_i = Checksum_{i-1} xor P_i
+     end for
+
+     //
+     // Process any final partial block and compute raw tag
+     //
+     if bitlen(P_*) &gt; 0 then
+        Offset_* = Offset_m xor L_*
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013                [Page 8]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-9" id="page-9" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-9" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+        Pad = ENCIPHER(K, Offset_*)
+        C_* = P_* xor Pad[1..bitlen(P_*)]
+        Checksum_* = Checksum_m xor (P_* || 1 || zeros(127-bitlen(P_*)))
+        Tag = ENCIPHER(K, Checksum_* xor Offset_* xor L_$) xor HASH(K,A)
+     else
+        C_* = &lt;empty string&gt;
+        Tag = ENCIPHER(K, Checksum_m xor Offset_m xor L_$) xor HASH(K,A)
+     end if
+
+     //
+     // Assemble ciphertext
+     //
+     C = C_1 || C_2 || ... || C_m || C_* || Tag[1..TAGLEN]
+
+<span class="h3"><h3><a class="selflink" name="section-4.3" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-4.3">4.3</a>.  Decryption: OCB-DECRYPT</h3></span>
+
+   This function computes a plaintext when given a ciphertext,
+   associated data, nonce and key.  An authentication tag is embedded in
+   the ciphertext.  If the tag is not correct for the ciphertext,
+   associated data, nonce and key, then an INVALID signal is produced.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013                [Page 9]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-10" id="page-10" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-10" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+   Function name:
+     OCB-DECRYPT
+   Input:
+     K, string of KEYLEN bits                      // Key
+     N, string of fewer than 128 bits              // Nonce
+     A, string of any length                       // Associated data
+     C, string of at least TAGLEN bits             // Ciphertext
+   Output:
+     P, string of length bitlen(C) - TAGLEN bits,  // Plaintext
+          or INVALID indicating authentication failure
+
+   P is defined as follows.
+
+     //
+     // Key-dependent variables
+     //
+     L_* = ENCIPHER(K, zeros(128))
+     L_$ = double(L_*)
+     L_0 = double(L_$)
+     L_i = double(L_{i-1}) for every integer i &gt; 0
+
+     //
+     // Consider C as a sequence of 128-bit blocks
+     //
+     Let m be the largest integer so that 128m &lt;= bitlen(C) - TAGLEN
+     Let C_1, C_2, ..., C_m, C_* and T be strings so that
+       C == C_1 || C_2 || ... || C_m || C_* || T,
+       bitlen(C_i) == 128 for each 1 &lt;= i &lt;= m, and
+       bitlen(T) == TAGLEN.
+       Note: C_* may possibly be the empty string.
+
+     //
+     // Nonce-dependent and per-decryption variables
+     //
+     Nonce = zeros(127-bitlen(N)) || 1 || N
+     bottom = str2num(Nonce[123..128])
+     Ktop = ENCIPHER(K, Nonce[1..122] || zeros(6))
+     Stretch = Ktop || (Ktop[1..64] xor Ktop[9..72])
+     Offset_0 = Stretch[1+bottom..128+bottom]
+     Checksum_0 = zeros(128)
+
+     //
+     // Process any whole blocks
+     //
+     for each 1 &lt;= i &lt;= m
+        Offset_i = Offset_{i-1} xor L_{ntz(i)}
+        P_i = Offset_i xor DECIPHER(K, C_i xor Offset_i)
+        Checksum_i = Checksum_{i-1} xor P_i
+     end for
+
+     //
+     // Process any final partial block and compute raw tag
+     //
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013               [Page 10]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-11" id="page-11" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-11" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+     if bitlen(C_*) &gt; 0 then
+        Offset_* = Offset_m xor L_*
+        Pad = ENCIPHER(K, Offset_*)
+        P_* = C_* xor Pad[1..bitlen(C_*)]
+        Checksum_* = Checksum_m xor (P_* || 1 || zeros(127-bitlen(P_*)))
+        Tag = ENCIPHER(K, Checksum_* xor Offset_* xor L_$) xor HASH(K,A)
+     else
+        P_* = &lt;empty string&gt;
+        Tag = ENCIPHER(K, Checksum_m xor Offset_m xor L_$) xor HASH(K,A)
+     end if
+
+     //
+     // Check for validity and assemble plaintext
+     //
+     if (Tag[1..TAGLEN] == T) then
+        P = P_1 || P_2 || ... || P_m || P_*
+     else
+        P = INVALID
+     end if
+
+<span class="h2"><h2><a class="selflink" name="section-5" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-5">5</a>.  Security Considerations</h2></span>
+
+   OCB achieves two security properties, privacy and authenticity.
+   Privacy is defined via "indistinguishability from random bits",
+   meaning that an adversary is unable to distinguish OCB-outputs from
+   an equal number of random bits.  Authenticity is defined via
+   "authenticity of ciphertexts", meaning that an adversary is unable to
+   produce any valid (N,C,T) triple that it has not already acquired.
+   The security guarantees depend on the underlying blockcipher being
+   secure in the sense of a strong pseudorandom permutation.  Thus if
+   OCB is used with a blockcipher that is not secure as a strong
+   pseudorandom permutation, the security guarantees vanish.  The need
+   for the strong pseudorandom permutation property means that OCB
+   should be used with a conservatively designed, well-trusted
+   blockcipher, such as AES.
+
+   Both the privacy and the authenticity properties of OCB degrade as
+   per s^2 / 2^128, where s is the total number of blocks that the
+   adversary acquires.  The consequence of this formula is that the
+   proven security vanishes when s becomes as large as 2^{128/2}. Thus
+   the user should never use a key to generate an amount of ciphertext
+   that is near to, or exceeds, 2^64 blocks.  In order to ensure that
+   s^2 / 2^128 remains small, a given key should be used to encrypt at
+   most 2^48 blocks (2^55 bits or 4 petabytes), including the associated
+   data.  To ensure these limits are not crossed, automated key
+   management is recommended in systems exchanging large amounts of data
+   [<a href="http://tools.ietf.org/html/rfc4107">RFC4107</a>].
+
+
+
+
+
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013               [Page 11]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-12" id="page-12" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-12" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+   It is crucial that, as one encrypts, one does not repeat a nonce.
+   The inadvertent reuse of the same nonce by two invocations of the OCB
+   encryption operation, with the same key, but with distinct plaintext
+   values, undermines the confidentiality of the plaintexts protected in
+   those two invocations, and undermines all of the authenticity and
+   integrity protection provided by that key.  For this reason, OCB
+   should only be used whenever nonce uniqueness can be provided with
+   certainty.  Note that it is acceptable to input the same nonce value
+   multiple times to the decryption operation.  We emphasize that the
+   security consequences are quite serious if an attacker observes two
+   ciphertexts that were created using the same nonce and key values,
+   unless the plaintext and AD values in both invocations of the encrypt
+   operation were identical.  First, a loss of confidentiality ensues
+   because he will be able to infer relationships between the two
+   plaintext values.  Second, a loss of authenticity ensues because the
+   attacker will be able to recover secret information used to provide
+   authenticity, making subsequent forgeries trivial.  Note that there
+   are AEAD schemes, particularly SIV [<a href="http://tools.ietf.org/html/rfc5297">RFC5297</a>], appropriate for
+   environements where nonces are unavailable or unreliable.  OCB is not
+   such a scheme.
+
+   Nonces need not be secret, and a counter may be used for them.  If
+   two parties send OCB-encrypted plaintexts to one another using the
+   same key, then the space of nonces used by the two parties must be
+   partitioned so that no nonce that could be used by one party to
+   encrypt could be used by the other to encrypt (eg, odd and even
+   counters).
+
+   When a ciphertext decrypts as INVALID it is the implementor's
+   responsibility to make sure that no information beyond this fact is
+   made adversarially available.
+
+   OCB encryption and decryption produce an internal 128-bit
+   authentication tag.  The parameter TAGLEN determines how many bits of
+   this internal tag are used for authentication.  The value of TAGLEN
+   impacts the adversary's ability to forge: it will always be trivial
+   for the adversary to forge with probability 2^{-TAGLEN}. It is up to
+   the application designer to choose an appropriate value for TAGLEN.
+   Long tags cost no more computationally than short ones.
+
+   Timing attacks are not a part of the formal security model and an
+   implementation should take care to mitigate them in contexts where
+   this is a concern.  To render timing attacks impotent, the amount of
+   time to encrypt or decrypt a string should be independent of the key
+   and the contents of the string.  The only explicitly conditional OCB
+   operation that depends on private data is double(), which means that
+   using constant-time blockcipher and double() implementations
+   eliminates most (if not all) sources of timing attacks on OCB. Power-
+   usage attacks are likewise out of scope of the formal model, and
+   should be considered for environments where they are threatening.
+
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013               [Page 12]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-13" id="page-13" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-13" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+   The OCB encryption scheme reveals in the ciphertext the length of the
+   plaintext.  Sometimes the length of the plaintext is a valuable piece
+   of information that should be hidden.  For environments where
+   "traffic analysis" is a concern, techniques beyond OCB encryption
+   (typically involving padding) would be necessary.
+
+   Defining the ciphertext that results from OCB-ENCRYPT to be the pair
+   (C_1 || C_2 || ... || C_m || C_*, Tag[1..TAGLEN]) instead of the
+   concatenation C_1 || C_2 || ... || C_m || C_* || Tag[1..TAGLEN]
+   introduces no security concerns.  Because TAGLEN is fixed, both
+   versions allows ciphertexts to be parsed unambiguously.
+
+<span class="h2"><h2><a class="selflink" name="section-6" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-6">6</a>.  IANA Considerations</h2></span>
+
+   The Internet Assigned Numbers Authority (IANA) has defined a registry
+   for Authenticated Encryption with Associated Data parameters.  The
+   IANA has added the following entries to the AEAD Registry.  Each name
+   refers to a set of parameters defined in <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a>.
+
+   +----------------------------+-------------+--------------------+
+   | Name                       |  Reference  | Numeric Identifier |
+   +----------------------------+-------------+--------------------+
+   | AEAD_AES_128_OCB_TAGLEN128 | <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a> |         XX         |
+   | AEAD_AES_128_OCB_TAGLEN96  | <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a> |         XX         |
+   | AEAD_AES_128_OCB_TAGLEN64  | <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a> |         XX         |
+   | AEAD_AES_192_OCB_TAGLEN128 | <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a> |         XX         |
+   | AEAD_AES_192_OCB_TAGLEN96  | <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a> |         XX         |
+   | AEAD_AES_192_OCB_TAGLEN64  | <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a> |         XX         |
+   | AEAD_AES_256_OCB_TAGLEN128 | <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a> |         XX         |
+   | AEAD_AES_256_OCB_TAGLEN96  | <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a> |         XX         |
+   | AEAD_AES_256_OCB_TAGLEN64  | <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a> |         XX         |
+   +----------------------------+-------------+--------------------+
+
+<span class="h2"><h2><a class="selflink" name="section-7" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-7">7</a>.  Acknowledgements</h2></span>
+
+   The design of the original OCB scheme [OCB1] was done while Phil
+   Rogaway was at Chiang Mai University, Thailand.  Follow-up work
+   [OCB2] was done with support of NSF grant 0208842 and a gift from
+   Cisco.  The final work by Krovetz and Rogaway [OCB3] that has
+   resulted in this spec was supported by NSF grant 0904380. Thanks go
+   to the Crypto Forum Research Group for providing feedback on earlier
+   drafts, and David McGrew for contributing some text in <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-5">Section 5</a>.
+
+<span class="h2"><h2><a class="selflink" name="section-8" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-8">8</a>.  References</h2></span>
+
+<span class="h3"><h3><a class="selflink" name="section-8.1" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-8.1">8.1</a>.  Normative References</h3></span>
+
+   [<a name="ref-1" id="ref-1">1</a>]        McGrew, D., "An interface and algorithms for authenticated
+              encryption", <a href="http://tools.ietf.org/html/rfc5116">RFC 5116</a>, January 2008.
+
+   [<a name="ref-2" id="ref-2">2</a>]        National Institute of Standards and Technology, "Advanced
+              Encryption Standard (AES)", FIPS PUB 197, November 2001.
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013               [Page 13]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-14" id="page-14" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-14" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+<span class="h3"><h3><a class="selflink" name="section-8.2" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-8.2">8.2</a>.  Informative References</h3></span>
+
+   [<a name="ref-1" id="ref-1">1</a>]        Bellovin, S. and R. Housley, "Guidelines for cryptographic
+              key management", <a href="http://tools.ietf.org/html/rfc4107">RFC 4107</a>, June 2005.
+
+   [<a name="ref-2" id="ref-2">2</a>]        Harkins, D., "Synthetic Initialization Vector (SIV)
+              authenticated encryption using the Advanced Encryption
+              Standard (AES)", <a href="http://tools.ietf.org/html/rfc5297">RFC 5297</a>, October 2008.
+
+   [<a name="ref-3" id="ref-3">3</a>]        Krovetz, T. and P. Rogaway, "The software performance of
+              authenticated-encryption modes", in Fast Software
+              Encryption - FSE 2011, Springer, 2011.
+
+   [<a name="ref-4" id="ref-4">4</a>]        Rogaway, P., "Efficient instantiations of tweakable
+              blockciphers and refinements to modes OCB and PMAC", in
+              Advances in Cryptology - ASIACRYPT 2004, Springer, 2004.
+
+   [<a name="ref-5" id="ref-5">5</a>]        Rogaway, P., Bellare, M., Black, J. and T. Krovetz, "OCB:
+              a block-cipher mode of operation for efficient
+              authenticated encryption", in ACM Conference on Computer
+              and Communications Security 2001 - CCS 2001, ACM Press,
+              2001.
+
+<span class="h2"><h2><a class="selflink" name="appendix-A" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#appendix-A">Appendix A</a>.  Sample Results</h2></span>
+
+   This section gives sample output values for various inputs when using
+   the AEAD_AES_128_OCB_TAGLEN128 parameters defined in <a href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#section-3.1">Section 3.1</a>. All
+   strings are represented in hexadecimal (eg, 0F represents the
+   bitstring 00001111).
+
+   Each of the following (A,P,C) triples show the ciphertext C that
+   results from OCB-ENCRYPT(K,N,A,P) when K and N are fixed with the
+   values
+
+   K : 000102030405060708090A0B0C0D0E0F
+   N : 000102030405060708090A0B
+
+   An empty entry indicates the empty string.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013               [Page 14]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-15" id="page-15" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-15" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+     A:
+     P:
+     C: 197B9C3C441D3C83EAFB2BEF633B9182
+
+     A: 0001020304050607
+     P: 0001020304050607
+     C: 92B657130A74B85A16DC76A46D47E1EAD537209E8A96D14E
+
+     A: 0001020304050607
+     P:
+     C: 98B91552C8C009185044E30A6EB2FE21
+
+     A:
+     P: 0001020304050607
+     C: 92B657130A74B85A971EFFCAE19AD4716F88E87B871FBEED
+
+     A: 000102030405060708090A0B0C0D0E0F
+     P: 000102030405060708090A0B0C0D0E0F
+     C: BEA5E8798DBE7110031C144DA0B26122776C9924D6723A1F
+        C4524532AC3E5BEB
+
+     A: 000102030405060708090A0B0C0D0E0F
+     P:
+     C: 7DDB8E6CEA6814866212509619B19CC6
+
+     A:
+     P: 000102030405060708090A0B0C0D0E0F
+     C: BEA5E8798DBE7110031C144DA0B2612213CC8B747807121A
+        4CBB3E4BD6B456AF
+
+     A: 000102030405060708090A0B0C0D0E0F1011121314151617
+     P: 000102030405060708090A0B0C0D0E0F1011121314151617
+     C: BEA5E8798DBE7110031C144DA0B26122FCFCEE7A2A8D4D48
+        5FA94FC3F38820F1DC3F3D1FD4E55E1C
+
+     A: 000102030405060708090A0B0C0D0E0F1011121314151617
+     P:
+     C: 282026DA3068BC9FA118681D559F10F6
+
+     A:
+     P: 000102030405060708090A0B0C0D0E0F1011121314151617
+     C: BEA5E8798DBE7110031C144DA0B26122FCFCEE7A2A8D4D48
+        6EF2F52587FDA0ED97DC7EEDE241DF68
+
+     A: 000102030405060708090A0B0C0D0E0F1011121314151617
+        18191A1B1C1D1E1F
+     P: 000102030405060708090A0B0C0D0E0F1011121314151617
+        18191A1B1C1D1E1F
+     C: BEA5E8798DBE7110031C144DA0B26122CEAAB9B05DF771A6
+        57149D53773463CBB2A040DD3BD5164372D76D7BB6824240
+
+     A: 000102030405060708090A0B0C0D0E0F1011121314151617
+        18191A1B1C1D1E1F
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013               [Page 15]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-16" id="page-16" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-16" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+     P:
+     C: E1E072633BADE51A60E85951D9C42A1B
+
+     A:
+     P: 000102030405060708090A0B0C0D0E0F1011121314151617
+        18191A1B1C1D1E1F
+     C: BEA5E8798DBE7110031C144DA0B26122CEAAB9B05DF771A6
+        57149D53773463CB4A3BAE824465CFDAF8C41FC50C7DF9D9
+
+     A: 000102030405060708090A0B0C0D0E0F1011121314151617
+        18191A1B1C1D1E1F2021222324252627
+     P: 000102030405060708090A0B0C0D0E0F1011121314151617
+        18191A1B1C1D1E1F2021222324252627
+     C: BEA5E8798DBE7110031C144DA0B26122CEAAB9B05DF771A6
+        57149D53773463CB68C65778B058A635659C623211DEEA0D
+        E30D2C381879F4C8
+
+     A: 000102030405060708090A0B0C0D0E0F1011121314151617
+        18191A1B1C1D1E1F2021222324252627
+     P:
+     C: 7AEB7A69A1687DD082CA27B0D9A37096
+
+     A:
+     P: 000102030405060708090A0B0C0D0E0F1011121314151617
+        18191A1B1C1D1E1F2021222324252627
+     C: BEA5E8798DBE7110031C144DA0B26122CEAAB9B05DF771A6
+        57149D53773463CB68C65778B058A635060C8467F4ABAB5E
+        8B3C2067A2E115DC
+
+   Next are several internal values generated during the OCB-ENCRYPT
+   computation for the last test vector listed above.
+
+   bottom    : 11
+   Checksum_1: 000102030405060708090A0B0C0D0E0F
+   Checksum_2: 10101010101010101010101010101010
+   Checksum_*: 30313233343536379010101010101010
+   Ktop      : 43E111498C0582BF99F1D966CEFCBCC6
+   L_*       : C6A13B37878F5B826F4F8162A1C8D879
+   L_$       : 8D42766F0F1EB704DE9F02C54391B075
+   L_0       : 1A84ECDE1E3D6E09BD3E058A8723606D
+   L_1       : 3509D9BC3C7ADC137A7C0B150E46C0DA
+   Offset_0  : 088A4C602C15FCCF8ECB3677E5E63517
+   Offset_1  : 120EA0BE322892C633F533FD62C5557A
+   Offset_2  : 270779020E524ED5498938E86C8395A0
+   Offset_*  : E1A6423589DD155726C6B98ACD4B4DD9
+   Stretch   : 43E111498C0582BF99F1D966CEFCBCC6A2F058C589873D26
+
+   The following algorithm tests a wider variety of inputs.  Results are
+   given for each of AEAD_AES_128_OCB_TAGLEN128,
+   AEAD_AES_192_OCB_TAGLEN128 and AEAD_AES_256_OCB_TAGLEN128. Let &lt;i&gt; be
+   the 8-bit base-2 representation of i (eg, &lt;3&gt; == 00000011 and &lt;255&gt;
+   == 11111111).
+
+
+
+<span class="grey">Krovetz &amp; Rogaway      Expires February 09, 2013               [Page 16]</span>
+</pre><!--NewPage--><pre class="newpage"><a name="page-17" id="page-17" href="http://tools.ietf.org/html/draft-irtf-cfrg-ocb-00#page-17" class="invisible"> </a>
+<span class="grey">Internet-Draft        OCB Authenticated-Encryption           August 2012</span>
+
+
+   K = zeros(KEYLEN)           // Keylength of AES in use
+   for i = 0 to 127 do
+      S = zeros(8i)            // i bytes of zeros
+      N = zeros(88) || &lt;i&gt;     // 11 byte zero followed by 1 byte i
+      C = C || OCB-ENCRYPT(K,N,S,S)
+      C = C || OCB-ENCRYPT(K,N,&lt;empty string&gt;,S)
+      C = C || OCB-ENCRYPT(K,N,S,&lt;empty string&gt;)
+   end for
+   N = zeros(96)
+   Output : OCB-ENCRYPT(K,N,C,&lt;empty string&gt;)
+
+   Iteration i of the loop adds 2i + 48 bytes to C, resulting in an
+   ultimate length for C of 22,400 bytes.  The final OCB-ENCRYPT has an
+   empty plaintext component, so serves only to authenticate C. The
+   output should be:
+
+   AEAD_AES_128_OCB_TAGLEN128 Output: B2B41CBF9B05037DA7F16C24A35C1C94
+   AEAD_AES_192_OCB_TAGLEN128 Output: 1529F894659D2B51B776740211E7D083
+   AEAD_AES_256_OCB_TAGLEN128 Output: 42B83106E473C0EEE086C8D631FD4C7B
+
+Authors' Addresses
+
+   Ted Krovetz
+   Computer Science Department
+   California State University
+   6000 J Street
+   Sacramento, CA 95819-6021
+   USA
+
+   Email: ted@krovetz.net
+
+
+   Phillip Rogaway
+   Computer Science Department
+   University of California
+   One Shields Avenue
+   Davis, CA 95616-8562
+   USA
+
+   Email: rogaway@cs.ucdavis.edu
+
+
+
+
+
+
+
+
+
+
+
+
+
+Krovetz &amp; Rogaway      Expires February 09, 2013               [Page 17]
+
+</pre><br>
+<span class="noprint"><small><small>Html markup produced by rfcmarkup 1.107, available from
+<a href="http://tools.ietf.org/tools/rfcmarkup/">http://tools.ietf.org/tools/rfcmarkup/</a>
+</small></small></span>
+
+</body></html>
