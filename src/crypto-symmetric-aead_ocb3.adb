@@ -39,8 +39,9 @@ package body Crypto.Symmetric.AEAD_OCB3 is
    AD : Block := Zero_Block; -- no AD, Hash(AD) returns zeros();
 
    -- package initializations
-   package Vectors is new Ada.Containers.Indefinite_Vectors(Index_Type   => Positive,
-							    Element_Type => Bytes);
+   package Vectors is new
+     Ada.Containers.Indefinite_Vectors(Index_Type   => Positive,
+                                       Element_Type => Bytes);
    Masked_Plaintext: Vectors.Vector;
 
    -----------------------------------------------------------------

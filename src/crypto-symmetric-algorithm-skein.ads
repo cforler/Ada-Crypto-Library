@@ -60,16 +60,17 @@ package Crypto.Symmetric.Algorithm.Skein is
 
    procedure F_Hash(Filename : in String; Hash_Value : out W_Block512);
 
--------------------------------------------------------------------------
 
-   --simplified all-in-one-call for Skein
-   --no key or treehashing is used here
-   procedure Hash
-     (Mode           : in Skein_Mode;
-      N_0            : in Natural;
-      Message        : in Bytes;
-      Message_Length : in Natural;
-      Result         : out Bytes);
+   --complete call for Skein
+   --no key or hashing is used here
+   -- Output / Message Length in Bits
+   procedure Skein_Complete
+     (Mode           	 : in Skein_Mode;
+      Output_Length_Bits : in Natural;
+      Message        	 : in Bytes;
+      Message_Length_Bits: in Natural;
+      Result         	 : out Bytes);
+
 
 private
 
@@ -123,21 +124,7 @@ private
    --Ada.Containers.Doubly_Linked_Lists(
    --        Element_Type => Skein_Message_Tweak_Tuple_Pointer);
 
-   --we need a protected type for the tree mode
-   --this type counts (indirectly) the number of runs
-   protected type Skein_Tree_Message_Length_Counter is
-      procedure Set_Final_Length (Value : Natural);
-      procedure Reset;
-      procedure Increase (Value : Natural);
-      entry Is_Final_Length_Reached (Answer : out Boolean);
-   private
-      Length       : Natural := 0;
-      Final_Length : Natural := 0;
-   end Skein_Tree_Message_Length_Counter;
 
-   --we need an access type of this to use is inside of tasks :/
-   type Skein_Tree_Message_Length_Counter_Access is access
-     Skein_Tree_Message_Length_Counter;
 
    --we need Matrix or tensors of Integes to store various things
    --we need this to initialize a tensor for saving the number of Differences
@@ -201,36 +188,6 @@ private
       T_S               : in Bytes;    --Starting Tweak T_S of 16 Byte
       Result            : out Bytes);   --the result of UBI:
 
-   task type Tree_UBI_Task
-        (Mode                  : Skein_Mode;
-         Longest_Message_Bytes : Natural)
-      is
-      entry compute
-        (Mode                : in Skein_Mode;
-         G                   : in Bytes;
-         Full_Message        : in Bytes;
-         Full_Message_Length : in Natural;
-         T_S                 : in Bytes;
-         Result_Access       : in out Bytes_Access;
-         Result_First        : in Natural;
-         Result_Last         : in Natural;
-         Length_Access       : in out Skein_Tree_Message_Length_Counter_Access);
-   end Tree_UBI_Task;
-
-   --calculates the UBI in tree-hashing mode
-   --see Skein paper for details
-   procedure Tree_UBI
-     (Mode              : in Skein_Mode;
-      G                 : in Bytes;    --starting value on N_B Bytes
-      Full_Message      : in Bytes;    --Message of variable lenght
-      Full_Message_Bits : in Natural;  --the length of the input Message in
-                                       --Bits
-      T_S               : in Bytes;    --Starting Tweak T_S of 16 Byte
-      Y_l               : in Natural;  --loaf-size for treemode
-      Y_f               : in Natural;  --node-size for treemode
-      Y_M               : in Natural;  --max tree height
-      Result            : out Bytes;    --the result of UBI:
-      Number_Of_Tasks   : in Natural := 2);
 
    --calculates the output of the Skein Hashfunction for a given length
    --internal UBI is used for this
@@ -304,7 +261,6 @@ private
       Old_State : in Bytes;
       N_0       : in Natural;
       New_State : out Bytes);
-
 
 
    --all-in-one-call for Skein

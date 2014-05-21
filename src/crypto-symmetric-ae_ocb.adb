@@ -27,7 +27,8 @@ package body Crypto.Symmetric.AE_OCB is
    -- useful constants
    Zero_Bytes: constant Bytes(0..(Bytes_Per_Block - 1)) := (others => 0);
    Zero_Block: constant Block := To_Block_Type(Zero_Bytes);
-   -- If Store_Internally = True, every Ciphertext block will be stored in the Vector Masked_Plaintext
+   -- If Store_Internally = True, every Ciphertext block will be stored in
+   -- the Vector Masked_Plaintext
    Store_Internally: Boolean := False;
 
    -- package initializations
@@ -57,7 +58,8 @@ package body Crypto.Symmetric.AE_OCB is
             declare
                Temp: Bytes := Zero_Bytes;
             begin
-               Temp(Temp'First..Masked_Plaintext.First_Element'Length-1) := Masked_Plaintext.First_Element;
+               Temp(Temp'First..Masked_Plaintext.First_Element'Length-1)
+                 := Masked_Plaintext.First_Element;
                B := Temp;
                Count := Masked_Plaintext.First_Element'Length;
             end;
@@ -157,14 +159,17 @@ package body Crypto.Symmetric.AE_OCB is
 
          -- A contains a part of the Tag
          elsif (Bytes_Read - This.Taglen) < 0 then
-            Last_Block(Last_Block'First..Bytes_Per_Block-abs(Overlap)-1) := A(A'First..Bytes_Per_Block-abs(Overlap)-1);
-            Tag(Tag'First..abs(Overlap)-1) := A(Bytes_Per_Block-abs(Overlap)..A'Last);
-            Tag(abs(Overlap)..abs(Overlap)+Bytes_Read-1) := B(B'First..B'First+Bytes_Read-1);
+            Last_Block(Last_Block'First..Bytes_Per_Block-abs(Overlap)-1)
+              := A(A'First..Bytes_Per_Block-abs(Overlap)-1);
+            Tag(Tag'First..abs(Overlap)-1)
+              := A(Bytes_Per_Block-abs(Overlap)..A'Last);
+            Tag(abs(Overlap)..abs(Overlap)+Bytes_Read-1)
+              := B(B'First..B'First+Bytes_Read-1);
             Bytelen := (Bytes_Per_Block-abs(Overlap));
             Bitlen := Convert_Length_To_Block(8 * Bytelen);
 
-         -- A is an entire Ciphertext block. B contains the last
-         -- Ciphertext bytes and the Tag, so A must be decrypt.
+            -- A is an entire Ciphertext block. B contains the last
+            -- Ciphertext bytes and the Tag, so A must be decrypt.
          elsif (Bytes_Read - This.Taglen) > 0 then
             Dec := True;
             Last_Block(Last_Block'First..Overlap-1) := B(B'First..Overlap-1);
@@ -186,7 +191,8 @@ package body Crypto.Symmetric.AE_OCB is
             Bytelen := 0;
             Bitlen := Convert_Length_To_Block(Bytelen);
          else
-            Last_Block(Last_Block'First..Last_Block'First+Overlap-1) := A(A'First..A'First+Overlap-1);
+            Last_Block(Last_Block'First..Last_Block'First+Overlap-1)
+              := A(A'First..A'First+Overlap-1);
             Tag(Tag'First..Tag'First+This.Taglen-1) := A(Overlap..Bytes_Read-1);
             Bytelen := Overlap;
             Bitlen := Convert_Length_To_Block(8 * Bytelen);
@@ -399,7 +405,8 @@ package body Crypto.Symmetric.AE_OCB is
    begin
       Read_Plaintext(Prev_Block, Bytes_Read);
       if Bytes_Read < Bytes_Per_Block then
-         Last_P_Block(Prev_Block'First..Prev_Block'First+Prev_Block'Length-1) := Prev_Block;
+         Last_P_Block(Prev_Block'First..Prev_Block'First+Prev_Block'Length-1)
+           := Prev_Block;
          Last_B_Bitlen := Convert_Length_To_Block(8 * Bytes_Read);
       else
          loop
@@ -447,7 +454,8 @@ package body Crypto.Symmetric.AE_OCB is
          declare
             Y: constant Bytes := To_Bytes(Ciphertext);
          begin
-            Last_C_Block(0..Bytes_Read-1) := Last_P_Block(0..Bytes_Read-1) xor Y(Y'First..Y'First+Bytes_Read-1);
+            Last_C_Block(0..Bytes_Read-1) := Last_P_Block(0..Bytes_Read-1)
+              xor Y(Y'First..Y'First+Bytes_Read-1);
          end;
       end if;
 
@@ -465,13 +473,15 @@ package body Crypto.Symmetric.AE_OCB is
                B: Bytes(0..(Bytes_Read+This.Taglen-1));
             begin
                -- concatenate last Ciphertext bytes with the Tag
-               B(B'First..Bytes_Read-1) := Last_C_Block(Last_C_Block'First..Bytes_Read-1);
+               B(B'First..Bytes_Read-1)
+                 := Last_C_Block(Last_C_Block'First..Bytes_Read-1);
                B(Bytes_Read..B'Last) := C(C'First..C'First+This.Taglen-1);
                if B'Length > Bytes_Per_Block then
                   Write_Ciphertext(B(B'First..Bytes_Per_Block-1));
                   declare
                      -- This step is only for normalizing the index (starting at 0)
-                     Temp: constant Bytes(0..(B'Length-Bytes_Per_Block)-1) := B(Bytes_Per_Block..B'Last);
+                     Temp: constant Bytes(0..(B'Length-Bytes_Per_Block)-1)
+                       := B(Bytes_Per_Block..B'Last);
                   begin
                      Write_Ciphertext(Temp);
                   end;
@@ -648,7 +658,9 @@ package body Crypto.Symmetric.AE_OCB is
          declare
             Y: constant Bytes := To_Bytes(Plaintext);
          begin
-            Last_P_Block(0..Last_B_Bytelen-1) := Last_C_Block(Last_C_Block'First..Last_B_Bytelen-1) xor Y(Y'First..Y'First+Last_B_Bytelen-1);
+            Last_P_Block(0..Last_B_Bytelen-1)
+              := Last_C_Block(Last_C_Block'First..Last_B_Bytelen-1)
+              xor Y(Y'First..Y'First+Last_B_Bytelen-1);
          end;
       end if;
 
@@ -658,9 +670,16 @@ package body Crypto.Symmetric.AE_OCB is
       declare
          Calculated_Tag: constant Bytes := To_Bytes(T);
       begin
-         if Tag(Tag'First..This.Taglen-1) = Calculated_Tag(Calculated_Tag'First..This.Taglen-1) then
+         if Tag(Tag'First..This.Taglen-1)
+           = Calculated_Tag(Calculated_Tag'First..This.Taglen-1) then
             Verification_Bool := True;
-            Write_Decrypted_Plaintext(This, Read_Ciphertext_Again, Write_Plaintext, Dec_Bool, Last_P_Block, Last_B_Bytelen);
+            Write_Decrypted_Plaintext
+              (This                  => This,
+               Read_Ciphertext_Again => Read_Ciphertext_Again,
+               Write_Plaintext       => Write_Plaintext,
+               Dec_Bool              => Dec_Bool,
+               Last_P_Block          => Last_P_Block,
+               Last_B_Bytelen        => Last_B_Bytelen);
          end if;
       end;
 
@@ -670,11 +689,12 @@ package body Crypto.Symmetric.AE_OCB is
 
    -----------------------------------------------------------------
 
-   function Decrypt_And_Verify(This                   : in out AE_OCB;
-                               Read_Ciphertext        : in     Callback_Reader;
-                               Read_Ciphertext_Again  : in     Callback_Reader := null;
-                               Write_Plaintext        : in     Callback_Writer)
-                               return Boolean is
+   function Decrypt_And_Verify
+     (This                   : in out AE_OCB;
+      Read_Ciphertext        : in     Callback_Reader;
+      Read_Ciphertext_Again  : in     Callback_Reader := null;
+      Write_Plaintext        : in     Callback_Writer)
+      return Boolean is
 
       RCA: constant Callback_Reader := Read_Masked_Plaintext'Access;
    begin

@@ -33,9 +33,12 @@ generic
    with function "xor" (Left, Right : in BC.Block) return BC.Block is <>;
    with function To_Block_Type (B : Bytes) return BC.Block;
    with function To_Bytes (B : BC.Block) return Bytes;
-   with function Shift_Left (Value: BC.Block; Amount: Natural) return BC.Block;  -- Used to generate irreducible polynomials L(1..31).
-   with function Shift_Right (Value: BC.Block; Amount: Natural) return BC.Block; -- Used to generate the irreducible polynomial L(-1).
-   with function To_Byte_Word (X: Word) return Byte_Word;                        -- Used to convert Blockcounter into Bytes.
+   with function Shift_Left (Value: BC.Block; Amount: Natural) return BC.Block;
+   -- Used to generate irreducible polynomials L(1..31).
+   with function Shift_Right (Value: BC.Block; Amount: Natural) return BC.Block;
+   -- Used to generate the irreducible polynomial L(-1).
+   with function To_Byte_Word (X: Word) return Byte_Word;
+   -- Used to convert Blockcounter into Bytes.
 
 package Crypto.Symmetric.AE_OCB is
    use BC;
@@ -68,11 +71,12 @@ package Crypto.Symmetric.AE_OCB is
                      Write_Ciphertext : in     Callback_Writer);
 
    overriding
-   function Decrypt_And_Verify(This                   : in out AE_OCB;
-                               Read_Ciphertext        : in     Callback_Reader;
-                               Read_Ciphertext_Again  : in     Callback_Reader := null;
-                               Write_Plaintext        : in     Callback_Writer)
-                               return Boolean;
+   function Decrypt_And_Verify
+     (This                   : in out AE_OCB;
+      Read_Ciphertext        : in     Callback_Reader;
+      Read_Ciphertext_Again  : in     Callback_Reader := null;
+      Write_Plaintext        : in     Callback_Writer)
+      return Boolean;
 
    ---------------------------------------------
    ---- additional functions and procedures ----

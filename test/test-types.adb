@@ -1,6 +1,8 @@
 with AUnit.Assertions;
 with Crypto.Types;
 use Crypto.Types;
+with Ada; use Ada;
+with Ada.Text_IO;
 
 package body Test.Types is
 
@@ -46,6 +48,7 @@ package body Test.Types is
       Register_Routine(T, Types_Test32'Access,"Bytes xor Bytes Constraint_Error Test");
       Register_Routine(T, Types_Test33'Access,"DWords xor DWords Constraint_Error Test");
       Register_Routine(T, Types_Test34'Access,"Byte to Hex");
+      Register_Routine(T, Types_Test35'Access,"Base64 Coding");
    end Register_Tests;
 
    -----------------------------------------------------------------------------
@@ -610,5 +613,30 @@ package body Test.Types is
 
       Assert(O1 = "00" and O2 = "25", "Constraint_Error was expected but did not occur");
    end Types_Test34;
+   
+   -----------------------------------------------------------------------------
+   ----------------------------------- Test 35 ---------------------------------
+   -----------------------------------------------------------------------------
+
+   procedure Types_Test35(T : in out Test_Cases.Test_Case'Class) is
+      use AUnit.Assertions;
+      
+      Byte_Long:Bytes(0..29):=(others=>53);
+      B_Short : Bytes(0..2):=(others=>62);
+      
+   begin
+      
+      Assert(Byte_Long=Crypto.Types.Decode_Base64(Crypto.Types.Encode_Base64
+             (Input => Byte_Long)), 
+             "Base 64 Encode/Decode doesnt give the correct Result");
+        
+      Assert(B_Short=Crypto.Types.Four_Chars_To_Three_Bytes
+             (Crypto.Types.Three_Bytes_To_Four_Chars(B => B_Short)), 
+             "No correct result");
+      
+      Assert(Is_Valid_Base64_String("dsaDSA_")=false, "Invalid base 64 string not recognized");
+      Assert(Is_Valid_Base64_String("dsaDSA")=true, "Valid base 64 string not recognized");
+      
+   end Types_Test35;
 
 end Test.Types;

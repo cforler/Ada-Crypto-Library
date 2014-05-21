@@ -78,10 +78,10 @@ package body Crypto.Symmetric.Algorithm.Skein is
       State : Bytes(0..64);
       Mode : threefish.Skein_Mode := m512;
    begin
-      Hash(Mode           => Mode,
-           N_0            => 512,
+      Skein_Complete(Mode           => Mode,
+           Output_Length_Bits            => 512,
            Message        => To_Bytes(Message),
-           Message_Length => Message'Length*8,
+           Message_Length_Bits => Message'Length*8,
            Result         => State);
       Hash_Value := To_W_Block512(State);
    end Hash;
@@ -92,10 +92,10 @@ package body Crypto.Symmetric.Algorithm.Skein is
       Mode : threefish.Skein_Mode := m512;
    begin
 
-      Hash(Mode           => Mode,
-           N_0            => 512,
+      Skein_Complete(Mode           => Mode,
+           Output_Length_Bits            => 512,
            Message        => Message,
-           Message_Length => Message'Length*8,
+           Message_Length_Bits => Message'Length*8,
            Result         => State);
       Hash_Value := To_W_Block512(State);
    end Hash;
@@ -149,31 +149,6 @@ package body Crypto.Symmetric.Algorithm.Skein is
       List (Index).all.Message_Length := Message_Length_Bits;
       List (Index).all.Type_Value     := Type_Value;
    end Set_Data;
-
-   protected body Skein_Tree_Message_Length_Counter is
-      procedure Set_Final_Length (Value : Natural) is
-      begin
-         Final_Length := Value;
-         Put_Line ("Final_Length set to:" & Integer'Image (Final_Length));
-      end Set_Final_Length;
-      procedure Reset is
-      begin
-         Length := 0;
-         Put_Line ("Length was resetted");
-      end Reset;
-
-      procedure Increase (Value : Natural) is
-      begin
-         Length := Length + Value;
-         Put_Line ("Length increased to:" & Integer'Image (Length));
-      end Increase;
-
-      entry Is_Final_Length_Reached (Answer : out Boolean) when Length =
-                                                                Final_Length is
-      begin
-         Answer := True;
-      end Is_Final_Length_Reached;
-   end Skein_Tree_Message_Length_Counter;
 
    function Message_Bit_Padding
      (Message        : in Bytes;
@@ -440,329 +415,7 @@ package body Crypto.Symmetric.Algorithm.Skein is
 
    end Straight_UBI;
 
-   task body Tree_UBI_Task is
-      Local_Mode                : Skein_Mode;
-      Local_G                   : Bytes (
-        0 .. Get_Number_Of_Skein_Bytes (Mode) - 1);
-      Local_Full_Message        : Bytes (0 .. Longest_Message_Bytes - 1);
-      Local_Full_Message_Length : Natural;
-      Local_T_S                 : Bytes (0 .. 15);
-      Local_Result_Access       : Bytes_Access;
-      Local_Result_First        : Natural;
-      Local_Result_Last         : Natural;
-      --Local_Result                :
-      --Bytes(0..Get_Number_Of_Skein_Bytes(Mode)-1);
-      --since we have to save a larger "internally" Full Message, we need to
-      --save
-      --the real size of the Full_message here too
-      Full_Message_First : Natural;
-      Full_Message_Last  : Natural;
 
-      --our local pointer to the Message length counter
-      Local_Length_Access : Skein_Tree_Message_Length_Counter_Access;
-   begin
-      loop
-         select
-            accept compute (
-              Mode                 : in Skein_Mode;
-               G                   : in Bytes;
-               Full_Message        : in Bytes;
-               Full_Message_Length : in Natural;
-               T_S                 : in Bytes;
-               Result_Access       : in out Bytes_Access;
-               Result_First        : in Natural;
-               Result_Last         : in Natural;
-               Length_Access       : in out
-                 Skein_Tree_Message_Length_Counter_Access) do
-
-               Local_Mode         := Mode;
-               Local_G            := G;
-               Full_Message_First := Full_Message'First;
-               Full_Message_Last  := Full_Message'Last;
-
-               Put_Line
-                 ("Local_Full_Message'Range: " &
-                  Integer'Image (Local_Full_Message'First) &
-                  ".." &
-                  Integer'Image (Local_Full_Message'Last));
-               Put_Line
-                 ("Full_Message'Range: " &
-                  Integer'Image (Full_Message_First) &
-                  ".." &
-                  Integer'Image (Full_Message_Last));
-
-               Local_Full_Message (Full_Message_First .. Full_Message_Last) :=
-                 Full_Message;
-               Local_Full_Message_Length                                    :=
-                 Full_Message_Length;
-               Local_T_S                                                    :=
-                 T_S;
-               Local_Result_Access                                          :=
-                 Result_Access;
-
-               Local_Result_First := Result_First;
-               Local_Result_Last  := Result_Last;
-
-               Local_Length_Access := Length_Access;
-
-            end compute;
-
-            --now we can compute
-            Straight_UBI
-              (Mode              => Local_Mode,
-               G                 => Local_G,
-               Full_Message      =>
-                 Local_Full_Message (Full_Message_First .. Full_Message_Last),
-               Full_Message_Bits => Local_Full_Message_Length,
-               T_S               => Local_T_S,
-               Result            =>
-                 Local_Result_Access.all (
-              Local_Result_First .. Local_Result_Last));
-
-            Local_Length_Access.all.Increase
-              (Value => Get_Number_Of_Skein_Bytes (Mode));
-
-         or
-            terminate;
-         end select;
-      end loop;
-   end Tree_UBI_Task;
-
-   procedure Tree_UBI
-     (Mode              : in Skein_Mode;
-      G                 : in Bytes;    --starting value on N_B Bytes
-      Full_Message      : in Bytes;    --Message of variable lenght
-      Full_Message_Bits : in Natural;  --the length of the input Message in
-                                       --Bits
-      T_S               : in Bytes;    --Starting Tweak T_S of 16 Byte
-      Y_l               : in Natural;  --loaf-size for treemode
-      Y_f               : in Natural;  --node-size for treemode
-      Y_M               : in Natural;  --max tree height
-      Result            : out Bytes;  --the result of UBI:
-      Number_Of_Tasks   : in Natural := 2)
-   is
-
-      N_b : Natural := Get_Number_Of_Skein_Bytes (Mode); --this is in BYTES
-      --leaf size N_l= N_b* 2**Y_l BITS
-      N_l : Natural := N_b * 2 ** Y_l;
-      --node size N_n = N_b * 2**Y_f BITS
-      N_n : Natural := N_b * 2 ** Y_f;
-
-      N : Natural := 0;       --we use this inside the tree
-                              --for leaf level it is N_l otherwise N_n
-
-      --we need to know the max. length an Message can have, so we can
-      --initialize
-      --the task correctly
-      UBI_Tasks :
-        array (0 .. Number_Of_Tasks)
-               of Tree_UBI_Task (Mode, Full_Message'Length);
-      --this is much more than we really need
-      --needs to be done better!!
-
-      M_old : Bytes := Full_Message;
-      M_new : Bytes := Full_Message; --we will use only parts of this
-
-      --we need these variables if we use multiple task
-      M_new_Access                  : Bytes_Access;
-      M_new_Protected_Length_Access : Skein_Tree_Message_Length_Counter_Access
-         :=
-        new Skein_Tree_Message_Length_Counter;
-
-      Tree_Level_Is_Done : Boolean := False;
-
-      M_New_Length : Natural := 0;     --we need to know till which Bits we
-                                       --can use the M_new
-
-      --we will use this variable to store the temporary data
-      G_Temp : Bytes (0 .. N_b - 1) := (others => Byte (0));
-
-      --we need a variable which increments
-      l : Natural := 0;
-
-      --we need to know how many pieses there are
-      Last_Piece : Natural := 0;
-
-      Current_Full_Length_Bits : Natural := Full_Message_Bits; --the length of
-                                                               --the full
-                                                               --current
-                                                               --message M_l
-      Current_Length_Bits      : Natural := 0;  --the length of the current
-                                                --Block M_l,i (most time this
-                                                --will be N*8)
-
-      Current_Tweak : Bytes (0 .. 15) := (others => Byte (0));    --we use
-                                                                  --this for
-                                                                  --the
-                                                                  --current
-                                                                  --Tweak
-                                                                  --always
-   begin
-      --split M in Blocks, each block has 8*N_l Bits
-      --the last Block has between 1 and 8*N_l bits
-
-      while True loop
-         --build M_{l+1} = M_new over and over again
-         -- -- cut into smaler pieces
-         -- --concartinate and compute again
-         --for the first run use N_l, later use N_n
-         --manipulate the Tweak in every run...
-
-         --exit if M_new'Size = N_b --> Result := M_new
-         --
-         --if max level is reached compute one last Result := UBI(G,M_new,T);
-         --and exit
-
-         --we can write the data always to the first bytes of M_new
-         --we have be careful with sending slices to the UBI Procedure
-         --because indexes will be kept :(
-         if l = 0 then
-            N := N_l;       --these are Byte-lengths
-         --Ada.Text_IO.Put_Line("::we are doing the first run with the leaf
-         --size");
-         else
-            N := N_n;
-            --Ada.Text_IO.Put_Line("::we are doing one of the other runs with
-            --the node size");
-         end if;
-         --cut the message into pieces of size 8*N Bits
-         --these are N Bytes
-         --> only the last block will be between 1 and 8*N Bits
-         --how many pieced will that be?
-         if Current_Full_Length_Bits mod (N * 8) = 0 then   --our input is a
-                                                            --multiple of the
-                                                            --node/leaf size
-            Last_Piece := (Current_Full_Length_Bits / 8) / N - 1; --index
-                                                                  --starts at
-                                                                  --zero
-         elsif Current_Full_Length_Bits < N * 8 then        --our message is
-                                                            --shorter than a
-                                                            --single leaf
-                                                            --would be
-            Last_Piece := 0;                    --there is only one leaf
-         else                                      --our message_length_bits
-                                                   --is not a multiple of N*8
-                                                   --AND longer than N*8
-            Last_Piece := (Current_Full_Length_Bits / 8) / N;
-         end if;
-
-         --fill the Bytes pointer with current data
-         --and reset the Message Length counter for the current tre-level
-         M_new_Access     := new Bytes (M_new'Range);
-         M_new_Access.all := M_new;
-         M_new_Protected_Length_Access.all.Reset;
-         M_new_Protected_Length_Access.all.Set_Final_Length
-           (Value => (Last_Piece + 1) * N_b);
-
-         for i in 0 .. Last_Piece loop
-
-            --the current M_l,i is N Bytes long
-            --from i*N..(i+1)*N -1 -- the old M_l is M_old
-            --it will be written to position: i*N_b..(i+1)*N_b -1 of M_l+1
-            --which is M_new always
-            --we also need to save the "last" Bit, so we know which is the
-            --current length
-            --of M_new
-            if (i = Last_Piece) and
-               not (Current_Full_Length_Bits mod (N * 8) = 0)
-            then
-               Current_Length_Bits := Current_Full_Length_Bits mod (N * 8);
-            else
-               Current_Length_Bits := N * 8;
-            end if;
-
-            --calculate the Tweak for the current run
-            --i*N_m + (l+1)*2^112
-            Current_Tweak          := T_S;
-            Current_Tweak (0 .. 7) := Natural_To_Bytes (i * N, 8);
-            Current_Tweak (14)     := Byte (l + 1);
-
-            --which parts of the input message do we need?
-
-
-            --                Straight_UBI(
-            --                    Mode => Mode,
-            --                    G => G,
-            --                    --Full_Message => M_old(i*N..(i+1)*N -1),
-            --                    Full_Message => M_old(i*N..i*N +
-            --Current_Length_Bits/8 -1),
-            --                    Full_Message_Bits => Current_Length_Bits,
-            --                    T_S => Current_Tweak,     --we need to add:
-            --i*N_m + (l+1)*2^112 here!!!!!
-            --                    Result => M_new(i*N_b..(i+1)*N_b -1)
-            --                    );
-            M_New_Length := M_New_Length + N_b;
-
-            --the Task implementation of tree-UBI
-            UBI_Tasks (i mod Number_Of_Tasks).compute
-              (Mode                => Mode,
-               G                   => G,
-            --Full_Message => M_old(i*N..(i+1)*N -1),
-               Full_Message        =>
-                 M_old (i * N .. i * N + Current_Length_Bits / 8 - 1),
-               Full_Message_Length => Current_Length_Bits,
-               T_S                 => Current_Tweak,     --we need to add:
-                                                         --i*N_m + (l+1)*2^112
-                                                         --here!!!!!
-               Result_Access       => M_new_Access,
-               Result_First        => i * N_b,
-               Result_Last         => (i + 1) * N_b - 1,
-               Length_Access       => M_new_Protected_Length_Access);
-
-         end loop;
-         --we are outside the loop and can check if we are done,
-         --if not we will do another round after incrementing l
-         --            while true loop
-         M_new_Protected_Length_Access.all.Is_Final_Length_Reached
-           (Tree_Level_Is_Done);
-         --                exit when Tree_Level_Is_Done;
-         --            end loop;
-         --check if all tasks are done
-
-         --we could check if M_New_Length = (Last_Piece+1)*N_b
-         --delay 10.0;
-         --write back the Pointer Data to the variable
-         M_new := M_new_Access.all;
-
-         if M_New_Length = N_b then
-            --Ada.Text_IO.Put_Line("We just give back from 0 to " &
-            --Integer'Image(N_b-1));
-            --the result of treehashing is this M_new
-            Result := M_new (0 .. N_b - 1);
-            exit when True;
-         elsif l = Y_M - 1 then
-            --we reached the maximum tree level
-            --use the other formula to compute G_0, which is the result
-
-            --calculate the Tweak for the current run
-            --we need to add Y_m*2^112 here
-            Current_Tweak      := T_S;
-            Current_Tweak (14) := Byte (Y_M);
-
-            Straight_UBI
-              (Mode              => Mode,
-               G                 => G,
-               Full_Message      => M_new (0 .. M_New_Length - 1),
-               Full_Message_Bits => M_New_Length * 8,
-               T_S               => Current_Tweak,
-               Result            => Result);
-            exit when True;
-         end if;
-
-
-
-         --we can do this because we are at least in the second tree-level
-         --here the bit-length is always Byte-lenght*8
-         Current_Full_Length_Bits := M_New_Length * 8;
-         M_old                    := M_new;
-         M_New_Length             := 0;
-         M_new                    := (others => Byte (0));
-
-         l := l + 1;  --go to the next tree level
-         null;
-      end loop;
-      null;
-   end Tree_UBI;
 
    procedure Output
      (Mode   : in Skein_Mode;
@@ -936,18 +589,6 @@ package body Crypto.Symmetric.Algorithm.Skein is
          ((not (Y_l = 0) or not (Y_f = 0) or not (Y_m = 0)))
       then
          null;
-         --we want treehasing
-         Tree_UBI
-           (Mode              => Mode,
-            G                 => Old_State,
-            Full_Message      => Message,    --Message of variable lenght
-            Full_Message_Bits => Message_Length,   --the length of the input
-                                                   --Message in Bits
-            T_S               => Tweak,    --Starting Tweak T_S of 16 Byte
-            Y_l               => Y_l,
-            Y_f               => Y_f,
-            Y_M               => Y_m,
-            Result            => New_State);
 
       else
          --we want straight UBI
@@ -1092,11 +733,11 @@ package body Crypto.Symmetric.Algorithm.Skein is
          New_State => Result);
    end Hash;
 
-   procedure Hash
+   procedure Skein_Complete
      (Mode           : in Skein_Mode;
-      N_0            : in Natural;
+      Output_Length_Bits            : in Natural;
       Message        : in Bytes;
-      Message_Length : in Natural;
+      Message_Length_Bits : in Natural;
       Result         : out Bytes)
    is
       K_empty        : Bytes (0 .. -1) := (others => Byte (0));
@@ -1106,17 +747,17 @@ package body Crypto.Symmetric.Algorithm.Skein is
       --and tree vaiables set to zero
       Hash
         (Mode           => Mode,
-         N_0            => N_0,
+         N_0            => Output_Length_Bits,
          K              => K_empty,
          Y_l            => 0,
          Y_f            => 0,
          Y_m            => 0,
          Message        => Message,
-         Message_Length => Message_Length,
+         Message_Length => Message_Length_Bits,
          Type_Value     => Type_Value_Msg,
          Result         => Result);
 
-   end Hash;
+   end Skein_Complete;
 
 begin
 

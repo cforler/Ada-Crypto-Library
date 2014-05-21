@@ -72,4 +72,7 @@ package Test.Types is
 
    procedure Types_Test34(T: in out Test_Cases.Test_Case'Class);
 
+   procedure Types_Test35(T: in out Test_Cases.Test_Case'Class);
+
+
 end Test.Types;

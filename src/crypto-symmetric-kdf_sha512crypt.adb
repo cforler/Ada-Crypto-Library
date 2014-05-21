@@ -132,8 +132,9 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                 Digest_Bytes_Length => Digest_B_Length,
                 Digest_Hash         => Digest_B_Hash);
 
-      Digest_B_Hash_Result := Digest_B_Hash.Final_Round(Last_Message_Block  => To_DW_Block1024(Digest_B_Bytes),
-                                                        Last_Message_Length => Digest_B_Length);
+      Digest_B_Hash_Result := Digest_B_Hash.Final_Round
+        (Last_Message_Block  => To_DW_Block1024(Digest_B_Bytes),
+         Last_Message_Length => Digest_B_Length);
 
 
       Error_Output.Put_Line("Point A :");
@@ -173,8 +174,8 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Sixtyfour_Bytes := To_Bytes(D => Digest_B_Hash_Result);
 
 
-      for I in reverse To_Binary(N => Password_Bytes'Length)'Range loop
-         if To_Binary(N => Password_Bytes'Length)(I) = '1' then
+      for I in reverse Natural_To_Binary_String(N => Password_Bytes'Length)'Range loop
+         if Natural_To_Binary_String(N => Password_Bytes'Length)(I) = '1' then
 
             Add_Bytes(Bytes_To_Add        => Sixtyfour_Bytes,
                       Digest_Bytes        => Digest_A_Bytes,
@@ -207,8 +208,9 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
       Big_B_Block := To_DW_Block1024(B => Digest_A_Bytes);
 
-      Digest_A_Hash_Result := Digest_A_Hash.Final_Round(Last_Message_Block  => Big_B_Block,
-                                                        Last_Message_Length => Digest_A_Length);
+      Digest_A_Hash_Result
+        := Digest_A_Hash.Final_Round(Last_Message_Block  => Big_B_Block,
+                                     Last_Message_Length => Digest_A_Length);
 
       Error_Output.Put_Line("Point C : ");
       for I in To_Bytes(Digest_A_Hash_Result)'Range loop
@@ -232,8 +234,9 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
 
       -- Finish Digest DP
-      Digest_DP_Hash_Result := Digest_DP_Hash.Final_Round(Last_Message_Block  => Big_B_Block,
-                                                          Last_Message_Length => Digest_DP_Length);
+      Digest_DP_Hash_Result
+        := Digest_DP_Hash.Final_Round(Last_Message_Block  => Big_B_Block,
+                                      Last_Message_Length => Digest_DP_Length);
 
       Error_Output.Put_Line("Point D : ");
       for I in To_Bytes(Digest_DP_Hash_Result)'Range loop
@@ -269,8 +272,9 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Big_B_Block := To_DW_Block1024(B => Digest_DS_Bytes);
 
       -- Finish Digest DS
-      Digest_DS_Hash_Result := Digest_DS_Hash.Final_Round(Last_Message_Block  => Big_B_Block,
-                                                          Last_Message_Length => Digest_DS_Length);
+      Digest_DS_Hash_Result
+        := Digest_DS_Hash.Final_Round(Last_Message_Block  => Big_B_Block,
+                                      Last_Message_Length => Digest_DS_Length);
 
       Error_Output.Put_Line("Point F : ");
       for I in to_bytes(Digest_DS_Hash_Result)'Range loop
@@ -368,71 +372,93 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Error_Output.New_Line;
 
 
-      Final_Input_Bytes := (Bytes_For_Rounds(0),Bytes_For_Rounds(21),Bytes_For_Rounds(42));
-      Final_String(1..4) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes :=
+        (Bytes_For_Rounds(0),Bytes_For_Rounds(21),Bytes_For_Rounds(42));
+      Final_String(1..4) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(22),Bytes_For_Rounds(43),Bytes_For_Rounds(1));
-      Final_String(5..8) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(22),Bytes_For_Rounds(43),Bytes_For_Rounds(1));
+      Final_String(5..8) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(44),Bytes_For_Rounds(2),Bytes_For_Rounds(23));
-      Final_String(9..12) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(44),Bytes_For_Rounds(2),Bytes_For_Rounds(23));
+      Final_String(9..12) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(3),Bytes_For_Rounds(24),Bytes_For_Rounds(45));
-      Final_String(13..16) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(3),Bytes_For_Rounds(24),Bytes_For_Rounds(45));
+      Final_String(13..16) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(25),Bytes_For_Rounds(46),Bytes_For_Rounds(4));
-      Final_String(17..20) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(25),Bytes_For_Rounds(46),Bytes_For_Rounds(4));
+      Final_String(17..20) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(47),Bytes_For_Rounds(5),Bytes_For_Rounds(26));
-      Final_String(21..24) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(47),Bytes_For_Rounds(5),Bytes_For_Rounds(26));
+      Final_String(21..24) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(6),Bytes_For_Rounds(27),Bytes_For_Rounds(48));
-      Final_String(25..28) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(6),Bytes_For_Rounds(27),Bytes_For_Rounds(48));
+      Final_String(25..28) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(28),Bytes_For_Rounds(49),Bytes_For_Rounds(7));
-      Final_String(29..32) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(28),Bytes_For_Rounds(49),Bytes_For_Rounds(7));
+      Final_String(29..32) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(50),Bytes_For_Rounds(8),Bytes_For_Rounds(29));
-      Final_String(33..36) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(50),Bytes_For_Rounds(8),Bytes_For_Rounds(29));
+      Final_String(33..36) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(9),Bytes_For_Rounds(30),Bytes_For_Rounds(51));
-      Final_String(37..40) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(9),Bytes_For_Rounds(30),Bytes_For_Rounds(51));
+      Final_String(37..40) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(31),Bytes_For_Rounds(52),Bytes_For_Rounds(10));
-      Final_String(41..44) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(31),Bytes_For_Rounds(52),Bytes_For_Rounds(10));
+      Final_String(41..44) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(53),Bytes_For_Rounds(11),Bytes_For_Rounds(32));
-      Final_String(45..48) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(53),Bytes_For_Rounds(11),Bytes_For_Rounds(32));
+      Final_String(45..48) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(12),Bytes_For_Rounds(33),Bytes_For_Rounds(54));
-      Final_String(49..52) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(12),Bytes_For_Rounds(33),Bytes_For_Rounds(54));
+      Final_String(49..52) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(34),Bytes_For_Rounds(55),Bytes_For_Rounds(13));
-      Final_String(53..56) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(34),Bytes_For_Rounds(55),Bytes_For_Rounds(13));
+      Final_String(53..56) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(56),Bytes_For_Rounds(14),Bytes_For_Rounds(35));
-      Final_String(57..60) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(56),Bytes_For_Rounds(14),Bytes_For_Rounds(35));
+      Final_String(57..60) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(15),Bytes_For_Rounds(36),Bytes_For_Rounds(57));
-      Final_String(61..64) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(15),Bytes_For_Rounds(36),Bytes_For_Rounds(57));
+      Final_String(61..64) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(37),Bytes_For_Rounds(58),Bytes_For_Rounds(16));
-      Final_String(65..68) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(37),Bytes_For_Rounds(58),Bytes_For_Rounds(16));
+      Final_String(65..68) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(59),Bytes_For_Rounds(17),Bytes_For_Rounds(38));
-      Final_String(69..72) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(59),Bytes_For_Rounds(17),Bytes_For_Rounds(38));
+      Final_String(69..72) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(18),Bytes_For_Rounds(39),Bytes_For_Rounds(60));
-      Final_String(73..76) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(18),Bytes_For_Rounds(39),Bytes_For_Rounds(60));
+      Final_String(73..76) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(40),Bytes_For_Rounds(61),Bytes_For_Rounds(19));
-      Final_String(77..80) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(40),Bytes_For_Rounds(61),Bytes_For_Rounds(19));
+      Final_String(77..80) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (Bytes_For_Rounds(62),Bytes_For_Rounds(20),Bytes_For_Rounds(41));
-      Final_String(81..84) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (Bytes_For_Rounds(62),Bytes_For_Rounds(20),Bytes_For_Rounds(41));
+      Final_String(81..84) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
-      Final_Input_Bytes := (0,0,Bytes_For_Rounds(63));
-      Final_String(85..88) := Bytes_To_String(B => Final_Input_Bytes);
+      Final_Input_Bytes
+        := (0,0,Bytes_For_Rounds(63));
+      Final_String(85..88) := Three_Bytes_To_Four_Chars(B => Final_Input_Bytes);
 
       Error_Output.Put_Line(Final_String);
 
@@ -449,7 +475,8 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                         Key_Length: in Natural) is
    begin
       if(Key_Length>86) then
-         Ada.Text_IO.Put_Line("Keys longer than 86 are not supported, reducing to 86");
+         Ada.Text_IO.Put_Line
+           ("Keys longer than 86 are not supported, reducing to 86");
          This.Key_Length := 86;
       else
          This.Key_Length := Key_Length;
@@ -457,8 +484,8 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
    end Initialize;
 
-
-   --function for setting Key Length and security parameter, used here for setting round count in F_Function
+   --function for setting Key Length and security parameter,
+   --used here for setting round count in F_Function
    procedure Initialize(This		: out SHA512Crypt_KDF;
                         Key_Length	: in Natural;
                         Round_Count	: in Natural) is
@@ -478,7 +505,9 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
    procedure Add_Bytes(Bytes_To_Add		: in 		Bytes;
                        Digest_Bytes		: in out 	Bytes;
                        Digest_Bytes_Length	: in out	Natural;
-                       Digest_Hash		: in out	Crypto.Symmetric.Algorithm.SHA512.Sha512_Context) is
+                       Digest_Hash		: in out
+                         Crypto.Symmetric.Algorithm.SHA512.Sha512_Context)
+   is
       Rest_Space : Natural;
       Debug : Boolean := false;
    begin
@@ -503,7 +532,8 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
 
       if Rest_Space > Bytes_To_Add'Length then
-         Digest_Bytes(Digest_Bytes_Length..Digest_Bytes_Length+Bytes_To_Add'Length-1)
+         Digest_Bytes(Digest_Bytes_Length..
+                        Digest_Bytes_Length+Bytes_To_Add'Length-1)
            := Bytes_To_Add;
          Digest_Bytes_Length := Digest_Bytes_Length+Bytes_To_Add'Length;
       else
@@ -536,7 +566,8 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
          end if;
 
 
-         Digest_Bytes(0..Bytes_To_Add'Length-Rest_Space-1) := Bytes_To_Add(Rest_Space .. Bytes_To_Add'Length-1);
+         Digest_Bytes(0..Bytes_To_Add'Length-Rest_Space-1)
+           := Bytes_To_Add(Rest_Space .. Bytes_To_Add'Length-1);
          Digest_Bytes_Length := Bytes_To_Add'Length-Rest_Space;
          if debug then
             Error_Output.Put("new digest bytes: ");
@@ -550,91 +581,6 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
    end Add_Bytes;
 
 
-   --translates 3 bytes into base64 4 char string
-   function Bytes_To_String(B : bytes) return String is
-      Bits_String : String(1..24) := "000000000000000000000000";
-      Bits_1 : String(1..8) := (others=>'0');
-      Bits_2 : String(1..8) := (others=>'0');
-      Bits_3 : String(1..8) := (others=>'0');
-      Bits_1_Reverse : String(1..8);
-      Bits_2_Reverse : String(1..8);
-      Bits_3_Reverse : String(1..8);
-
-      Return_String : String(1..4);
-   begin
-      Bits_1(9-To_Binary(N => Natural(B(0)))'Length..8) := To_Binary(N => Natural(B(0)));
-      Bits_2(9-To_Binary(N => Natural(B(1)))'Length..8) := To_Binary(N => Natural(B(1)));
-      Bits_3(9-To_Binary(N => Natural(B(2)))'Length..8) := To_Binary(N => Natural(B(2)));
-
-
-      Error_Output.Put_Line("Three Binarys :");
-      Error_Output.Put_Line(Integer(B(0))'Img);
-      Error_Output.Put_Line(Bits_1);
-      Error_Output.Put_Line(Integer(B(1))'Img);
-      Error_Output.Put_Line(Bits_2);
-      Error_Output.Put_Line(Integer(B(2))'Img);
-      Error_Output.Put_Line(Bits_3);
-
-      for I in 1..8 loop
-         Bits_1_Reverse(9-I) := Bits_1(I);
-         Bits_2_Reverse(9-I) := Bits_2(I);
-         Bits_3_Reverse(9-I) := Bits_3(I);
-      end loop;
-
-
-
-      Bits_String(1..Bits_1'Length):=Bits_1;
-      Bits_String(9..8+Bits_2'Length):=Bits_2;
-      Bits_String(17..16+Bits_3'Length):=Bits_3;
-
-      Return_String(4):= To_Base64(N => To_Natural(S => Bits_String(1..6)));
-      Return_String(3):= To_Base64(N => To_Natural(S => Bits_String(7..12)));
-      Return_String(2):= To_Base64(N => To_Natural(S => Bits_String(13..18)));
-      Return_String(1):= To_Base64(N => To_Natural(S => Bits_String(19..24)));
-
-      return Return_String;
-   end;
-
-
-   --returns a string of 1 and 0 from a number
-   function To_Binary(N: Natural) return String is
-      S: String(1 .. 1000); -- more than plenty!
-      Left:  Positive := S'First;
-      Right: Positive := S'Last;
-      package IIO is new Ada.Text_IO.Integer_IO(Integer);
-   begin
-      IIO.Put(To => S, Item => N, Base => 2);
-      while S(Left) /= '#' loop
-         Left := Left + 1;
-      end loop;
-      while S(Right) /= '#' loop
-         Right := Right - 1;
-      end loop;
-      return S(Left+1 .. Right-1);
-   end To_Binary;
-
-
-   --returns a number from a string of 1 and 0
-   function To_Natural(S : String) return Natural is
-      Output: Natural:= 0;
-   begin
-      Error_Output.Put_Line(S);
-      for I in S'Range loop
-         if S(I) = '1' then
-            Output:= Output + 2**((S'Length+1-I)-1+S'First-1);
-         end if;
-      end loop;
-      Error_Output.Put_Line(Integer'Image(Output));
-      return Output;
-   end;
-
-
-   --translates number into base64 string
-   function To_Base64(N : Natural) return Character is
-      Base : String := "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-   begin
-      return Base(N+1);
-   end;
 
 
 end Crypto.Symmetric.KDF_SHA512Crypt;

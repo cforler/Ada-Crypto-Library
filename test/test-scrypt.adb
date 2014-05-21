@@ -3,8 +3,8 @@ with Crypto.Types;
 with Ada.Text_IO;
 with Ada.Integer_Text_IO;
 with Ada.Directories;
-with Crypto.Symmetric.KDF_Scrypt;
-use Crypto.Symmetric.KDF_Scrypt;
+with Crypto.Symmetric.KDF_Scrypt.Testing;
+use Crypto.Symmetric.KDF_Scrypt.Testing;
 with Crypto.Symmetric.KDF_PBKDF2;
 with Crypto.Symmetric.Mac.Hmac_SHA256;
 with Crypto.Symmetric.Algorithm.SHA512;
@@ -14,21 +14,21 @@ with Crypto.Symmetric.Hashfunction_SHA512;
 package body Test.Scrypt is
    use Crypto.Types;
 
-   ------------------------------------------------------------------------------------
-   ------------------------------------------------------------------------------------
-   -------------------------------- Type - Declaration --------------------------------
-   ------------------------------------------------------------------------------------
-   ------------------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
+   -------------------------------- Type - Declaration -------------------------
+   -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
 
-   package Scrypt renames Crypto.Symmetric.KDF_Scrypt;
+   package Scrypt renames Crypto.Symmetric.KDF_Scrypt.Testing;
 
 
-   ------------------------------------------------------------------------------------
-   ------------------------------------------------------------------------------------
-   ---------------------------- Register PBKDF2 Test 1 ----------------------------
-   ------------------------------------------------------------------------------------
-   ------------------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
+   ---------------------------- Register PBKDF2 Test 1 -------------------------
+   -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
    procedure Register_Tests(T : in out Scrypt_Test) is
       use Test_Cases.Registration;
@@ -43,11 +43,11 @@ package body Test.Scrypt is
 
    end Register_Tests;
 
-   ------------------------------------------------------------------------------------
-   ------------------------------------------------------------------------------------
-   ------------------------------ Name PBKDF2 Test ------------------------------
-   ------------------------------------------------------------------------------------
-   ------------------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
+   ------------------------------ Name PBKDF2 Test -----------------------------
+   -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
    function Name(T : Scrypt_Test) return Test_String is
       HS : Crypto.Symmetric.Hashfunction_SHA512.Hash_Context;
@@ -59,12 +59,12 @@ package body Test.Scrypt is
    end Name;
 
 
-   ------------------------------------------------------------------------------------
-   ------------------------------------------------------------------------------------
-   ------------------------------------ Start Tests -----------------------------------
-   ------------------------------------------------------------------------------------
-   -------------------------------------- Test 1 --------------------------------------
-   ------------------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
+   ------------------------------------ Start Tests ----------------------------
+   -----------------------------------------------------------------------------
+   -------------------------------------- Test 1 -------------------------------
+   -----------------------------------------------------------------------------
 
 
    procedure Scrypt_Test_Salsa(T : in out Test_Cases.Test_Case'Class) is
@@ -93,7 +93,7 @@ package body Test.Scrypt is
 
    begin
 
-      Crypto.Symmetric.KDF_Scrypt.Salsa20_8(Input  => To_W_Block512(Salsa_Input_Bytes),
+      Crypto.Symmetric.KDF_Scrypt.Testing.Salsa20_8_Testing(Input  => To_W_Block512(Salsa_Input_Bytes),
                                             Output => Salsa_Output);
 
 
@@ -101,7 +101,7 @@ package body Test.Scrypt is
 
    end Scrypt_Test_Salsa;
 
-   ------------------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
    procedure Scrypt_Test_Block_Mix(T : in out Test_Cases.Test_Case'Class) is
       Input_Bytes_A : Bytes(0..63) :=
@@ -145,18 +145,21 @@ package body Test.Scrypt is
          16#84#,16#2c#,16#b9#,16#f1#,16#4e#,16#ef#,16#e4#,16#25#);
 
 
-      Output : W_Block512_Array(0..1);
-      Input : W_Block512_Array(0..1) := (To_W_Block512(Input_Bytes_A), To_W_Block512(Input_Bytes_B));
+      Output : Crypto.Symmetric.KDF_Scrypt.W_Block512_Array(0..1);
+      Input : Crypto.Symmetric.KDF_Scrypt.W_Block512_Array(0..1)
+        := (To_W_Block512(Input_Bytes_A), To_W_Block512(Input_Bytes_B));
 
 
    begin
 
       Error_Output.Put_Line("sha512crypt block mix:");
 
-      Output := Scrypt.Scrypt_Block_Mix(Input  => Input);
+      Output := Scrypt.Scrypt_Block_Mix_Testing(Input  => Input);
 
-      Assert(To_W_Block512(Output_Ideal_A) = Output(0), "First Message Part wrong");
-      Assert(To_W_Block512(Output_Ideal_B) = Output(1), "Second Message Part wrong");
+      Assert(To_W_Block512(Output_Ideal_A) = Output(0),
+             "First Message Part wrong");
+      Assert(To_W_Block512(Output_Ideal_B) = Output(1),
+             "Second Message Part wrong");
 
       Error_Output.New_Line;
       Error_Output.Put_Line("--------------------------------------------");
@@ -223,16 +226,19 @@ package body Test.Scrypt is
          16#4e#, 16#90#, 16#87#, 16#cb#, 16#33#, 16#39#, 16#6a#, 16#68#,
          16#73#, 16#e8#, 16#f9#, 16#d2#, 16#53#, 16#9a#, 16#4b#, 16#8e#);
 
-      Input : W_Block512_Array(0..1) := (To_W_Block512(Input_Bytes_A), To_W_Block512(Input_Bytes_B));
-      Output : W_Block512_Array(0..1);
+      Input : Crypto.Symmetric.KDF_Scrypt.W_Block512_Array(0..1) := (To_W_Block512(Input_Bytes_A),
+                                         To_W_Block512(Input_Bytes_B));
+      Output : Crypto.Symmetric.KDF_Scrypt.W_Block512_Array(0..1);
 
    begin
 
-      Output := Scrypt.Scrypt_ROMix(Input  => Input,
+      Output := Scrypt.Scrypt_ROMix_Testing(Input  => Input,
                                     N      => 16);
 
-      Assert(To_W_Block512(Output_Ideal_A) = Output(0), "First ROMix Output false");
-      Assert(To_W_Block512(Output_Ideal_B) = Output(1), "Second ROMix Output false");
+      Assert(To_W_Block512(Output_Ideal_A) = Output(0),
+             "First ROMix Output false");
+      Assert(To_W_Block512(Output_Ideal_B) = Output(1),
+             "Second ROMix Output false");
 
       Error_Output.Put_Line("Output ROMix");
       for I in Output(0)'Range loop
@@ -346,7 +352,7 @@ package body Test.Scrypt is
    begin
 
       ------------------------------------------------------------------
-      Scrypt.scrypt(Password => "",
+      Scrypt.scrypt_Testing(Password => "",
                     Salt     => "",
                     r        => 1,
                     N        => 16,
@@ -356,7 +362,7 @@ package body Test.Scrypt is
 
       Assert(Key_Bytes = Ideal_One, "Scrypt 1 failed");
 
-      Scrypt.scrypt(Password => "password",
+      Scrypt.scrypt_Testing(Password => "password",
                     Salt     => "NaCl",
                     r        => 8,
                     N        => 1024,
@@ -366,7 +372,7 @@ package body Test.Scrypt is
 
       Assert(Key_Bytes = Ideal_Two, "Scrypt 2 failed");
 
-      Scrypt.scrypt(Password => "pleaseletmein",
+      Scrypt.scrypt_Testing(Password => "pleaseletmein",
                     Salt     => "SodiumChloride",
                     r        => 8,
                     N        => 2**14,
@@ -384,10 +390,11 @@ package body Test.Scrypt is
    ------------------------------------------------------------------------------------
 
    procedure Failing_XOR is
-      A : W_Block512_Array(0..1);
-      B : W_Block512_Array(0..2);
+      A : Crypto.Symmetric.KDF_Scrypt.W_Block512_Array(0..1);
+      B : Crypto.Symmetric.KDF_Scrypt.W_Block512_Array(0..2);
    begin
-      A := A xor B;
+      A := xor_Testing(Left  => A,
+                       Right => B);
    end Failing_XOR;
 
 
@@ -398,7 +405,7 @@ package body Test.Scrypt is
       Key_Size : Natural := 64;
       Key_Bytes : Bytes(0..Key_Size-1);
    begin
-      Scrypt.scrypt(Password => "pleaseletmein",
+      Scrypt.scrypt_Testing(Password => "pleaseletmein",
                     Salt     => "SodiumChloride",
                     r        => 8,
                     N        => 9,
@@ -408,9 +415,7 @@ package body Test.Scrypt is
    end Failing_Power;
 
 
-
    ------------------------------------------------------------------------------------
-
 
 
    procedure Scrypt_Test_Exceptions(T: in out Test_Cases.Test_Case'Class) is

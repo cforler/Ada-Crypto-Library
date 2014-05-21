@@ -40,7 +40,8 @@ package Crypto.Symmetric.AE.AD is
    function Decrypt_And_Verify(This                   : in out AEAD_Scheme;
                                Read_Header            : in     Callback_Reader;
                                Read_Ciphertext        : in     Callback_Reader;
-                               Read_Ciphertext_Again  : in     Callback_Reader := null;
+                               Read_Ciphertext_Again  : in     Callback_Reader
+                               	:= null;
                                Write_Plaintext        : in     Callback_Writer)
                                return Boolean is abstract;
 

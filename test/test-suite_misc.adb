@@ -11,8 +11,8 @@ package body Test.Suite_Misc  is
    function Suite return Access_Test_Suite is
    begin
       Add_Test(Result'Access, Test_Types'Access);
-      Add_Test(Result'Access, Test_Random'Access);
-      Add_Test(Result'Access, Test_MMH'Access);
+--        Add_Test(Result'Access, Test_Random'Access);
+--        Add_Test(Result'Access, Test_MMH'Access);
       return Result'Access;
    end Suite;
 

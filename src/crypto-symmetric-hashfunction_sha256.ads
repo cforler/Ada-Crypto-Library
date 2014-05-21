@@ -30,8 +30,9 @@ use Crypto.Symmetric.Algorithm.SHA256;
 
 pragma Elaborate_All (Crypto.Symmetric.Hashfunction);
 package Crypto.Symmetric.Hashfunction_SHA256 is
-  new Crypto.Symmetric.Hashfunction(Hash_Type                 => W_Block256,
-                                           Message_Type              => W_Block512,
-                                           Message_Block_Length_Type => Crypto.Types.Message_Block_Length512,
-                                           Internal_Context           => SHA256_Context,
-                                           Generic_To_Bytes	     => To_Bytes);
+  new Crypto.Symmetric.Hashfunction
+    (Hash_Type                 => W_Block256,
+     Message_Type              => W_Block512,
+     Message_Block_Length_Type => Crypto.Types.Message_Block_Length512,
+     Internal_Context          => SHA256_Context,
+     Generic_To_Bytes	        => To_Bytes);

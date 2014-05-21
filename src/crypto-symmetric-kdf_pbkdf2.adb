@@ -46,7 +46,8 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
    end Initialize;
 
 
-   --function for setting Key Length and security parameter, used here for setting round count in F_Function
+   --function for setting Key Length and security parameter,
+   --used here for setting round count in F_Function
    procedure Initialize(This		: out PBKDF2_KDF;
                         Key_Length	: in Natural;
                         Round_Count	: in Natural) is
@@ -58,7 +59,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
 
    --actual derivation function, pure PBKDF2
-   procedure PBKDF2(This	: in out PBKDF2_KDF;
+   procedure PBKDF2(This	: in out PBKDF2_KDF'Class;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
                     Key		: out	Bytes;
@@ -78,13 +79,16 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
 
       Error_Output.Put_Line("HLEN: " & Integer'Image(hlen));
 
-      Error_Output.Put_Line("Key :" & Integer'Image(Key'Length) & "Result_Bytes :" & Integer'Image(Result_Bytes'Length));
+      Error_Output.Put_Line("Key :" & Integer'Image(Key'Length)
+                            & "Result_Bytes :"
+                            & Integer'Image(Result_Bytes'Length));
 
       --calculating amount of blocks required to fill key given the hash length
       DK_Block_Count := Integer(Float'Ceiling(Float(DK_Len) / Float(hlen)));
       Rest := DK_Len - (DK_Block_Count-1) * hlen;
 
-      Error_Output.Put_Line("DKBK :" & Integer'Image(DK_Block_Count) & "Rest :" & Integer'Image(Rest));
+      Error_Output.Put_Line("DKBK :" & Integer'Image(DK_Block_Count)
+                            & "Rest :" & Integer'Image(Rest));
 
       --looping through blocks of the key, applying F_Function
       for I in 0..DK_Block_Count-1 loop
@@ -97,14 +101,17 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
                                                  Round    => I+1));
             Result_Bytes(I*hlen..I*hlen+Rest-1) := Temp_Bytes(0..Rest-1);
          else
-            Result_Bytes(I*hlen..I*hlen+hlen-1) := To_Bytes(F_Function(Salt     => Salt,
-                                           	 Password => Password,
-                                           	 Count    => This.Round_Count,
-                                                 Round    => I+1));
+            Result_Bytes(I*hlen..I*hlen+hlen-1)
+              := To_Bytes(F_Function(Salt => Salt,
+                                     Password => Password,
+                                     Count    => This.Round_Count,
+                                     Round    => I+1));
          end if;
 
       end loop;
-      Error_Output.Put_Line("Key :" & Integer'Image(Key'Length) & " " & "Result_Bytes :" & Integer'Image(Result_Bytes'Length));
+      Error_Output.Put_Line("Key :" & Integer'Image(Key'Length) & " "
+                            & "Result_Bytes :"
+                            & Integer'Image(Result_Bytes'Length));
       Key := Result_Bytes;
    end PBKDF2;
 
@@ -142,19 +149,25 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
       end loop;
 
       Temp_Bytes := (others => 0);
-      Temp_Bytes(0..Salt_Bytes'Length - Position -1) := Salt_Bytes(Position..Salt_Bytes'Length-1);
-      Context.Final_Sign(Final_Message_Block        => To_Message_Type(Temp_Bytes),
-                              Final_Message_Block_Length => Hmac_Package.H.Message_Block_Length_Type(Salt_Bytes'Length - Position),
-                              Tag                        => Temp_Block);
+      Temp_Bytes(0..Salt_Bytes'Length - Position -1)
+        := Salt_Bytes(Position..Salt_Bytes'Length-1);
+      Context.Final_Sign
+        (Final_Message_Block        => To_Message_Type(Temp_Bytes),
+         Final_Message_Block_Length => Hmac_Package.H.Message_Block_Length_Type
+           (Salt_Bytes'Length - Position),
+         Tag                        => Temp_Block);
 
       Result_Block:= Temp_Block;
 
       for I in 2..Count loop
          Temp_Bytes := (others => 0);
-         Temp_Bytes(0..hlen-1) := Crypto.Symmetric.KDF_PBKDF2.To_Bytes(Temp_Block);
-         Context.Final_Sign(Final_Message_Block        => To_Message_Type(Temp_Bytes),
-                                 Final_Message_Block_Length => Hmac_Package.H.Message_Block_Length_Type(hlen),
-                                 Tag                        => Temp_Block);
+         Temp_Bytes(0..hlen-1)
+           := Crypto.Symmetric.KDF_PBKDF2.To_Bytes(Temp_Block);
+         Context.Final_Sign
+           (Final_Message_Block        => To_Message_Type(Temp_Bytes),
+            Final_Message_Block_Length =>
+              Hmac_Package.H.Message_Block_Length_Type(hlen),
+            Tag                        => Temp_Block);
 
          Result_Block := Result_Block xor Temp_Block;
 

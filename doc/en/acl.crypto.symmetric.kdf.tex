@@ -74,7 +74,7 @@ The API provides a function for derivation as well as two flavors of initializat
 \caption{The structure of SHA512Crypt}
 \end{figure}
 
-Sha512Crypt derives a key of a fixed size(86) from a salt and a password string. Those are \texttt{Round\Count} rounds long in variations hashed, mixed and concatenated and finally encoded base64.
+Sha512Crypt derives a key of a fixed size(86) from a salt and a password string. Those are \texttt{Round\_Count} rounds long in variations hashed, mixed and concatenated and finally encoded base64.
 \subsubsection*{Types}
 \begin{lstlisting}{}
    package KDF is new Crypto.Symmetric.KDF(Return_Type        => Base64_String,

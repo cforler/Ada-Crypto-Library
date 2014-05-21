@@ -124,11 +124,12 @@ package Crypto.Types is
    subtype Hex_Word  is String (Hex_Word_Range);
    subtype Hex_DWord is String (Hex_DWord_Range);
 
-   subtype Base64_String is String(1..86);
-
    subtype Message_Block_Length256  is Natural range 0 ..  32;
    subtype Message_Block_Length512  is Natural range 0 ..  64;
    subtype Message_Block_Length1024 is Natural range 0 .. 128;
+
+   subtype Base64_String is String;
+   subtype Base64_SHA512Crypt is Base64_String(1..86);
 
 
    ---------------------------------------------------------------------------
@@ -307,6 +308,20 @@ package Crypto.Types is
    -- ceiling(n/2) and a right part of length floor(n/2).
    function Left_Part(Block : in Bytes)  return Bytes;
    function Right_Part(Block : in Bytes) return Bytes;
+
+   --Base_64 Tools, needed for SHA512Crypt
+   function Encode_Base64(Input: Bytes) return Base64_String;
+   function Decode_Base64(Input: Base64_String) return Bytes;
+   function Three_Bytes_To_Four_Chars(B : Bytes) return String;
+   function Four_Chars_To_Three_Bytes(B : String) return Bytes;
+   function Natural_To_Binary_String(N: Natural) return String;
+   function Binary_String_To_Natural(S : String) return Natural;
+   function Number_To_Base64_Char(N : Natural) return Character;
+   function Base64_Char_To_Number(C : Character) return Natural;
+
+   function Is_Valid_Base64_String(S: String) return Boolean;
+
+
 
    -- Nested generic package
    generic

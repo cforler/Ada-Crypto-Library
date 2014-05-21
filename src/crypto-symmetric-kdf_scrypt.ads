@@ -36,24 +36,25 @@ package Crypto.Symmetric.KDF_Scrypt is
    array_size_not_equal_exception : exception ;
    N_not_power_of_2_exception : exception;
 
-   package KDF is new Crypto.Symmetric.KDF(Return_Type        => W_Block512,
-                                           H                  => Crypto.Symmetric.Hashfunction_SHA512);
+   package KDF is new
+     Crypto.Symmetric.KDF(Return_Type => Bytes,
+                          H           => Crypto.Symmetric.Hashfunction_SHA512);
    use KDF;
 
    type Scrypt_KDF is new KDF.KDF_Scheme with private;
 
 
-   --Interface function for static 64 Bytes Output, assuming p=8, r=8 and N=Security_Parameter
+   --Interface function
    overriding
    procedure Derive(This	: in out Scrypt_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
-                    Key		: out	W_Block512);
+                    Key		: out	Bytes);
 
    --function for setting security parameter, used here for setting round count
    overriding
    procedure Initialize(This	: out Scrypt_KDF;
-                       Key_Length: in Natural);
+                        Key_Length: in Natural);
 
 
    procedure Initialize (This	: out Scrypt_KDF;
@@ -61,6 +62,9 @@ package Crypto.Symmetric.KDF_Scrypt is
                          N		: in 	Natural;
                          p		: in	Natural;
                          dkLen	: in	Natural);
+
+
+private
 
    --core scrypt function
    procedure scrypt (Password 	: in 	String;
@@ -76,7 +80,8 @@ package Crypto.Symmetric.KDF_Scrypt is
                          N	: in 	Natural) return W_Block512_Array;
 
    --Function Scrypt_Block_Mix, used by scrypt
-   function Scrypt_Block_Mix(Input	: in W_Block512_Array) return W_Block512_Array;
+   function Scrypt_Block_Mix(Input	: in W_Block512_Array)
+                             return W_Block512_Array;
 
    --Stream Cipher, used by Scrypt_Block_Mix
    procedure Salsa20_8(Input	: in	W_Block512;
@@ -89,7 +94,6 @@ package Crypto.Symmetric.KDF_Scrypt is
    --power of two test (rudimentary)
    function IsPowerOfTwo(value : Natural) return Boolean;
 
-   private
    type Scrypt_KDF is new KDF.KDF_Scheme with
       record
          r 			: Natural :=8;

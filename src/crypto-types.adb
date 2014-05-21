@@ -21,6 +21,14 @@
 -- executable file might be covered by the GNU Public License.
 
 with Ada.Unchecked_Conversion;
+with Ada.Text_IO;
+use Ada.Text_IO;
+with Crypto.Types;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
+with Ada.Strings.Maps.Constants; use Ada.Strings.Maps.Constants;
+with Ada.Integer_Text_IO;
+with Ada.Strings.Maps;
+
 --pragma Elaborate_All(Generic_Mod_Aux);
   
 package body Crypto.Types is
@@ -842,7 +850,7 @@ package body Crypto.Types is
    
    ---------------------------------------------------------------------------
    
-   function Shift_Left(Value : B_Block128; Amount : Natural) return B_Block128 is
+   function Shift_Left(Value : B_Block128; Amount :Natural) return B_Block128 is
    begin
       return  B_Block128(Aux_Byte.Shift_Left(Bytes(Value),Amount));
    end Shift_Left;
@@ -856,13 +864,216 @@ package body Crypto.Types is
    
    ---------------------------------------------------------------------------
    
-   function Shift_Right(Value : B_Block128; Amount : Natural) return B_Block128 is
+   function Shift_Right(Value : B_Block128; Amount :Natural)return B_Block128 is
    begin
       return  B_Block128(Aux_Byte.Shift_Right(Bytes(Value),Amount));
    end Shift_Right;
    
    ---------------------------------------------------------------------------
    
+   function Encode_Base64(Input: Bytes) return Base64_String is
+      Input_Buffered : Bytes(0..Input'Length -1 +  
+                             ((3 -(Input'Length mod 3)) mod 3 )) := (others=>0);
+      Output_String: Base64_String(1..Input_Buffered'Length / 3 * 4);
+   begin
+      Input_Buffered(0..Input'Length-1) := Input;
+    
+      
+      for I in 0..((Input_Buffered'Length/3)-1) loop
+         Output_String(1+(I*4)..1+(I*4)+3) := Three_Bytes_To_Four_Chars
+           (B => Input_Buffered((I*3)..((I*3)+2)));
+      end loop;
+      
+      return Output_String;
+      
+   end Encode_Base64;
+   
+   ---------------------------------------------------------------------------
+   
+   
+   --Base_64 Decoding, needed for SHA512Crypt - input is buffered with '.' 
+   --to reach the 4 chars needed
+   function Decode_Base64(Input: Base64_String) return Bytes is
+      Input_Buffered : Base64_String(1..Input'Length + (4 -(Input'Length mod 4))mod 4)
+        := (others=>'.');
+      Return_Bytes : Bytes(0..(Input'Length/4)*3 -1);
+   begin
+
+      if not Is_Valid_Base64_String(S => Input) then
+         return Return_Bytes;
+      end if;
+      
+      
+      for I in Return_Bytes'Range loop
+         if I mod 3 = 0 then
+            Return_Bytes(I..I+2) :=Four_Chars_To_Three_Bytes
+              (Input(Input'First+((I/3)*4)..Input'First+((I/3)*4)+3));
+         end if;
+         
+      end loop;
+      return Return_Bytes;
+      
+      
+   end Decode_Base64;
+   
+   
+   --translates 3 bytes into base64 4 char string
+   function Three_Bytes_To_Four_Chars(B : bytes) return String is
+      use Ada.Text_IO;
+      Ordered_B : Bytes(0..2) := B;
+      Bits_String : String(1..24) := "000000000000000000000000";
+      Bits_1 : String(1..8) := (others=>'0');
+      Bits_2 : String(1..8) := (others=>'0');
+      Bits_3 : String(1..8) := (others=>'0');
+      Bits_1_Reverse : String(1..8);
+      Bits_2_Reverse : String(1..8);
+      Bits_3_Reverse : String(1..8);
+
+      Return_String : String(1..4);
+   begin
+      
+      Bits_1(9-Natural_To_Binary_String(N => Natural(Ordered_B(0)))'Length..8) 
+        := Natural_To_Binary_String(N => Natural(Ordered_B(0)));
+      Bits_2(9-Natural_To_Binary_String(N => Natural(Ordered_B(1)))'Length..8) 
+        := Natural_To_Binary_String(N => Natural(Ordered_B(1)));
+      Bits_3(9-Natural_To_Binary_String(N => Natural(Ordered_B(2)))'Length..8) 
+        := Natural_To_Binary_String(N => Natural(Ordered_B(2)));
+
+
+      for I in 1..8 loop
+         Bits_1_Reverse(9-I) := Bits_1(I);
+         Bits_2_Reverse(9-I) := Bits_2(I);
+         Bits_3_Reverse(9-I) := Bits_3(I);
+      end loop;
+
+      Bits_String(1..Bits_1'Length):=Bits_1;
+      Bits_String(9..8+Bits_2'Length):=Bits_2;
+      Bits_String(17..16+Bits_3'Length):=Bits_3;
+      
+--        Ada.Text_IO.Put_Line("Bits String Encode: " &Bits_String);
+
+      Return_String(4)
+        := Number_To_Base64_Char(N => Binary_String_To_Natural(S => Bits_String(1..6)));
+      Return_String(3)
+        := Number_To_Base64_Char(N => Binary_String_To_Natural(S => Bits_String(7..12)));
+      Return_String(2)
+        := Number_To_Base64_Char(N => Binary_String_To_Natural(S => Bits_String(13..18)));
+      Return_String(1)
+        := Number_To_Base64_Char(N => Binary_String_To_Natural(S => Bits_String(19..24)));
+
+      return Return_String;
+   end;
+
+   --------------------------------------------------------------------------
+
+   --translates base64 4 char string into 3 bytes
+   function Four_Chars_To_Three_Bytes(B : String) return Bytes is
+      Bits_String : String(1..24) := "000000000000000000000000";
+      Bits_1 : String(1..8) := (others=>'0');
+      Bits_2 : String(1..8) := (others=>'0');
+      Bits_3 : String(1..8) := (others=>'0');
+      
+      Return_Bytes : Bytes(0..2) := (others =>0);
+   begin
+      Bits_String(7-Natural_To_Binary_String(Base64_Char_To_Number(B(B'First +3)))'Length..6)
+        :=Natural_To_Binary_String(Base64_Char_To_Number(B(B'First + 3)));
+      Bits_String(13-Natural_To_Binary_String(Base64_Char_To_Number(B(B'First +2)))'Length..12)
+        :=Natural_To_Binary_String(Base64_Char_To_Number(B(B'First + 2)));
+      Bits_String(19-Natural_To_Binary_String(Base64_Char_To_Number(B(B'First +1)))'Length..18)
+        :=Natural_To_Binary_String(Base64_Char_To_Number(B(B'First + 1)));
+      Bits_String(25-Natural_To_Binary_String(Base64_Char_To_Number(B(B'First)))'Length..24)
+        :=Natural_To_Binary_String(Base64_Char_To_Number(B(B'First)));
+     
+      Bits_1 := Bits_String(1..8);
+      Bits_2 := Bits_String(9..16);
+      Bits_3 := Bits_String(17..24);
+      
+      Return_Bytes(0) :=Byte(Binary_String_To_Natural(S => Bits_1));
+      Return_Bytes(1) :=Byte(Binary_String_To_Natural(S => Bits_2));
+      Return_Bytes(2) :=Byte(Binary_String_To_Natural(S => Bits_3));
+      
+      return Return_Bytes;
+   end Four_Chars_To_Three_Bytes;
+   
+   -----------------------------------------------------------------------------
+     
+   --returns a string of 1 and 0 from a number
+   function Natural_To_Binary_String(N: Natural) return String is
+      S: String(1 .. 1000); -- more than plenty!
+      Left:  Positive := S'First;
+      Right: Positive := S'Last;
+      package IIO is new Ada.Text_IO.Integer_IO(Integer);
+   begin
+      IIO.Put(To => S, Item => N, Base => 2);
+      while S(Left) /= '#' loop
+         Left := Left + 1;
+      end loop;
+      while S(Right) /= '#' loop
+         Right := Right - 1;
+      end loop;
+      return S(Left+1 .. Right-1);
+   end Natural_To_Binary_String;
+
+   -----------------------------------------------------------------------------
+   
+   --returns a number from a string of 1 and 0
+   function Binary_String_To_Natural(S : String) return Natural is
+      Output: Natural:= 0;
+   begin
+--        Ada.Text_IO.Put_Line(S);
+      for I in S'Range loop
+         if S(I) = '1' then
+            Output:= Output + 2**((S'Length+1-I)-1+S'First-1);
+         end if;
+      end loop;
+--        Ada.Text_IO.Put_Line(Integer'Image(Output));
+      return Output;
+   end;
+
+   -----------------------------------------------------------------------------
+
+   --translates number into base64 char
+   function Number_To_Base64_Char(N : Natural) return Character is
+      Base : String 
+        := "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+   begin
+      return Base(N+1);
+   end;
+   
+   -----------------------------------------------------------------------------
+
+   --translates base64 char to number
+   function Base64_Char_To_Number(C : Character) return Natural is
+      Base : String 
+        := "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+   begin
+      for I in Base'Range loop
+         if Base(I) = C then
+            return I-1;
+         end if;
+      end loop;
+      return 100;
+   end Base64_Char_To_Number;
+   
+   -----------------------------------------------------------------------------
+   
+   function Is_Valid_Base64_String(S: String) return Boolean is
+      Base : String 
+        := "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+      Sequence: Ada.Strings.Maps.Character_Sequence(Base'Range) := Base;
+   begin
+      
+      for I in S'Range loop
+         if not Ada.Strings.Maps.Is_In(Element => S(I),
+                                   Set     => Ada.Strings.Maps.To_Set
+                                         (Sequence => Sequence))then
+            return false;
+         end if;
+      end loop;
+      
+      
+      return true;
+   end Is_Valid_Base64_String;
    
    
   end Crypto.Types;

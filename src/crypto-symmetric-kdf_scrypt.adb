@@ -34,27 +34,26 @@ with System; use System;
 
 package body Crypto.Symmetric.KDF_Scrypt is
 
-   --Interface function for static 64 Bytes Output, assuming p=8, r=8 and N=Security_Parameter
+   --Interface function for static 64 Bytes Output, assuming p=8,
+   -- r=8 and N=Security_Parameter
    procedure Derive(This	: in out Scrypt_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
-                    Key		: out	W_Block512) is
-      Output_Bytes : Bytes(0..127);
+                    Key		: out	Bytes) is
    begin
       scrypt(Password => To_String(ASCII => Password),
              Salt     => To_String(ASCII => Salt),
-             r        => 8,
-             N        => 8,
-             p        => 8,
-             dkLen    => 128,
-             Key      => Output_Bytes);
-      Key := To_W_Block512(B => Output_Bytes);
+             r        => This.r,
+             N        => This.N,
+             p        => This.p,
+             dkLen    => This.dkLen,
+             Key      => Key);
    end Derive;
 
 
    --function for setting security parameter, used here for setting round count
    procedure Initialize(This	: out Scrypt_KDF;
-                       Key_Length: in Natural) is
+                        Key_Length: in Natural) is
    begin
       This.dkLen := Key_Length;
    end Initialize;
@@ -83,20 +82,17 @@ package body Crypto.Symmetric.KDF_Scrypt is
                      dkLen	: in	Natural;
                      Key	: out 	Bytes) is
 
-      package PBKDF2 is new Crypto.Symmetric.KDF_PBKDF2(Hmac_Package    => Crypto.Symmetric.Mac.Hmac_SHA256,
-                                                        To_Message_Type => To_W_Block512,
-                                                        To_Bytes        => To_Bytes,
-                                                        "xor"           => "xor");
+      package PBKDF2 is new Crypto.Symmetric.KDF_PBKDF2
+        (Hmac_Package    => Crypto.Symmetric.Mac.Hmac_SHA256,
+         To_Message_Type => To_W_Block512,
+         To_Bytes        => To_Bytes,
+         "xor"           => "xor");
 
       Schema : PBKDF2.PBKDF2_KDF;
       B_Bytes : Bytes(0..p*128*r-1);
       B_W_Blocks : W_Block512_Array(0..p*2*r-1);
 
    begin
-
-      --basic test whether N=2^x
-
-
 
       if not IsPowerOfTwo(N) then
          raise N_not_power_of_2_exception;
@@ -114,18 +110,20 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
       for I in 0..p-1 loop
          Error_Output.Put_Line("Scrypt loop "& I'Img & " of " & p'Img);
-         B_W_Blocks(I*2*r..I*2*r+2*r-1) :=Scrypt_ROMix(Input  => B_W_Blocks(I*2*r..I*2*r+2*r-1),
-                                                       N      => N);
+         B_W_Blocks(I*2*r..I*2*r+2*r-1) :=Scrypt_ROMix
+           (Input  => B_W_Blocks(I*2*r..I*2*r+2*r-1),
+            N      => N);
       end loop;
 
       for I in B_W_Blocks'Range loop
          B_Bytes(I*64..I*64+63) := To_Bytes(B_W_Blocks(I));
       end loop;
 
-      Schema.PBKDF2(Salt     => B_Bytes,
+      Schema.Initialize(Key_Length  => dkLen,
+                        Round_Count => 1);
+      Schema.Derive(Salt     => B_Bytes,
                     Password => To_Bytes(password),
-                    Key      => Key,
-                    DK_Len   => dkLen);
+                    Key      => Key);
 
 
    end scrypt;
@@ -135,7 +133,8 @@ package body Crypto.Symmetric.KDF_Scrypt is
    function Scrypt_ROMix(Input	: in 	W_Block512_Array;
                          N	: in 	Natural) return W_Block512_Array is
 
-      type W_Block512_2D_Array is array(Integer range 0..N) of W_Block512_Array(Input'Range);
+      type W_Block512_2D_Array is array(Integer range 0..N)
+        of W_Block512_Array(Input'Range);
 
       type pointy is access W_Block512_2D_Array;
 
@@ -171,9 +170,8 @@ package body Crypto.Symmetric.KDF_Scrypt is
          J_Byte_2 := J_Bytes(J_Bytes'First +1);
          J_Byte_3 := J_Bytes(J_Bytes'First +2);
          J_Byte_4 := J_Bytes(J_Bytes'First +3);
-         J := (Integer(J_Byte_1)+Integer(J_Byte_2)*2**8+Integer(J_Byte_3)*2**16+Integer(J_Byte_4)*2**24) mod N;
-
-
+         J := (Integer(J_Byte_1)+Integer(J_Byte_2)*2**8+Integer(J_Byte_3)*2**16
+               +Integer(J_Byte_4)*2**24) mod N;
          T := X xor V(J);
          X := Scrypt_Block_Mix(Input => T);
       end loop;
@@ -185,7 +183,8 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
 
    --Function Scrypt_Block_Mix, used by scrypt
-   function Scrypt_Block_Mix(Input	: in W_Block512_Array) return W_Block512_Array is
+   function Scrypt_Block_Mix(Input	: in W_Block512_Array)
+                             return W_Block512_Array is
       X     	 : W_Block512 := Input(Input'Last);
       T		 : W_Block512;
       Pre_Output : W_Block512_Array(Input'Range);
@@ -204,7 +203,8 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
       for I in Pre_Output'Range loop
          if I mod 2 = 0 then
-            Error_Output.Put_Line(Integer'Image(Pre_Output'Length) & " " & Integer'Image(I));
+            Error_Output.Put_Line(Integer'Image(Pre_Output'Length)
+                                  & " " & Integer'Image(I));
             Output(Counter + Output'First) := Pre_Output(I);
             Counter := Counter+1;
          end if;
@@ -219,7 +219,8 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
       for I in Pre_Output'Range loop
          if I mod 2 = 1 then
-            Error_Output.Put_Line(Integer'Image(Pre_Output'Length) & " " & Integer'Image(I));
+            Error_Output.Put_Line(Integer'Image(Pre_Output'Length)
+                                  & " " & Integer'Image(I));
             Output(Counter + Output'First) := Pre_Output(I);
             Counter := Counter+1;
          end if;
@@ -253,22 +254,38 @@ package body Crypto.Symmetric.KDF_Scrypt is
       end loop;
 
       for I in 0..3 loop
-         X( 4) := X( 4) xor Rotate_Left(X( 0)+X(12), 7);  X( 8) := X( 8) xor Rotate_Left(X( 4)+X( 0), 9);
-         X(12) := X(12) xor Rotate_Left(X( 8)+X( 4),13);  X( 0) := X( 0) xor Rotate_Left(X(12)+X( 8),18);
-         X( 9) := X( 9) xor Rotate_Left(X( 5)+X( 1), 7);  X(13) := X(13) xor Rotate_Left(X( 9)+X( 5), 9);
-         X( 1) := X( 1) xor Rotate_Left(X(13)+X( 9),13);  X( 5) := X( 5) xor Rotate_Left(X( 1)+X(13),18);
-         X(14) := X(14) xor Rotate_Left(X(10)+X( 6), 7);  X( 2) := X( 2) xor Rotate_Left(X(14)+X(10), 9);
-         X( 6) := X( 6) xor Rotate_Left(X( 2)+X(14),13);  X(10) := X(10) xor Rotate_Left(X( 6)+X( 2),18);
-         X( 3) := X( 3) xor Rotate_Left(X(15)+X(11), 7);  X( 7) := X( 7) xor Rotate_Left(X( 3)+X(15), 9);
-         X(11) := X(11) xor Rotate_Left(X( 7)+X( 3),13);  X(15) := X(15) xor Rotate_Left(X(11)+X( 7),18);
-         X( 1) := X( 1) xor Rotate_Left(X( 0)+X( 3), 7);  X( 2) := X( 2) xor Rotate_Left(X( 1)+X( 0), 9);
-         X( 3) := X( 3) xor Rotate_Left(X( 2)+X( 1),13);  X( 0) := X( 0) xor Rotate_Left(X( 3)+X( 2),18);
-         X( 6) := X( 6) xor Rotate_Left(X( 5)+X( 4), 7);  X( 7) := X( 7) xor Rotate_Left(X( 6)+X( 5), 9);
-         X( 4) := X( 4) xor Rotate_Left(X( 7)+X( 6),13);  X( 5) := X( 5) xor Rotate_Left(X( 4)+X( 7),18);
-         X(11) := X(11) xor Rotate_Left(X(10)+X( 9), 7);  X( 8) := X( 8) xor Rotate_Left(X(11)+X(10), 9);
-         X( 9) := X( 9) xor Rotate_Left(X( 8)+X(11),13);  X(10) := X(10) xor Rotate_Left(X( 9)+X( 8),18);
-         X(12) := X(12) xor Rotate_Left(X(15)+X(14), 7);  X(13) := X(13) xor Rotate_Left(X(12)+X(15), 9);
-         X(14) := X(14) xor Rotate_Left(X(13)+X(12),13);  X(15) := X(15) xor Rotate_Left(X(14)+X(13),18);
+         X( 4) := X( 4) xor Rotate_Left(X( 0)+X(12), 7);
+         X( 8) := X( 8) xor Rotate_Left(X( 4)+X( 0), 9);
+         X(12) := X(12) xor Rotate_Left(X( 8)+X( 4),13);
+         X( 0) := X( 0) xor Rotate_Left(X(12)+X( 8),18);
+         X( 9) := X( 9) xor Rotate_Left(X( 5)+X( 1), 7);
+         X(13) := X(13) xor Rotate_Left(X( 9)+X( 5), 9);
+         X( 1) := X( 1) xor Rotate_Left(X(13)+X( 9),13);
+         X( 5) := X( 5) xor Rotate_Left(X( 1)+X(13),18);
+         X(14) := X(14) xor Rotate_Left(X(10)+X( 6), 7);
+         X( 2) := X( 2) xor Rotate_Left(X(14)+X(10), 9);
+         X( 6) := X( 6) xor Rotate_Left(X( 2)+X(14),13);
+         X(10) := X(10) xor Rotate_Left(X( 6)+X( 2),18);
+         X( 3) := X( 3) xor Rotate_Left(X(15)+X(11), 7);
+         X( 7) := X( 7) xor Rotate_Left(X( 3)+X(15), 9);
+         X(11) := X(11) xor Rotate_Left(X( 7)+X( 3),13);
+         X(15) := X(15) xor Rotate_Left(X(11)+X( 7),18);
+         X( 1) := X( 1) xor Rotate_Left(X( 0)+X( 3), 7);
+         X( 2) := X( 2) xor Rotate_Left(X( 1)+X( 0), 9);
+         X( 3) := X( 3) xor Rotate_Left(X( 2)+X( 1),13);
+         X( 0) := X( 0) xor Rotate_Left(X( 3)+X( 2),18);
+         X( 6) := X( 6) xor Rotate_Left(X( 5)+X( 4), 7);
+         X( 7) := X( 7) xor Rotate_Left(X( 6)+X( 5), 9);
+         X( 4) := X( 4) xor Rotate_Left(X( 7)+X( 6),13);
+         X( 5) := X( 5) xor Rotate_Left(X( 4)+X( 7),18);
+         X(11) := X(11) xor Rotate_Left(X(10)+X( 9), 7);
+         X( 8) := X( 8) xor Rotate_Left(X(11)+X(10), 9);
+         X( 9) := X( 9) xor Rotate_Left(X( 8)+X(11),13);
+         X(10) := X(10) xor Rotate_Left(X( 9)+X( 8),18);
+         X(12) := X(12) xor Rotate_Left(X(15)+X(14), 7);
+         X(13) := X(13) xor Rotate_Left(X(12)+X(15), 9);
+         X(14) := X(14) xor Rotate_Left(X(13)+X(12),13);
+         X(15) := X(15) xor Rotate_Left(X(14)+X(13),18);
       end loop;
 
       for I in 0..15 loop

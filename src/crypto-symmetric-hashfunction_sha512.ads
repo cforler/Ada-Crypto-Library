@@ -30,8 +30,9 @@ use Crypto.Symmetric.Algorithm.SHA512;
 
 pragma Elaborate_All (Crypto.Symmetric.Hashfunction);
 package Crypto.Symmetric.Hashfunction_SHA512 is
-  new Crypto.Symmetric.Hashfunction(Hash_Type                 => DW_Block512,
-                                           Message_Type              => DW_Block1024,
-                                           Message_Block_Length_Type => Crypto.Types.Message_Block_Length1024,
-                                           Internal_Context           => Sha512_Context,
-                                           Generic_To_Bytes	     => To_Bytes);
+  new Crypto.Symmetric.Hashfunction
+    (Hash_Type                 	=> DW_Block512,
+     Message_Type              	=> DW_Block1024,
+     Message_Block_Length_Type 	=> Crypto.Types.Message_Block_Length1024,
+     Internal_Context           => Sha512_Context,
+     Generic_To_Bytes	     	=> To_Bytes);

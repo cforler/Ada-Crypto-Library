@@ -463,3 +463,45 @@ american crypto-standard, then you should consider using Whirlpool.
 \item In the procedure \texttt{F\_Hash()}, if the size of the read
   data is smaller than 0:\quad\texttt{File\_Read\_Error}.
 \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Skein}
+
+Skein is a hash function based on Whirlpool. It internally works with
+256, 512 or 1024 bit blocks, depending on the mode of operation. 
+Corrseponding is the input block size. The output size is arbitrary
+In the default interface, the used mode is set to 512 bit block size,
+input and internally as well as the output.
+Additionally, a function offering all 3 block modes and a completely
+arbitrary output size is available.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{API}
+\begin{lstlisting}{}
+   -- low level API with object
+   procedure Init(This 		: in out Skein_512_Context);
+   procedure Round(This 	: in out 	Skein_512_Context;
+                   Message_Block: in 		W_Block512);
+   function Final_Round(This 		    : in out Skein_512_Context;
+                        Last_Message_Block  : W_Block512;
+                        Last_Message_Length : Natural)
+                        return W_Block512;
+												
+   -- high level API
+   procedure Hash(Message : in String; Hash_Value : out W_Block512);
+   procedure Hash(Message : in Bytes;  Hash_Value : out W_Block512);
+   procedure F_Hash(Filename : in String; Hash_Value : out W_Block512);
+	
+	 --complete call for Skein
+   -- Output / Message Length in Bits
+   procedure Skein_Complete
+     (Mode           	 : in Skein_Mode;
+      Output_Length_Bits : in Natural;
+      Message        	 : in Bytes;
+      Message_Length_Bits: in Natural;
+      Result         	 : out Bytes);
+\end{lstlisting}
+			
+

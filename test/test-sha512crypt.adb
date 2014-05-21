@@ -5,6 +5,8 @@ with Ada.Integer_Text_IO;
 with Ada.Directories;
 with Crypto.Symmetric.KDF_SHA512Crypt;
 use Crypto.Symmetric.KDF_SHA512Crypt;
+with Crypto.Symmetric.KDF_SHA512Crypt.Testing;
+use Crypto.Symmetric.KDF_SHA512Crypt.Testing;
 with Crypto.Symmetric.Algorithm.SHA512;
 with Crypto.Symmetric.KDF_Scrypt;
 
@@ -68,7 +70,6 @@ package body Test.SHA512Crypt is
       Digest_Bytes_Ideal : Bytes(0..127) := (others => 0);
 
       Digest_Hash : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
-
    begin
 
 
@@ -78,7 +79,8 @@ package body Test.SHA512Crypt is
 
       Hash_Ideal := Digest_Hash.Hash_Value;
 
-      S5C.Add_Bytes(Bytes_To_Add        => Bytes_To_Add_A,
+
+      Add_Bytes_Testing(Bytes_To_Add        => Bytes_To_Add_A,
                     Digest_Bytes        => Digest_Bytes,
                     Digest_Bytes_Length => Digest_Bytes_Length,
                     Digest_Hash         => Digest_Hash);
@@ -91,7 +93,7 @@ package body Test.SHA512Crypt is
       -----------------
 
       Hash_Ideal := Digest_Hash.Hash_Value;
-      S5C.Add_Bytes(Bytes_To_Add        => Bytes_To_Add_B,
+      Add_Bytes_Testing(Bytes_To_Add        => Bytes_To_Add_B,
                     Digest_Bytes        => Digest_Bytes,
                     Digest_Bytes_Length => Digest_Bytes_Length,
                     Digest_Hash         => Digest_Hash);
@@ -107,7 +109,7 @@ package body Test.SHA512Crypt is
       Digest_Bytes_Ideal(72..127) := (others=>2);
       SHA512.Round(Message_Block => To_DW_Block1024(B => Digest_Bytes_Ideal),
                    Hash_Value    => Hash_Ideal);
-      S5C.Add_Bytes(Bytes_To_Add        => Bytes_To_Add_B,
+      Add_Bytes_Testing(Bytes_To_Add        => Bytes_To_Add_B,
                     Digest_Bytes        => Digest_Bytes,
                     Digest_Bytes_Length => Digest_Bytes_Length,
                     Digest_Hash         => Digest_Hash);
@@ -126,7 +128,7 @@ package body Test.SHA512Crypt is
    ------------------------------------------------------------------------------------
 
    procedure SHA512Crypt_Test_Encryption(T : in out Test_Cases.Test_Case'Class) is
-      Derived_Key, Ideal_Key : Base64_String;
+      Derived_Key, Ideal_Key : Base64_SHA512Crypt;
       Scheme : S5C.SHA512Crypt_KDF;
 
    begin
