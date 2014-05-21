@@ -78,10 +78,10 @@ private
 
 
    --Internal function for applying PRF multiple times
-   function F_Function(Salt	: in 	Bytes;
-                       Password	: in	Bytes;
-                       Count	: in 	Natural;
-                       Round	: in 	Natural) return Hmac_Package.H.Hash_Type;
+  function F_Function(Salt	: in   Bytes;
+                      Password	: in   Bytes;
+                      Count	: in   Natural;
+                      Round	: in   Natural) return Hmac_Package.H.Hash_Type;
 
    type PBKDF2_KDF is new KDF.KDF_Scheme with
       record

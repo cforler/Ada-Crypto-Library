@@ -31,7 +31,6 @@ package Crypto.Symmetric.KDF_Scrypt is
 
    type W_Block512_Array is array (Integer range <>) of W_Block512;
 
-   package Error_Output is new Crypto.Debug_Put(b => false);
 
    array_size_not_equal_exception : exception ;
    N_not_power_of_2_exception : exception;
@@ -65,6 +64,8 @@ package Crypto.Symmetric.KDF_Scrypt is
 
 
 private
+
+   package Error_Output is new Crypto.Debug_Put(b => false);
 
    --core scrypt function
    procedure scrypt (Password 	: in 	String;
