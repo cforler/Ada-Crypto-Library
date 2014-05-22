@@ -364,7 +364,7 @@ package body Crypto.Symmetric.Algorithm.Whirlpool is
    
       ---------------------------------------------------------------------------
    
-   procedure Padding(This	    : in out Whirlpool_Context;
+   procedure Padding(This	    : in  Whirlpool_Context;
                      Message_Block  : in out DW_Block512;
                      MP : out DW_Block512) is
       A : Natural; -- which Block
@@ -552,7 +552,7 @@ package body Crypto.Symmetric.Algorithm.Whirlpool is
                         return DW_Block512 is
       MP : DW_Block512;
       Mf : DW_Block512 := Last_Message_Block;  -- Final message block
-      H  : DW_Block512  := This.Hash_Value;
+      H  : constant DW_Block512  := This.Hash_Value;
    begin
       if  Last_Message_Length = Message_Block_Length512'Last then
          This.Round(Message_Block => MF);

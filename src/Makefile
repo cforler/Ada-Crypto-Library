@@ -24,6 +24,14 @@ blockcipher:  crypto-symmetric-blockcipher_twofish256 crypto-symmetric-blockciph
 tweakable-blockcipher: crypto-symmetric-tweakable_blockcipher_cmt crypto-symmetric-tweakable_blockcipher_tx
 types: crypto-types-big_numbers crypto-types-elliptic_curves-ss_bf crypto-types-elliptic_curves-nss_bf crypto-types-mutexes crypto-types-nonces-nonces_ctr crypto-types-nonces-nonces_mixed_1 crypto-types-nonces-nonces_mixed_2  crypto-types-nonces-nonces_random crypto-types-nonces-nonces_randomized_counter 
 ae: crypto-symmetric-aead_mcoe crypto-symmetric-aead_siv.adb crypto-symmetric-ae_ocb.adb
+kdf: crypto-symmetric-kdf_pbkdf2  crypto-symmetric-kdf_scrypt
+
+
+crypto-symmetric-kdf_pbkdf2:
+	$(CC) $(CFLAGS) $@
+
+crypto-symmetric-kdf_scrypt:
+	$(CC) $(CFLAGS) $@
 
 crypto-asymmetric-ecies:
 	$(CC) $(CFLAGS) $@

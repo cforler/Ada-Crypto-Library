@@ -7,7 +7,7 @@ with Test.Suite_MAC;
 with Test.Suite_Hash_Function;
 with Test.Suite_Nonces;
 with Test.Suite_Misc;
-with Test.Suite_Key_Derivation_Function;
+--with Test.Suite_Key_Derivation_Function;
 with AUnit.Tests;
 with AUnit.Tests;
 
@@ -16,16 +16,16 @@ package body Test.Suite_All is
       use AUnit.Test_Suites;
       Result : Access_Test_Suite := New_Suite;
    begin
---        Result.Add_Test(Test.Suite_Asymmetric_Ciphers.Suite);
---        Result.Add_Test(Test.Suite_Big_Num_All.Suite);
---        Result.Add_Test(Test.Suite_Blockciphers.Suite);
---        Result.Add_Test(Test.Suite_Oneway_Blockciphers.Suite);
---        Result.Add_Test(Test.Suite_Elliptic_Curves.Suite);
---        Result.Add_Test(Test.Suite_MAC.Suite);
---        Result.Add_Test(Test.Suite_Hash_Function.Suite);
---        Result.Add_Test(Test.Suite_Nonces.Suite);
+      Result.Add_Test(Test.Suite_Asymmetric_Ciphers.Suite);
+      Result.Add_Test(Test.Suite_Big_Num_All.Suite);
+      Result.Add_Test(Test.Suite_Blockciphers.Suite);
+      Result.Add_Test(Test.Suite_Oneway_Blockciphers.Suite);
+      Result.Add_Test(Test.Suite_Elliptic_Curves.Suite);
+      Result.Add_Test(Test.Suite_MAC.Suite);
+      Result.Add_Test(Test.Suite_Hash_Function.Suite);
+      Result.Add_Test(Test.Suite_Nonces.Suite);
       Result.Add_Test(Test.Suite_Misc.Suite);
---        Result.Add_Test(Test.Suite_Key_Derivation_Function.Suite);
+      --Result.Add_Test(Test.Suite_Key_Derivation_Function.Suite);
       return Result;
    end Suite;
 end Test.Suite_All;

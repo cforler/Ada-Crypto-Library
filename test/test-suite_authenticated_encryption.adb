@@ -5,9 +5,6 @@ with Test.SHA512;
 with Test.Whirlpool;
 with Test.Skein;
 with Test.OCB;
-with Test.SHA512Crypt;
-with Test.PBKDF2;
-with Test.Scrypt;
 with Test.Hmac;
 
 package body Test.Suite_Authenticated_Encryption is

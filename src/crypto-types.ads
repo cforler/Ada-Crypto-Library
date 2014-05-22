@@ -128,10 +128,18 @@ package Crypto.Types is
    subtype Message_Block_Length512  is Natural range 0 ..  64;
    subtype Message_Block_Length1024 is Natural range 0 .. 128;
 
-   subtype Base64_String is String;
+
+   type Base64_Character is 
+     ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 
+      'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b',
+      'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+      'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
+      '4', '5', '6', '7', '8' ,'9', '+', '/', '=');
+   type Base64_String  is array (Positive range <>) of Base64_Character;
+   
+   
    subtype Base64_SHA512Crypt is Base64_String(1..86);
-
-
+   
    ---------------------------------------------------------------------------
    ---------------------------FUNCTIONS---------------------------------------
    ---------------------------------------------------------------------------
@@ -166,12 +174,9 @@ package Crypto.Types is
    pragma Import (Intrinsic, Shift_Right);
 
    function Shift_Left (Value : Bytes; Amount : Natural) return Bytes;
-   function Shift_Left (Value : B_Block128 ; Amount : Natural) return B_Block128;
-   function Shift_Right (Value : Bytes; Amount : Natural) return Bytes;
-   function Shift_Right (Value : B_Block128 ; Amount : Natural) return B_Block128;
-
-   --function Shift_Right (Value : Bytes; Amount : Natural) return Bytes;
-   --function Shift_Right (Value : B_Block128 ; Amount : Natural) return B_Block128;
+   function Shift_Left (Value : B_Block128; Amount : Natural) return B_Block128;
+   function Shift_Right(Value : Bytes; Amount : Natural) return Bytes;
+   function Shift_Right(Value : B_Block128; Amount : Natural) return B_Block128;
 
    --Operations for Bytes
    function "xor"(Left, Right : Bytes)        return Bytes;
@@ -308,19 +313,15 @@ package Crypto.Types is
    -- ceiling(n/2) and a right part of length floor(n/2).
    function Left_Part(Block : in Bytes)  return Bytes;
    function Right_Part(Block : in Bytes) return Bytes;
-
-   --Base_64 Tools, needed for SHA512Crypt
-   function Encode_Base64(Input: Bytes) return Base64_String;
-   function Decode_Base64(Input: Base64_String) return Bytes;
-   function Three_Bytes_To_Four_Chars(B : Bytes) return String;
+   
+   -- Base64
+   function Encode_Base64(B: Bytes) return Base64_String;
    function Four_Chars_To_Three_Bytes(B : String) return Bytes;
    function Natural_To_Binary_String(N: Natural) return String;
    function Binary_String_To_Natural(S : String) return Natural;
    function Number_To_Base64_Char(N : Natural) return Character;
    function Base64_Char_To_Number(C : Character) return Natural;
-
    function Is_Valid_Base64_String(S: String) return Boolean;
-
 
 
    -- Nested generic package

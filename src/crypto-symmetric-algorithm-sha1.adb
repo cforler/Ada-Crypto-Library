@@ -416,9 +416,9 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
    
    function Final_Round(This 		    : in out SHA1_Context;
                         Last_Message_Block  : W_Block512;
-                        Last_Message_Length : Message_Block_Length512) return W_Block160 is
+                        Last_Message_Length : Message_Block_Length512)
+		       return W_Block160 is
 
-      H  : W_Block160 := This.Hash_Value;
       MF : W_Block512 := Last_Message_Block;
       MP : W_Block512;
    begin
