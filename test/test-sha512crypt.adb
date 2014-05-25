@@ -9,6 +9,7 @@ with Crypto.Symmetric.KDF_SHA512Crypt.Testing;
 use Crypto.Symmetric.KDF_SHA512Crypt.Testing;
 with Crypto.Symmetric.Algorithm.SHA512;
 with Crypto.Symmetric.KDF_Scrypt;
+with Ada.Unchecked_Conversion;
 
 package body Test.SHA512Crypt is
    use Crypto.Types;
@@ -130,7 +131,10 @@ package body Test.SHA512Crypt is
    procedure SHA512Crypt_Test_Encryption(T : in out Test_Cases.Test_Case'Class) is
       Derived_Key, Ideal_Key : Base64_SHA512Crypt;
       Scheme : S5C.SHA512Crypt_KDF;
-
+      Enu : Crypto.Types.Base64_Character := 'a';
+      Base : constant String
+        := "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+      one, two, three, four : Crypto.Types.Base64_Character;
    begin
 
 
@@ -142,10 +146,20 @@ package body Test.SHA512Crypt is
       Scheme.Derive(Salt     => "saltstring",
                     Password => "Hello world!",
                     Key      => Derived_Key);
+
+      one := Derived_Key(1);
+      two := Derived_Key(2);
+      three := Derived_Key(3);
+      four := Derived_Key(4);
+
+      Ada.Text_IO.Put_Line("Mein Resultat: " & Base(one'Enum_Rep+1) & " " & Base(two'Enum_Rep+1)& " " & Base(three'Enum_Rep+1)& " " & Base(four'Enum_Rep+1));
       Ideal_Key := "svn8UoSVapNtMuq1ukKS4tPQd8iKwSMHWjl/O817G3uBnIFNjnQJuesI68u4OTLiBFdcbYEdFCoEOfaS35inz1";
 
-      Ada.Text_IO.Put_Line(Derived_Key);
+
+
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
+
+
 
 
       Scheme.Initialize(Key_Length  => 86,
@@ -155,7 +169,7 @@ package body Test.SHA512Crypt is
                     Key      => Derived_Key);
       Ideal_Key := "OW1/O6BYHV6BcXZu8QVeXbDWra3Oeqh0sbHbbMCVNSnCM/UrjmM0Dp8vOuZeHBy/YTBmSK6H9qs/y3RnOaw5v.";
 
-      Ada.Text_IO.Put_Line(Derived_Key);
+--        Ada.Text_IO.Put_Line(Derived_Key);
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
       Scheme.Initialize(Key_Length  => 86,
@@ -165,7 +179,7 @@ package body Test.SHA512Crypt is
                     Key      => Derived_Key);
       Ideal_Key := "lQ8jolhgVRVhY4b5pZKaysCLi0QBxGoNeKQzQ3glMhwllF7oGDZxUhx1yxdYcz/e1JSbq3y6JMxxl8audkUEm0";
 
-      Ada.Text_IO.Put_Line(Derived_Key);
+--        Ada.Text_IO.Put_Line(Derived_Key);
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
@@ -176,7 +190,7 @@ package body Test.SHA512Crypt is
                     Key      => Derived_Key);
       Ideal_Key := "WuQyW2YR.hBNpjjRhpYD/ifIw05xdfeEyQoMxIXbkvr0gge1a1x3yRULJ5CCaUeOxFmtlcGZelFl5CxtgfiAc0";
 
-      Ada.Text_IO.Put_Line(Derived_Key);
+--        Ada.Text_IO.Put_Line(Derived_Key);
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
@@ -187,7 +201,7 @@ package body Test.SHA512Crypt is
                     Key      => Derived_Key);
       Ideal_Key := "BtCwjqMJGx5hrJhZywWvt0RLE8uZ4oPwcelCjmw2kSYu.Ec6ycULevoBK25fs2xXgMNrCzIMVcgEJAstJeonj1";
 
-      Ada.Text_IO.Put_Line(Derived_Key);
+--        Ada.Text_IO.Put_Line(Derived_Key);
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
 
@@ -198,7 +212,7 @@ package body Test.SHA512Crypt is
                     Key      => Derived_Key);
       Ideal_Key := "kUMsbe306n21p9R.FRkW3IGn.S9NPN0x50YhH1xhLsPuWGsUSklZt58jaTfF4ZEQpyUNGc0dqbpBYYBaHHrsX.";
 
-      Ada.Text_IO.Put_Line(Derived_Key);
+--        Ada.Text_IO.Put_Line(Derived_Key);
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
 
    end SHA512Crypt_Test_Encryption;

@@ -1001,7 +1001,7 @@ package body Crypto.Types is
       
       for I in S'Range loop
          if not Ada.Strings.Maps.Is_In(Element => S(I),
-                                   Set     => Ada.Strings.Maps.To_Set
+                                       Set     => Ada.Strings.Maps.To_Set
                                          (Sequence => Sequence))then
             return false;
          end if;

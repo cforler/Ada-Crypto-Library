@@ -62,7 +62,7 @@ package body Test.Base64 is
    procedure Base64_Rest2_Test(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions; 
       Input  : constant String := "any carnal pleas";
-      Output : constantFBase64_String := "YW55IGNhcm5hbCBwbGVhcw==";
+      Output : constant Base64_String := "YW55IGNhcm5hbCBwbGVhcw==";
       Result : Base64_String := Encode_Base64(To_Bytes(Input));
    begin
       Assert(Output = Result, "Base64_Rest2_Test failed"); 
