@@ -16,28 +16,28 @@ package body Test.SHA1_MAC is
 	use DIO;
 	
 	--Test vectors from RFC 4231 and RFC 2202
-	Key1: W_Block512 := (0 => 16#0b_0b_0b_0b#, 1 => 16#0b_0b_0b_0b#,
+   Key1: constant W_Block512 := (0 => 16#0b_0b_0b_0b#, 1 => 16#0b_0b_0b_0b#,
                          2 => 16#0b_0b_0b_0b#, 3 => 16#0b_0b_0b_0b#,
                          4 => 16#0b_0b_0b_0b#, others  => 0);
    
    	--"Hi There"
-    Message1: W_Block512 := (0 => 16#48_69_20_54#, 1 => 16#68_65_72_65#,
+   Message1: constant W_Block512 := (0 => 16#48_69_20_54#, 1 => 16#68_65_72_65#,
                              others => 0);
     
     --"Jefe"
-    Key2:  W_Block512 := (0 => 16#4a_65_66_65#, others  => 0);
+   Key2: constant W_Block512 := (0 => 16#4a_65_66_65#, others  => 0);
    
     --"What do ya want for nothing?"
-    Message2: W_Block512 := ( 0 => 16#77_68_61_74#, 1 => 16#20_64_6f_20#,
+   Message2: constant W_Block512 := ( 0 => 16#77_68_61_74#, 1 => 16#20_64_6f_20#,
                               2 => 16#79_61_20_77#, 3 => 16#61_6e_74_20#,
                               4 => 16#66_6f_72_20#, 5 => 16#6e_6f_74_68#,
                               6 => 16#69_6e_67_3f#, others  => 0);
     
-    Key3: W_Block512 := (0 => 16#Aa_Aa_Aa_Aa#, 1 => 16#Aa_Aa_Aa_Aa#,
+   Key3: constant W_Block512 := (0 => 16#Aa_Aa_Aa_Aa#, 1 => 16#Aa_Aa_Aa_Aa#,
                          2 => 16#Aa_Aa_Aa_Aa#, 3 => 16#Aa_Aa_Aa_Aa#,
                          4 => 16#Aa_Aa_Aa_Aa#, others => 0);
     
-    Message3: W_Block512 := (0..11 => 16#Dd_Dd_Dd_Dd#, 12 => 16#Dd_Dd_00_00#,
+   Message3: constant W_Block512 := (0..11 => 16#Dd_Dd_Dd_Dd#, 12 => 16#Dd_Dd_00_00#,
                              others => 0);
 
     Temp: W_Block160 := (16#B6_17_31_86#, 16#55_05_72_64#, 16#E2_8b_C0_B6#,
@@ -66,6 +66,7 @@ package body Test.SHA1_MAC is
 ------------------------------------------------------------------------------------
 
 	function Name(T : HMAC_Test) return Test_String is
+      pragma Unreferenced (T);
 	begin
 		return new String'("SHA1 MAC Test");
 	end Name;
@@ -78,6 +79,7 @@ package body Test.SHA1_MAC is
 ------------------------------------------------------------------------------------
 
    procedure SHA1_MAC_Test1(T : in out Test_Cases.Test_Case'Class) is
+      pragma Unreferenced (T);
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA1;
       
@@ -97,6 +99,7 @@ package body Test.SHA1_MAC is
 ------------------------------------------------------------------------------------
 
    procedure SHA1_MAC_Test2(T : in out Test_Cases.Test_Case'Class) is
+      pragma Unreferenced (T);
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA1;
 
@@ -118,6 +121,7 @@ package body Test.SHA1_MAC is
 ------------------------------------------------------------------------------------
 
    procedure SHA1_MAC_Test3(T : in out Test_Cases.Test_Case'Class) is
+      pragma Unreferenced (T);
       use AUnit.Assertions; 
       use Crypto.Symmetric.MAC.HMAC_SHA1;
 

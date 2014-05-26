@@ -25,13 +25,24 @@ with Crypto.Symmetric.KDF;
 with Crypto.Symmetric.Algorithm.SHA512;
 with Crypto.Symmetric.Hashfunction_SHA512;
 with Crypto.Debug_Put;
+with Crypto.Types.Base64;
 
 pragma Elaborate_All (Crypto.Symmetric.KDF);
 
 package Crypto.Symmetric.KDF_SHA512Crypt is
 
+   type Base64_Character is
+     ('.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8' ,'9', 'A', 'B',
+         'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
+         'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+     's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '=');
+
+   package Base64 is new Crypto.Types.Base64
+     (Base64_Character => Base64_Character);
+
    package KDF is new Crypto.Symmetric.KDF
-     (Return_Type        => Base64_String,
+     (Return_Type        => Base64.Base64_SHA512Crypt,
       H                  => Crypto.Symmetric.Hashfunction_SHA512);
 
    type SHA512Crypt_KDF is new KDF.KDF_Scheme with private;
@@ -41,7 +52,7 @@ package Crypto.Symmetric.KDF_SHA512Crypt is
    procedure Derive(This	: in out SHA512Crypt_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
-                    Key		: out	Base64_String);
+                    Key		: out	Base64.Base64_SHA512Crypt);
 
 
    --function for setting Key Length
@@ -72,9 +83,6 @@ private
          Round_Count	: Natural :=5000;
       end record;
 
-
-
-
-
+   function Natural_To_Binary_String(N: Natural) return String;
 
 end Crypto.Symmetric.KDF_SHA512Crypt;

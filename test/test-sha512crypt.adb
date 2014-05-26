@@ -1,15 +1,12 @@
 with AUnit.Assertions; use AUnit.Assertions;
 with Crypto.Types;
 with Ada.Text_IO;
-with Ada.Integer_Text_IO;
-with Ada.Directories;
 with Crypto.Symmetric.KDF_SHA512Crypt;
 use Crypto.Symmetric.KDF_SHA512Crypt;
 with Crypto.Symmetric.KDF_SHA512Crypt.Testing;
 use Crypto.Symmetric.KDF_SHA512Crypt.Testing;
 with Crypto.Symmetric.Algorithm.SHA512;
-with Crypto.Symmetric.KDF_Scrypt;
-with Ada.Unchecked_Conversion;
+use Crypto.Symmetric.KDF_SHA512Crypt.Base64;
 
 package body Test.SHA512Crypt is
    use Crypto.Types;
@@ -65,9 +62,8 @@ package body Test.SHA512Crypt is
       Hash_Ideal : DW_Block512;
       Digest_Bytes : Bytes(0..127) := (others => 0);
       Digest_Bytes_Length : Natural := 0;
-      Bytes_To_Add_A : Bytes(0..7) := (Others=>1);
-      Bytes_To_Add_B : Bytes(0..63) := (Others=>2);
-      Bytes_To_Add_C : Bytes(0..127) := (Others=>3);
+      Bytes_To_Add_A : constant Bytes(0..7) := (Others=>1);
+      Bytes_To_Add_B : constant Bytes(0..63) := (Others=>2);
       Digest_Bytes_Ideal : Bytes(0..127) := (others => 0);
 
       Digest_Hash : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
@@ -129,12 +125,8 @@ package body Test.SHA512Crypt is
    ------------------------------------------------------------------------------------
 
    procedure SHA512Crypt_Test_Encryption(T : in out Test_Cases.Test_Case'Class) is
-      Derived_Key, Ideal_Key : Base64_SHA512Crypt;
+      Derived_Key, Ideal_Key : S5C.Base64.Base64_SHA512Crypt;
       Scheme : S5C.SHA512Crypt_KDF;
-      Enu : Crypto.Types.Base64_Character := 'a';
-      Base : constant String
-        := "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-      one, two, three, four : Crypto.Types.Base64_Character;
    begin
 
 
@@ -146,21 +138,9 @@ package body Test.SHA512Crypt is
       Scheme.Derive(Salt     => "saltstring",
                     Password => "Hello world!",
                     Key      => Derived_Key);
-
-      one := Derived_Key(1);
-      two := Derived_Key(2);
-      three := Derived_Key(3);
-      four := Derived_Key(4);
-
-      Ada.Text_IO.Put_Line("Mein Resultat: " & Base(one'Enum_Rep+1) & " " & Base(two'Enum_Rep+1)& " " & Base(three'Enum_Rep+1)& " " & Base(four'Enum_Rep+1));
       Ideal_Key := "svn8UoSVapNtMuq1ukKS4tPQd8iKwSMHWjl/O817G3uBnIFNjnQJuesI68u4OTLiBFdcbYEdFCoEOfaS35inz1";
 
-
-
       Assert(Derived_Key = Ideal_Key, "Fail at SHA512Crypt Test");
-
-
-
 
       Scheme.Initialize(Key_Length  => 86,
                         Round_Count => 10000);
@@ -223,8 +203,8 @@ package body Test.SHA512Crypt is
 
    procedure SHA512Crypt_Test_Exceptions(T : in out Test_Cases.Test_Case'Class) is
 
-      DWB1 : DW_Block1024 := (others=>0);
-      DWB2 : DW_Block1024 := (others=>2);
+      DWB1 : constant DW_Block1024 := (others=>0);
+      DWB2 : constant DW_Block1024 := (others=>2);
 
       Hash1 : DW_Block512;
       Hash2 : DW_Block512;

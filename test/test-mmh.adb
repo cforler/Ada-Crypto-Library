@@ -41,10 +41,10 @@ package body Test.MMH is
 
       use AUnit.Assertions;
       use Crypto.Symmetric.Algorithm.MMH;
-      MMH_Key : crypto.Types.Word := (16#01_02_A1_A2#);
-      MMH_Message : crypto.Types.Word := (16#03_04_A3_A4#);
+      MMH_Key : constant crypto.Types.Word := (16#01_02_A1_A2#);
+      MMH_Message : constant crypto.Types.Word := (16#03_04_A3_A4#);
       MMH_Hash : crypto.Types.Word := (16#05_06_A5_A6#);
-      MMH_Hash_Test : crypto.Types.Word := (16#BE_F3_F5_1C#);
+      MMH_Hash_Test : constant crypto.Types.Word := (16#BE_F3_F5_1C#);
 
    begin
       Hash(MMH_Key, MMH_Message, MMH_Hash);
@@ -62,10 +62,10 @@ package body Test.MMH is
 
       use AUnit.Assertions;
       use Crypto.Symmetric.Algorithm.MMH;
-      MMH_Key : crypto.Types.Words := (16#01_02_A1_A2#, 16#02_04_A4_A1#, 16#02_04_A4_A1#, 16#02_04_A4_A1#);
-      MMH_Message : crypto.Types.Words := ((16#03_04_03_A4#), (16#A3_04_A3_A4#), (16#02_04_A4_A1#), (16#02_04_A4_A1#));
+      MMH_Key : constant crypto.Types.Words := (16#01_02_A1_A2#, 16#02_04_A4_A1#, 16#02_04_A4_A1#, 16#02_04_A4_A1#);
+      MMH_Message : constant crypto.Types.Words := ((16#03_04_03_A4#), (16#A3_04_A3_A4#), (16#02_04_A4_A1#), (16#02_04_A4_A1#));
       MMH_Hash : crypto.Types.Word;
-      MMH_Hash_Test : crypto.Types.Word := (16#81_4A_FE_C0#);
+      MMH_Hash_Test : constant crypto.Types.Word := (16#81_4A_FE_C0#);
 
    begin
       Hash(MMH_Key, MMH_Message, MMH_Hash);

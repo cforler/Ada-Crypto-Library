@@ -1,11 +1,9 @@
 with AUnit;
 with AUnit.Test_Cases;
-with Ada.Strings.Unbounded;
 
 
 package Test.Scrypt is
 	use AUnit;
-	use Ada.Strings.Unbounded;
 
 	type Scrypt_Test is new Test_Cases.Test_Case with null record;
 

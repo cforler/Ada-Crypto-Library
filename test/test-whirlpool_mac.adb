@@ -15,7 +15,7 @@ package body Test.Whirlpool_MAC is
 	package DIO is new Ada.Text_IO.Modular_IO (DWord);
 	use DIO;
     
-    Key1: DW_Block512 := (16#00_11_22_33_44_55_66_77#,
+   Key1: constant DW_Block512 := (16#00_11_22_33_44_55_66_77#,
                           16#88_99_AA_BB_CC_DD_EE_FF#,
                           16#01_23_45_67_89_AB_CD_EF#,
                           16#00_11_22_33_44_55_66_77#,
@@ -24,13 +24,13 @@ package body Test.Whirlpool_MAC is
                           16#00_11_22_33_44_55_66_77#,
                           16#88_99_AA_BB_CC_DD_EE_FF#);
     
-    Message1: DW_Block512 := (0 => 16#61_62_63_64_65_66_67_68#,
+   Message1: constant DW_Block512 := (0 => 16#61_62_63_64_65_66_67_68#,
                               1 => 16#69_6A_6B_6C_6D_6E_6F_70#,
                               2 => 16#71_72_73_74_75_76_77_78#,
                               3 => 16#79_7A_00_00_00_00_00_00#,
                               others => 0);
     
-    Temp: DW_Block512 :=
+   Temp: constant DW_Block512 :=
        (
         16#73A6D2A42B1FE6DD#, 16#52C067B1167C361B#,
         16#EF362BA8CC1C3E2D#, 16#2A529D8B9A7EE5AC#,

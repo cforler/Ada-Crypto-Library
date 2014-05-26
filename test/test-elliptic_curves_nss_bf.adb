@@ -20,15 +20,15 @@ package body Test.Elliptic_Curves_NSS_BF is
 
 	package NSS_BF is new EC.NSS_BF;
 
-	A: Big.Big_Unsigned := Big_Unsigned_Zero + 8;
-	B: Big.Big_Unsigned := Big_Unsigned_Zero + 9;
-	Z: Big.Big_Unsigned := Big_Unsigned_Zero + 19;
+   A: constant Big.Big_Unsigned := Big_Unsigned_Zero + 8;
+   B: constant Big.Big_Unsigned := Big_Unsigned_Zero + 9;
+   Z: constant Big.Big_Unsigned := Big_Unsigned_Zero + 19;
 
-	P1:   EC_Point := (Big_Unsigned_Zero + 2#0010#, Big_Unsigned_Zero + 2#1111#);
-	P2:   EC_Point := (Big_Unsigned_Zero + 2#1100#, Big_Unsigned_Zero + 2#1100#);
+   P1: constant EC_Point := (Big_Unsigned_Zero + 2#0010#, Big_Unsigned_Zero + 2#1111#);
+   P2: constant EC_Point := (Big_Unsigned_Zero + 2#1100#, Big_Unsigned_Zero + 2#1100#);
 	P3:   EC_Point;
 	Temp: EC_Point := (Big_Unsigned_Zero + 2#0001#, Big_Unsigned_Zero + 2#0001#);
-   	ECP3 : EC_Point := EC.EC_Point_Infinity;
+   ECP3 : constant EC_Point := EC.EC_Point_Infinity;
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------

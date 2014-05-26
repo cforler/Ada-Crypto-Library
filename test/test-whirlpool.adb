@@ -10,12 +10,12 @@ package body Test.Whirlpool is
 ----------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------
    
-	S1: String := "abc";
-	S6 : String := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+   S1: constant String := "abc";
+   S6 : constant String := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
    	  
-	File1: String :="hash_message1.txt";
-   	File3: String :="hash_message3.txt";
-	File6: String :="hash_message6.txt";
+   File1: constant String :="hash_message1.txt";
+   File3: constant String :="hash_message3.txt";
+   File6: constant String :="hash_message6.txt";
 
 	Result: Crypto.Types.DW_Block512;
 	  
@@ -75,7 +75,7 @@ package body Test.Whirlpool is
       use AUnit.Assertions; 
       use Crypto.Symmetric.Hashfunction_Whirlpool;
 	  use Crypto.Types; 
-    begin
+   begin
     	
     	Result := (
     			   16#0C99005BEB57EFF5#, 16#0A7CF005560DDF5D#,
@@ -86,7 +86,7 @@ package body Test.Whirlpool is
       
       Assert(F_Hash(File3) = Result, "Hashfunction Whirlpool1 failed with String 2 and File 2.");
 	
-	 end Whirlpool_Test2;
+   end Whirlpool_Test2;
 
 ----------------------------------------------------------------------------------------
 ---------------------------------------- Test 3 ----------------------------------------
@@ -96,9 +96,9 @@ package body Test.Whirlpool is
       use AUnit.Assertions; 
       use Crypto.Symmetric.Hashfunction_Whirlpool;
 	  use Crypto.Types; 
-    begin
+        begin
     	
-    	Result := (
+      Result := (
                    16#DC37E008CF9EE69B#, 16#F11F00ED9ABA2690#,
                    16#1DD7C28CDEC066CC#, 16#6AF42E40F82F3A1E#,
                    16#08EBA26629129D8F#, 16#B7CB57211B9281A6#,

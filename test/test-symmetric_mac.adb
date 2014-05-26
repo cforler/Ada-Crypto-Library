@@ -5,7 +5,7 @@ with Crypto.Types.Random;
 with Ada.Text_IO;
 
 package body Test.Symmetric_Mac is
-use Crypto.Types;
+   use Crypto.Types;
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------

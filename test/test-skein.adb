@@ -56,12 +56,12 @@ package body Test.Skein is
       use AUnit.Assertions;
 
 
-      Message_Short : Bytes(0..0) := (others=>Byte(0));
+      Message_Short : constant Bytes(0..0) := (others=>Byte(0));
       Message : Bytes(0..31) := (others=>Byte(0));
       Message_Long : Bytes(0..63) := (others=>Byte(0));
 
       --Target for 1 Byte 16#00# Message data
-      Target_result_Short: Bytes(0..31) :=
+      Target_result_Short: constant Bytes(0..31) :=
         (16#34#, 16#E2#, 16#B6#, 16#5B#, 16#F0#, 16#BE#, 16#66#, 16#7C#,
          16#A5#, 16#DE#, 16#BA#, 16#82#, 16#C3#, 16#7C#, 16#B2#, 16#53#,
          16#EB#, 16#9F#, 16#84#, 16#74#, 16#F3#, 16#42#, 16#6B#, 16#A6#,
@@ -69,7 +69,7 @@ package body Test.Skein is
 
       --Target for 32 Byte incrementing from 16#FF data
 
-      Target_result: Bytes(0..31) :=
+      Target_result: constant Bytes(0..31) :=
         (16#8D#, 16#0F#, 16#A4#, 16#EF#, 16#77#, 16#7F#, 16#D7#, 16#59#,
          16#DF#, 16#D4#, 16#04#, 16#4E#, 16#6F#, 16#6A#, 16#5A#, 16#C3#,
          16#C7#, 16#74#, 16#AE#, 16#C9#, 16#43#, 16#DC#, 16#FC#, 16#07#,
@@ -77,7 +77,7 @@ package body Test.Skein is
 
       --Target for 64 Byte incrementing from 16#FF data
 
-      Target_result_long: Bytes(0..31) :=
+      Target_result_long: constant Bytes(0..31) :=
         (16#DF#, 16#28#, 16#E9#, 16#16#, 16#63#, 16#0D#, 16#0B#, 16#44#,
          16#C4#, 16#A8#, 16#49#, 16#DC#, 16#9A#, 16#02#, 16#F0#, 16#7A#,
          16#07#, 16#CB#, 16#30#, 16#F7#, 16#32#, 16#31#, 16#82#, 16#56#,
@@ -154,12 +154,12 @@ package body Test.Skein is
       use AUnit.Assertions;
 
 
-      Message_Short : Bytes(0..0) := (others=>Byte(0));
+      Message_Short : constant Bytes(0..0) := (others=>Byte(0));
       Message : Bytes(0..63) := (others=>Byte(0));
       Message_Long : Bytes(0..127) := (others=>Byte(0));
 
       --Target for 1 Byte 16#00# Message data
-      Target_result_Short: Bytes(0..63) :=
+      Target_result_Short: constant Bytes(0..63) :=
         (16#40#, 16#28#, 16#5F#, 16#43#, 16#36#, 16#99#, 16#A1#, 16#D8#,
          16#C7#, 16#99#, 16#B2#, 16#76#, 16#CC#, 16#F1#, 16#80#, 16#10#,
          16#C9#, 16#DC#, 16#9D#, 16#41#, 16#8B#, 16#0E#, 16#8A#, 16#4E#,
@@ -171,7 +171,7 @@ package body Test.Skein is
 
       --Target for 64 Byte incrementing from 16#FF data
 
-      Target_result: Bytes(0..63) :=
+      Target_result: constant Bytes(0..63) :=
         (16#45#, 16#86#, 16#3B#, 16#A3#, 16#BE#, 16#0C#, 16#4D#, 16#FC#,
          16#27#, 16#E7#, 16#5D#, 16#35#, 16#84#, 16#96#, 16#F4#, 16#AC#,
          16#9A#, 16#73#, 16#6A#, 16#50#, 16#5D#, 16#93#, 16#13#, 16#B4#,
@@ -183,7 +183,7 @@ package body Test.Skein is
 
       --Target for 128 Byte incrementing from 16#FF data
 
-      Target_result_long: Bytes(0..63) :=
+      Target_result_long: constant Bytes(0..63) :=
         (16#91#, 16#CC#, 16#A5#, 16#10#, 16#C2#, 16#63#, 16#C4#, 16#DD#,
          16#D0#, 16#10#, 16#53#, 16#0A#, 16#33#, 16#07#, 16#33#, 16#09#,
          16#62#, 16#86#, 16#31#, 16#F3#, 16#08#, 16#74#, 16#7E#, 16#1B#,
@@ -256,12 +256,12 @@ package body Test.Skein is
       use AUnit.Assertions;
 
 
-      Message_Short : Bytes(0..0) := (others=>Byte(0));
+      Message_Short : constant Bytes(0..0) := (others=>Byte(0));
       Message : Bytes(0..127) := (others=>Byte(0));
       Message_Long : Bytes(0..255) := (others=>Byte(0));
 
       --Target for 1 Byte 16#00# Message data
-      Target_result_Short: Bytes(0..127) :=
+      Target_result_Short: constant Bytes(0..127) :=
         (16#CC#, 16#66#, 16#6D#, 16#D8#, 16#2A#, 16#8D#, 16#4D#, 16#A4#,
          16#88#, 16#00#, 16#26#, 16#5F#, 16#75#, 16#ED#, 16#5C#, 16#08#,
          16#94#, 16#E5#, 16#97#, 16#12#, 16#2F#, 16#6B#, 16#55#, 16#47#,
@@ -281,7 +281,7 @@ package body Test.Skein is
 
       --Target for 256 Byte incrementing from 16#FF data
 
-      Target_result: Bytes(0..127) :=
+      Target_result: constant Bytes(0..127) :=
         (16#1F#, 16#3E#, 16#02#, 16#C4#, 16#6F#, 16#B8#, 16#0A#, 16#3F#,
          16#CD#, 16#2D#, 16#FB#, 16#BC#, 16#7C#, 16#17#, 16#38#, 16#00#,
          16#B4#, 16#0C#, 16#60#, 16#C2#, 16#35#, 16#4A#, 16#F5#, 16#51#,
@@ -301,7 +301,7 @@ package body Test.Skein is
 
       --Target for 512 Byte incrementing from 16#FF data
 
-      Target_result_long: Bytes(0..127) :=
+      Target_result_long: constant Bytes(0..127) :=
         (16#84#, 16#2A#, 16#53#, 16#C9#, 16#9C#, 16#12#, 16#B0#, 16#CF#,
          16#80#, 16#CF#, 16#69#, 16#49#, 16#1B#, 16#E5#, 16#E2#, 16#F7#,
          16#51#, 16#5D#, 16#E8#, 16#73#, 16#3B#, 16#6E#, 16#A9#, 16#42#,

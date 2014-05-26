@@ -75,7 +75,7 @@ package body Test.ECIES is
       
        for I in 1 .. Input'Length loop
        	   Assert(to_string(Temp)(I) = to_string(Output)(I), "ECIES failed.");
-	   end loop;
+       end loop;
    
    end ECIES_Test1;
 

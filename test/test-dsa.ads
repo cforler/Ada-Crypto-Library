@@ -1,10 +1,8 @@
 with AUnit;
 with AUnit.Test_Cases;
-with Ada.Strings.Unbounded;
 
 package Test.DSA is
 	use AUnit;
-	use Ada.Strings.Unbounded;
 
 	type DSA_Test is new Test_Cases.Test_Case with null record;
 

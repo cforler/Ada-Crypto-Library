@@ -1,7 +1,5 @@
 with AUnit.Assertions; use AUnit.Assertions;
 with Crypto.Types;
-with Ada.Text_IO;
-with Ada.Integer_Text_IO;
 with Ada.Directories;
 with Crypto.Symmetric.KDF_PBKDF2;
 with Crypto.Symmetric.Mac.Hmac_SHA1;

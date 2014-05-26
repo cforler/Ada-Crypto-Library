@@ -8,13 +8,11 @@ with Test.Suite_Hash_Function;
 with Test.Suite_Nonces;
 with Test.Suite_Misc;
 with Test.Suite_Key_Derivation_Function;
-with AUnit.Tests;
-with AUnit.Tests;
 
 package body Test.Suite_All is
    function Suite return Test_Suites.Access_Test_Suite is
       use AUnit.Test_Suites;
-      Result : Access_Test_Suite := New_Suite;
+      Result : constant Access_Test_Suite := New_Suite;
    begin
       Result.Add_Test(Test.Suite_Asymmetric_Ciphers.Suite);
       Result.Add_Test(Test.Suite_Big_Num_All.Suite);

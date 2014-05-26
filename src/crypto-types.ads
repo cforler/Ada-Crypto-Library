@@ -129,23 +129,10 @@ package Crypto.Types is
    subtype Message_Block_Length1024 is Natural range 0 .. 128;
 
 
-   type Base64_Character_C is
-     ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-      'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b',
-      'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-      'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
-     '4', '5', '6', '7', '8' ,'9', '+', '/', '=');
-
-   type Base64_Character is
-     ('.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8' ,'9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-      'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b',
-      'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-      'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '=');
-
-   type Base64_String  is array (Positive range <>) of Base64_Character;
 
 
-   subtype Base64_SHA512Crypt is Base64_String(1..86);
+
+
 
    ---------------------------------------------------------------------------
    ---------------------------FUNCTIONS---------------------------------------
@@ -321,14 +308,6 @@ package Crypto.Types is
    function Left_Part(Block : in Bytes)  return Bytes;
    function Right_Part(Block : in Bytes) return Bytes;
 
-   -- Base64
-   function Encode_Base64(B: Bytes) return Base64_String;
-   function Four_Chars_To_Three_Bytes(B : String) return Bytes;
-   function Natural_To_Binary_String(N: Natural) return String;
-   function Binary_String_To_Natural(S : String) return Natural;
-   function Number_To_Base64_Char(N : Natural) return Character;
-   function Base64_Char_To_Number(C : Character) return Natural;
-   function Is_Valid_Base64_String(S: String) return Boolean;
 
 
    -- Nested generic package

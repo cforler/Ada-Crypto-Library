@@ -10,13 +10,13 @@ package body Test.SHA512 is
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 
-	S1: String := "abc";
-	S4: String := "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijkl"
+   S1: constant String := "abc";
+   S4: constant String := "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijkl"
 				& "mnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
 
-   	File1: String := "hash_message1.txt";
-   	File3: String := "hash_message3.txt";
-	File5: String := "hash_message5.txt";	
+   File1: constant String := "hash_message1.txt";
+   File3: constant String := "hash_message3.txt";
+   File5: constant String := "hash_message5.txt";	
 
 	Result_SHA512: Crypto.Types.DW_Block512;
 

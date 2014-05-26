@@ -10,12 +10,12 @@ package body Test.SHA256 is
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
    
-	S1: String := "abc";
-	S2: String := "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
+   S1: constant String := "abc";
+   S2: constant String := "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
    	  
-   	File1: String :="hash_message1.txt";
-   	File2: String :="hash_message2.txt";
-   	File3: String :="hash_message3.txt";
+   File1: constant String :="hash_message1.txt";
+   File2: constant String :="hash_message2.txt";
+   File3: constant String :="hash_message3.txt";
 
 	Result_SHA256: Crypto.Types.W_Block256;
 	

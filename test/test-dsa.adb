@@ -16,7 +16,7 @@ package body Test.DSA is
    package DSA is new  Crypto.Asymmetric.DSA(512);
    use DSA;
 
-    P: DSA_Number := (16#8d#, 16#f2#, 16#a4#, 16#94#, 16#49#, 16#22#,
+   P: constant DSA_Number := (16#8d#, 16#f2#, 16#a4#, 16#94#, 16#49#, 16#22#,
                       16#76#, 16#aa#, 16#3d#, 16#25#, 16#75#, 16#9b#,
                       16#b0#, 16#68#, 16#69#, 16#cb#, 16#ea#, 16#c0#,
                       16#d8#, 16#3a#, 16#fb#, 16#8d#, 16#0c#, 16#f7#,
@@ -30,7 +30,7 @@ package body Test.DSA is
 
     Q: DSA_Number := (others => 0);
 
-    G: DSA_Number := (16#62#, 16#6d#, 16#02#, 16#78#, 16#39#, 16#ea#,
+   G: constant DSA_Number := (16#62#, 16#6d#, 16#02#, 16#78#, 16#39#, 16#ea#,
                       16#0a#, 16#13#, 16#41#, 16#31#, 16#63#, 16#a5#,
                       16#5b#, 16#4c#, 16#b5#, 16#00#, 16#29#, 16#9d#,
                       16#55#, 16#22#, 16#95#, 16#6c#, 16#ef#, 16#cb#,
@@ -44,7 +44,7 @@ package body Test.DSA is
 
     X : DSA_Number := (others => 0);
 
-    Y: DSA_Number :=
+   Y: constant DSA_Number :=
     	(16#19#, 16#13#, 16#18#, 16#71#, 16#d7#, 16#5b#, 16#16#, 16#12#,
     	 16#a8#, 16#19#, 16#f2#, 16#9d#, 16#78#, 16#d1#, 16#b0#, 16#d7#,
      	 16#34#, 16#6f#, 16#7a#, 16#a7#, 16#7b#, 16#b6#, 16#2a#, 16#85#,
@@ -236,8 +236,6 @@ package body Test.DSA is
    procedure DSA_Test6(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       PComp, QComp, GComp, XComp, YComp : DSA_Number;
-      Public_Key_Comp : Public_Key_DSA;
-      Private_Key_Comp : Private_Key_DSA;
       valid : Boolean := true;
 
    begin

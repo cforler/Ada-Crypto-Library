@@ -1,7 +1,6 @@
 with AUnit.Assertions;
 with Crypto.Asymmetric.RSA;
 with Crypto.Types;
-with Ada.Text_IO;
 
 pragma Elaborate_All (Crypto.Asymmetric.RSA);
 
@@ -17,7 +16,7 @@ package body Test.RSA is
    use RSA;
    use Crypto.Types;
 
-    N: RSA_Number :=
+   N: constant RSA_Number :=
      (16#ec#, 16#d1#, 16#54#, 16#36#, 16#1e#, 16#c4#, 16#bc#, 16#9b#,
       16#5d#, 16#d8#, 16#5b#, 16#4b#, 16#24#, 16#0e#, 16#85#, 16#c7#,
       16#8c#, 16#e0#, 16#34#, 16#8a#, 16#68#, 16#11#, 16#78#, 16#5b#,
@@ -28,7 +27,7 @@ package body Test.RSA is
       16#8a#, 16#2f#, 16#70#, 16#d2#, 16#4e#, 16#bc#, 16#5f#, 16#97#);
 
 
-    E: RSA_Number :=
+   E: constant RSA_Number :=
      (16#35#, 16#d5#, 16#a4#, 16#4d#, 16#ea#, 16#ee#, 16#81#, 16#76#,
       16#25#, 16#28#, 16#3e#, 16#b8#, 16#77#, 16#bb#, 16#68#, 16#2c#,
       16#7b#, 16#0b#, 16#3d#, 16#75#, 16#0c#, 16#36#, 16#bb#, 16#c0#,
@@ -40,7 +39,7 @@ package body Test.RSA is
 
 
 
-    Phi: RSA_Number :=
+   Phi: constant RSA_Number :=
        (16#ec#, 16#d1#, 16#54#, 16#36#, 16#1e#, 16#c4#, 16#bc#, 16#9b#,
         16#5d#, 16#d8#, 16#5b#, 16#4b#, 16#24#, 16#0e#, 16#85#, 16#c7#,
         16#8c#, 16#e0#, 16#34#, 16#8a#, 16#68#, 16#11#, 16#78#, 16#5b#,
@@ -51,7 +50,7 @@ package body Test.RSA is
         16#ff#, 16#40#, 16#18#, 16#53#, 16#71#, 16#d1#, 16#c9#, 16#28#);
 
 
-    D: RSA_Number :=
+   D: constant RSA_Number :=
      (16#43#, 16#79#, 16#cf#, 16#6a#, 16#3c#, 16#3b#, 16#74#, 16#0d#,
       16#d6#, 16#34#, 16#00#, 16#0c#, 16#4d#, 16#03#, 16#43#, 16#98#,
       16#29#, 16#3c#, 16#39#, 16#3e#, 16#9c#, 16#98#, 16#5f#, 16#23#,
@@ -61,7 +60,7 @@ package body Test.RSA is
       16#3c#, 16#81#, 16#c0#, 16#4c#, 16#2b#, 16#d1#, 16#29#, 16#2c#,
       16#52#, 16#7d#, 16#04#, 16#74#, 16#5b#, 16#e3#, 16#f0#, 16#c9#);
 
-   Mess: RSA_Number :=
+   Mess: constant RSA_Number :=
      (16#43#, 16#79#, 16#cf#, 16#00#, 16#3c#, 16#3b#, 16#74#, 16#0d#,
       16#d6#, 16#34#, 16#00#, 16#0c#, 16#4d#, 16#03#, 16#43#, 16#98#,
       16#29#, 16#3c#, 16#39#, 16#3e#, 16#9c#, 16#98#, 16#5f#, 16#23#,
@@ -81,7 +80,7 @@ package body Test.RSA is
       16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
       16#00#, 16#00#, 16#00#, 16#00#, 16#49#, 16#96#, 16#02#, 16#d2#);
 
-    M: Bytes := (16#D4#, 16#36#, 16#e9#, 16#95#, 16#69#, 16#fd#, 16#32#,
+   M: constant Bytes := (16#D4#, 16#36#, 16#e9#, 16#95#, 16#69#, 16#fd#, 16#32#,
                  16#a7#, 16#c8#, 16#a0#, 16#5b#, 16#bc#, 16#90#, 16#d3#,
                  16#2c#, 16#49#);
 
@@ -92,7 +91,7 @@ package body Test.RSA is
     Private_Key: Private_Key_RSA;
     Private_Key_Comp: Private_Key_RSA;
 
-    Plain_Text: RSA_Number :=(others => 0);
+   Plain_Text: constant RSA_Number :=(others => 0);
     Cipher_Text, Plain_Text2 : RSA_Number;
 
 ------------------------------------------------------------------------------------
@@ -155,14 +154,14 @@ package body Test.RSA is
    begin
 
    	   declare
-   	   	   Ciphertext: Bytes := OAEP_Encrypt(Public_Key, M);
-		   Plaintext: Bytes := OAEP_Decrypt(Private_Key, Ciphertext);
-		   begin
+         Ciphertext: constant Bytes := OAEP_Encrypt(Public_Key, M);
+         Plaintext: constant Bytes := OAEP_Decrypt(Private_Key, Ciphertext);
+           begin
 		   	   Assert(M'Length = Plaintext'Length, "RSA failed.");
 		   	   for I in 0 .. M'Length - 1 loop
 		   	   	   Assert(Plaintext(Plaintext'First+I) = M(M'First+I), "RSA failed.");
 		   	   end loop;
-		   end;
+           end;
 
    end RSA_Test2;
 

@@ -1,19 +1,17 @@
 with AUnit.Assertions; 
 with Crypto.Asymmetric.ECDH;
-with Crypto.Types;
 
 pragma Elaborate_All (Crypto.Asymmetric.ECDH);
 
 package body Test.ECDH is
-use Crypto.Types;
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 -------------------------------- Type - Declaration --------------------------------
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 	
-package ECDH is new  Crypto.Asymmetric.ECDH(544);
-use ECDH;
+   package ECDH is new  Crypto.Asymmetric.ECDH(544);
+   use ECDH;
     
     Public_Key_A  : Public_Key_ECDH;
     Public_Key_B  : Public_Key_ECDH;

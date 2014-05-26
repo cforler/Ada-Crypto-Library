@@ -1,10 +1,8 @@
 with AUnit;
 with AUnit.Test_Cases;
-with Ada.Strings.Unbounded;
 
 package Test.SHA512Crypt is
 	use AUnit;
-	use Ada.Strings.Unbounded;
 
 	type SHA512Crypt_Test is new Test_Cases.Test_Case with null record;
 

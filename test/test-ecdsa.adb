@@ -1,6 +1,5 @@
 with AUnit.Assertions; 
 with Crypto.Asymmetric.ECDSA;
-with Crypto.Types;
 
 pragma Elaborate_All (Crypto.Asymmetric.ECDSA);
 
@@ -12,7 +11,6 @@ package body Test.ECDSA is
 	
    package ECDSA is new  Crypto.Asymmetric.ECDSA(544);
    use ECDSA;
-   use Crypto.Types;
    
     Public_Key  : Public_Key_ECDSA;
     Private_Key : Private_Key_ECDSA;

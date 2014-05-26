@@ -3,10 +3,7 @@ with Test.SHA256;
 with Test.SHA384;
 with Test.SHA512;
 with Test.Whirlpool;
-with Test.Skein;
-with Test.OCB;
-with Test.PBKDF2;
-with Test.Hmac;
+
 
 package body Test.Suite_Hash_Function is
    use AUnit.Test_Suites;

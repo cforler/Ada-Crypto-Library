@@ -6,7 +6,7 @@ with Ada.Directories;
 package body Test.Counter_Generator is
 
    procedure Register_Tests (T: in out Test_Counter_Generator) is
-   use AUnit.Test_Cases.Registration;
+      use AUnit.Test_Cases.Registration;
    begin
       Register_Routine (T, Counter_Generator_Test1'Access, "Counter Generator");
    end Register_Tests;
@@ -53,7 +53,7 @@ package body Test.Counter_Generator is
                if Result(i) = Result(j) then
                   Distinct := false;
                end if;
-               end loop;
+            end loop;
          end loop;
       Ada.Directories.Delete_File("last_nonce.txt");
       Assert(Distinct,"Counter Generator failed!");

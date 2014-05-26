@@ -27,13 +27,14 @@ with Ada.Integer_Text_IO;
 with Crypto.Debug_Put;
 
 
+
 package body Crypto.Symmetric.KDF_SHA512Crypt is
 
    --Interface and core function
    procedure Derive(This	: in out SHA512Crypt_KDF;
                     Salt	: in 	Bytes;
                     Password	: in	Bytes;
-                    Key		: out	Base64_String) is
+                    Key		: out	Base64.Base64_SHA512Crypt) is
       package SHA512 renames Crypto.Symmetric.Algorithm.SHA512;
 
       Salt_Bytes : Bytes(0..Salt'Length-1) := Salt(Salt'Range);
@@ -77,7 +78,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
       Single_Byte : Byte;
 
-      Final_String : Base64_String(1..90) := (others=>'=');
+      Final_String : Base64.Base64_String(1..90) := (others=>'=');
 
       Final_Input_Bytes : Bytes(0..2);
 
@@ -86,6 +87,20 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
       Cnt : Natural;
 
       Temp_Bytes : Bytes(0..63);
+
+
+     function Revert(Input: Base64.Base64_String) return Base64.Base64_String is
+         Return_String : Base64.Base64_String(1..4);
+      begin
+         Return_String(1) := Input(4);
+         Return_String(2) := Input(3);
+         Return_String(3) := Input(2);
+         Return_String(4) := Input(1);
+         return Return_String;
+      end Revert;
+
+
+
 
    begin
 
@@ -374,91 +389,91 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
       Final_Input_Bytes :=
         (Bytes_For_Rounds(0),Bytes_For_Rounds(21),Bytes_For_Rounds(42));
-      Final_String(1..4) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(1..4) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(22),Bytes_For_Rounds(43),Bytes_For_Rounds(1));
-      Final_String(5..8) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(5..8) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(44),Bytes_For_Rounds(2),Bytes_For_Rounds(23));
-      Final_String(9..12) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(9..12) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(3),Bytes_For_Rounds(24),Bytes_For_Rounds(45));
-      Final_String(13..16) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(13..16) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(25),Bytes_For_Rounds(46),Bytes_For_Rounds(4));
-      Final_String(17..20) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(17..20) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(47),Bytes_For_Rounds(5),Bytes_For_Rounds(26));
-      Final_String(21..24) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(21..24) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(6),Bytes_For_Rounds(27),Bytes_For_Rounds(48));
-      Final_String(25..28) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(25..28) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(28),Bytes_For_Rounds(49),Bytes_For_Rounds(7));
-      Final_String(29..32) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(29..32) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(50),Bytes_For_Rounds(8),Bytes_For_Rounds(29));
-      Final_String(33..36) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(33..36) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(9),Bytes_For_Rounds(30),Bytes_For_Rounds(51));
-      Final_String(37..40) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(37..40) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(31),Bytes_For_Rounds(52),Bytes_For_Rounds(10));
-      Final_String(41..44) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(41..44) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(53),Bytes_For_Rounds(11),Bytes_For_Rounds(32));
-      Final_String(45..48) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(45..48) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(12),Bytes_For_Rounds(33),Bytes_For_Rounds(54));
-      Final_String(49..52) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(49..52) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(34),Bytes_For_Rounds(55),Bytes_For_Rounds(13));
-      Final_String(53..56) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(53..56) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(56),Bytes_For_Rounds(14),Bytes_For_Rounds(35));
-      Final_String(57..60) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(57..60) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(15),Bytes_For_Rounds(36),Bytes_For_Rounds(57));
-      Final_String(61..64) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(61..64) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(37),Bytes_For_Rounds(58),Bytes_For_Rounds(16));
-      Final_String(65..68) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(65..68) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(59),Bytes_For_Rounds(17),Bytes_For_Rounds(38));
-      Final_String(69..72) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(69..72) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(18),Bytes_For_Rounds(39),Bytes_For_Rounds(60));
-      Final_String(73..76) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(73..76) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(40),Bytes_For_Rounds(61),Bytes_For_Rounds(19));
-      Final_String(77..80) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(77..80) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (Bytes_For_Rounds(62),Bytes_For_Rounds(20),Bytes_For_Rounds(41));
-      Final_String(81..84) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(81..84) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
       Final_Input_Bytes
         := (0,0,Bytes_For_Rounds(63));
-      Final_String(85..88) := Encode_Base64(B => Final_Input_Bytes);
+      Final_String(85..88) := Revert(Base64.Encode_Base64(B => Final_Input_Bytes));
 
 --        Error_Output.Put_Line(String(Final_String));
 
@@ -580,6 +595,22 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
    end Add_Bytes;
 
+      --returns a string of 1 and 0 from a number
+   function Natural_To_Binary_String(N: Natural) return String is
+      S: String(1 .. 1000); -- more than plenty!
+      Left:  Positive := S'First;
+      Right: Positive := S'Last;
+      package IIO is new Ada.Text_IO.Integer_IO(Integer);
+   begin
+      IIO.Put(To => S, Item => N, Base => 2);
+      while S(Left) /= '#' loop
+         Left := Left + 1;
+      end loop;
+      while S(Right) /= '#' loop
+         Right := Right - 1;
+      end loop;
+      return S(Left+1 .. Right-1);
+   end Natural_To_Binary_String;
 
 
 

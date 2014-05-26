@@ -1,7 +1,6 @@
 with AUnit.Assertions;
 with Crypto.Types;
 use Crypto.Types;
-with Ada; use Ada;
 with Ada.Text_IO;
 
 package body Test.Types is
@@ -65,7 +64,7 @@ package body Test.Types is
 
    procedure Types_Test1(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I : Crypto.Types.Byte_DWord := (2, 1, 1, 1, 1, 1, 1, 1);
+      I : constant Crypto.Types.Byte_DWord := (2, 1, 1, 1, 1, 1, 1, 1);
       O : Crypto.Types.DWord;
    begin
       O := Crypto.Types.R_To_DWord(I);
@@ -79,7 +78,7 @@ package body Test.Types is
 
    procedure Types_Test2(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I : Crypto.Types.DWord := 2#0000000100000001000000010000000100000001000000010000000100000010#;
+      I : constant Crypto.Types.DWord := 2#0000000100000001000000010000000100000001000000010000000100000010#;
       O : Crypto.Types.Byte_DWord;
    begin
       O := Crypto.Types.R_To_Bytes(I);
@@ -93,10 +92,10 @@ package body Test.Types is
 
    procedure Types_Test3(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Byte := 2#00000101#;
-      I2 : Crypto.Types.Bytes(0..1) := (2#00000001#,2#00000010#);
+      I1 : constant Crypto.Types.Byte := 2#00000101#;
+      I2 : constant Crypto.Types.Bytes(0..1) := (2#00000001#,2#00000010#);
       O  : Crypto.Types.Bytes(0..1);
-      Confirmed_O : Crypto.Types.Bytes(0..1) := (2#00000001#,2#00000111#);
+      Confirmed_O : constant Crypto.Types.Bytes(0..1) := (2#00000001#,2#00000111#);
    begin
       O := I2 xor I1;
 
@@ -195,10 +194,10 @@ package body Test.Types is
       use AUnit.Assertions;
       I : Crypto.Types.Words(0..1);
       O : Crypto.Types.Bytes(0..7);
-      I_W256 : Crypto.Types.W_Block256 := (others => 0);
+      I_W256 : constant Crypto.Types.W_Block256 := (others => 0);
       O_W256 : Crypto.Types.Bytes(0..31);
       O2_W256 : Crypto.Types.Bytes(0..31);
-      I_W512 : Crypto.Types.W_Block512 := (others => 0);
+      I_W512 : constant Crypto.Types.W_Block512 := (others => 0);
       O_W512 : Crypto.Types.Bytes(0..63);
       O2_W512 : Crypto.Types.Bytes(0..63);
    begin
@@ -225,8 +224,8 @@ package body Test.Types is
 
    procedure Types_Test9(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Bytes(0..9) := (0,0,0,0,0,0,0,0,0,0);
-      I2 : Crypto.Types.Bytes(0..9) := (0,0,0,0,1,0,0,0,0,0);
+      I1 : constant Crypto.Types.Bytes(0..9) := (0,0,0,0,0,0,0,0,0,0);
+      I2 : constant Crypto.Types.Bytes(0..9) := (0,0,0,0,1,0,0,0,0,0);
       O1 : Boolean;
       O2 : Boolean;
    begin
@@ -242,9 +241,9 @@ package body Test.Types is
 
    procedure Types_Test10(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Words(0..1) := (16#00000000#,16#FFFFFFFF#);
-      I2 : Crypto.Types.Word := 16#00000001#;
-      I3 : Crypto.Types.Words(0..2) := (16#FFFFFFFF#,16#FFFFFFFF#, 16#FFFFFFFF#);
+      I1 : constant Crypto.Types.Words(0..1) := (16#00000000#,16#FFFFFFFF#);
+      I2 : constant Crypto.Types.Word := 16#00000001#;
+      I3 : constant Crypto.Types.Words(0..2) := (16#FFFFFFFF#,16#FFFFFFFF#, 16#FFFFFFFF#);
       O1 : Crypto.Types.Words(0..1);
       O2 : Crypto.Types.Words(0..1);
       O3 : Crypto.Types.Words(0..2);
@@ -264,9 +263,9 @@ package body Test.Types is
 
    procedure Types_Test11(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Bytes(0..1) := (16#00#,16#FF#);
-      I2 : Crypto.Types.Byte := 16#01#;
-      I3 : Crypto.Types.Bytes(0..2) := (16#FF#,16#FF#,16#FF#);
+      I1 : constant Crypto.Types.Bytes(0..1) := (16#00#,16#FF#);
+      I2 : constant Crypto.Types.Byte := 16#01#;
+      I3 : constant Crypto.Types.Bytes(0..2) := (16#FF#,16#FF#,16#FF#);
       O1 : Crypto.Types.Bytes(0..1);
       O2 : Crypto.Types.Bytes(0..1);
       O3 : Crypto.Types.Bytes(0..2);
@@ -285,9 +284,9 @@ package body Test.Types is
 
    procedure Types_Test12(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Words(0..1) := (16#00000000#,16#FFFFFFFF#);
-      I2 : Crypto.Types.Byte := 16#01#;
-      I3 : Crypto.Types.Words(0..2) := (16#FFFFFFFF#,16#FFFFFFFF#,16#FFFFFFFF#);
+      I1 : constant Crypto.Types.Words(0..1) := (16#00000000#,16#FFFFFFFF#);
+      I2 : constant Crypto.Types.Byte := 16#01#;
+      I3 : constant Crypto.Types.Words(0..2) := (16#FFFFFFFF#,16#FFFFFFFF#,16#FFFFFFFF#);
       O1 : Crypto.Types.Words(0..1);
       O2 : Crypto.Types.Words(0..2);
    begin
@@ -304,9 +303,9 @@ package body Test.Types is
 
    procedure Types_Test13(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.DWords(0..1) := (16#0000000000000000#,16#FFFFFFFFFFFFFFFF#);
-      I2 : Crypto.Types.DWord := 16#0000000000000001#;
-      I3 : Crypto.Types.DWords(0..2) := (16#FFFFFFFFFFFFFFFF#,16#FFFFFFFFFFFFFFFF#,16#FFFFFFFFFFFFFFFF#);
+      I1 : constant Crypto.Types.DWords(0..1) := (16#0000000000000000#,16#FFFFFFFFFFFFFFFF#);
+      I2 : constant Crypto.Types.DWord := 16#0000000000000001#;
+      I3 : constant Crypto.Types.DWords(0..2) := (16#FFFFFFFFFFFFFFFF#,16#FFFFFFFFFFFFFFFF#,16#FFFFFFFFFFFFFFFF#);
       O1 : Crypto.Types.DWords(0..1);
       O2 : Crypto.Types.DWords(0..1);
       O3 : Crypto.Types.DWords(0..2);
@@ -325,9 +324,9 @@ package body Test.Types is
 
    procedure Types_Test14(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.DWords(0..1) := (16#0000000000000000#,16#FFFFFFFFFFFFFFFF#);
-      I2 : Crypto.Types.Byte := 16#01#;
-      I3 : Crypto.Types.DWords(0..2) := (16#FFFFFFFFFFFFFFFF#,16#FFFFFFFFFFFFFFFF#,16#FFFFFFFFFFFFFFFF#);
+      I1 : constant Crypto.Types.DWords(0..1) := (16#0000000000000000#,16#FFFFFFFFFFFFFFFF#);
+      I2 : constant Crypto.Types.Byte := 16#01#;
+      I3 : constant Crypto.Types.DWords(0..2) := (16#FFFFFFFFFFFFFFFF#,16#FFFFFFFFFFFFFFFF#,16#FFFFFFFFFFFFFFFF#);
       O1 : Crypto.Types.DWords(0..1);
       O2 : Crypto.Types.DWords(0..2);
    begin
@@ -357,7 +356,7 @@ package body Test.Types is
 
    procedure Types_Test16(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I : Crypto.Types.DWord := 16#0102030405060708#;
+      I : constant Crypto.Types.DWord := 16#0102030405060708#;
       O : Crypto.Types.Byte_DWord;
    begin
       O := Crypto.Types.To_Bytes(I);
@@ -371,8 +370,8 @@ package body Test.Types is
 
    procedure Types_Test17(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Words(0..1) := (2#00000000_00000000_00000000_00000101#,2#00000000_00000000_00000000_00000101#);
-      I2 : Crypto.Types.Words(0..1) := (2#00000000_00000000_00000000_00000001#,2#00000000_00000000_00000000_00000010#);
+      I1 : constant Crypto.Types.Words(0..1) := (2#00000000_00000000_00000000_00000101#,2#00000000_00000000_00000000_00000101#);
+      I2 : constant Crypto.Types.Words(0..1) := (2#00000000_00000000_00000000_00000001#,2#00000000_00000000_00000000_00000010#);
       O  : Crypto.Types.Words(0..1);
    begin
       O := I2 xor I1;
@@ -386,7 +385,7 @@ package body Test.Types is
 
    procedure Types_Test21(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.DWords(0..0) := (0 => 16#10_20_30_40_50_60_70_80#);
+      I1 : constant Crypto.Types.DWords(0..0) := (0 => 16#10_20_30_40_50_60_70_80#);
       O1 : Crypto.Types.Bytes(0..7);
    begin
       O1 := Crypto.Types.To_Bytes(I1);
@@ -400,7 +399,7 @@ package body Test.Types is
 
    procedure Types_Test22(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Word := 16#10_20_30_40#;
+      I1 : constant Crypto.Types.Word := 16#10_20_30_40#;
       O1 : Crypto.Types.Hex_Word;
    begin
       O1 := Crypto.Types.To_Hex(I1);
@@ -414,7 +413,7 @@ package body Test.Types is
 
    procedure Types_Test23(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.DWord := 16#10_20_30_40_50_60_70_80#;
+      I1 : constant Crypto.Types.DWord := 16#10_20_30_40_50_60_70_80#;
       O1 : Crypto.Types.Hex_DWord;
    begin
       O1 := Crypto.Types.To_Hex(I1);
@@ -428,7 +427,7 @@ package body Test.Types is
 
    procedure Types_Test24(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Bytes(0..3) := (16#10#,16#20#,16#30#,16#40#);
+      I1 : constant Crypto.Types.Bytes(0..3) := (16#10#,16#20#,16#30#,16#40#);
       O1 : Crypto.Types.Bytes(0..1);
    begin
       O1 := Crypto.Types.Left_Part(I1);
@@ -442,7 +441,7 @@ package body Test.Types is
 
    procedure Types_Test25(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Bytes(0..3) := (16#10#,16#20#,16#30#,16#40#);
+      I1 : constant Crypto.Types.Bytes(0..3) := (16#10#,16#20#,16#30#,16#40#);
       O1 : Crypto.Types.Bytes(0..1);
    begin
       O1 := Crypto.Types.Right_Part(I1);
@@ -456,7 +455,7 @@ package body Test.Types is
 
    procedure Types_Test26(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.DW_Block512 := (16#10_20_30_40_50_60_70_80#, 16#11_21_31_41_51_61_71_81#,
+      I1 : constant Crypto.Types.DW_Block512 := (16#10_20_30_40_50_60_70_80#, 16#11_21_31_41_51_61_71_81#,
                                         16#12_22_32_42_52_62_72_82#, 16#13_23_33_43_53_63_73_83#,
                                         16#14_24_34_44_54_64_74_84#, 16#15_25_35_45_55_65_75_85#,
                                        	16#16_26_36_46_56_66_76_86#, 16#17_27_37_47_57_67_77_87#);
@@ -480,7 +479,7 @@ package body Test.Types is
 
    procedure Types_Test27(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Bytes(0..7) := (16#10#,16#20#,16#30#,16#40#,16#50#,16#60#,16#70#,16#80#);
+      I1 : constant Crypto.Types.Bytes(0..7) := (16#10#,16#20#,16#30#,16#40#,16#50#,16#60#,16#70#,16#80#);
       O1 : Crypto.Types.B_Block64;
    begin
       O1 := Crypto.Types.To_B_Block64(I1);
@@ -494,7 +493,7 @@ package body Test.Types is
 
    procedure Types_Test28(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Bytes(0..15) := (16#10#,16#20#,16#30#,16#40#,16#50#,16#60#,16#70#,16#80#,
+      I1 : constant Crypto.Types.Bytes(0..15) := (16#10#,16#20#,16#30#,16#40#,16#50#,16#60#,16#70#,16#80#,
                                        	16#11#,16#21#,16#31#,16#41#,16#51#,16#61#,16#71#,16#81#);
       O1 : Crypto.Types.B_Block128;
    begin
@@ -510,7 +509,7 @@ package body Test.Types is
 
    procedure Types_Test29(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Bytes(0..23) := (16#10#,16#20#,16#30#,16#40#,16#50#,16#60#,16#70#,16#80#,
+      I1 : constant Crypto.Types.Bytes(0..23) := (16#10#,16#20#,16#30#,16#40#,16#50#,16#60#,16#70#,16#80#,
                                         16#11#,16#21#,16#31#,16#41#,16#51#,16#61#,16#71#,16#81#,
                                        	16#12#,16#22#,16#32#,16#42#,16#52#,16#62#,16#72#,16#82#);
       O1 : Crypto.Types.B_Block192;
@@ -528,7 +527,7 @@ package body Test.Types is
 
    procedure Types_Test30(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Bytes(0..31) := (16#10#,16#20#,16#30#,16#40#,16#50#,16#60#,16#70#,16#80#,
+      I1 : constant Crypto.Types.Bytes(0..31) := (16#10#,16#20#,16#30#,16#40#,16#50#,16#60#,16#70#,16#80#,
                                         16#11#,16#21#,16#31#,16#41#,16#51#,16#61#,16#71#,16#81#,
                                         16#12#,16#22#,16#32#,16#42#,16#52#,16#62#,16#72#,16#82#,
                                        	16#13#,16#23#,16#33#,16#43#,16#53#,16#63#,16#73#,16#83#);
@@ -548,9 +547,10 @@ package body Test.Types is
 
    procedure Types_Test31(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Words(0..1) := (2#00000000_00000000_00000000_00000101#,2#00000000_00000000_00000000_00000101#);
-      I2 : Crypto.Types.Words(0..0) := (0 => 2#00000000_00000000_00000000_00000001#);
+      I1 : constant Crypto.Types.Words(0..1) := (2#00000000_00000000_00000000_00000101#,2#00000000_00000000_00000000_00000101#);
+      I2 : constant Crypto.Types.Words(0..0) := (0 => 2#00000000_00000000_00000000_00000001#);
       O  : Crypto.Types.Words(0..1);
+      pragma Unreferenced (O);
    begin
       O := I2 xor I1;
 
@@ -566,8 +566,8 @@ package body Test.Types is
 
    procedure Types_Test32(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Bytes(0..1) := (2#00000000#,2#00000000#);
-      I2 : Crypto.Types.Bytes(0..0) := (0 => 2#00000000#);
+      I1 : constant Crypto.Types.Bytes(0..1) := (2#00000000#,2#00000000#);
+      I2 : constant Crypto.Types.Bytes(0..0) := (0 => 2#00000000#);
       O  : Crypto.Types.Bytes(0..1);
    begin
       O := I2 xor I1;
@@ -584,8 +584,8 @@ package body Test.Types is
 
    procedure Types_Test33(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.DWords(0..1) := (16#00_00_00_00_00_00_00_00#,16#00_00_00_00_00_00_00_00#);
-      I2 : Crypto.Types.DWords(0..0) := (0 => 16#00_00_00_00_00_00_00_00#);
+      I1 : constant Crypto.Types.DWords(0..1) := (16#00_00_00_00_00_00_00_00#,16#00_00_00_00_00_00_00_00#);
+      I2 : constant Crypto.Types.DWords(0..0) := (0 => 16#00_00_00_00_00_00_00_00#);
       O  : Crypto.Types.DWords(0..1);
    begin
       O := I2 xor I1;
@@ -602,8 +602,8 @@ package body Test.Types is
 
    procedure Types_Test34(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-      I1 : Crypto.Types.Byte := 16#00#;
-      I2 : Crypto.Types.Byte := 16#25#;
+      I1 : constant Crypto.Types.Byte := 16#00#;
+      I2 : constant Crypto.Types.Byte := 16#25#;
       O1 : Crypto.Types.Hex_Byte;
       O2 : Crypto.Types.Hex_Byte;
    begin

@@ -8,8 +8,8 @@ pragma Elaborate_All(Crypto.Symmetric.Mac.Rmac);
 pragma Elaborate_All(Crypto.Types);
 
 package body Test.RMAC is
-use Crypto.Types;
-use Crypto.Types.Random;
+   use Crypto.Types;
+   use Crypto.Types.Random;
 -----------------------------------------------------------------------------
    -----------------------------------------------------------------------------
    ---------------------------- Type - Declaration -----------------------------
@@ -30,11 +30,11 @@ use Crypto.Types.Random;
    R:   B_Block128;
     Tag: B_Block128;
 
-    M: B_Block256 :=  B_Block256(To_Bytes("ALL YOUR BASE ARE BELONG TO US! "));
-    Message: RMAC.Blocks(0..1) := (0 => B_Block128(M(0..15)),
+   M: constant B_Block256 :=  B_Block256(To_Bytes("ALL YOUR BASE ARE BELONG TO US! "));
+   Message: constant RMAC.Blocks(0..1) := (0 => B_Block128(M(0..15)),
                                    1 => B_Block128(M(16..31)));
 
-   Short_Message:  B_Block128 := (16#00#, 16#11#, 16#22#, 16#33#, 16#44#,
+   Short_Message: constant B_Block128 := (16#00#, 16#11#, 16#22#, 16#33#, 16#44#,
 				 16#55#, 16#66#, 16#77#, 16#88#, 16#99#,
 				 16#aa#, 16#bb#, 16#cc#, 16#dd#, 16#ee#,
 				 16#ff#);
@@ -61,6 +61,7 @@ use Crypto.Types.Random;
     ----------------------------------------------------------------------------
 
     function Name(T : RMAC_Test) return Test_String is
+      pragma Unreferenced (T);
     begin
        return new String'("RMAC Test");
     end Name;
@@ -73,6 +74,7 @@ use Crypto.Types.Random;
     ----------------------------------------------------------------------------
 
     procedure RMAC_Test1(T : in out Test_Cases.Test_Case'Class) is
+      pragma Unreferenced (T);
        use AUnit.Assertions;
     begin
        RMAC.Sign(Message, Key1, Key2, R, Tag);
@@ -85,6 +87,7 @@ use Crypto.Types.Random;
     ----------------------------------------------------------------------------
 
     procedure RMAC_Test2(T : in out Test_Cases.Test_Case'Class) is
+      pragma Unreferenced (T);
        use AUnit.Assertions;
     begin
       RMAC.Init(Key1 => Key1,

@@ -1,11 +1,9 @@
 with AUnit;
 with AUnit.Test_Cases;
-with Ada.Strings.Unbounded;
 with Crypto.Debug_Put;
 
 package Test.Skein is
    use AUnit;
-   use Ada.Strings.Unbounded;
 
    type Skein_Test is new Test_Cases.Test_Case with null record;
 

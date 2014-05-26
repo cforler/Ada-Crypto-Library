@@ -15,29 +15,29 @@ package body Test.SHA512_MAC is
 	package DIO is new Ada.Text_IO.Modular_IO (DWord);
 	use DIO;
 	
-    Key1: DW_Block1024 := (0 => 16#0b_0b_0b_0b_0b_0b_0b_0b#,
+   Key1: constant DW_Block1024 := (0 => 16#0b_0b_0b_0b_0b_0b_0b_0b#,
                            1 => 16#0b_0b_0b_0b_0b_0b_0b_0b#,
                            2 => 16#0b_0b_0b_0b_00_00_00_00#,
                            others  => 0);
     
     
-    Message1: DW_Block1024 := (0 => 16#48_69_20_54_68_65_72_65#,
+   Message1: constant DW_Block1024 := (0 => 16#48_69_20_54_68_65_72_65#,
                                others => 0);
 
-    Key2:  DW_Block1024 := (0 => 16#4a_65_66_65_00_00_00_00#, others  => 0);
+   Key2: constant DW_Block1024 := (0 => 16#4a_65_66_65_00_00_00_00#, others  => 0);
    
-    Message2: DW_Block1024 := (0 => 16#77_68_61_74_20_64_6f_20#,
+   Message2: constant DW_Block1024 := (0 => 16#77_68_61_74_20_64_6f_20#,
                                1 => 16#79_61_20_77_61_6e_74_20#,
                                2 => 16#66_6f_72_20_6e_6f_74_68#,
                                3 => 16#69_6e_67_3f_00_00_00_00#,
                                others  => 0);
     
-    Key3: DW_Block1024 := (0 => 16#Aa_Aa_Aa_Aa_Aa_Aa_Aa_Aa#,
+   Key3: constant DW_Block1024 := (0 => 16#Aa_Aa_Aa_Aa_Aa_Aa_Aa_Aa#,
                            1 => 16#Aa_Aa_Aa_Aa_Aa_Aa_Aa_Aa#,
                            2 => 16#Aa_Aa_Aa_Aa_00_00_00_00#,
                            others => 0);
     
-    Message3: DW_Block1024 := (0..5 => 16#Dd_Dd_Dd_Dd_Dd_Dd_Dd_Dd#,
+   Message3: constant DW_Block1024 := (0..5 => 16#Dd_Dd_Dd_Dd_Dd_Dd_Dd_Dd#,
                                6 =>    16#Dd_Dd_00_00_00_00_00_00#,
                                others => 0);
     

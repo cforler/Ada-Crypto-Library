@@ -1,6 +1,5 @@
 with AUnit.Assertions;
 with Crypto.Types.Random;
-with Crypto.Types.Random_Source.File;
 with Crypto.Types;
 
 package body Test.Random is

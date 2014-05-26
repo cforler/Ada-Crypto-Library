@@ -28,14 +28,14 @@ package body Test.CMAC is
                                 Shift_Left => Shift_Left,
 				"xor" => "xor");
 
-   Key128 : B_Block128 := (16#2b#, 16#7e#, 16#15#, 16#16#, 16#28#, 16#ae#,
+   Key128 : constant B_Block128 := (16#2b#, 16#7e#, 16#15#, 16#16#, 16#28#, 16#ae#,
 			   16#d2#, 16#a6#, 16#ab#, 16#f7#, 16#15#, 16#88#,
 			   16#09#, 16#cf#, 16#4f#, 16#3c#);
 
    Tag128: B_Block128;
    Tag128_To_Be_Tested : B_Block128;
 
-   Key192 : B_Block192 := (16#8e#, 16#73#, 16#b0#, 16#f7#, 16#da#, 16#0e#,
+   Key192 : constant B_Block192 := (16#8e#, 16#73#, 16#b0#, 16#f7#, 16#da#, 16#0e#,
 			   16#64#, 16#52#, 16#c8#, 16#10#, 16#f3#, 16#2b#,
 			   16#80#, 16#90#, 16#79#, 16#e5#, 16#62#, 16#f8#, 
 			   16#ea#, 16#d2#, 16#52#, 16#2c#, 16#6b#, 16#7b#);
@@ -85,7 +85,7 @@ package body Test.CMAC is
        use AUnit.Assertions;
        use CMAC128;
        use Ada.Text_IO;
-       Message: CMAC128.Blocks(1..1) := (1=>(others=>0));
+      Message: constant CMAC128.Blocks(1..1) := (1=>(others=>0));
     begin
        Tag128_To_Be_Tested:= (16#bb#, 16#1d#, 16#69#, 16#29#, 16#e9#, 16#59#,
 			   16#37#, 16#28#, 16#7f#, 16#a3#, 16#7d#, 16#12#,
@@ -103,7 +103,7 @@ package body Test.CMAC is
        use AUnit.Assertions;
        use CMAC128;
        use Ada.Text_IO;
-       Message: CMAC128.Blocks(1..1) := 
+      Message: constant CMAC128.Blocks(1..1) := 
 		      (1=>(16#6b#, 16#c1#, 16#be#, 16#e2#, 16#2e#, 16#40#,
 			   16#9f#, 16#96#, 16#e9#, 16#3d#, 16#7e#, 16#11#,
 			   16#73#, 16#93#, 16#17#, 16#2a#));
@@ -124,7 +124,7 @@ package body Test.CMAC is
        use AUnit.Assertions;
        use CMAC128;
        use Ada.Text_IO;
-       Message: CMAC128.Blocks(1..3) := 
+      Message: constant CMAC128.Blocks(1..3) := 
                       (1=>(16#6b#, 16#c1#, 16#be#, 16#e2#, 16#2e#, 16#40#,
 			   16#9f#, 16#96#, 16#e9#, 16#3d#, 16#7e#, 16#11#,
 			   16#73#, 16#93#, 16#17#, 16#2a#),
@@ -150,7 +150,7 @@ package body Test.CMAC is
        use AUnit.Assertions;
        use CMAC128;
        use Ada.Text_IO;
-       Message: CMAC128.Blocks(1..4) := 
+      Message: constant CMAC128.Blocks(1..4) := 
 		      (1=>(16#6b#, 16#c1#, 16#be#, 16#e2#, 16#2e#, 16#40#,
 			   16#9f#, 16#96#, 16#e9#, 16#3d#, 16#7e#, 16#11#,
 			   16#73#, 16#93#, 16#17#, 16#2a#),
@@ -180,7 +180,7 @@ package body Test.CMAC is
        use AUnit.Assertions;
        use CMAC192;
        use Ada.Text_IO;
-       Message: CMAC192.Blocks(1..1) := (1=>(others=>0));
+      Message: constant CMAC192.Blocks(1..1) := (1=>(others=>0));
     begin
        Tag192_To_Be_Tested:= (16#d1#, 16#7d#, 16#df#, 16#46#, 16#ad#, 16#aa#,
 			   16#cd#, 16#e5#, 16#31#, 16#ca#, 16#c4#, 16#83#,
@@ -198,7 +198,7 @@ package body Test.CMAC is
        use AUnit.Assertions;
        use CMAC192;
        use Ada.Text_IO;
-       Message: CMAC192.Blocks(1..1) := 
+      Message: constant CMAC192.Blocks(1..1) := 
 		      (1=>(16#6b#, 16#c1#, 16#be#, 16#e2#, 16#2e#, 16#40#,
 			   16#9f#, 16#96#, 16#e9#, 16#3d#, 16#7e#, 16#11#,
 			   16#73#, 16#93#, 16#17#, 16#2a#));
@@ -219,7 +219,7 @@ package body Test.CMAC is
        use AUnit.Assertions;
        use CMAC192;
        use Ada.Text_IO;
-       Message: CMAC192.Blocks(1..3) := 
+      Message: constant CMAC192.Blocks(1..3) := 
 		      (1=>(16#6b#, 16#c1#, 16#be#, 16#e2#, 16#2e#, 16#40#,
 			   16#9f#, 16#96#, 16#e9#, 16#3d#, 16#7e#, 16#11#,
 			   16#73#, 16#93#, 16#17#, 16#2a#),
@@ -245,7 +245,7 @@ package body Test.CMAC is
        use AUnit.Assertions;
        use CMAC192;
        use Ada.Text_IO;
-       Message: CMAC192.Blocks(1..4) := 
+      Message: constant CMAC192.Blocks(1..4) := 
 		      (1=>(16#6b#, 16#c1#, 16#be#, 16#e2#, 16#2e#, 16#40#,
 			   16#9f#, 16#96#, 16#e9#, 16#3d#, 16#7e#, 16#11#,
 			   16#73#, 16#93#, 16#17#, 16#2a#),

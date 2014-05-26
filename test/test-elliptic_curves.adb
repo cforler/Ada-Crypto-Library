@@ -1,11 +1,9 @@
 with Crypto.Types.Elliptic_Curves.Zp.Database;
 with Crypto.Symmetric.Hashfunction_SHA1;
 with Crypto.Types.Big_Numbers;
-with Crypto.Types.Random;
 with AUnit.Assertions;
 with Crypto.Types;
 with Ada.Text_IO; 
-with Text_IO;
 
 pragma Elaborate_All (Crypto.Types.Big_Numbers);
 pragma Elaborate_All (Crypto.Types.Elliptic_Curves);
@@ -60,7 +58,7 @@ package body Test.Elliptic_curves is
       ECZ: ZP.Elliptic_Curve_Zp;
       ECP: EC.EC_Point;
       order: Big_Unsigned;
-      length: DB.Bit_Length := 5;
+      length: constant DB.Bit_Length := 5;
 
    begin
       DB.Get_Elliptic_Curve(		     	     ECZ    => ECZ ,
@@ -86,7 +84,7 @@ package body Test.Elliptic_curves is
       ECZ: ZP.Elliptic_Curve_Zp;
       ECP: EC.EC_Point;
       order: Big_Unsigned;
-      length: DB.Bit_Length := 524;
+      length: constant DB.Bit_Length := 524;
 
       procedure Test_Raising_Exception is
       begin
@@ -98,7 +96,7 @@ package body Test.Elliptic_curves is
 
       end Test_Raising_Exception;
 
-	begin
+   begin
 
       Assert_Exception(Proc    => Test_Raising_Exception'Unrestricted_Access,
                        Message => "Exception test failed");

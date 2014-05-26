@@ -1,14 +1,7 @@
-with Test.SHA1;
-with Test.SHA256;
-with Test.SHA384;
-with Test.SHA512;
-with Test.Whirlpool;
 with Test.Skein;
-with Test.OCB;
 with Test.SHA512Crypt;
 with Test.PBKDF2;
 with Test.Scrypt;
-with Test.Hmac;
 
 package body Test.Suite_Key_Derivation_Function is
    use AUnit.Test_Suites;
