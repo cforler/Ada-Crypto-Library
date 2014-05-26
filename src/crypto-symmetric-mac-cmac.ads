@@ -2,7 +2,6 @@ with Crypto.Symmetric.Oneway_Blockcipher;
 
 generic
    with package C is new Crypto.Symmetric.Oneway_Blockcipher(<>);
-   with function Shift_Left (Value: C.Block; Amount: Natural) return C.Block;
    with function "xor" (Left, Right : C.Block)    return C.Block is <>;
 
 package Crypto.Symmetric.MAC.CMAC is

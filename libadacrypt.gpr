@@ -55,7 +55,7 @@ project LibAdaCrypt is
    end Builder;
 
    package Compiler is
-      for Default_Switches ("ada") use ("-O2", "-gnatn", "-gnat12");
+      for Default_Switches ("ada") use ("-gnatwa", "-O2", "-gnatn", "-gnat12");
    end Compiler;
 
 end LibAdaCrypt;

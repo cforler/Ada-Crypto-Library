@@ -25,7 +25,6 @@
 
 --with skein_nodebug;         use skein_nodebug;
 with Ada.Characters.Handling;               use Ada.Characters.Handling;
-with Ada.Strings.Unbounded;                 use Ada.Strings.Unbounded;
 with Ada.Numerics;
 with Ada.Numerics.Discrete_Random;
 with Ada.Text_IO;			    use Ada.Text_IO;
@@ -301,6 +300,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
       tweaks : Threefish_Tweaks'Class)
       return   Boolean
    is
+      pragma Unreferenced (tweaks);
    begin
       return keys.data'Last = Get_Last_Word_Index (mode);
    end Threefish_Mode_Check;
@@ -312,15 +312,15 @@ package body Crypto.Symmetric.Algorithm.Threefish is
       Plaintext        : in Bytes;
       Result           : out Bytes)
    is
-      words    : Threefish_Words'Class  :=
+      words    : constant Threefish_Words'Class  :=
         Make_Words
            (mode => Threefish.Skein_Mode_To_Threefish_Mode (Mode),
             SWA  => Bytes_To_Dwords (Plaintext));
-      Keys     : Threefish_Keys'Class   :=
+      Keys     : constant Threefish_Keys'Class   :=
         Make_Keys
            (mode => Threefish.Skein_Mode_To_Threefish_Mode (Mode),
             SWA  => Bytes_To_Dwords (Block_Cipher_Key));
-      tweaks   : Threefish_Tweaks'Class :=
+      tweaks   : constant Threefish_Tweaks'Class :=
         Make_Tweaks
            (mode => Threefish.Skein_Mode_To_Threefish_Mode (Mode),
             SWA  => Bytes_To_Dwords (Tweak));
@@ -350,12 +350,12 @@ package body Crypto.Symmetric.Algorithm.Threefish is
       Outwords  : out Threefish_Words'Class;
       Talk_Mode : in Boolean := False)
    is
+      pragma Unreferenced (Talk_Mode);
 
       --we calculate the Extended Keys here (KeyShedule)
       Extended_Keys : Threefish_Extended_Keys (Get_Last_Word_Index (Mode));
 
       --we have to count the rounds and the keyinjections
-      Round_Counter : Natural := 0;
 
       --some vaiales needed for the MIX-operations
       TOTAL_NUMBER_OF_MIX_OPERATIONS_PER_ROUND : constant Natural :=
@@ -417,6 +417,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
       outwords  : out Threefish_Words'Class;
       Talk_Mode : in Boolean := False)
    is
+      pragma Unreferenced (Talk_Mode);
       --we calculate the Extended Keys here (KeyShedule)
       Extended_Keys : Threefish_Extended_Keys (Get_Last_Word_Index (mode));
 
@@ -469,18 +470,18 @@ package body Crypto.Symmetric.Algorithm.Threefish is
       ext_Keys : in out Threefish_Extended_Keys'Class)
    is
       --some variables we will need more often
-      k_f : Natural := keys.data'First;
-      k_l : Natural := keys.data'Last;
+      k_f : constant Natural := keys.data'First;
+      k_l : constant Natural := keys.data'Last;
 
       --the number of words(just for better readability
-      n_w : Natural := k_l + 1;
+      n_w : constant Natural := k_l + 1;
 
       --we need longer Keys and tweaks for the calculation
       long_Keys   : DWords (0 .. k_l + 1);
       long_tweaks : DWords (0 .. 2);
 
       --some Dwords we will need
-      c240 : DWord := Create ("1BD11BDAA9FC1A22", Hex);
+      c240 : constant DWord := Create ("1BD11BDAA9FC1A22", Hex);
    begin
       --------------------------
       --first we have fill the longer Keys and tweaks
@@ -860,7 +861,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
    function Create (Mode : Dword_Kind_Mode_Type) return DWord is
       result            : DWord;
       Result_Hex_String : String                       := "0000000000000000";
-      Hex_Array         : array (0 .. 15) of Character :=
+      Hex_Array         : constant array (0 .. 15) of Character :=
         ('0',
          '1',
          '2',
@@ -893,9 +894,6 @@ package body Crypto.Symmetric.Algorithm.Threefish is
             result := Create ("00000000", Hex);
          when all_one =>
             result := Create ("FFFFFFFF_FFFFFFFF", Hex);
-         when others =>
-            Put_Line ("This should never happen");
-            result := Create ("000000", Hex);
       end case;
       return result;
    end Create;
@@ -905,7 +903,7 @@ package body Crypto.Symmetric.Algorithm.Threefish is
    --removes all delimiters and spaces from a given unbounded String
    --makes everything lowercase
    procedure remove_Delimiters (text : in out Unbounded_String) is
-      Last_Index : Natural                  :=
+      Last_Index : constant Natural                  :=
         Ada.Strings.Unbounded.To_String (text)'Last;
       new_text   : String (1 .. Last_Index) :=
         Ada.Strings.Unbounded.To_String (text);

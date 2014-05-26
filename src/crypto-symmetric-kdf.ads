@@ -22,12 +22,9 @@
 
 with Crypto.Types;
 use Crypto.Types;
-with Crypto.Symmetric.Hashfunction;
 
 generic
    type Return_Type(<>) is private;
-
-   with package H is new Crypto.Symmetric.Hashfunction(<>);
 
 package Crypto.Symmetric.KDF is
 

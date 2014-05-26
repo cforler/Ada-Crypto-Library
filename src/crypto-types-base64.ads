@@ -1,6 +1,3 @@
-with Ada.Finalization;
-
-
 generic
    type Base64_Character is (<>);
 package Crypto.Types.Base64 is

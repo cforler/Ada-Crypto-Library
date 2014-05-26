@@ -22,7 +22,6 @@
 
 with Ada.Containers.Indefinite_Vectors;
 with Ada.Containers.Vectors;
-with Crypto.Types;
 
 package body Crypto.Symmetric.AEAD_OCB3 is
 
@@ -36,7 +35,7 @@ package body Crypto.Symmetric.AEAD_OCB3 is
    --Hui
    L_Star, L_Dollar : Block := Zero_Block;
    Nonce_Init : Bytes := Zero_Bytes;
-   AD : Block := Zero_Block; -- no AD, Hash(AD) returns zeros();
+   -- no AD, Hash(AD) returns zeros();
 
    -- package initializations
    package Vectors is new
@@ -78,10 +77,9 @@ package body Crypto.Symmetric.AEAD_OCB3 is
    -----------------------------------------------------------------
 
    function Double_S(S: Block) return Block is
-      use Crypto.Types;
       Result : Bytes(0..(Bytes_Per_Block - 1)) := To_Bytes(S);
       --Tmp : Bytes := Zero_Bytes;
-      Tmp_1 : B_Block128 := To_B_Block128(To_Bytes(S));
+      Tmp_1 : constant B_Block128 := To_B_Block128(To_Bytes(S));
    begin
       if Result(0) < 128 then
          Result:=To_Bytes( Shift_Left(Tmp_1,1));
@@ -95,6 +93,7 @@ package body Crypto.Symmetric.AEAD_OCB3 is
    -- This procedure should be run before encryption and decryption.
    procedure Setup(Key: in  Key_Type;
                      A: in out Block_Array) is
+      pragma Unreferenced (Key);
       Tmp : Bytes(0 .. Bytes_Per_Block - 1);
    begin
       BC.Encrypt(Zero_Block, L_Star); --L_*
@@ -129,8 +128,6 @@ package body Crypto.Symmetric.AEAD_OCB3 is
 
    function Stretch_Then_Shift(Value        : Bytes;
                                Amount       : Natural) return Block is
-      K : Block := To_Block(Value);
-      L : Bytes := Value;
       R : Bytes(0..Bytes_Per_Block*2);
    begin
 
@@ -270,7 +267,7 @@ package body Crypto.Symmetric.AEAD_OCB3 is
          C := C + 1;
          for I in 1..Positive'Size loop
             X := Shift_Right(X,1);
-            if (Word(X) and 16#01#) /= 0 then
+            if (X and 16#01#) /= 0 then
                return C;
             else
                C := C + 1;
@@ -463,7 +460,7 @@ package body Crypto.Symmetric.AEAD_OCB3 is
 
 
 
-      Empty_Callback_Reader : Callback_Reader := EmptyReader'Access;
+      Empty_Callback_Reader : constant Callback_Reader := EmptyReader'Access;
 
    begin
       Encrypt(This             => This,
@@ -492,7 +489,7 @@ package body Crypto.Symmetric.AEAD_OCB3 is
       Offset: Block := This.Offset;
       Checksum: Block := Zero_Block;
       Plaintext: Block;
-      Tag, Tmp: Bytes := Zero_Bytes;
+      Tag: Bytes := Zero_Bytes;
       T, Pad : Block;
       Dec_Bool: Boolean;
       Verification_Bool: Boolean := False;
@@ -639,7 +636,7 @@ package body Crypto.Symmetric.AEAD_OCB3 is
       --318
       BC.Encrypt(Offset, Pad);
          declare
-            C: Bytes := To_Bytes(Pad);
+            C: constant Bytes := To_Bytes(Pad);
          begin
             --319
             Last_P_Block(0..Bytes_Read-1) := Last_C_Block(0..Bytes_Read-1) xor C(0 .. Bytes_Read-1);
@@ -915,7 +912,6 @@ package body Crypto.Symmetric.AEAD_OCB3 is
       Offset: Block := This.Offset;
       Blockcount: Positive := 1;
       Checksum: Block := Zero_Block;
-      Nonce: Bytes := Zero_Bytes;
       Pad : Block;
 
       Last_C_Block: Bytes := Zero_Bytes;     -- last Ciphertext block in bytes
@@ -925,7 +921,7 @@ package body Crypto.Symmetric.AEAD_OCB3 is
       Curr_Block: Bytes := Zero_Bytes;
 
       Tmp1 :Bytes := Zero_Bytes;
-      Tmp : Block := To_Block(Zero_Bytes xor 2#0000_1111#);--8+4+2+1=15
+      Tmp : constant Block := To_Block(Zero_Bytes xor 2#0000_1111#);--8+4+2+1=15
    begin
 
       Error_Output.Put_Line("Test for Double_S");
@@ -1002,7 +998,7 @@ package body Crypto.Symmetric.AEAD_OCB3 is
          --118
             BC.Encrypt(Offset, Pad);
          declare
-            C: Bytes := To_Bytes(Pad);
+            C: constant Bytes := To_Bytes(Pad);
          begin
          --119
             Last_C_Block(0..Bytes_Read-1) := Last_P_Block(0..Bytes_Read-1) xor C(C'First..C'First+Bytes_Read-1);

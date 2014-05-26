@@ -22,7 +22,6 @@
 
 with Crypto.Types; use Crypto.Types;
 with Crypto.Symmetric.KDF;
-with Crypto.Symmetric.Hashfunction_SHA512;
 with Crypto.Debug_Put;
 pragma Elaborate_All (Crypto.Symmetric.KDF);
 
@@ -36,8 +35,7 @@ package Crypto.Symmetric.KDF_Scrypt is
    N_not_power_of_2_exception : exception;
 
    package KDF is new
-     Crypto.Symmetric.KDF(Return_Type => Bytes,
-                          H           => Crypto.Symmetric.Hashfunction_SHA512);
+     Crypto.Symmetric.KDF(Return_Type => Bytes);
    use KDF;
 
    type Scrypt_KDF is new KDF.KDF_Scheme with private;

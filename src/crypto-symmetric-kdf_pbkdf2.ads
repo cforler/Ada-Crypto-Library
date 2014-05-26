@@ -22,8 +22,6 @@
 
 with Crypto.Types; use Crypto.Types;
 with Crypto.Symmetric.KDF;
-with Crypto.Symmetric.Hashfunction_SHA1;
-with Crypto.Symmetric.Mac.Hmac_SHA1;
 with Crypto.Debug_Put;
 
 pragma Elaborate_All (Crypto.Symmetric.KDF);
@@ -39,8 +37,7 @@ generic
                        return Hmac_Package.H.Hash_Type;
 package Crypto.Symmetric.KDF_PBKDF2 is
 
-   package KDF is new Crypto.Symmetric.KDF(Return_Type       => Bytes,
-                                           H                 => Hmac_Package.H);
+   package KDF is new Crypto.Symmetric.KDF(Return_Type       => Bytes);
    use KDF;
 
    type PBKDF2_KDF is new KDF.KDF_Scheme with private;

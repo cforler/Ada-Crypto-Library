@@ -20,7 +20,6 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Ada.Text_IO;
 
 package body Crypto.Symmetric.KDF_PBKDF2 is
 
@@ -65,7 +64,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
                     Key		: out	Bytes;
                     DK_Len	: in 	Natural) is
 
-      hlen : Integer := Hmac_Package.H.Hash_Type'Size/8;
+      hlen : constant Integer := Hmac_Package.H.Hash_Type'Size/8;
       DK_Block_Count : Natural;
       Rest : Natural;
       Result_Bytes : Bytes(0..DK_Len-1) := (others => 0 );
@@ -122,10 +121,9 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
                        Round	: in 	Natural) return Hmac_Package.H.Hash_Type is
       Result_Block : Hmac_Package.H.Hash_Type ;
       Temp_Block : Hmac_Package.H.Hash_Type;
-      mlen : Integer := Hmac_Package.H.Message_Type'Size/8;
+      mlen : constant Integer := Hmac_Package.H.Message_Type'Size/8;
       Temp_Bytes : Bytes(0..mlen-1) := (others =>0);
-      Temp_Bytes_Old : Bytes(0..mlen-1) := (others =>0);
-      hlen : Integer := Hmac_Package.H.Hash_Type'Size/8;
+      hlen : constant Integer := Hmac_Package.H.Hash_Type'Size/8;
       Salt_Bytes : Bytes(0..Salt'Length+4-1);
 
       use Hmac_Package;
@@ -190,6 +188,7 @@ package body Crypto.Symmetric.KDF_PBKDF2 is
              DK_Len   => DK_Len);
 
    end Derive;
+   pragma Unreferenced (Derive);
 
 
 

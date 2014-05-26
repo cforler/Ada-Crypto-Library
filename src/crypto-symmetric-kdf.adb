@@ -20,9 +20,6 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Crypto.Types;
-use Crypto.Types;
-with Crypto.Symmetric.Hashfunction;
 
 package body Crypto.Symmetric.KDF is
 

@@ -22,9 +22,7 @@
 
 -- Original Source code author: Martin Kausche, 2008.
 -- This source code is released to the public domain.
-with Crypto.Types;       use Crypto.Types;
 with Ada.Strings.Unbounded;         use Ada.Strings.Unbounded;
-with Ada.Strings.Fixed;             use Ada.Strings.Fixed;
 --
 package Crypto.Symmetric.Algorithm.Threefish is
 

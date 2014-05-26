@@ -33,7 +33,7 @@ package body Test.SHA512Crypt is
    begin
       		Register_Routine(T, SHA512Crypt_Test_Add_Bytes'Access,"SHA512Crypt Add Bytes");
       		Register_Routine(T, SHA512Crypt_Test_Encryption'Access,"SHA512Crypt Encryption / Decryption");
---        		Register_Routine(T, SHA512Crypt_Test_Exceptions'Access,"SHA512Crypt Exceptions");
+      		Register_Routine(T, SHA512Crypt_Test_Exceptions'Access,"SHA512Crypt Exceptions");
    end Register_Tests;
 
    ------------------------------------------------------------------------------------

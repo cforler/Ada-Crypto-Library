@@ -34,8 +34,7 @@ generic
    with function "xor" (Left, Right : in BC.Block) return BC.Block is <>;
    with function To_Block_Type (B : Bytes) return BC.Block;
    with function To_Bytes (B : BC.Block) return Bytes;
-   with function Shift_Left (Value: BC.Block; Amount: Natural) return BC.Block;  -- Used to generate irreducible polynomials L(1..31).
-   with function Shift_Right (Value: BC.Block; Amount: Natural) return BC.Block; -- Used to generate the irreducible polynomial L(-1).
+
    with function To_Byte_Word (X: Word) return Byte_Word;                        -- Used to convert Blockcounter into Bytes.
 
 package Crypto.Symmetric.AEAD_OCB3 is

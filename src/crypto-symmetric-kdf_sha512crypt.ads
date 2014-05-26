@@ -23,7 +23,6 @@
 with Crypto.Types; use Crypto.Types;
 with Crypto.Symmetric.KDF;
 with Crypto.Symmetric.Algorithm.SHA512;
-with Crypto.Symmetric.Hashfunction_SHA512;
 with Crypto.Debug_Put;
 with Crypto.Types.Base64;
 
@@ -42,8 +41,7 @@ package Crypto.Symmetric.KDF_SHA512Crypt is
      (Base64_Character => Base64_Character);
 
    package KDF is new Crypto.Symmetric.KDF
-     (Return_Type        => Base64.Base64_SHA512Crypt,
-      H                  => Crypto.Symmetric.Hashfunction_SHA512);
+     (Return_Type        => Base64.Base64_SHA512Crypt);
 
    type SHA512Crypt_KDF is new KDF.KDF_Scheme with private;
 

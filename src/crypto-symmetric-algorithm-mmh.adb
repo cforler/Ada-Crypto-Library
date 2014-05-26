@@ -24,9 +24,9 @@
 package body Crypto.Symmetric.Algorithm.MMH is
 
    procedure Hash(Key, Message : in Word; Hash : out Word) is
-      Sum : DWord  := DWord(Key) * DWord(Message);
-      Stmp : DWord := (Sum  and 16#Ff_Ff_Ff_Ff#) - (Shift_Right(Sum,32)*15);
-      Utmp : DWord := (Stmp and 16#Ff_Ff_Ff_Ff#) - (Shift_Right(Stmp,32)*15);
+      Sum : constant DWord  := DWord(Key) * DWord(Message);
+      Stmp : constant DWord := (Sum  and 16#Ff_Ff_Ff_Ff#) - (Shift_Right(Sum,32)*15);
+      Utmp : constant DWord := (Stmp and 16#Ff_Ff_Ff_Ff#) - (Shift_Right(Stmp,32)*15);
    begin
       if Utmp > 16#1_00_00_00_0f# then Hash := Word(Utmp) - 15;
       else Hash := Word(Utmp);

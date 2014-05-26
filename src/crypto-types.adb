@@ -21,8 +21,6 @@
 -- executable file might be covered by the GNU Public License.
 
 with Ada.Unchecked_Conversion;
-with Ada.Text_IO;
-with Ada.Strings.Maps;
 
 --pragma Elaborate_All(Generic_Mod_Aux);
   

@@ -20,15 +20,11 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Crypto.Types;
-use Crypto.Types;
 
 with Crypto.Symmetric.KDF_PBKDF2;
 with Crypto.Symmetric.Mac.Hmac_SHA256;
 
 with Ada.Text_IO;
-with Ada.Integer_Text_IO;
-with System; use System;
 
 
 
@@ -138,7 +134,7 @@ package body Crypto.Symmetric.KDF_Scrypt is
 
       type pointy is access W_Block512_2D_Array;
 
-      V : pointy := new W_Block512_2D_Array;
+      V : constant pointy := new W_Block512_2D_Array;
       X : W_Block512_Array := Input;
       T : W_Block512_Array(Input'Range);
       J : Natural;

@@ -386,8 +386,9 @@ package body Test.Scrypt is
    ------------------------------------------------------------------------------------
 
    procedure Failing_XOR is
-      A : Crypto.Symmetric.KDF_Scrypt.W_Block512_Array(0..1);
-      B : Crypto.Symmetric.KDF_Scrypt.W_Block512_Array(0..2);
+      By : Bytes(0..63) :=(others=>0);
+      A : Crypto.Symmetric.KDF_Scrypt.W_Block512_Array(0..1) := (others=>To_W_Block512(By));
+      B : Crypto.Symmetric.KDF_Scrypt.W_Block512_Array(0..2) := (others=>To_W_Block512(By));
    begin
       A := xor_Testing(Left  => A,
                        Right => B);

@@ -21,10 +21,8 @@
 -- executable file might be covered by the GNU Public License.
 
 with Ada; use Ada;
-with Crypto.Symmetric.Algorithm.SHA512;
 with Ada.Text_IO;
 with Ada.Integer_Text_IO;
-with Crypto.Debug_Put;
 
 
 
@@ -36,9 +34,10 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                     Password	: in	Bytes;
                     Key		: out	Base64.Base64_SHA512Crypt) is
       package SHA512 renames Crypto.Symmetric.Algorithm.SHA512;
+      pragma Unreferenced (SHA512);
 
-      Salt_Bytes : Bytes(0..Salt'Length-1) := Salt(Salt'Range);
-      Password_Bytes : Bytes(0..Password'Length-1) := Password(Password'Range);
+      Salt_Bytes : constant Bytes(0..Salt'Length-1) := Salt(Salt'Range);
+      Password_Bytes : constant Bytes(0..Password'Length-1) := Password(Password'Range);
 
       Digest_A_Bytes : Bytes(0..127):= (others =>0);
       Digest_A_Hash  : Crypto.Symmetric.Algorithm.SHA512.Sha512_Context;
@@ -82,7 +81,6 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
 
       Final_Input_Bytes : Bytes(0..2);
 
-      Return_Block : W_Block512 := (others =>0);
 
       Cnt : Natural;
 
@@ -524,7 +522,7 @@ package body Crypto.Symmetric.KDF_SHA512Crypt is
                          Crypto.Symmetric.Algorithm.SHA512.Sha512_Context)
    is
       Rest_Space : Natural;
-      Debug : Boolean := false;
+      Debug : constant Boolean := false;
    begin
 
       Rest_Space := 128 - Digest_Bytes_Length;

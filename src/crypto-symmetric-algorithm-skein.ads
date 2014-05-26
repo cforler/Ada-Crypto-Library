@@ -23,7 +23,6 @@
 -- Original Source code author: Martin Kausche, 2008.
 -- This source code is released to the public domain.
 
-with Crypto.Types;
 with Crypto.Symmetric.Algorithm.Threefish;
 use  Crypto.Symmetric.Algorithm.Threefish;
 

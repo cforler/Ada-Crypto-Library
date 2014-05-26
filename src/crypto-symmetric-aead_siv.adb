@@ -41,7 +41,6 @@ package body Crypto.Symmetric.AEAD_SIV is
                                                                 Encrypt        => BC.Encrypt);
 
    package CMAC is new Crypto.Symmetric.Mac.CMAC(C          => BC_Oneway,
-                                                 Shift_Left => Shift_Left,
                                                  "xor"      => "xor");
 
    package CTR is new Crypto.Symmetric.Mode.CTR(BC);

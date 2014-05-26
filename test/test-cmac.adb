@@ -20,12 +20,10 @@ package body Test.CMAC is
    package AES128 renames  Crypto.Symmetric.Oneway_Blockcipher_AES128;
    package CMAC128 is new  Crypto.Symmetric.MAC.CMAC(
 				C => AES128,
-                                Shift_Left => Shift_Left,
 				"xor" => "xor");
    package AES192 renames  Crypto.Symmetric.Oneway_Blockcipher_AES192;
    package CMAC192 is new  Crypto.Symmetric.MAC.CMAC(
 				C => AES192,
-                                Shift_Left => Shift_Left,
 				"xor" => "xor");
 
    Key128 : constant B_Block128 := (16#2b#, 16#7e#, 16#15#, 16#16#, 16#28#, 16#ae#,
