@@ -22,8 +22,8 @@
 
 
 package body Crypto.Types.Base64 is
-
-      function Encode_Base64(B: Bytes) return Base64_String is
+   
+   function Encode_Base64(B: Bytes) return Base64_String is
       Len :  constant Natural :=  B'Length / 3;
       Rest : constant Natural :=  B'Length mod 3;
       Result : Base64_String(1..( 4* (((B'Length-1)/3)+1)));
@@ -34,16 +34,16 @@ package body Crypto.Types.Base64 is
 	 W := Shift_Left(Word(B(J)),16) or  Shift_Left(Word(B(J+1)),8)
 	   or Word(B(J+2));
 	 J := J + 3;
-
+	 
 	 Result(4*I-3) :=  Base64_Character'Val(Shift_Right(W,18));
 	 Result(4*I-2) :=  Base64_Character'Val(Shift_Right(W,12) and 63);
 	 Result(4*I-1) :=  Base64_Character'Val(Shift_Right(W,6)  and 63);
 	 Result(4*I)   :=  Base64_Character'Val(W  and 63);
       end loop;
-
+      
       if(Rest > 0) then
 	 Result(Result'Last) := Base64_Character'Last;
-
+	 
 	 if(Rest = 1) then
 	    W := Shift_Left(Word(B(B'Last)),16);
 	    Result(Result'Last-1) := Base64_Character'Last;
@@ -56,6 +56,4 @@ package body Crypto.Types.Base64 is
       end if;
       return Result;
    end Encode_Base64;
-
-
 end Crypto.Types.Base64;
