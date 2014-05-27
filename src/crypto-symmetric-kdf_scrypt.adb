@@ -166,8 +166,11 @@ package body Crypto.Symmetric.KDF_Scrypt is
          J_Byte_2 := J_Bytes(J_Bytes'First +1);
          J_Byte_3 := J_Bytes(J_Bytes'First +2);
          J_Byte_4 := J_Bytes(J_Bytes'First +3);
-         J := (Integer(J_Byte_1)+Integer(J_Byte_2)*2**8+Integer(J_Byte_3)*2**16
-               +Integer(J_Byte_4)*2**24) mod N;
+         J := (Integer(J_Byte_1)
+               +(Integer(J_Byte_2)*2**8) mod N
+               +(Integer(J_Byte_3)*2**16) mod N
+               +(Integer(J_Byte_4)*2**23) mod N
+               +(Integer(J_Byte_4)*2**23) mod N) mod N;
          T := X xor V(J);
          X := Scrypt_Block_Mix(Input => T);
       end loop;
