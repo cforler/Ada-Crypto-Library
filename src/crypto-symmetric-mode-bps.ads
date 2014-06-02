@@ -54,7 +54,7 @@ private
    function BC_Encrypt(Plaintext : in Numerals) return Numerals;
    function BC_Decrypt(Ciphertext : in Numerals) return Numerals;
    function To_Big_Unsigned(N : Numerals) return Big_Unsigned;
-   S : Big_Unsigned := Big_Unsigned_Zero + Mod_Type(Radix);
+   S : Big_Unsigned := Big_Unsigned_Zero + Word(Radix);
    Rounds : constant Positive := 8;
    
    pragma Inline (Init, Encrypt, Decrypt, Set_IV);

@@ -142,8 +142,8 @@ end Encrypt ;
 	To_Big_Unsigned(Plaintext(Plaintext'First+L..Plaintext'Last));
       Plaintextblock : Bytes(0..BC.Block'Size/8-1) := (others =>0);
       Ciphertextblock : BC.Block;
-      SL : constant Big_Unsigned := S**(Big_Unsigned_Zero + Mod_Type(L));
-      SR : constant Big_Unsigned := S**(Big_Unsigned_Zero + Mod_Type(R));
+      SL : constant Big_Unsigned := S**(Big_Unsigned_Zero + Word(L));
+      SR : constant Big_Unsigned := S**(Big_Unsigned_Zero + Word(R));
       C : constant Natural := (Plaintextblock'Size)-32;
       Temp : Big_Unsigned;
    begin
@@ -197,8 +197,8 @@ end Encrypt ;
 	To_Big_Unsigned(Ciphertext(Ciphertext'First+L..Ciphertext'Last));
       Plaintextblock : BC.Block;
       Ciphertextblock : Bytes(0..BC.Block'Size/8-1) := (others =>0);
-      SL : constant Big_Unsigned := S**(Big_Unsigned_Zero + Mod_Type(L));
-      SR : constant Big_Unsigned := S**(Big_Unsigned_Zero + Mod_Type(R));
+      SL : constant Big_Unsigned := S**(Big_Unsigned_Zero + Word(L));
+      SR : constant Big_Unsigned := S**(Big_Unsigned_Zero + Word(R));
       C : constant Natural :=  (Ciphertextblock'Size)-32;  
       Temp : Big_Unsigned;
    begin
@@ -253,8 +253,8 @@ end Encrypt ;
        Result : Big_Unsigned := Big_Unsigned_Zero;
     begin
        for I in 0..N'Length-1 loop
- 	  Result := Result +( ( S**(Big_Unsigned_Zero + Mod_Type(I)) ) * 
-				Mod_Type(N(N'First+I)) );
+ 	  Result := Result +( ( S**(Big_Unsigned_Zero + Word(I)) ) * 
+				Word(N(N'First+I)) );
        end loop;
        return Result;
     end To_Big_Unsigned;
