@@ -1,4 +1,3 @@
-with Test.Skein;
 with Test.SHA512Crypt;
 with Test.PBKDF2;
 with Test.Scrypt;
@@ -6,11 +5,10 @@ with Test.Scrypt;
 package body Test.Suite_Key_Derivation_Function is
    use AUnit.Test_Suites;
 
-   Result:				aliased Test_Suite;
-   Skein_Test:				aliased Test.Skein.Skein_Test;
-   SHA512Crypt_Test:			aliased Test.SHA512Crypt.SHA512Crypt_Test;
-   PBKDF2_Test:				aliased Test.PBKDF2.PBKDF2_Test;
-   Scrypt_Test:				aliased Test.Scrypt.Scrypt_Test;
+   Result:		aliased Test_Suite;
+   SHA512Crypt_Test:	aliased Test.SHA512Crypt.SHA512Crypt_Test;
+   PBKDF2_Test:		aliased Test.PBKDF2.PBKDF2_Test;
+   Scrypt_Test:		aliased Test.Scrypt.Scrypt_Test;
 
 
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
@@ -18,8 +16,7 @@ package body Test.Suite_Key_Derivation_Function is
       Add_Test(Result'Access, Scrypt_Test'Access);
       Add_Test(Result'Access, SHA512Crypt_Test'Access);
       Add_Test(Result'Access, PBKDF2_Test'Access);
-      Add_Test(Result'Access, Skein_Test'Access);
-
+      
       return Result'Access;
    end Suite;
 end Test.Suite_Key_Derivation_Function;
