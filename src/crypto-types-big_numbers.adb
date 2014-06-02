@@ -25,7 +25,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body Crypto.Types.Big_Numbers is
 
-  -- package MIO is new Ada.Text_Io.Modular_IO (Mod_Type);
+  -- package MIO is new Ada.Text_Io.Modular_IO (Word);
 
    ---------------------------------------------------------------------------
    -----------------------SEPARATED_BODYS-------------------------------------
@@ -121,11 +121,11 @@ package body Crypto.Types.Big_Numbers is
 
 
    ---------------------------------------------------------------------------
-   --           compare: Big_Unsigned with Mod_Type                         --
+   --           compare: Big_Unsigned with Word                         --
    ---------------------------------------------------------------------------
 
 
-   function "="(Left : Big_Unsigned; Right : Mod_Type) return Boolean is
+   function "="(Left : Big_Unsigned; Right : Word) return Boolean is
    begin
       if Left.Last_Index=0 and Left.Number(0) = Right then return True;
       else return False;
@@ -134,14 +134,14 @@ package body Crypto.Types.Big_Numbers is
 
    ---------------------------------------------------------------------------
 
-   function "="(Left : Mod_Type; Right : Big_Unsigned) return Boolean is
+   function "="(Left : Word; Right : Big_Unsigned) return Boolean is
    begin
       return Right = Left;
    end "=";
 
    ---------------------------------------------------------------------------
 
-   function "<"(Left : Big_Unsigned; Right : Mod_Type) return Boolean is
+   function "<"(Left : Big_Unsigned; Right : Word) return Boolean is
    begin
       if Left.Last_Index > 0 then return False;
       else return Left.Number(Left.Last_Index) < Right;
@@ -150,7 +150,7 @@ package body Crypto.Types.Big_Numbers is
 
    ---------------------------------------------------------------------------
 
-   function "<"(Left : Mod_Type; Right : Big_Unsigned) return Boolean is
+   function "<"(Left : Word; Right : Big_Unsigned) return Boolean is
    begin
       if Right.Last_Index > 0 then return True;
       else return Left < Right.Number(Right.Last_Index);
@@ -159,42 +159,42 @@ package body Crypto.Types.Big_Numbers is
 
    ---------------------------------------------------------------------------
 
-   function ">"(Left : Big_Unsigned; Right : Mod_Type) return Boolean is
+   function ">"(Left : Big_Unsigned; Right : Word) return Boolean is
    begin
       return Right < Left;
    end ">";
 
    ---------------------------------------------------------------------------
 
-   function ">"(Left : Mod_Type; Right : Big_Unsigned) return Boolean is
+   function ">"(Left : Word; Right : Big_Unsigned) return Boolean is
    begin
       return Right < Left;
    end ">";
 
    ---------------------------------------------------------------------------
 
-    function "<="(Left : Big_Unsigned; Right : Mod_Type) return Boolean is
+    function "<="(Left : Big_Unsigned; Right : Word) return Boolean is
    begin
       return not (Right < Left);
    end "<=";
 
     ---------------------------------------------------------------------------
 
-    function "<="(Left : Mod_Type; Right : Big_Unsigned) return Boolean is
+    function "<="(Left : Word; Right : Big_Unsigned) return Boolean is
    begin
       return not (Right < Left);
    end "<=";
 
     ---------------------------------------------------------------------------
 
-    function ">="(Left : Big_Unsigned; Right : Mod_Type) return Boolean is
+    function ">="(Left : Big_Unsigned; Right : Word) return Boolean is
     begin
       return not (Left < Right);
    end ">=";
 
     ---------------------------------------------------------------------------
 
-    function ">="(Left : Mod_Type; Right : Big_Unsigned) return Boolean is
+    function ">="(Left : Word; Right : Big_Unsigned) return Boolean is
    begin
       return not (Left < Right);
    end ">=";
@@ -210,10 +210,10 @@ package body Crypto.Types.Big_Numbers is
    begin
 --      if (L + 1) > Bit_Length(Big_Unsigned_Last) then
 --         raise Big_Unsigned_Overflow;
---      elsif L + 1 <= Mod_Type'Size then
+--      elsif L + 1 <= Word'Size then
 --         Result.Number(0) := Left.Number(0) + Right.Number(0);
 --      else
-      if L + 1 <= Mod_Type'Size then
+      if L + 1 <= Word'Size then
          Result.Number(0) := Left.Number(0) + Right.Number(0);
       else
 
@@ -259,13 +259,13 @@ package body Crypto.Types.Big_Numbers is
 --   function "+"(Left, Right : Big_Unsigned) return Big_Unsigned is
 --      Result : Big_Unsigned;
 --      M : constant Natural  := Natural'Max(Left.Last_Index, Right.Last_Index);
---      Temp : Mod_Type;
---      Carry : Mod_Type :=0;
+--      Temp : Word;
+--      Carry : Word :=0;
 --   begin
 --      for I in 0..M loop
 --         Temp :=Carry;
 --         Result.Number(I) := Left.Number(I) + Right.Number(I) +Temp;
---         if Result.Number(I) < Mod_Type'Max(Left.Number(I), Right.Number(I))
+--         if Result.Number(I) < Word'Max(Left.Number(I), Right.Number(I))
 --         then  Carry := 1;
 --         else Carry := 0;
 --         end if;
@@ -288,7 +288,7 @@ package body Crypto.Types.Big_Numbers is
 --============================================================================--
    ---------------------------------------------------------------------------
 
-   function "+"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned is
+   function "+"(Left : Big_Unsigned; Right : Word) return Big_Unsigned is
       Big_Right : Constant Big_Unsigned :=
         (Last_Index => 0, Number => (0 => Right, OTHERS => 0));
    begin
@@ -297,7 +297,7 @@ package body Crypto.Types.Big_Numbers is
 
    ---------------------------------------------------------------------------
 
-   function "+"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned is
+   function "+"(Left : Word; Right : Big_Unsigned) return Big_Unsigned is
       Big_Left : constant Big_Unsigned := (Last_Index => 0, Number => (0 => Left, OTHERS => 0));
    begin
       return Big_Left + Right;
@@ -314,7 +314,7 @@ package body Crypto.Types.Big_Numbers is
       else
          declare
             Result : Big_Unsigned;
-            Carry : Mod_Type:=0;
+            Carry : Word:=0;
          begin
             -- Remember: Left => Right
             for I in 0..Left.Last_Index loop
@@ -335,7 +335,7 @@ package body Crypto.Types.Big_Numbers is
 
    ---------------------------------------------------------------------------
 
-   function "-"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned is
+   function "-"(Left : Big_Unsigned; Right : Word) return Big_Unsigned is
       Big_Right : constant Big_Unsigned := (Last_Index => 0, Number => (0 => Right, OTHERS => 0));
    begin
      return  Left - Big_Right;
@@ -343,7 +343,7 @@ package body Crypto.Types.Big_Numbers is
 
    ---------------------------------------------------------------------------
 
-   function "-"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned is
+   function "-"(Left : Word; Right : Big_Unsigned) return Big_Unsigned is
       Big_Left : constant  Big_Unsigned := (Last_Index => 0, Number => (0 => Left, OTHERS => 0));
    begin
       return Big_Left - Right;
@@ -367,7 +367,7 @@ package body Crypto.Types.Big_Numbers is
       Result : Big_Unsigned ;
       L : constant Natural := Bit_Length(Left)+Bit_Length(Right);
    begin
-      if L <= Mod_Type'Size then
+      if L <= Word'Size then
          Result.Number(0) := Left.Number(0) * Right.Number(0);
       elsif L > 2800 and L < 3600 then
          Result := Karatsuba_P(Left, Right);
@@ -379,7 +379,7 @@ package body Crypto.Types.Big_Numbers is
          begin
             for I in reverse 0..Left.Last_Index loop
                Temp   := Left.Number(I) *  Right;
-               Temp   := Shift_Left(Temp, (I*Mod_Type'Size));
+               Temp   := Shift_Left(Temp, (I*Word'Size));
                Result := Result + Temp;
             end loop;
          end;
@@ -391,7 +391,7 @@ package body Crypto.Types.Big_Numbers is
    function Russ (Left,Right : Big_Unsigned)return Big_Unsigned is
       Result : Big_Unsigned ;
    begin
-      if Bit_Length(Left)+Bit_Length(Right) <= Mod_Type'Size then
+      if Bit_Length(Left)+Bit_Length(Right) <= Word'Size then
          Result.Number(0) := Left.Number(0) * Right.Number(0);
       else
          declare
@@ -416,7 +416,7 @@ package body Crypto.Types.Big_Numbers is
    function Karatsuba (Left, Right : Big_Unsigned) return Big_Unsigned is
          Result           : Big_Unsigned;
    begin
-       if Bit_Length(Left)+Bit_Length(Right) < Mod_Type'Size then
+       if Bit_Length(Left)+Bit_Length(Right) < Word'Size then
           Result.Number(0) := Left.Number(0) * Right.Number(0);
       else
          declare
@@ -447,7 +447,7 @@ package body Crypto.Types.Big_Numbers is
    function Karatsuba_P (Left, Right : Big_Unsigned) return Big_Unsigned is
       Result           : Big_Unsigned;
    begin
-       if Bit_Length(Left)+Bit_Length(Right) < Mod_Type'Size then
+       if Bit_Length(Left)+Bit_Length(Right) < Word'Size then
           Result.Number(0) := Left.Number(0) * Right.Number(0);
       else
          declare
@@ -509,7 +509,7 @@ package body Crypto.Types.Big_Numbers is
    function Toom_Cook(Left, Right : Big_Unsigned) return Big_Unsigned is
       Result              : Big_Unsigned;
    begin
-      if Bit_Length(Left)+Bit_Length(Right) < Mod_Type'Size then
+      if Bit_Length(Left)+Bit_Length(Right) < Word'Size then
           Result.Number(0) := Left.Number(0) * Right.Number(0);
       else
 
@@ -594,7 +594,7 @@ package body Crypto.Types.Big_Numbers is
    function Toom_Cook_P(Left, Right : Big_Unsigned) return Big_Unsigned is
       Result              : Big_Unsigned;
    begin
-      if Bit_Length(Left)+Bit_Length(Right) < Mod_Type'Size then
+      if Bit_Length(Left)+Bit_Length(Right) < Word'Size then
           Result.Number(0) := Left.Number(0) * Right.Number(0);
       else
          declare
@@ -705,7 +705,7 @@ package body Crypto.Types.Big_Numbers is
 --============================================================================--
    ---------------------------------------------------------------------------
 
-   function "*"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned is
+   function "*"(Left : Big_Unsigned; Right : Word) return Big_Unsigned is
    begin
       if Right = 0 or Left = Big_Unsigned_Zero  then return Big_Unsigned_Zero;
       elsif Right = 1 then return Left;
@@ -714,7 +714,7 @@ package body Crypto.Types.Big_Numbers is
       declare
          Result : Big_Unsigned;
       begin
-         for I in 0..Mod_Type'Size loop
+         for I in 0..Word'Size loop
             if (Shift_Right(Right,I) mod 2) = 1 then
                Result:= Result + Shift_Left(Left,I);
             end if;
@@ -725,7 +725,7 @@ package body Crypto.Types.Big_Numbers is
 
    ---------------------------------------------------------------------------
 
-   function "*"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned is
+   function "*"(Left : Word; Right : Big_Unsigned) return Big_Unsigned is
    begin
       return Right * Left;
    end "*";
@@ -765,7 +765,7 @@ package body Crypto.Types.Big_Numbers is
 
    ---------------------------------------------------------------------------
 
-   function "/"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned is
+   function "/"(Left : Word; Right : Big_Unsigned) return Big_Unsigned is
       Big_Left: constant Big_Unsigned :=
         (Last_Index => 0, Number => (0=> Left, others => 0));
       Q : Big_Unsigned;
@@ -777,9 +777,9 @@ package body Crypto.Types.Big_Numbers is
 
    ---------------------------------------------------------------------------
 
-   function "/"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned is
+   function "/"(Left : Big_Unsigned; Right : Word) return Big_Unsigned is
       Q : Big_Unsigned;
-      R : Mod_Type;
+      R : Word;
    begin
       Short_Div(Left,Right,Q,R);
       return Q;
@@ -800,9 +800,9 @@ package body Crypto.Types.Big_Numbers is
 
    ---------------------------------------------------------------------------
 
-   function "mod"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned is
+   function "mod"(Left : Big_Unsigned; Right : Word) return Big_Unsigned is
       Q : Big_Unsigned;
-      R : Mod_Type;
+      R : Word;
    begin
       Short_Div(Left,Right,Q,R);
       declare
@@ -867,7 +867,7 @@ package body Crypto.Types.Big_Numbers is
     ---------------------------------------------------------------------------
 
 
-    function "and"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned
+    function "and"(Left : Big_Unsigned; Right : Word) return Big_Unsigned
     is
        Result : Big_Unsigned;
     begin
@@ -882,7 +882,7 @@ package body Crypto.Types.Big_Numbers is
 
     ---------------------------------------------------------------------------
 
-    function "and"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned
+    function "and"(Left : Word; Right : Big_Unsigned) return Big_Unsigned
     is
        Result : Big_Unsigned;
     begin
@@ -918,8 +918,8 @@ package body Crypto.Types.Big_Numbers is
   ---------------------------------------------------------------------------
 
 begin
-   if Size mod Mod_Type'Size /= 0 then
-     Put("Size must be a multiple of " & Mod_Type'Image(Mod_Type'Size));
+   if Size mod Word'Size /= 0 then
+     Put("Size must be a multiple of " & Word'Image(Word'Size));
      raise Constraint_Size_Error;
    end if;
 end Crypto.Types.Big_Numbers;

@@ -84,12 +84,12 @@ package body Binfield_Utils is
                   return Big_Unsigned is
       C : Big_Unsigned;
       M : constant Positive := Bit_Length(F)-1;
-      N : Natural:=  M/Mod_Type'Size;
+      N : Natural:=  M/Word'Size;
    begin
       C := Shift_Left(A,1);
 
       if C.Last_Index = N  then
-         N:=M mod Mod_Type'Size;
+         N:=M mod Word'Size;
 
          if (Shift_Right(C.Number(C.Last_Index),N)) = 1 then
             C :=  B_Add(C,F);
@@ -109,7 +109,7 @@ package body Binfield_Utils is
       B : Big_Unsigned := Right;
       --      N : constant Natural := Bit_Length(F);
    begin
-      for K in 0..Mod_Type'Size-1 loop
+      for K in 0..Word'Size-1 loop
          for J in 0..Left.Last_Index loop
             if (Shift_Right(Left.Number(J),K) and 1) = 1 then
                -- add B to C{i}
@@ -118,7 +118,7 @@ package body Binfield_Utils is
                end loop;
             end if;
          end loop;
-         if K /= Mod_Type'Size-1  then
+         if K /= Word'Size-1  then
             B:=B_Mult(B,F);
          end if;
       end loop;
@@ -139,10 +139,10 @@ package body Binfield_Utils is
    --  begin
    --     for I in 0..A.Last_Index loop
    --        L := 2*I;
-   --        C.Number(L) := Mod_Type(T8(Natural(A.Number(I) and 15)));
+   --        C.Number(L) := Word(T8(Natural(A.Number(I) and 15)));
    --        L:= L+1;
    --        C.Number(L) :=
-   --          Mod_Type(T8(Natural(Shift_Right(A.Number(I),4) and 15)));
+   --          Word(T8(Natural(Shift_Right(A.Number(I),4) and 15)));
    --     end loop;
 
    --     Set_Last_Index(C);
@@ -155,7 +155,7 @@ package body Binfield_Utils is
    -- Algorithm 2.39: Polynominal squaring (with word length W=n*8 for n=>0)
    -- compute a(z)**2 mod f(z)
    function B_Square(A, F : Big_Unsigned) return Big_Unsigned is
-      K : constant Natural := Mod_Type'Size/8;
+      K : constant Natural := Word'Size/8;
       N : constant Natural := K/2-1;
       --M : constant Natural := Bit_Length(F);
       L : Natural;
@@ -165,12 +165,12 @@ package body Binfield_Utils is
 	 L := 2*I;
 	 for J in reverse 0..N loop
 	    C.Number(L) := Shift_Left(C.Number(L),16) xor
-	      Mod_Type(T16(Byte(Shift_Right(A.Number(I),8*J) and 255)));
+	      Word(T16(Byte(Shift_Right(A.Number(I),8*J) and 255)));
             end loop;
             L:= L+1;
             for J  in reverse K/2..K-1 loop
                C.Number(L) := Shift_Left(C.Number(L),16) xor
-                 Mod_Type(T16(Byte(Shift_Right(A.Number(I),8*J) and 255)));
+                 Word(T16(Byte(Shift_Right(A.Number(I),8*J) and 255)));
             end loop;
       end loop;
       Set_Last_Index(C);

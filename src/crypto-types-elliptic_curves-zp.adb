@@ -247,7 +247,7 @@ package body  Crypto.Types.Elliptic_Curves.Zp is
    function "*"(Left : Big_Unsigned; Right : EC_Point) return EC_Point is
       W	: EC_Point;
       M : EC_Point  := Right;
-      K : constant Mod_Types :=  Big.Utils.To_Mod_Types(Left);
+      K : constant Words :=  Big.Utils.To_Words(Left);
 -------------------------------------------------------------------------
 --      Q				: EC_Point;
 --      P 				: EC_Point  := Right;
@@ -262,7 +262,7 @@ package body  Crypto.Types.Elliptic_Curves.Zp is
       end if;
 
       for I in K'First..K'Last-1 loop
-         for J in 0..Mod_Type'Size-1 loop
+         for J in 0..Word'Size-1 loop
             if (Shift_Right(K(I),J) and 1) = 1  then
                W := W + M;
             end if;
@@ -273,9 +273,9 @@ package body  Crypto.Types.Elliptic_Curves.Zp is
 
       declare
          L : Natural := 0;
-         Y : constant  Mod_Type := K(K'Last);
+         Y : constant  Word := K(K'Last);
       begin
-         for I  in reverse 0..Mod_Type'Size-1 loop
+         for I  in reverse 0..Word'Size-1 loop
             if  (Shift_Right(Y,I) and 1) = 1  then
                L := I;
               exit;

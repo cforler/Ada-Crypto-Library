@@ -70,7 +70,7 @@ package body Utils is
    begin
       X.Last_Index := Max_Length;
       X.Number(Max_Length) := X.Number(Max_Length) or
-        Shift_Left(Mod_Type(1), Mod_Type'Size-1);
+        Shift_Left(Word(1), Word'Size-1);
    end Set_Most_Significant_Bit; pragma Inline(Set_Most_Significant_Bit);
 
 
@@ -82,12 +82,12 @@ package body Utils is
          return 0;
       end if;
 
-      for I in reverse 0..Mod_Type'Size-1 loop
+      for I in reverse 0..Word'Size-1 loop
          if Shift_Left(1,I) <= X.Number(X.Last_Index) then
-            return  Mod_Type'Size * X.Last_Index + I + 1 ;
+            return  Word'Size * X.Last_Index + I + 1 ;
          end if;
       end loop;
-      return X.Last_Index * Mod_Type'Size;
+      return X.Last_Index * Word'Size;
    end Bit_Length;  pragma Inline(Bit_Length);
 
    ---------------------------------------------------------------------------
@@ -100,9 +100,9 @@ package body Utils is
 
       for I in 0..X.Last_Index loop
          if X.Number(I) /= 0 then
-            for J in  0..Mod_Type'Size-1 loop
+            for J in  0..Word'Size-1 loop
                if (Shift_Right(X.Number(I),J) and 1) = 1 then
-                  return I*Mod_Type'Size+J+1;
+                  return I*Word'Size+J+1;
                end if;
             end loop;
          end if;
@@ -143,7 +143,7 @@ package body Utils is
       else
          X.Number(0) := X.Number(0) - 1;
          for I in 0..X.Last_Index loop
-            if X.Number(I) /= Mod_Type'Last then
+            if X.Number(I) /= Word'Last then
                exit;
             else X.Number(I+1) := X.Number(I+1) - 1;
             end if;
@@ -162,17 +162,17 @@ package body Utils is
    function Shift_Left(Value : Big_Unsigned; Amount : Natural)
                       return Big_Unsigned is
    begin
-      if Amount >= (Max_Length+1)*Mod_Type'Size or Value = Big_Unsigned_Zero
+      if Amount >= (Max_Length+1)*Word'Size or Value = Big_Unsigned_Zero
       then  return Big_Unsigned_Zero;
       elsif Amount = 0 then return Value;
       end if;
 
       declare
          Result : Big_Unsigned;
-         Temp : DWords:=(others => 0);
-         L : constant Natural := Amount mod Mod_Type'Size;
-         R : constant Natural := Mod_Type'Size-L;
-         M : constant Natural := Amount/Mod_Type'Size;
+         Temp : Limbs:=(others => 0);
+         L : constant Natural := Amount mod Word'Size;
+         R : constant Natural := Word'Size-L;
+         M : constant Natural := Amount/Word'Size;
       begin
          Temp(0) := Shift_Left(Value.Number(0), L);
 
@@ -211,17 +211,17 @@ package body Utils is
    function Shift_Right(Value : Big_Unsigned; Amount : Natural)
                        return Big_Unsigned is
    begin
-      if Amount >= (Max_Length+1)*Mod_Type'Size or Value = Big_Unsigned_Zero
+      if Amount >= (Max_Length+1)*Word'Size or Value = Big_Unsigned_Zero
       then  return Big_Unsigned_Zero;
       elsif Amount = 0 then return Value;
       end if;
 
       declare
          Result : Big_Unsigned:=Big_Unsigned_Zero;
-         Temp : DWords:=(others => 0);
-         R : constant Natural := Amount mod Mod_Type'Size;
-         L : constant Natural := Mod_Type'Size-R;
-         M : constant Natural := Amount/Mod_Type'Size;
+         Temp : Limbs :=(others => 0);
+         R : constant Natural := Amount mod Word'Size;
+         L : constant Natural := Word'Size-R;
+         M : constant Natural := Amount/Word'Size;
       begin
          Temp(Value.Last_Index) :=
            Shift_Right(Value.Number(Value.Last_Index), R);
@@ -295,28 +295,14 @@ package body Utils is
    ---------------------------------------------------------------------------
 
    function Get_Random return Big_Unsigned is
-      B : Byte;
       Result : Big_Unsigned;
    begin
-      for I in 0..Max_Length loop
-         for J in 0..(Mod_Type'Size/8)-1 loop
-            Crypto.Types.Random.Read(B);
-            Result.Number(I) :=
-              Result.Number(I) or Shift_Left(Mod_Type(B),J*8);
-         end loop;
-      end loop;
-
-      for I in reverse 0..Max_Length loop
-         if Result.Number(I) /= 0 then
-            Result.Last_Index := I;
-            exit;
-         end if;
-      end loop;
+      Random.Read(Result.Number);
       return Result;
    end Get_Random; pragma Inline (Get_Random);
 
    ---------------------------------------------------------------------------
-
+   
    function Length_In_Bytes(X : Big_Unsigned) return Natural is
       Len : constant Natural := Bit_Length(X);
    begin
@@ -327,10 +313,10 @@ package body Utils is
 
    ---------------------------------------------------------------------------
 
-   function To_Mod_Types(X : Big_Unsigned) return Mod_Types  is
+   function To_Words(X : Big_Unsigned) return Words  is
    begin
       return X.Number(0..X.Last_Index);
-   end To_Mod_Types;  pragma Inline (To_Mod_Types);
+   end To_Words;  pragma Inline (To_Words);
 
 
    ---------------------------------------------------------------------------
@@ -349,26 +335,26 @@ package body Utils is
 
    function To_Bytes(X : Big_Unsigned) return Bytes is
       L : constant Natural := Max(Length_In_Bytes(X)-1,0);
-      M : constant Natural := 3; --(Mod_Type'Size / Byte'Size) - 1;
+      M : constant Natural := 3; --(Word'Size / Byte'Size) - 1;
       E : constant Integer := ((L+1) mod 4) - 1;
       B : Bytes(0..L);
    begin
       for I in  0..X.Last_Index-1 loop
          for J in 0..M loop
             B(L-I*(M+1)-J) := Byte(Shift_Right(X.Number(I), J*Byte'Size) and
-                                   Mod_Type(Byte'Last));
+                                   Word(Byte'Last));
          end loop;
       end loop;
 
       if E >= 0 then
          for I in 0..E loop
             B(I) := Byte(Shift_Right(X.Number(X.Last_Index), (E-I)*Byte'Size)
-                         and Mod_Type(Byte'Last));
+                         and Word(Byte'Last));
          end loop;
       else
          for J in 0..M loop
             B(M-J) := Byte(Shift_Right(X.Number(X.Last_Index), J*Byte'Size)
-                           and Mod_Type(Byte'Last));
+                           and Word(Byte'Last));
          end loop;
       end if;
 
@@ -377,7 +363,7 @@ package body Utils is
 
    ---------------------------------------------------------------------------
 
-   function To_Big_Unsigned(X : Mod_Types) return Big_Unsigned is
+   function To_Big_Unsigned(X : Words) return Big_Unsigned is
       Result : Big_Unsigned;
    begin
       if X'Length > Max_Length then
@@ -400,7 +386,7 @@ package body Utils is
 
    function To_Big_Unsigned(X : Bytes) return Big_Unsigned is
      Result : Big_Unsigned;
-     M : constant Natural := Mod_Type'Size / Byte'Size; -- Bytes per Mod_Type
+     M : constant Natural := Word'Size / Byte'Size; -- Bytes per Word
      Shift_Amount, counter : Natural:=0;
    begin
       if X'Length*Byte'Size > Size then
@@ -409,7 +395,7 @@ package body Utils is
 
       for I in reverse X'Range loop
          Result.Number(Counter/M) := Result.Number(Counter/M) or
-           Shift_Left(Mod_Type(X(I)), Shift_Amount*Byte'Size);
+           Shift_Left(Word(X(I)), Shift_Amount*Byte'Size);
          Shift_Amount := (Shift_Amount + 1) mod M;
          Counter:=Counter+1;
       end loop;
@@ -438,8 +424,8 @@ package body Utils is
                Remainder := Big_Unsigned_Zero;
                return;
             when others => declare
-               Temp_Remainder : Mod_Type;
-               Temp_Divisor : constant Mod_Type := Divisor.Number(0);
+               Temp_Remainder : Word;
+               Temp_Divisor : constant Word := Divisor.Number(0);
             begin
                -- We use the function Short_Div, which is faster.
                -- See below for the implementation of Short_Div.
@@ -488,7 +474,7 @@ package body Utils is
             end if;
             Temp_Divisor := Shift_Left(Divisor, Diff);
             Remainder := Remainder-Temp_Divisor;
-            Quotient:=Quotient + Shift_Left(Big_Unsigned_One,Diff);
+            Quotient := Quotient + Shift_Left(Big_Unsigned_One, Diff);
          end loop;
       end;
    end Big_Div;
@@ -498,9 +484,9 @@ package body Utils is
    ---------------------------------------------------------------------------
 
    procedure Short_Div(Dividend  : in  Big_Unsigned;
-                       Divisor   : in  Mod_Type;
+                       Divisor   : in  Word;
                        Quotient  : out Big_Unsigned;
-                       Remainder : out Mod_Type) is
+                       Remainder : out Word) is
    begin
 
       -- simple cases
@@ -531,8 +517,8 @@ package body Utils is
       begin
          for I in reverse 0..Last_Dividend loop
             Temp := Largest_Unsigned(Dividend.Number(I))
-              + Shift_Left(Carry, Mod_Type'Size);
-            Temp_Quotient.Number(I) := Mod_Type(Temp / Temp_Divisor);
+              + Shift_Left(Carry, Word'Size);
+            Temp_Quotient.Number(I) := Word(Temp / Temp_Divisor);
             Carry := Temp mod Temp_Divisor;
          end loop;
 
@@ -543,7 +529,7 @@ package body Utils is
             Temp_Quotient.Last_Index := Last_Dividend;
          end if;
          Quotient := Temp_Quotient;
-         Remainder := Mod_Type(Carry);
+         Remainder := Word(Carry);
       end;
    end Short_Div;
 
@@ -559,9 +545,9 @@ package body Utils is
    function To_String(Item : Big_Unsigned;
                                    Base : Number_Base := 10) return String is
       S  : Unbounded_String  := Null_Unbounded_String;
-      Remainder : Mod_Type:=0;
+      Remainder : Word:=0;
       Temp_Item : Big_Unsigned := Item;
-      Trans : constant array(Mod_Type range 0..15) of Character :=
+      Trans : constant array(Word range 0..15) of Character :=
         ('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
    begin
       if Item = Big_Unsigned_Zero then
@@ -575,7 +561,7 @@ package body Utils is
             S := "#" & S;
          end if;
          while (Temp_Item /= Big_Unsigned_Zero) loop
-            Short_Div(Temp_Item, Mod_Type(Base), Temp_Item, Remainder);
+            Short_Div(Temp_Item, Word(Base), Temp_Item, Remainder);
             S := Trans(Remainder) & S;
          end loop;
          if Base /= 10 then
@@ -603,7 +589,7 @@ package body Utils is
 
    ---------------------------------------------------------------------------
 
-   function Get_Digit(C : Character) return Mod_Type  is
+   function Get_Digit(C : Character) return Word  is
    begin
       case C is
          when '0'..'9' => return Character'Pos(C) - Character'Pos('0');
@@ -690,11 +676,11 @@ package body Utils is
             --Time to compute the Big_Unsigned
             if Base > 10 then
                for I in S2'First+3..S2'Last-1 loop
-                 Result := Result * Mod_Type(Base) + Get_Digit(S2(I));
+                 Result := Result * Word(Base) + Get_Digit(S2(I));
                end loop;
             else
                for I in S2'First+2..S2'Last-1 loop
-                  Result := Result * Mod_Type(Base) + Get_Digit(S2(I));
+                  Result := Result * Word(Base) + Get_Digit(S2(I));
                end loop;
             end if;
             return Result;

@@ -43,10 +43,6 @@ package Crypto.Types is
    type DWord is mod 2 ** 64;
    for DWord'Size use 64;
 
-   type Mod_Type is mod 2**32;
-   for Mod_Type'Size use 32;
-
-
    --package BIO is new Ada.Text_Io.Modular_IO (Byte);
    --package WIO is new Ada.Text_Io.Modular_IO (Word);
    --package DIO is new Ada.Text_Io.Modular_IO (DWord);
@@ -56,9 +52,6 @@ package Crypto.Types is
    type Bytes  is array (Integer range <>) of Byte;
    type Words  is array (Integer range <>) of Word;
    type DWords is array (Integer range <>) of DWord;
-
-   type Mod_Types  is array (Natural range <>) of Mod_type;
-
 
    subtype Byte_Word_Range  is Natural range 0..3;
    subtype Byte_DWord_Range is Natural range 0..7;
@@ -157,12 +150,6 @@ package Crypto.Types is
    function Shift_Right  (Value : DWord; Amount : Natural) return DWord;
    function Rotate_Left  (Value : DWord; Amount : Natural) return DWord;
    function Rotate_Right (Value : DWord; Amount : Natural) return DWord;
-
-   function Shift_Left   (Value : Mod_Type; Amount : Natural) return Mod_Type;
-   function Shift_Right  (Value : Mod_Type; Amount : Natural) return Mod_Type;
-   function Rotate_Left  (Value : Mod_Type; Amount : Natural) return Mod_type;
-   function Rotate_Right (Value : Mod_Type; Amount : Natural) return Mod_Type;
-
 
    pragma Import (Intrinsic, Shift_Left);
    pragma Import (Intrinsic, Shift_Right);

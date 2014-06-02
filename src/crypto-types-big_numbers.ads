@@ -74,21 +74,21 @@ package Crypto.Types.Big_Numbers is
    function Min(X, Y : in Big_Unsigned) return Big_Unsigned;
    function Max(X, Y : in Big_Unsigned) return Big_Unsigned;
 
-   -- compare: Big Unsigned with Mod_Type
-   function "="(Left : Big_Unsigned; Right : Mod_Type) return Boolean;
-   function "="(Left : Mod_Type; Right : Big_Unsigned) return Boolean;
+   -- compare: Big Unsigned with Word
+   function "="(Left : Big_Unsigned; Right : Word) return Boolean;
+   function "="(Left : Word; Right : Big_Unsigned) return Boolean;
 
-   function "<"(Left : Big_Unsigned; Right : Mod_Type) return Boolean;
-   function "<"(Left : Mod_Type; Right : Big_Unsigned) return Boolean;
+   function "<"(Left : Big_Unsigned; Right : Word) return Boolean;
+   function "<"(Left : Word; Right : Big_Unsigned) return Boolean;
 
-   function ">"(Left : Big_Unsigned; Right : Mod_Type) return Boolean;
-   function ">"(Left : Mod_Type; Right : Big_Unsigned) return Boolean;
+   function ">"(Left : Big_Unsigned; Right : Word) return Boolean;
+   function ">"(Left : Word; Right : Big_Unsigned) return Boolean;
 
-   function "<="(Left : Big_Unsigned; Right : Mod_Type) return Boolean;
-   function "<="(Left : Mod_Type; Right : Big_Unsigned) return Boolean;
+   function "<="(Left : Big_Unsigned; Right : Word) return Boolean;
+   function "<="(Left : Word; Right : Big_Unsigned) return Boolean;
 
-   function ">="(Left : Big_Unsigned; Right : Mod_Type) return Boolean;
-   function ">="(Left : Mod_Type; Right : Big_Unsigned) return Boolean;
+   function ">="(Left : Big_Unsigned; Right : Word) return Boolean;
+   function ">="(Left : Word; Right : Big_Unsigned) return Boolean;
 
 
    ---------------------------------------------------------------------------
@@ -96,12 +96,12 @@ package Crypto.Types.Big_Numbers is
    ---------------------------------------------------------------------------
 
    function "+"(Left, Right : Big_Unsigned) return Big_Unsigned;
-   function "+"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned;
-   function "+"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned;
+   function "+"(Left : Big_Unsigned; Right : Word) return Big_Unsigned;
+   function "+"(Left : Word; Right : Big_Unsigned) return Big_Unsigned;
 
    function "-"(Left, Right : Big_Unsigned) return Big_Unsigned;
-   function "-"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned;
-   function "-"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned;
+   function "-"(Left : Big_Unsigned; Right : Word) return Big_Unsigned;
+   function "-"(Left : Word; Right : Big_Unsigned) return Big_Unsigned;
 
    function "-"(X : Big_Unsigned) return Big_Unsigned;
 
@@ -114,24 +114,24 @@ package Crypto.Types.Big_Numbers is
    function Toom_Cook      (Left, Right : Big_Unsigned) return Big_Unsigned;
    function Toom_Cook_P    (Left, Right : Big_Unsigned) return Big_Unsigned;
 --============================================================================--
-   function "*"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned;
-   function "*"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned;
+   function "*"(Left : Big_Unsigned; Right : Word) return Big_Unsigned;
+   function "*"(Left : Word; Right : Big_Unsigned) return Big_Unsigned;
 
    function "/"(Left, Right : Big_Unsigned) return Big_Unsigned;
-   function "/"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned;
-   function "/"(Left : Mod_Type; Right : Big_Unsigned) return Big_Unsigned;
+   function "/"(Left : Big_Unsigned; Right : Word) return Big_Unsigned;
+   function "/"(Left : Word; Right : Big_Unsigned) return Big_Unsigned;
 
    function "xor"(Left, Right : Big_Unsigned) return Big_Unsigned;
    function "or" (Left, Right : Big_Unsigned) return Big_Unsigned;
 
    function "and"(Left, Right : Big_Unsigned) return Big_Unsigned;
-   function "and"(Left: Big_Unsigned; Right: Mod_Type) return Big_Unsigned;
-   function "and"(Left: Mod_Type; Right: Big_Unsigned) return Big_Unsigned;
+   function "and"(Left: Big_Unsigned; Right: Word) return Big_Unsigned;
+   function "and"(Left: Word; Right: Big_Unsigned) return Big_Unsigned;
 
    function "**"(Left, Right : Big_Unsigned) return Big_Unsigned;
 
    function "mod"(Left, Right : Big_Unsigned) return Big_Unsigned;
-   function "mod"(Left : Big_Unsigned; Right : Mod_Type) return Big_Unsigned;
+   function "mod"(Left : Big_Unsigned; Right : Word) return Big_Unsigned;
 
    ---------------------------------------------------------------------------
    ----------------------------Utils------------------------------------------
@@ -187,9 +187,9 @@ package Crypto.Types.Big_Numbers is
 
       function To_Big_Unsigned(X : Bytes) return Big_Unsigned;
 
-      function To_Mod_Types(X : Big_Unsigned) return Mod_Types;
+      function To_Words(X : Big_Unsigned) return Words;
 
-      function To_Big_Unsigned(X : Mod_Types) return Big_Unsigned;
+      function To_Big_Unsigned(X : Words) return Big_Unsigned;
 
       function To_String(Item : Big_Unsigned;
                          Base : Number_Base := 10) return String;
@@ -205,9 +205,9 @@ package Crypto.Types.Big_Numbers is
                         Quotient, Remainder   : out Big_Unsigned);
 
       procedure Short_Div(Dividend  : in  Big_Unsigned;
-                          Divisor   : in  Mod_Type;
+                          Divisor   : in  Word;
                           Quotient  : out Big_Unsigned;
-                          Remainder : out Mod_Type);
+                          Remainder : out Word);
    end Utils;
 
    ---------------------------------------------------------------------------
@@ -317,20 +317,20 @@ package Crypto.Types.Big_Numbers is
 private
    type Largest_Unsigned is mod System.Max_Binary_Modulus;
 
-   Max_Length : Natural := (Size/Mod_Type'Size)-1;
+   Max_Length   : Natural := (Size/Word'Size)-1;
    D_Max_Length : Positive := 2*Max_Length+1;
 
-   subtype DWords  is Mod_Types(0..Max_Length);
-   subtype DDWords is Mod_Types(0..D_Max_Length);
+   subtype Limbs  is Words(0..Max_Length);
+   subtype DLimbs is Words(0..D_Max_Length);
 
-   subtype M_Len is Natural range DWords'Range;
+   subtype M_Len is Natural range Limbs'Range;
 
    -- This is our Big_Unsigned
-   -- It represents a Size*Mod_Type'Size-bit number
+   -- It represents a Size*Word'Size-bit number
    -- Last_Index is the Number of the last slice who
    -- contains the most significant bit of the current number.
    -- Ex.:
-   -- Mod_Type'Size = 24
+   -- Word'Size = 24
    -- Our Big_Unsigned A is equal to 2**100-7
    -- Big_Unsignesd_Last = 2**240-1
    -- So only Slice 0-4 contains a part of the current 99-Bit number (2**100-7)
@@ -338,12 +338,12 @@ private
 
    type Big_Unsigned is record
       Last_Index : Natural:=0;
-      Number : DWords:=(others => 0);
+      Number : Limbs:=(others => 0);
    end record;
 
    type D_Big_Unsigned is record
       Last_Index : Natural:=0;
-      Number : DDWords:=(others => 0);
+      Number : DLimbs:=(others => 0);
    end record;
 
    -- prime test
@@ -368,7 +368,7 @@ private
    Big_Unsigned_First : CONSTANT Big_Unsigned :=
      Big_Unsigned_Zero;  
    Big_Unsigned_Last : CONSTANT Big_Unsigned :=
-     (Last_Index => Max_Length, Number => (OTHERS => Mod_Type'Last));
+     (Last_Index => Max_Length, Number => (OTHERS => Word'Last));
 
 
    D_Big_Unsigned_Zero : CONSTANT D_Big_Unsigned :=
@@ -376,7 +376,7 @@ private
    D_Big_Unsigned_One : CONSTANT D_Big_Unsigned :=
      (Last_Index => 0,  Number => (0 => 1, OTHERS => 0));
    D_Big_Unsigned_Last : CONSTANT D_Big_Unsigned :=
-     (Last_Index => D_Max_Length, Number => (OTHERS => Mod_Type'Last));
+     (Last_Index => D_Max_Length, Number => (OTHERS => Word'Last));
 
    -- Shifting
 

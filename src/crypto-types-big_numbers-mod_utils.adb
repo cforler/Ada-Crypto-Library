@@ -141,16 +141,8 @@ package body Mod_Utils is
 
    function Get_Random(N : Big_Unsigned) return Big_Unsigned is
       Result : Big_Unsigned;
-      K : constant:= 3; -- Byte'Size = 8 = 2^N = 2^3
-      B : Byte;
    begin
-      for I in 0..N.Last_Index loop
-         for J in 0..(Shift_Right(Mod_Type(Mod_Type'Size),K)-1) loop
-            Crypto.Types.Random.Read(B);
-            Result.Number(I) := Result.Number(I) or
-              Shift_Left(Mod_Type(B),Natural(Shift_Left(J,K)));
-         end loop;
-      end loop;
+      Random.Read(Result.Number);
 
       for I in reverse 0..N.Last_Index loop
          if Result.Number(I) /= 0 then
@@ -169,7 +161,7 @@ package body Mod_Utils is
    begin
 
       if X.Last_Index = 0 then
-         for I in 2..Mod_Type'Size-1 loop
+         for I in 2..Word'Size-1 loop
             if  X.Number(0) = Shift_Left(2,I)-1 then
                Is_Mp := True;
                exit;
@@ -179,13 +171,13 @@ package body Mod_Utils is
          end if;
       else
          for I in 0..X.Last_Index loop
-            if X.Number(I) /= Mod_Type'Last then return False;
+            if X.Number(I) /= Word'Last then return False;
             end if;
          end loop;
       end if;
 
       declare
-         P : constant Mod_Type := Mod_Type(Bit_Length(X)-1);
+         P : constant Word := Word(Bit_Length(X)-1);
          S : Big_Unsigned := Big_Unsigned_Two+2; --S(1) = 4;
       begin
          for I in 2..P-1 loop
@@ -278,15 +270,15 @@ package body Mod_Utils is
        --X is odd
 
        for I in One_Digit_Primes'First+1..One_Digit_Primes'Last loop
-         if X = Mod_Type(One_Digit_Primes(I)) then return true;
-         elsif X mod Mod_Type(One_Digit_Primes(I)) = Big_Unsigned_Zero then
+         if X = Word(One_Digit_Primes(I)) then return true;
+         elsif X mod Word(One_Digit_Primes(I)) = Big_Unsigned_Zero then
             return False;
          end if;
        end loop;
 
       for I in Two_Digit_Primes'Range loop
-         if X = Mod_Type(Two_Digit_Primes(I)) then return true;
-         elsif X mod Mod_Type(Two_Digit_Primes(I)) = Big_Unsigned_Zero then
+         if X = Word(Two_Digit_Primes(I)) then return true;
+         elsif X mod Word(Two_Digit_Primes(I)) = Big_Unsigned_Zero then
             return False;
          end if;
       end loop;
@@ -296,8 +288,8 @@ package body Mod_Utils is
       end if;
 
       for I in Three_Digit_Primes'Range loop
-         if X = Mod_Type(Three_Digit_Primes(I)) then return true;
-         elsif X mod Mod_Type(Three_Digit_Primes(I)) = Big_Unsigned_Zero then
+         if X = Word(Three_Digit_Primes(I)) then return true;
+         elsif X mod Word(Three_Digit_Primes(I)) = Big_Unsigned_Zero then
             return False;
          end if;
       end loop;
@@ -395,7 +387,7 @@ package body Mod_Utils is
    -- Result = Left * Right (mod N)
    function Mult(Left, Right, N : Big_Unsigned) return Big_Unsigned is
       T : DWord;
-      Carry : Mod_Type := 0;
+      Carry : Word := 0;
       R : D_Big_Unsigned;
    begin
       for I in 0..Left.Last_Index loop
@@ -403,9 +395,9 @@ package body Mod_Utils is
             T := DWord(Left.Number(I)) *  DWord(Right.Number(J))
                + DWord(R.Number(I+J)) + DWord(Carry);
 
-            R.Number(I+J) := Mod_Type(T and DWord(Mod_Type'Last));
+            R.Number(I+J) := Word(T and DWord(Word'Last));
 
-            Carry:= Mod_Type(Shift_Right(T,Mod_Type'Size));
+            Carry:= Word(Shift_Right(T,Word'Size));
          end loop;
          R.Number(I+Right.Last_Index+1) := Carry +
           R.Number(I+Right.Last_Index+1);
@@ -427,8 +419,8 @@ package body Mod_Utils is
    -- Returns a probability  N-bit prime (Result).
    function Get_N_Bit_Prime(N : Positive) return Big_Unsigned  is
       J : Big_Unsigned := Get_Random(Shift_Left(Big_Unsigned_One,N-2));
-      Index : constant Natural := (N-1)/Mod_Type'Size;
-      Amount : constant Natural := (N-1) mod Mod_Type'Size;
+      Index : constant Natural := (N-1)/Word'Size;
+      Amount : constant Natural := (N-1) mod Word'Size;
       Result : Big_Unsigned := Shift_Left(J,1);
 
    begin
@@ -443,7 +435,7 @@ package body Mod_Utils is
 
          -- Make sure that Result is a N-Bit-Number;
          Result.Number(Index) :=  Result.Number(Index) or
-           Shift_Left(Mod_Type(1), Amount);
+           Shift_Left(Word(1), Amount);
          if Amount = 0 then Result.Last_Index := Index;
          end if;
 
@@ -528,7 +520,7 @@ package body Mod_Utils is
    function Shift_Left(Value : D_Big_Unsigned; Amount : Natural)
                       return D_Big_Unsigned is
    begin
-      if Amount >= (D_Max_Length+1)*Mod_Type'Size or
+      if Amount >= (D_Max_Length+1)*Word'Size or
         Value = D_Big_Unsigned_Zero
       then  return D_Big_Unsigned_Zero;
       elsif Amount = 0 then return Value;
@@ -536,10 +528,10 @@ package body Mod_Utils is
 
       declare
          Result : D_Big_Unsigned;
-         Temp : DDWords :=(others => 0);
-         L : constant Natural := Amount mod Mod_Type'Size;
-         R : constant Natural := Mod_Type'Size-L;
-         M : constant Natural := Amount/Mod_Type'Size;
+         Temp : DLimbs :=(others => 0);
+         L : constant Natural := Amount mod Word'Size;
+         R : constant Natural := Word'Size-L;
+         M : constant Natural := Amount/Word'Size;
       begin
          Temp(0) := Shift_Left(Value.Number(0), L);
 
@@ -579,12 +571,12 @@ package body Mod_Utils is
          return 0;
       end if;
 
-      for I in reverse 0..Mod_Type'Size-1 loop
+      for I in reverse 0..Word'Size-1 loop
          if Shift_Left(1,I) <= X.Number(X.Last_Index) then
-            return  Mod_Type'Size * X.Last_Index + I + 1 ;
+            return  Word'Size * X.Last_Index + I + 1 ;
          end if;
       end loop;
-      return X.Last_Index * Mod_Type'Size;
+      return X.Last_Index * Word'Size;
    end Bit_Length; pragma Inline (Bit_Length);
 
 
@@ -636,7 +628,7 @@ package body Mod_Utils is
       else
          declare
             Result : D_Big_Unsigned;
-            Carry : Mod_Type:=0;
+            Carry : Word:=0;
          begin
             -- Remember Left > Right
             for I in 0..Left.Last_Index loop
@@ -713,14 +705,14 @@ package body Mod_Utils is
    function "+"(Left, Right : D_Big_Unsigned) return D_Big_Unsigned is
       Result : D_Big_Unsigned;
       M : constant Natural  := Natural'Max(Left.Last_Index, Right.Last_Index);
-      Temp : Mod_Type;
-      Carry : Mod_Type :=0;
+      Temp : Word;
+      Carry : Word :=0;
    begin
 
         for I in 0..M loop
          Temp :=Carry;
          Result.Number(I) := Left.Number(I) + Right.Number(I) +Temp;
-         if Result.Number(I) < Mod_Type'Max(Left.Number(I), Right.Number(I))
+         if Result.Number(I) < Word'Max(Left.Number(I), Right.Number(I))
          then  Carry := 1;
          else Carry := 0;
          end if;
