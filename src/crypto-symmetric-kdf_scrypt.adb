@@ -24,9 +24,6 @@
 with Crypto.Symmetric.KDF_PBKDF2;
 with Crypto.Symmetric.Mac.Hmac_SHA256;
 
-with Ada.Text_IO;
-
-
 
 package body Crypto.Symmetric.KDF_Scrypt is
 
@@ -151,9 +148,6 @@ package body Crypto.Symmetric.KDF_Scrypt is
       if not IsPowerOfTwo(N) then
          raise N_not_power_of_2_exception;
       end if;
-
-
-      Ada.Text_IO.Put_Line("Passed Declaration");
       for I in 0..N-1 loop
          V(I) := X;
          X := Scrypt_Block_Mix(Input => X);
@@ -174,10 +168,7 @@ package body Crypto.Symmetric.KDF_Scrypt is
          T := X xor V(J);
          X := Scrypt_Block_Mix(Input => T);
       end loop;
-
       return X;
-
-
    end Scrypt_ROMix;
 
 
@@ -190,7 +181,6 @@ package body Crypto.Symmetric.KDF_Scrypt is
       Output	 : W_Block512_Array(Input'Range);
 
       Counter : Natural := 0;
-
    begin
 
       for I in Input'Range loop
