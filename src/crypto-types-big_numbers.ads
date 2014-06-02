@@ -94,7 +94,7 @@ package Crypto.Types.Big_Numbers is
    ---------------------------------------------------------------------------
    -----------------------------Basic-----------------------------------------
    ---------------------------------------------------------------------------
-
+   
    function "+"(Left, Right : Big_Unsigned) return Big_Unsigned;
    function "+"(Left : Big_Unsigned; Right : Word) return Big_Unsigned;
    function "+"(Left : Word; Right : Big_Unsigned) return Big_Unsigned;
@@ -159,7 +159,9 @@ package Crypto.Types.Big_Numbers is
       -- X = Big_unsigned_Zero
       procedure Inc(X : in out Big_Unsigned);
       procedure Dec(X : in out Big_Unsigned);
-
+      
+      function To_Big_Unsigned(X : Word) return Big_Unsigned;
+      
 
       function Shift_Left(Value : Big_Unsigned; Amount : Natural)
                          return Big_Unsigned;

@@ -312,7 +312,15 @@ package body Utils is
    end Length_In_Bytes; pragma Inline (Length_In_Bytes);
 
    ---------------------------------------------------------------------------
-
+      
+   function To_Big_Unsigned(X : Word) return Big_Unsigned is
+      Result : constant Big_Unsigned :=
+	(Last_Index => 0, Number => (0 => X, OTHERS => 0));
+   begin
+      return Result;
+   end To_Big_Unsigned; pragma Inline (To_Big_Unsigned);
+   
+   
    function To_Words(X : Big_Unsigned) return Words  is
    begin
       return X.Number(0..X.Last_Index);

@@ -204,15 +204,11 @@ package body Crypto.Types.Big_Numbers is
    ----------------------------BASE_FUNCTIONS---------------------------------
    ---------------------------------------------------------------------------
 --============================================================================--
-   function "+"(Left, Right : Big_Unsigned) return Big_Unsigned is
+    
+    function "+"(Left, Right : Big_Unsigned) return Big_Unsigned is
       Result : Big_Unsigned;
       L : constant Natural := Natural'Max( Bit_Length(Left), Bit_Length(Right));
    begin
---      if (L + 1) > Bit_Length(Big_Unsigned_Last) then
---         raise Big_Unsigned_Overflow;
---      elsif L + 1 <= Word'Size then
---         Result.Number(0) := Left.Number(0) + Right.Number(0);
---      else
       if L + 1 <= Word'Size then
          Result.Number(0) := Left.Number(0) + Right.Number(0);
       else

@@ -128,8 +128,8 @@ package body Test.RSA is
       Register_Routine(T, Test_Verify_Key_Pair'Access,
 		       "RSA: verify keypair test.");
       Register_Routine(T, Test_OAEP'Access,"RSA: OAEP test.");
---      Register_Routine(T, Test_Gen_Keypair'Access,
---		       "RSA: generate keypair test.");
+      Register_Routine(T, Test_Gen_Keypair'Access,
+		       "RSA: generate keypair test.");
       Register_Routine(T, Test_Get_Public_key'Access,
 		       "RSA: get public key test");
       Register_Routine(T, Test_Encryption'Access,

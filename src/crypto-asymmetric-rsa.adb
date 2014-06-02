@@ -50,7 +50,7 @@ package body Crypto.Asymmetric.RSA is
 
    function Check_Public_Key(X :  Public_Key_RSA) return Boolean is
    begin
-      if Bit_Length(X.N) /= Size or Is_Even(X.E) or X.E < Big_Unsigned_Two then
+      if Bit_Length(X.N) < Size-1  or Is_Even(X.E) or X.E < 65536 then
 	 return False;
       else
 	 return True;
@@ -61,9 +61,9 @@ package body Crypto.Asymmetric.RSA is
 
    function Check_Private_Key(X : Private_Key_RSA) return Boolean is
    begin
-      if Bit_Length(X.N) /= Size or X.D <= Big_Unsigned_Two
-        or Is_Even(X.D) or Is_Odd(X.Phi) or (Bit_Length(X.Phi) < Size-2)
-        or X.P*X.Q /= X.N or Gcd(X.D, X.Phi) /= 1 then 
+      if Bit_Length(X.N) < Size-1 or Is_Even(X.D) or (Bit_Length(X.Phi) < Size-2)
+        or X.P*X.Q /= X.N or (X.P-1)*(X.Q-1) /= X.Phi or Gcd(X.D, X.P) /= 1
+	or Gcd(X.D, X.Q) /= Big_Unsigned_One then 
 	 return False;
       else 
 	 return True;
@@ -75,38 +75,36 @@ package body Crypto.Asymmetric.RSA is
    procedure Gen_Key(Public_Key  : out Public_Key_RSA;
                      Private_Key : out Private_Key_RSA;
 		     Small_Default_Exponent_E : in Boolean := True) is
+      Small_Primes : constant Words :=  (65537, 65539,  65543, 65557, 65609, 65617 );  
    begin
+      Private_Key.P := Get_N_Bit_Prime(Size/2); 
       loop
-	 Private_Key.P := Get_N_Bit_Prime(Size/2+1); 
-         Private_Key.Q := Get_N_Bit_Prime(Size/2);  
-         Private_Key.N :=  Private_Key.P *  Private_Key.Q; -- N = P*Q
-         
-	 exit when Bit_Length(Private_Key.N) = Size;
+         Private_Key.Q := Get_N_Bit_Prime(Size/2);
+	 exit when Private_Key.P /= Private_Key.Q; 
       end loop;
-      Private_Key.Phi := (Public_Key.N-1)  * (Public_Key.E-1);
-
-      --Algorithm to compute E:
-      -- 1. chose a random D   (D < S)
-      -- 2. has D no inverses then goto 1
-      -- 3. compute the inverses of D
-      loop
-         -- 1.
-         Private_Key.D := Get_Random(Private_Key.Phi);
-
-         --2.
-         if  Private_Key.D > Big_Unsigned_Two  then
-            if  Gcd(Private_Key.D, Private_Key.Phi) = Big_Unsigned_One then
-
-               --3.
-               Public_Key.E :=
-                 Inverse(Private_Key.D,Private_Key.Phi); -- E*D = 1 mod S
-               exit;
-            end if;
-         end if;
-      end loop;
-
-      Public_Key.N :=  Private_Key.N;
-
+	 
+	 Private_Key.N :=  Private_Key.P * Private_Key.Q; 
+	 Private_Key.Phi := (Private_Key.P-1) * (Private_Key.Q-1);
+	 
+	 
+	 Public_Key.E := Big_Unsigned_Zero; 
+	 if Small_Default_Exponent_E then
+	    for I in Small_Primes'Range loop
+	       Public_Key.E :=  To_Big_Unsigned(Small_Primes(I));
+	       exit when Gcd(Public_Key.E, Private_Key.Phi) = Big_Unsigned_One;
+	       Public_Key.E := Big_Unsigned_Zero;
+	    end loop;
+	 end if;
+	 
+	 if Public_Key.E = Big_Unsigned_Zero then
+	    loop 
+	       Public_key.E := Get_Random(Private_Key.Phi);
+	       exit when Gcd(Public_Key.E, Private_Key.Phi) =
+		 Big_Unsigned_One and Public_Key.E > 65536;
+	    end loop;
+	 end if;
+	 Private_Key.D := Inverse(Public_Key.E, Private_Key.Phi);	    
+	 Public_Key.N :=  Private_Key.N;  
    end Gen_Key;
 
    ---------------------------------------------------------------------------
@@ -169,8 +167,9 @@ package body Crypto.Asymmetric.RSA is
    function Verify_Key_Pair(Private_Key : Private_Key_RSA;
                             Public_Key  : Public_Key_RSA) return Boolean is
    begin
-      if Check_Private_Key(Private_Key) = False or  Check_Public_Key(Public_Key) = False 
-	or Public_Key.N /= Private_Key.N  
+      if 
+	Check_Private_Key(Private_Key) = False or  Check_Public_Key(Public_Key) = False 
+	or Public_Key.N /= Private_Key.N 
 	or Mult(Public_Key.E, Private_Key.D, Private_Key.Phi)  /= Big_Unsigned_One then
 	 return False;
       else
