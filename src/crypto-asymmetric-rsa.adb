@@ -20,20 +20,16 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Ada.Text_IO;
 with Crypto.Types.Random;
 with Crypto.Symmetric.Hashfunction_SHA1;
 --with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body Crypto.Asymmetric.RSA is
---   use Big;
    package SHA1 renames Crypto.Symmetric.Hashfunction_SHA1;
    use Big.Utils;
-   use Ada.Text_IO;
    use Big.Mod_Utils;
-
-
---   package BIO is new Ada.Text_Io.Modular_IO (Byte);
+   
+-- BIO is new Ada.Text_Io.Modular_IO (Byte);
 --   package WIO is new Ada.Text_IO.Modular_IO (Word);
 --   use BIO, WIO;
 
@@ -54,9 +50,10 @@ package body Crypto.Asymmetric.RSA is
 
    function Check_Public_Key(X :  Public_Key_RSA) return Boolean is
    begin
-      if Bit_Length(X.N) /= Size then return False;
-      elsif Is_Odd(X.E)  and (X.E > Big_Unsigned_Two) then return True;
-      else return False;
+      if Bit_Length(X.N) /= Size or Is_Even(X.E) or X.E < Big_Unsigned_Two then
+	 return False;
+      else
+	 return True;
       end if;
    end Check_Public_Key; pragma Inline(Check_Public_Key);
 
@@ -66,31 +63,26 @@ package body Crypto.Asymmetric.RSA is
    begin
       if Bit_Length(X.N) /= Size or X.D <= Big_Unsigned_Two
         or Is_Even(X.D) or Is_Odd(X.Phi) or (Bit_Length(X.Phi) < Size-2)
-        or Gcd(X.D, X.Phi) /= 1 then return False;
-      else return True;
+        or X.P*X.Q /= X.N or Gcd(X.D, X.Phi) /= 1 then 
+	 return False;
+      else 
+	 return True;
       end if;
    end Check_Private_Key; pragma Inline(Check_Private_Key);
 
    ---------------------------------------------------------------------------
 
    procedure Gen_Key(Public_Key  : out Public_Key_RSA;
-                     Private_Key : out Private_Key_RSA) is
+                     Private_Key : out Private_Key_RSA;
+		     Small_Default_Exponent_E : in Boolean := True) is
    begin
-
-      -- First we generate the Private_Key
-      -- To save space we set:
-      --   Public.Key.N = P
-      --   Public.Key.E = Q
-      -- I know this is a little bit confusion. ;-)
       loop
-         Public_Key.N := Get_N_Bit_Prime(Size/2+1); -- P
-         Public_Key.E  := Get_N_Bit_Prime(Size/2);  -- Q
-
-         Private_Key.N := Public_Key.N * Public_Key.E; -- N = P*Q
-
-         exit when Bit_Length(Private_Key.N) = Size;
+	 Private_Key.P := Get_N_Bit_Prime(Size/2+1); 
+         Private_Key.Q := Get_N_Bit_Prime(Size/2);  
+         Private_Key.N :=  Private_Key.P *  Private_Key.Q; -- N = P*Q
+         
+	 exit when Bit_Length(Private_Key.N) = Size;
       end loop;
-
       Private_Key.Phi := (Public_Key.N-1)  * (Public_Key.E-1);
 
       --Algorithm to compute E:
@@ -151,7 +143,7 @@ package body Crypto.Asymmetric.RSA is
                      Plaintext   : out Big_Unsigned) is
    begin
       if Check_Private_Key(Private_Key) = False then
-         Put("-error");--raise Decrypt_Error;
+	 raise  Invalid_Private_Key_Error;
       end if;
       Plaintext := Pow(Ciphertext, Private_Key.D, Private_Key.N);
    end Decrypt;
@@ -165,7 +157,7 @@ package body Crypto.Asymmetric.RSA is
       P : Big_Unsigned;
    begin
       if Check_Private_Key(Private_Key) = False then
-         raise Decrypt_Error;
+         raise Invalid_Private_Key_Error;
       end if;
       P := Pow(To_Big_Unsigned(Ciphertext),Private_Key.D,Private_Key.N);
       Plaintext := To_RSA_Number(P);
@@ -177,11 +169,12 @@ package body Crypto.Asymmetric.RSA is
    function Verify_Key_Pair(Private_Key : Private_Key_RSA;
                             Public_Key  : Public_Key_RSA) return Boolean is
    begin
-      if ((Check_Private_Key(Private_Key) and Check_Public_Key(Public_Key)) =
-        False) or Public_Key.N /= Private_Key.N or
-        Mult(Public_Key.E,Private_Key.D,Private_Key.Phi) /= Big_Unsigned_One
-      then  return False;
-      else return True;
+      if Check_Private_Key(Private_Key) = False or  Check_Public_Key(Public_Key) = False 
+	or Public_Key.N /= Private_Key.N  
+	or Mult(Public_Key.E, Private_Key.D, Private_Key.Phi)  /= Big_Unsigned_One then
+	 return False;
+      else
+	 return True;
       end if;
    end Verify_Key_Pair;
 
@@ -196,71 +189,94 @@ package body Crypto.Asymmetric.RSA is
       E := (others => 0);
       E(E'Last - (Length_In_Bytes(Public_Key.E) - 1)..E'Last)
         := To_Bytes(Public_Key.E);
-
    end Get_Public_Key;
-
-   ---------------------------------------------------------------------------
-
+   
+      ---------------------------------------------------------------------------
+   
    procedure Get_Private_Key(Private_Key : in Private_Key_RSA;
                              N   : out RSA_Number;
                              D   : out RSA_Number;
+                             P   : out RSA_Number;
+                             Q   : out RSA_Number;
                              Phi : out RSA_Number) is
    begin
       N := To_Bytes(Private_Key.N);
       D := (others => 0);
       D(D'Last - (Length_In_Bytes(Private_Key.D) - 1)..D'Last)
         := To_Bytes(Private_Key.D);
+      P := (others => 0);
+      P(P'Last - (Length_In_Bytes(Private_Key.P) - 1)..P'Last)
+        := To_Bytes(Private_Key.P);
+      Q := (others => 0);
+      Q(Q'Last - (Length_In_Bytes(Private_Key.Q) - 1)..Q'Last)
+        := To_Bytes(Private_Key.Q);
       Phi := To_Bytes(Private_Key.Phi);
    end Get_Private_Key;
 
    ---------------------------------------------------------------------------
-
-   procedure Set_Public_Key(N : in RSA_Number;
-                            E : in RSA_Number;
+   
+   procedure Set_Public_Key(N : in Big_Unsigned;
+                            E : in Big_Unsigned;
                             Public_Key : out Public_Key_RSA) is
    begin
-      Public_Key.N := To_Big_Unsigned(N);
-      Public_Key.E := To_Big_Unsigned(E);
-
+      Public_Key.N := N;
+      Public_Key.E := E;
       if not(Check_Public_Key(Public_Key)) then
          raise  Constraint_Error;
       end if;
    end Set_Public_Key;
-
+    
+    ---------------------------------------------------------------------------
+      
+   procedure Set_Public_Key(N : in RSA_Number;
+                            E : in RSA_Number;
+                            Public_Key : out Public_Key_RSA) is
+   begin
+     Set_Public_Key( To_Big_Unsigned(N), To_Big_Unsigned(E), Public_key);
+   end Set_Public_Key;
+   
    ---------------------------------------------------------------------------
 
+   
    procedure Set_Private_Key(N   : in RSA_Number;
                              D   : in RSA_Number;
+                             P   : in RSA_Number;
+                             Q   : in RSA_Number;
                              Phi : in RSA_Number;
                              Private_Key : out Private_Key_RSA) is
    begin
       Private_Key.N := To_Big_Unsigned(N);
       Private_Key.D := To_Big_Unsigned(D);
+      Private_Key.P := To_Big_Unsigned(P);
+      Private_Key.Q := To_Big_Unsigned(Q);
       Private_Key.Phi := To_Big_Unsigned(Phi);
 
       if not(Check_Private_Key(Private_Key)) then
          raise  Constraint_Error;
       end if;
-
    end Set_Private_Key;
 
+  
    ---------------------------------------------------------------------------
 
    procedure Set_Private_Key(N   : in Big_Unsigned;
                              D   : in Big_Unsigned;
+                             P   : in Big_Unsigned;
+                             Q   : in Big_Unsigned;
                              Phi : in Big_Unsigned;
                              Private_Key : out Private_Key_RSA) is
    begin
       Private_Key.N := N;
       Private_Key.D := D;
+      Private_Key.P := P;
+      Private_Key.Q := Q;
       Private_Key.Phi := Phi;
-      
+
       if not(Check_Private_Key(Private_Key)) then
-         --raise  Constraint_Error;
-	Put("-error");
+	raise  Constraint_Error;
       end if;
- 
    end Set_Private_Key;
+   
 
    ---------------------------------------------------------------------------
    -----------------------------OAEP-RSA--------------------------------------
@@ -513,8 +529,7 @@ package body Crypto.Asymmetric.RSA is
 
 begin
    if Size < 512 then
-      Put_Line("Only defined for Size > 511");
-      raise Constraint_Size_Error;
+      raise Constraint_Size_Error with "Only defined for Size > 511";
    end if;
 
    ---------------------------------------------------------------------------
