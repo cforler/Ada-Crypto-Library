@@ -4,10 +4,13 @@ with Test.Suite_Blockciphers;
 with Crypto.Types.Random;
 with AUnit.Reporter.Text;
 with Test.Suite_AE;
+with Test.Suite_Nonces;
 with AUnit.Run;
 
 
 procedure Test.Symmetric_Ciphers is
+   procedure Run_Nonce is new AUnit.Run.Test_Runner(Test.Suite_Nonces.Suite);
+   
    procedure Run_BC  is new
      AUnit.Run.Test_Runner(Test.Suite_Blockciphers.Suite);
    procedure Run_OBC is new
@@ -21,6 +24,7 @@ procedure Test.Symmetric_Ciphers is
 begin
    Dev_U_Rand.Initialize("/dev/urandom");
    Crypto.Types.Random.Set(Dev_U_Rand);
+   Run_Nonce(Reporter);
    Run_BC(Reporter);
    Run_OBC(Reporter);
    Run_AE(Reporter);
