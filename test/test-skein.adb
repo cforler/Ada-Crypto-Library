@@ -10,17 +10,13 @@ package body Test.Skein is
    use Crypto.Symmetric.Algorithm.Threefish;
 
    -----------------------------------------------------------------------------
-   -----------------------------------------------------------------------------
    ------------------------------Type - Declaration ----------------------------
    -----------------------------------------------------------------------------
-   -----------------------------------------------------------------------------
+
    Mode : Skein_Mode;
 
-
-   -----------------------------------------------------------------------------
    -----------------------------------------------------------------------------
    ----------------------------- Register Skein Test----------------------------
-   -----------------------------------------------------------------------------
    -----------------------------------------------------------------------------
 
    procedure Register_Tests(T : in out Skein_Test) is
@@ -29,33 +25,28 @@ package body Test.Skein is
       Register_Routine(T, Skein_Test_256'Access,"Skein_Test_256.");
       Register_Routine(T, Skein_Test_512'Access,"Skein_Test_512.");
       Register_Routine(T, Skein_Test_1024'Access,"Skein_Test_1024.");
-
    end Register_Tests;
 
    -----------------------------------------------------------------------------
-   -----------------------------------------------------------------------------
-   ------------------------------ Name Skein Test ------------------------------
-   -----------------------------------------------------------------------------
-   -----------------------------------------------------------------------------
+     ------------------------------ Name Skein Test ------------------------------
+     -----------------------------------------------------------------------------
 
    function Name(T : Skein_Test) return Test_String is
    begin
       return new String'("Skein Test");
    end Name;
-
-   -----------------------------------------------------------------------------
+   
    -----------------------------------------------------------------------------
    ------------------------------------ Start Tests ----------------------------
    -----------------------------------------------------------------------------
-   -------------------------------------- Test 1 -------------------------------
+   
+   -----------------------------------------------------------------------------
    --------------------First simple test to check functionality-----------------
    -----------------------------------------------------------------------------
 
 
    procedure Skein_Test_256(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
-
-
       Message_Short : constant Bytes(0..0) := (others=>Byte(0));
       Message : Bytes(0..31) := (others=>Byte(0));
       Message_Long : Bytes(0..63) := (others=>Byte(0));
@@ -86,27 +77,17 @@ package body Test.Skein is
       Finalresult_Short: Bytes(0..31);
       Finalresult: Bytes(0..31);
       Finalresult_Long: Bytes(0..31);
-
-
    begin
 
       Mode := m256;		--result length in BITS
 
-      --        for i in Message_Short'Range loop
-      --           Message_Short(i) := Byte(255-i);
-      --        end loop;
-
       for i in Message'Range loop
          Message(i) := Byte(255-i);
       end loop;
-
+      
       for i in Message_Long'Range loop
-
          Message_Long(i) := Byte(255-i);
       end loop;
-
-
-
 
       Crypto.Symmetric.Algorithm.Skein.Skein_Complete
         (Mode           => Mode,
@@ -129,27 +110,14 @@ package body Test.Skein is
          Message_Length_Bits => 512,
          Result         => Finalresult_Long);
 
-      Error_Output.Put_Line(" ");
-      Error_Output.Put_Line("This is the result of the hashing test");
-      for i in Finalresult_Short'Range loop
-         Error_Output.Put(To_Hex(Finalresult_Short(i)));
-         Error_Output.Put(" ");
-         if (i+1) mod 16 = 0 then
-            Error_Output.Put_LIne(" ");
-         end if;
-      end loop;
-
-
-
-
       Assert(Finalresult_Short=Target_result_Short
-             and then Finalresult=Target_result
-             and then Finalresult_Long=Target_result_long, "Skein Test a)");
-
-
+	       and then Finalresult=Target_result
+	       and then Finalresult_Long=Target_result_long, "Skein Test 256");
    end Skein_Test_256;
-
-
+   
+      -----------------------------------------------------------------------------
+   
+   
    procedure Skein_Test_512(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
 
@@ -197,7 +165,6 @@ package body Test.Skein is
       Finalresult: Bytes(0..63);
       Finalresult_Long: Bytes(0..63);
 
-
    begin
 
       Mode := m512;
@@ -207,7 +174,6 @@ package body Test.Skein is
       end loop;
 
       for i in Message_Long'Range loop
-
          Message_Long(i) := Byte(255-i);
       end loop;
 
@@ -232,26 +198,13 @@ package body Test.Skein is
          Message_Length_Bits => 1024,
          Result         => Finalresult_Long);
 
-      Error_Output.Put_Line(" ");
-      Error_Output.Put_Line("This is the result of the hashing test");
-      for i in Finalresult_Short'Range loop
-         Error_Output.Put(To_Hex(Finalresult_Short(i)));
-         Error_Output.Put(" ");
-         if (i+1) mod 16 = 0 then
-            Error_Output.Put_LIne(" ");
-         end if;
-      end loop;
-
-
-
-
       Assert(Finalresult_Short=Target_result_Short
-             and then Finalresult=Target_result
-             and then Finalresult_Long=Target_result_long, "Skein Test a)");
-
-
+	       and then Finalresult=Target_result
+	       and then Finalresult_Long=Target_result_long, "Skein Test 512");
    end Skein_Test_512;
-
+   
+   
+   
    procedure Skein_Test_1024(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
 
@@ -322,25 +275,18 @@ package body Test.Skein is
       Finalresult_Short: Bytes(0..127);
       Finalresult: Bytes(0..127);
       Finalresult_Long: Bytes(0..127);
-
-
+      
    begin
-
       Mode := m1024;		--result length in BITS
-
-      --        for i in Message_Short'Range loop
-      --           Message_Short(i) := Byte(255-i);
-      --        end loop;
 
       for i in Message'Range loop
          Message(i) := Byte(255-i);
       end loop;
 
       for i in Message_Long'Range loop
-
          Message_Long(i) := Byte(255-i);
       end loop;
-
+      
       Crypto.Symmetric.Algorithm.Skein.Skein_Complete
         (Mode           => Mode,
          Output_Length_Bits            => 1024,
@@ -362,35 +308,8 @@ package body Test.Skein is
          Message_Length_Bits => 2048,
          Result         => Finalresult_Long);
 
-
-      Error_Output.Put_Line(" ");
-      Error_Output.Put_Line("This is the result of the hashing test");
-      for i in Finalresult_Short'Range loop
-         Error_Output.Put(To_Hex(Finalresult_Short(i)));
-         Error_Output.Put(" ");
-         if (i+1) mod 16 = 0 then
-            Error_Output.Put_LIne(" ");
-         end if;
-      end loop;
-
-
-
-
       Assert(Finalresult_Short=Target_result_Short
-             and then Finalresult=Target_result
-             and then Finalresult_Long=Target_result_long, "Skein Test a)");
-
-
+	       and then Finalresult=Target_result
+	       and then Finalresult_Long=Target_result_long, "Skein Test 1024");
    end Skein_Test_1024;
-
-
-
-
-
-
-
-
-
-
-
 end Test.Skein;
