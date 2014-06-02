@@ -198,7 +198,6 @@ package body Test.SHA512Crypt is
 
       Hash2 := SHA512Two.Final_Round(Last_Message_Block  => DWB2,
                                      Last_Message_Length => DWB2'Length/8);
-      Assert(True, "Aussage");
    end SHA512Crypt_Test_Exceptions;
    
 end Test.SHA512Crypt;
