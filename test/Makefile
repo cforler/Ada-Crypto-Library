@@ -12,7 +12,7 @@ LFLAGS = -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src -lacl
 LFLAGS = -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src
 
 
-all : aunit big_number test asymmetric hash symmetric
+all : aunit big_number test asymmetric hash symmetric kdf
 
 
 #enable for use of GCOV:
@@ -31,31 +31,31 @@ aunit:
 test : 
 	$(CC) $(CFLAGS) test-tests
 	$(BB) $(BFLAGS) test-tests.ali
-#	$(LL) $(LFLAGS) test-tests.ali
 
 #Compile all asymmetric cipher test-cases/-suites
 asymmetric : 
 	$(CC) $(CFLAGS) test-asymmetric_ciphers		
 	$(BB) $(BFLAGS) test-asymmetric_ciphers.ali
-#	$(LL) $(LFLAGS) test-asymmetric_ciphers.ali
 
 #Compile all big_number test-cases/-suites
 big_number : 
-	$(CC) $(CFLAGS) test-big_number	
-	$(BB) $(BFLAGS) test-big_number.ali
-#	$(LL) $(LFLAGS) test-big_number.ali
+	$(CC) $(CFLAGS) test-$@
+	$(BB) $(BFLAGS) test-$@.ali
+
 
 #Compile all hash test-cases/-suites and MAC's
 hash : 
-	$(CC) $(CFLAGS) test-hash		
-	$(BB) $(BFLAGS) test-hash.ali
-#	$(LL) $(LFLAGS) test-hash.ali
+	$(CC) $(CFLAGS) test-$@
+	$(BB) $(BFLAGS) test-$@.ali
+
+kdf :
+	$(CC) $(CFLAGS) test-$@		
+	$(BB) $(BFLAGS) test-$@.ali
 
 #Compile all symmetric cipher and blockcipher test-cases/-suites
 symmetric : 
 	$(CC) $(CFLAGS) test-symmetric_ciphers		
 	$(BB) $(BFLAGS) test-symmetric_ciphers.ali
-#	$(LL) $(LFLAGS) test-symmetric_ciphers.ali
 
 aunit-clean:
 	$(MAKE) -C $(AUNIT_DIR) clean 
