@@ -10,26 +10,11 @@ package Test.RSA is
 
    function Name(T: RSA_Test) return Test_String;
 
-   procedure RSA_Test1(T: in out Test_Cases.Test_Case'Class);
-
-   procedure RSA_Test2(T: in out Test_Cases.Test_Case'Class);
-
-   procedure RSA_Test3(T: in out Test_Cases.Test_Case'Class);
-
-   procedure RSA_Test4(T: in out Test_Cases.Test_Case'Class);
-
-   procedure RSA_Test5(T: in out Test_Cases.Test_Case'Class);
-
-   procedure RSA_Test6(T: in out Test_Cases.Test_Case'Class);
-
-   procedure RSA_Test7(T: in out Test_Cases.Test_Case'Class);
-
-   procedure RSA_Test8(T: in out Test_Cases.Test_Case'Class);
-
-   procedure RSA_Test9(T: in out Test_Cases.Test_Case'Class);
-
-   procedure RSA_Test10(T: in out Test_Cases.Test_Case'Class);
-
-   procedure RSA_Test11(T: in out Test_Cases.Test_Case'Class);
-
+   procedure Test_Verify_Key_Pair(T: in out Test_Cases.Test_Case'Class);
+   procedure Test_OAEP(T: in out Test_Cases.Test_Case'Class);
+   procedure Test_Gen_Keypair(T: in out Test_Cases.Test_Case'Class);
+   procedure Test_Get_Public_Key(T: in out Test_Cases.Test_Case'Class);
+   procedure Test_Encryption(T: in out Test_Cases.Test_Case'Class);
+   procedure Test_Zero_Encryption(T: in out Test_Cases.Test_Case'Class);
+   procedure Test_Get_Private_Key(T: in out Test_Cases.Test_Case'Class);
 end Test.RSA;
