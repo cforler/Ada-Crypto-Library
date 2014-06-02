@@ -198,17 +198,6 @@ package body Test.SHA512Crypt is
 
       Hash2 := SHA512Two.Final_Round(Last_Message_Block  => DWB2,
                                      Last_Message_Length => DWB2'Length/8);
-
-      for I in To_Bytes(Hash1)'Range loop
-         Ada.Text_IO.Put(To_Hex(To_Bytes(Hash1)(I)));
-      end loop;
-      Ada.Text_IO.New_Line;
-
-      for I in To_Bytes(Hash2)'Range loop
-         Ada.Text_IO.Put(To_Hex(To_Bytes(Hash2)(I)));
-      end loop;
-      Ada.Text_IO.New_Line;
-      
       Assert(True, "Aussage");
    end SHA512Crypt_Test_Exceptions;
    
