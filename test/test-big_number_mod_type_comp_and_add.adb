@@ -19,7 +19,7 @@ package body Test.Big_Number_Mod_Type_Comp_and_Add is
     use Big_Number_Constants;
     
     Result, X, X_4096, X_32, X_31, X_16, X_15, X_12, X_1, X_0: Big_Unsigned;
-    K, L, M, N, O, P, Q: Mod_Type;
+    K, L, M, N, O, P, Q: Word;
 	
 ------------------------------------------------------------------------------------
 ----------------------------------- Constants --------------------------------------

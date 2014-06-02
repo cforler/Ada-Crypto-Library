@@ -29,12 +29,12 @@ package body Test.Big_Numbers_Utils is
    B2: Bytes(0 .. 511);
    B3: Bytes(0 .. 106);
 
-   M1: Mod_Types(0 .. 127);
-   M2: Mod_Types(0 .. 32);
-   M3: Mod_Types(0 .. 32);
+   M1: Words(0 .. 127);
+   M2: Words(0 .. 32);
+   M3: Words(0 .. 32);
    S1, S2: String (1 .. 1234);
    S3, S4: String (1 .. 309);
-   M4, M5: Mod_Type;
+   M4, M5: Word;
    
    X_851: constant Big_Unsigned := To_Big_Unsigned("10000000000000000000000000000000000" &
 	"00000000000000000000000000000000000000000000000000000000000000000000000000" &
@@ -70,7 +70,7 @@ package body Test.Big_Numbers_Utils is
    B : Bytes(0 .. S - 1 );
    
    T :  constant Integer := Bit_Length(X)/32; 
-   M : Mod_Types(0 .. T - 1);
+   M : Words(0 .. T - 1);
 	
 
 ------------------------------------------------------------------------------------
@@ -533,11 +533,11 @@ package body Test.Big_Numbers_Utils is
       use AUnit.Assertions; 
    begin
       M1 := (others => 4294967295);
-      M := To_Mod_Types(X);
+      M := To_Words(X);
       Assert(M = M1, "To_Mod_Types failed.");
       
       M2 := (32 => 1, others => 0);
-      M3 := To_Mod_Types(Y_1024);
+      M3 := To_Words(Y_1024);
       Assert(M3 = M2, "To_Mod_Types failed.");
    end Big_Number_Test_To_Mod_Types;
 

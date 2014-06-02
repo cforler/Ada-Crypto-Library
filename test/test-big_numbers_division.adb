@@ -46,7 +46,7 @@ package body Test.Big_numbers_division is
    procedure Big_numbers_division_Test1(T : in out Test_Cases.Test_Case'Class) is
       use AUnit.Assertions;
       
-       A: Mod_Type;
+       A: Word;
        B, C, D: Big_Unsigned;
    begin
       A := 222222;

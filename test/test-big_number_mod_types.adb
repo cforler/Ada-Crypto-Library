@@ -17,8 +17,9 @@ package body Test.Big_Number_Mod_Types is
    use Crypto.Types;
    use Big_Number_Constants;	
     
-    X, Result, X_4096, X_4095, X_3812, X_1025, X_1024, X_768, X_1, X_0: Big_Unsigned;
-    K, L, M, N, O: Mod_Type;
+   X, Result, X_4096, X_4095, X_3812, X_1025, X_1024, X_768, X_1, X_0 
+     : Big_Unsigned;
+    K, L, M, N, O: Word;
 	
 ------------------------------------------------------------------------------------
 ----------------------------------- Constants --------------------------------------
