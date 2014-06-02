@@ -1,13 +1,17 @@
-with Test.Suite_Blockciphers;
-with Test.Suite_Oneway_Blockciphers;
-with Test.Suite_AE;
-with AUnit.Run;
 with Crypto.Types.Random_Source.File;
+with Test.Suite_Oneway_Blockciphers;
+with Test.Suite_Blockciphers;
 with Crypto.Types.Random;
 with AUnit.Reporter.Text;
+with Test.Suite_AE;
+with AUnit.Run;
+
+
 procedure Test.Symmetric_Ciphers is
-   procedure Run_BC  is new AUnit.Run.Test_Runner(Test.Suite_Blockciphers.Suite);
-   procedure Run_OBC is new AUnit.Run.Test_Runner(Test.Suite_Oneway_Blockciphers.Suite);
+   procedure Run_BC  is new
+     AUnit.Run.Test_Runner(Test.Suite_Blockciphers.Suite);
+   procedure Run_OBC is new
+     AUnit.Run.Test_Runner(Test.Suite_Oneway_Blockciphers.Suite);
    procedure Run_AE is new AUnit.Run.Test_Runner(Test.Suite_AE.Suite);
    
    Reporter : AUnit.Reporter.Text.Text_Reporter;
