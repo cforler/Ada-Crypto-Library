@@ -13,20 +13,10 @@ The simplest way to compile this package is:
   2. Type 'make acltest' and then 'cd test; ./alctest; cd..' to run the
      regression test 
 
-  3. Type 'make shared' to build the shared library
-
-  4. Type `su -c "make install"' to install the data files and
-     documentation. 
-
-  5. You can install the ACL as a shared library. If you want this then type
-     'su -c "make install-shared"'  
-	 	  
-  6. You can remove the program binaries and the object files from the
+  3. You can remove the program binaries and the object files from the
      source code and the test directory by typing `make clean'.  
 
-  7. Type `make uninstall` to uninstall the ACL
-
-  8. Type 'make clean-acltest' to remove onlly the regression test binary and 
+  4. Type 'make clean-acltest' to remove only the regression test binary and 
      object  files from the test directory
 
 	

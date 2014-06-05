@@ -14,6 +14,7 @@ Implemented Features
    - Hash functions: SHA-1 (broken), SHA-256, (SHA-384), SHA-512, Whirlpool
    - MACs: RMAC, HMAC, CMAC
    - Authenticated Encryption schemes: OCB, SIV and McOE
+   - Key Derivation Functions: PBKDF2, scrypt, and SHA-512crypt
  - Big (unsigned) number library
    - Primary cyclic group arithmetic  (Z_p)
    - Binary Field arithmetic support.
@@ -27,16 +28,16 @@ Implemented Features
    - OEAP-RSA 
    - ECDSA, ECDH
  - Nonce Generator Support: Random, Counter, Mixed
- - AUnit-3.4 based Test suite
+ - AUnit-3.4 based Test suite (over 400 tests, about 90% line coverage)
 
 
 Getting started
 -----------------
 ### Prerequisites 
- * GNAT-4.6
- * GNU Make 3.81 or newer
- * gcov 4.7.1 or newer (optional for testing only)
- * lcov 1.9 or newer   (optional for testing only)
+ * GNAT-4.8 (recommended version: 4.9)
+ * GNU Make (recommended version: 4)
+ * gcov (recommended version: 4.8.3; optional for testing only)
+ * lcov (recommended version: 1.10;  optional for testing only)
 
 
 ### To build and test:
@@ -51,6 +52,7 @@ Getting started
     cd test  
     ./test-tests
     make lcov
+    
 
 
 ### To build the PDF documentation (location: doc/):
