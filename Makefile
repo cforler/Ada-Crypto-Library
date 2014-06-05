@@ -1,55 +1,35 @@
+ADACC=gnatmake
+ADACLEAN=gnatclean
 SRCDIR = src
 DOC= ./doc/
 SUBTDIR = test
+LIBDIR=lib
+MDKIR=mkdir
 
-
-all: acl test
-install: install-acl
-uninstall: uninstall-acl 
-clean: clean-acl  clean-acltest clean-shared
+all: acl 
+clean: clean-acl clean-acltest
 
 ###########################################################################
 ################################### ACL ###################################
 ###########################################################################
+
 acl:
-	$(MAKE) -C $(SRCDIR) all
-
-install-acl:
-	$(MAKE) -C $(SRCDIR) install	
-
-uninstall-acl:
-	$(MAKE) -C $(SRCDIR) uninstall	
-
+	$(MKDIR) -p $(LIBDIR)
+	$(ADACC) -P libadacrypt.gpr
 
 clean-acl:
-	 $(MAKE) -C $(SRCDIR) clean
+	$(ADACLEAN) -P libadacrypt.gpr
 
-###########################################################################
-################################# SHARED ##################################
-###########################################################################
-
-shared:
-	$(MAKE) -C $(SRCDIR) shared
-
-install-shared:
-	$(MAKE) -C $(SRCDIR) install-shared
-
-unistall-shared:
-	$(MAKE) -C $(SRCDIR) uninstall-shared
-
-
-clean-shared:	
-	$(MAKE) -C $(SRCDIR) clean-shared
 
 ###########################################################################
 ################################### TEST ##################################
 ###########################################################################
 
 acltest:
-	$(MAKE) -C $(SUBTDIR) all
+	$(ADACC) -P acltest.gpr
 
 clean-acltest:
-	$(MAKE) -C $(SUBTDIR) clean
+	$(ADACLEAN) -P acltest.gpr
 
 
 gcov:
@@ -62,7 +42,7 @@ gcov:
 
 docu:
 	$(MAKE) -C $(DOC) all
- 
+
 install-docu:
 	$(MAKE) -C $(DOC) install	
 
