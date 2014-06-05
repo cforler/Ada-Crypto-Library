@@ -25,12 +25,12 @@ clean-acl:
 ################################### TEST ##################################
 ###########################################################################
 
-acltest:
+acltest:	
 	$(ADACC) -P acltest.gpr
 
 clean-acltest:
 	$(ADACLEAN) -P acltest.gpr
-
+	$(MAKE) -C $(SUBTDIR) clean
 
 gcov:
 	$(MAKE) -C $(SRCDIR) gcov

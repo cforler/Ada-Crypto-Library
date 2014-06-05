@@ -227,6 +227,7 @@ uninstall:
 clean:
 	$(GNATCLEAN) *.o *.ali 
 	$(DEL) *.gcno *.gcov *.gcda
+	$(DEL) *~ *.lst *.sli
 
 #SHARED LIB
 

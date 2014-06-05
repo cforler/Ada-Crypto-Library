@@ -64,5 +64,6 @@ test-clean:
 	$(GNATCLEAN) *.o *.ali
 	$(DEL) *.gcno *.gcov *.gcda
 	$(DEL) -r coverage
+	$(DEL) *~
 lcov:
 	$(GEN_HTML) 
