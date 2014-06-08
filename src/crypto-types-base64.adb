@@ -56,4 +56,39 @@ package body Crypto.Types.Base64 is
       end if;
       return Result;
    end Encode_Base64;
+   
+   
+   function Decode_Base64(S: Base64_String) return Bytes is
+      Len :  constant Natural :=  S'Length / 4;
+      Result : Bytes(0..(S'Length/4)*3 -1);
+      W : Word := 0;
+      J : Natural := S'First;
+   begin
+      Ada.Text_IO.New_Line;
+      for I in 0..Len-1 loop
+         
+         W := Shift_Left(Word(Base64_Character'Pos(S(J))), 18)
+           or Shift_Left(Word(Base64_Character'Pos(S(J+1))), 12)
+           or Shift_Left(Word(Base64_Character'Pos(S(J+2))), 6)
+           or Word(Base64_Character'Pos(S(J+3)));
+         
+         Ada.Text_IO.Put_Line(To_Hex(W));
+
+         Result(3*I) := To_Bytes(W)(1);
+         Result(3*I+1) := To_Bytes(W)(2);
+         Result(3*I+2) := To_Bytes(W)(3);
+
+	 J := J + 4;
+
+      end loop;
+      
+      if S(S'Last-1) = Base64_Character'Last then
+         return Result(Result'First..Result'Last-2);
+      elsif S(S'Last) = Base64_Character'Last then
+         return Result(Result'First..Result'Last-1);
+      else
+         return Result;
+      end if;
+      
+   end Decode_Base64;
 end Crypto.Types.Base64;

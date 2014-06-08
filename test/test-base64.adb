@@ -36,8 +36,13 @@ package body Test.Base64 is
       Input  : constant String := "any carnal pleasur";
       Output : constant Base64.Base64_String := "YW55IGNhcm5hbCBwbGVhc3Vy";
       Result : constant Base64.Base64_String := Base64.Encode_Base64( To_Bytes(Input) );
+      Decoded: Bytes := Base64.Decode_Base64(Result);
    begin
-      Assert(Output = Result, "Base64_Rest0_Test failed"); 
+      Assert(Output = Result, "Base64_Rest0_Test encode failed");  
+    
+      Assert(To_Bytes(Input) = Base64.Decode_Base64(Result), 
+             			"Base64_Rest0_Test decode failed"); 
+      
    end Base64_Rest0_Test;
 
 ------------------------------------------------------------------------------------
@@ -52,8 +57,13 @@ package body Test.Base64 is
       Input  : constant String := "any carnal pleasu";
       Output : constant Base64.Base64_String := "YW55IGNhcm5hbCBwbGVhc3U=";
       Result : constant Base64.Base64_String := Encode_Base64( To_Bytes(Input) );
+      Decoded: Bytes := Base64.Decode_Base64(Result);
    begin
-      Assert(Output = Result, "Base64_Rest1_Test failed"); 
+      
+      Assert(Output = Result, "Base64_Rest1_Test encode failed"); 
+      
+      Assert(To_Bytes(Input) = Base64.Decode_Base64(Result), 
+             			"Base64_Rest1_Test decode failed"); 
    end Base64_Rest1_Test;
 
 
@@ -69,8 +79,11 @@ package body Test.Base64 is
       Input  : constant String := "any carnal pleas";
       Output : constant Base64.Base64_String := "YW55IGNhcm5hbCBwbGVhcw==";
       Result : constant Base64.Base64_String := Encode_Base64(To_Bytes(Input));
+      Decoded: Bytes := Base64.Decode_Base64(Result);
    begin
-      Assert(Output = Result, "Base64_Rest2_Test failed"); 
+      
+      Assert(Output = Result, "Base64_Rest2_Test encode failed"); 
+      Assert(Decoded = To_Bytes(Input), "Base64_Rest2_Test decode failed");
    end Base64_Rest2_Test;
 
 
