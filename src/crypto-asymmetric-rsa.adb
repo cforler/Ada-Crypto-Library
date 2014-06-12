@@ -28,7 +28,7 @@ package body Crypto.Asymmetric.RSA is
    package SHA1 renames Crypto.Symmetric.Hashfunction_SHA1;
    use Big.Utils;
    use Big.Mod_Utils;
-   
+
 -- BIO is new Ada.Text_Io.Modular_IO (Byte);
 --   package WIO is new Ada.Text_IO.Modular_IO (Word);
 --   use BIO, WIO;
@@ -63,9 +63,9 @@ package body Crypto.Asymmetric.RSA is
    begin
       if Bit_Length(X.N) < Size-1 or Is_Even(X.D) or (Bit_Length(X.Phi) < Size-2)
         or X.P*X.Q /= X.N or (X.P-1)*(X.Q-1) /= X.Phi or Gcd(X.D, X.P) /= 1
-	or Gcd(X.D, X.Q) /= Big_Unsigned_One then 
+	or Gcd(X.D, X.Q) /= Big_Unsigned_One then
 	 return False;
-      else 
+      else
 	 return True;
       end if;
    end Check_Private_Key; pragma Inline(Check_Private_Key);
@@ -75,19 +75,19 @@ package body Crypto.Asymmetric.RSA is
    procedure Gen_Key(Public_Key  : out Public_Key_RSA;
                      Private_Key : out Private_Key_RSA;
 		     Small_Default_Exponent_E : in Boolean := True) is
-      Small_Primes : constant Words :=  (65537, 65539,  65543, 65557, 65609, 65617 );  
+      Small_Primes : constant Words :=  (65537, 65539,  65543, 65557, 65609, 65617 );
    begin
-      Private_Key.P := Get_N_Bit_Prime(Size/2); 
+      Private_Key.P := Get_N_Bit_Prime(Size/2);
       loop
          Private_Key.Q := Get_N_Bit_Prime(Size/2);
-	 exit when Private_Key.P /= Private_Key.Q; 
+	 exit when Private_Key.P /= Private_Key.Q;
       end loop;
-	 
-	 Private_Key.N :=  Private_Key.P * Private_Key.Q; 
+
+	 Private_Key.N :=  Private_Key.P * Private_Key.Q;
 	 Private_Key.Phi := (Private_Key.P-1) * (Private_Key.Q-1);
-	 
-	 
-	 Public_Key.E := Big_Unsigned_Zero; 
+
+
+	 Public_Key.E := Big_Unsigned_Zero;
 	 if Small_Default_Exponent_E then
 	    for I in Small_Primes'Range loop
 	       Public_Key.E :=  To_Big_Unsigned(Small_Primes(I));
@@ -95,16 +95,16 @@ package body Crypto.Asymmetric.RSA is
 	       Public_Key.E := Big_Unsigned_Zero;
 	    end loop;
 	 end if;
-	 
+
 	 if Public_Key.E = Big_Unsigned_Zero then
-	    loop 
+	    loop
 	       Public_key.E := Get_Random(Private_Key.Phi);
 	       exit when Gcd(Public_Key.E, Private_Key.Phi) =
 		 Big_Unsigned_One and Public_Key.E > 65536;
 	    end loop;
 	 end if;
-	 Private_Key.D := Inverse(Public_Key.E, Private_Key.Phi);	    
-	 Public_Key.N :=  Private_Key.N;  
+	 Private_Key.D := Inverse(Public_Key.E, Private_Key.Phi);
+	 Public_Key.N :=  Private_Key.N;
    end Gen_Key;
 
    ---------------------------------------------------------------------------
@@ -134,7 +134,7 @@ package body Crypto.Asymmetric.RSA is
    end Encrypt;
 
    ---------------------------------------------------------------------------
-	
+
    -- Added for Signature Decryption for Certificate
    procedure Decrypt(Private_Key : in  Private_Key_RSA;
                      Ciphertext  : in  Big_Unsigned;
@@ -167,9 +167,9 @@ package body Crypto.Asymmetric.RSA is
    function Verify_Key_Pair(Private_Key : Private_Key_RSA;
                             Public_Key  : Public_Key_RSA) return Boolean is
    begin
-      if 
-	Check_Private_Key(Private_Key) = False or  Check_Public_Key(Public_Key) = False 
-	or Public_Key.N /= Private_Key.N 
+      if
+	Check_Private_Key(Private_Key) = False or  Check_Public_Key(Public_Key) = False
+	or Public_Key.N /= Private_Key.N
 	or Mult(Public_Key.E, Private_Key.D, Private_Key.Phi)  /= Big_Unsigned_One then
 	 return False;
       else
@@ -189,9 +189,9 @@ package body Crypto.Asymmetric.RSA is
       E(E'Last - (Length_In_Bytes(Public_Key.E) - 1)..E'Last)
         := To_Bytes(Public_Key.E);
    end Get_Public_Key;
-   
+
       ---------------------------------------------------------------------------
-   
+
    procedure Get_Private_Key(Private_Key : in Private_Key_RSA;
                              N   : out RSA_Number;
                              D   : out RSA_Number;
@@ -213,7 +213,7 @@ package body Crypto.Asymmetric.RSA is
    end Get_Private_Key;
 
    ---------------------------------------------------------------------------
-   
+
    procedure Set_Public_Key(N : in Big_Unsigned;
                             E : in Big_Unsigned;
                             Public_Key : out Public_Key_RSA) is
@@ -224,19 +224,19 @@ package body Crypto.Asymmetric.RSA is
          raise  Constraint_Error;
       end if;
    end Set_Public_Key;
-    
+
     ---------------------------------------------------------------------------
-      
+
    procedure Set_Public_Key(N : in RSA_Number;
                             E : in RSA_Number;
                             Public_Key : out Public_Key_RSA) is
    begin
      Set_Public_Key( To_Big_Unsigned(N), To_Big_Unsigned(E), Public_key);
    end Set_Public_Key;
-   
+
    ---------------------------------------------------------------------------
 
-   
+
    procedure Set_Private_Key(N   : in RSA_Number;
                              D   : in RSA_Number;
                              P   : in RSA_Number;
@@ -255,7 +255,7 @@ package body Crypto.Asymmetric.RSA is
       end if;
    end Set_Private_Key;
 
-  
+
    ---------------------------------------------------------------------------
 
    procedure Set_Private_Key(N   : in Big_Unsigned;
@@ -275,7 +275,120 @@ package body Crypto.Asymmetric.RSA is
 	raise  Constraint_Error;
       end if;
    end Set_Private_Key;
-   
+
+   ---------------------------------------------------------------------------
+   ------------------------RSAES-PKCS1-v1_5-----------------------------------
+   ---------------------------------------------------------------------------
+
+   procedure Non_Zero_Random_Bytes(Item : out Bytes) is
+      B : Byte;
+   begin
+      for O of Item loop
+         Random_Loop:
+         loop
+            Random.Read(B);
+            if B /= 0 then
+               O := B;
+               exit Random_Loop;
+            end if;
+         end loop Random_Loop;
+      end loop;
+   end Non_Zero_Random_Bytes;
+
+   ---------------------------------------------------------------------------
+
+   function V1_5_Encrypt(Public_Key : in  Public_Key_RSA;
+                         Plaintext  : in  Bytes) return RSA_Number is
+
+      K : constant Natural := Size/8;
+      PS_Length : constant Positive := K - Plaintext'Length - 3;
+      PS : Bytes(1 .. PS_Length) := (others => 0);
+      EM : Bytes(1 .. K) := (others => 0);
+   begin
+      -- 1
+      if Plaintext'Length > K - 11 then
+         raise Plaintext_Too_Long_Error;
+      end if;
+
+      -- 2a
+      Non_Zero_Random_Bytes(PS);
+      -- 2b
+      EM(EM'First .. EM'First + 1) := (0, 2);
+      EM(EM'First + 2 .. EM'First + 1 + PS_Length) := PS;
+      EM(EM'First + 1 + PS_Length + 1) := 0;
+      EM(EM'First + 1 + PS_Length + 2 .. EM'Last) := Plaintext;
+
+      declare
+         -- 3a
+         M : constant Big_Unsigned := To_Big_Unsigned(EM);
+         C : Big_Unsigned;
+      begin
+         -- 3b
+         Encrypt(Public_Key, M, C);
+
+         -- 3c
+         declare
+            Ciphertext : RSA_Number := (others => 0);
+         begin
+            Ciphertext(K - Length_In_Bytes(C) .. K - 1) := To_Bytes(C);
+            return Ciphertext;
+         end;
+      end;
+
+   end V1_5_Encrypt;
+
+   ---------------------------------------------------------------------------
+
+   function V1_5_Decrypt(Private_Key : in  Private_Key_RSA;
+                         Ciphertext  : in  RSA_Number) return Bytes is
+
+      K : constant Natural := Size/8;
+
+      M : RSA_Number;
+
+   begin
+      -- 1
+      if K < 11 then
+         raise Decrypt_Error;
+      end if;
+
+      -- 2b
+      Decrypt(Private_Key, Ciphertext, M);
+
+      declare
+         -- 2c
+         Decoding_Failed : Boolean := True;
+         Separator : Positive := 1;
+      begin
+         -- 3
+         for I in M'First + 2 .. M'Last loop
+            if M(I) = 0 and then Decoding_Failed then
+               Separator := I;
+               Decoding_Failed := False;
+            end if;
+         end loop;
+
+         if M(M'First) /= 0 then
+            Decoding_Failed := True;
+         end if;
+
+         if M(M'First + 1) /= 2 then
+            Decoding_Failed := True;
+         end if;
+
+         if (Separator - (M'First + 2)) < 8 then
+            Decoding_Failed := True;
+         end if;
+
+         if Decoding_Failed then
+            raise Decrypt_Error;
+         end if;
+
+         return M(Separator + 1 .. M'Last);
+
+      end;
+
+   end V1_5_Decrypt;
 
    ---------------------------------------------------------------------------
    -----------------------------OAEP-RSA--------------------------------------
@@ -315,7 +428,7 @@ package body Crypto.Asymmetric.RSA is
         (First+(M_Hash_Rounds*(M'Length+1))-1);
 
       T : Bytes(1..(Last_Round+1)*Hlen);
-      
+
       Context : SHA1.Hash_Context;
 
    begin

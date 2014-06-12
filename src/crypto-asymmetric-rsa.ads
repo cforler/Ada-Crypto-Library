@@ -33,7 +33,7 @@ package Crypto.Asymmetric.RSA is
 
    package Big is new Crypto.Types.Big_Numbers(Size);
    use Big;
-   
+
    ---------------------------------------------------------------------------
    ---------------------------TYPES-------------------------------------------
    ---------------------------------------------------------------------------
@@ -57,6 +57,14 @@ package Crypto.Asymmetric.RSA is
 
    ---------------------------------------------------------------------------
 
+   function V1_5_Encrypt(Public_Key : in  Public_Key_RSA;
+                         Plaintext  : in  Bytes) return RSA_Number;
+
+   function V1_5_Decrypt(Private_Key : in  Private_Key_RSA;
+                         Ciphertext  : in  RSA_Number) return Bytes;
+
+   ---------------------------------------------------------------------------
+
 
    function OAEP_Encrypt(Public_Key : in  Public_Key_RSA;
                          Plaintext  : in  Bytes) return RSA_Number;
@@ -74,7 +82,7 @@ package Crypto.Asymmetric.RSA is
    procedure Get_Public_Key(Public_Key : in Public_Key_RSA;
                             N : out RSA_Number;
                             E : out RSA_Number);
-   
+
    procedure Get_Private_Key(Private_Key : in Private_Key_RSA;
                              N   : out RSA_Number;
                              D   : out RSA_Number;
@@ -88,11 +96,11 @@ package Crypto.Asymmetric.RSA is
    procedure Set_Public_Key(N : in RSA_Number;
                             E : in RSA_Number;
                             Public_Key : out Public_Key_RSA);
-   
+
    procedure Set_Public_Key(N : in Big_Unsigned;
                             E : in Big_Unsigned;
                             Public_Key : out Public_Key_RSA);
-      
+
 
    procedure Set_Private_Key(N   : in RSA_Number;
                              D   : in RSA_Number;
@@ -100,11 +108,11 @@ package Crypto.Asymmetric.RSA is
 			     Q   : in RSA_Number;
                              Phi : in RSA_Number;
                              Private_Key : out Private_Key_RSA);
-         
+
    procedure Set_Private_Key(N   : in Big_Unsigned;
                              D   : in Big_Unsigned;
 			     P   : in Big_Unsigned;
-			     Q   : in Big_Unsigned; 
+			     Q   : in Big_Unsigned;
                              Phi : in Big_Unsigned;
                              Private_Key : out Private_Key_RSA);
 
@@ -115,7 +123,7 @@ package Crypto.Asymmetric.RSA is
    procedure Encrypt(Public_Key : in  Public_Key_RSA;
                      Plaintext  : in  RSA_Number;
                      Ciphertext : out RSA_Number);
-   
+
    procedure Encrypt(Public_Key  : in  Public_Key_RSA;
                      Plaintext   : in  Big_Unsigned;
                      Ciphertext  : out Big_Unsigned);
@@ -131,22 +139,22 @@ package Crypto.Asymmetric.RSA is
    ---------------------------------------------------------------------------
    ------------------------------PRIVATE--------------------------------------
    ---------------------------------------------------------------------------
-   
+
 private
-   
+
    type Public_Key_RSA is record
       N : Big_Unsigned;
       E : Big_Unsigned;
    end record;
-   
+
    type Private_Key_RSA is record
       N : Big_Unsigned;
       D : Big_Unsigned;
       P : Big_Unsigned;
-      Q : Big_Unsigned; 
+      Q : Big_Unsigned;
       Phi : Big_Unsigned; --= p-1*q-1
    end record;
-   
+
    pragma Optimize (Time);
 
 end Crypto.Asymmetric.RSA;
