@@ -37,6 +37,8 @@ package Crypto.Types is
    type DByte  is mod 2 ** 16;
    for DByte'Size use 16;
 
+   type TByte is mod 2 ** 24 with Size => 24;
+
    type Word is mod 2 ** 32;
    for Word'Size use 32;
 
@@ -50,6 +52,7 @@ package Crypto.Types is
    -- Arrays of primary types
    type Bits   is array (Integer range <>) of Bit;
    type Bytes  is array (Integer range <>) of Byte;
+   type DBytes is array (Integer range <>) of DByte;
    type Words  is array (Integer range <>) of Word;
    type DWords is array (Integer range <>) of DWord;
 
@@ -254,6 +257,7 @@ package Crypto.Types is
    function To_Bytes(D : DW_Block256) return Bytes;
    function To_Bytes(D : DW_Block384) return Bytes;
    function To_Bytes(D : DW_Block512) return Bytes;
+   function To_Bytes(D : DW_Block1024) return Bytes;
 
 
    -- Bytes To block of Bytes.

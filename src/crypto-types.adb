@@ -23,9 +23,9 @@
 with Ada.Unchecked_Conversion;
 
 --pragma Elaborate_All(Generic_Mod_Aux);
-  
+
 package body Crypto.Types is
-   
+
    package body Generic_Mod_Aux is
       function "xor"(Left, Right : T_A) return T_A is
 	 Result : T_A(0..Left'Length-1);
@@ -38,26 +38,26 @@ package body Crypto.Types is
       end loop;
       return Result;
    end "xor";
-    
+
    ------------------------------------------------------------------------
-   
+
    function "xor"(Left : T_A; Right : T) return T_A is
       Result : T_A := Left;
    begin
       Result(Result'Last) := Left(Result'Last) xor Right;
       return Result;
    end "xor";
-   
+
    ------------------------------------------------------------------------
 
     function "xor"(Left : T; Right : T_A) return T_A is
    begin
       return Right xor Left;
    end "xor";
-   
-      
+
+
       ------------------------------------------------------------------------
-      
+
    function "and"(Left, Right : T_A) return T_A is
 	Result : T_A(0..Left'Length-1);
    begin
@@ -70,7 +70,7 @@ package body Crypto.Types is
       end loop;
       return Result;
    end "and";
-      
+
    ------------------------------------------------------------------------
    function "+"(Left : T_A; Right : T) return T_A is
       Result: T_A(Left'Range) := Left;
@@ -89,14 +89,14 @@ package body Crypto.Types is
       return Result;
    end "+";
 
-   
+
    ------------------------------------------------------------------------
    function "+"(Left : T; Right : T_A) return T_A is
    begin
       return Right + Left;
    end "+";
    ------------------------------------------------------------------------
-   
+
    function Is_Zero(Item : T_A) return Boolean is
    begin
       for I in  Item'Range loop
@@ -105,27 +105,27 @@ package body Crypto.Types is
       end loop;
       return True;
    end Is_Zero;
-   
+
 ------------------------------------------------------------------------
-   
+
    function Left_Part(Block : in T_A) return T_A is
       Len  : constant Natural := ((Block'Length+1)/2)-1;
       Left : constant T_A(0..Len) := Block(Block'First..(Block'First+Len));
    begin
       return Left;
    end Left_Part;
-   
+
    ------------------------------------------------------------------------
-   
+
    function Right_Part(Block : in T_A) return T_A is
-      Len : constant Natural := Block'Length/2; 
+      Len : constant Natural := Block'Length/2;
       Right : constant T_A(0..Len-1) := Block(Block'Last-Len+1..Block'Last);
    begin
       return Right;
    end Right_Part;
-   
+
    ------------------------------------------------------------------------
-   
+
    function Shift_Left(Value : T_A;  Amount : Natural) return T_A  is
       Result : T_A(Value'Range) := (others => 0);
       L : constant Natural := Amount mod T'Size;
@@ -135,15 +135,15 @@ package body Crypto.Types is
 	 return Result;
       elsif Amount = 0 then
 	 return Value;
-      end if;      
-      Result(Value'Last-M) := Shift_Left(Value(Value'Last),L);      
-      
+      end if;
+      Result(Value'Last-M) := Shift_Left(Value(Value'Last),L);
+
       for I in reverse Value'First..Value'Last-(M+1) loop
 	 Result(I) := Shift_Left(Value(I),L)
 	   xor Shift_Right(Value(I+1),T'Size-L);
       end loop;
       return Result;
-      end Shift_Left; 
+      end Shift_Left;
       -------------------------------------------------------------------------
          function Shift_Right(Value : T_A;  Amount : Natural) return T_A  is
       Result : T_A(Value'Range) := (others => 0);
@@ -154,30 +154,30 @@ package body Crypto.Types is
 	 return Result;
       elsif Amount = 0 then
 	 return Value;
-      end if;      
-      Result(Value'Last-M) := Shift_Right(Value(Value'Last),L);      
-      
+      end if;
+      Result(Value'Last-M) := Shift_Right(Value(Value'Last),L);
+
       for I in reverse Value'First..Value'Last-(M+1) loop
 	 Result(I) := Shift_Right(Value(I),L)
 	   xor Shift_Left(Value(I+1),T'Size-L);
       end loop;
       return Result;
-   end Shift_Right;    
+   end Shift_Right;
 
    end Generic_Mod_Aux;
-   
-   
+
+
    function Cast  is new Ada.Unchecked_Conversion (Byte_Word, Word);
    function Cast  is new Ada.Unchecked_Conversion (Word, Byte_Word);
    function DCast is new Ada.Unchecked_Conversion (Byte_DWord, DWord);
    function DCast is new Ada.Unchecked_Conversion (DWord, Byte_DWord);
    pragma Inline (Cast, DCast);
-  
-      
+
+
    package Aux_Byte is new Generic_Mod_Aux(Byte,Bytes);
    package Aux_Word is new Generic_Mod_Aux(Word,Words);
    package Aux_DWord is new Generic_Mod_Aux(Dword,DWords);
-   
+
    ---------------------------------------------------------------------------
 
    function To_Word(A,B,C,D : Character) return Word is
@@ -343,14 +343,14 @@ package body Crypto.Types is
    end "xor";
 
    ---------------------------------------------------------------------------
-   
+
    function "xor"(Left : Bytes; Right : Byte) return Bytes is
    begin
       return Aux_Byte."xor"(Left,Right);
    end "xor";
-   
+
    ---------------------------------------------------------------------------
-      
+
    function "+"(Left : Bytes; Right : Byte) return Bytes is
    begin
       return Aux_Byte."+"(Left,Right);
@@ -362,9 +362,9 @@ package body Crypto.Types is
    begin
       return Right + Left;
    end "+";
-   
+
    ---------------------------------------------------------------------------
-   
+
    function "and"(Left, Right : Bytes) return Bytes is
    begin
       return Aux_Byte."and"(Left,Right);
@@ -493,7 +493,7 @@ package body Crypto.Types is
    ---------------------------------------------------------------------------
 
    function To_DWords(Byte_Array : Bytes) return DWords is
-      L : constant Natural := 
+      L : constant Natural :=
 	Natural(Float'Ceiling(Float(Byte_Array'Length)/8.0))-1;
       W : DWords(0..L):=(others => 0);
       N : Natural := Byte_Array'First;
@@ -527,7 +527,7 @@ package body Crypto.Types is
       end loop;
       return B;
    end To_Bytes;
-   
+
    ---------------------------------------------------------------------------
 
    function To_Hex(B : Byte) return Hex_Byte is
@@ -617,252 +617,259 @@ package body Crypto.Types is
       end loop;
       return S;
    end To_String;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function Left_Part(Block : in Bytes) return Bytes is
    begin
       return Aux_Byte.Left_Part(Block);
    end Left_Part;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function Right_Part(Block : in Bytes) return Bytes is
    begin
       return Aux_Byte.Right_Part(Block);
    end Right_Part;
-   
+
    ---------------------------------------------------------------------------
-   
+
     function To_Bytes(B : B_Block64) return Bytes is
    begin
       return Bytes(B);
    end To_Bytes;
-    
+
    ---------------------------------------------------------------------------
-   
+
    function To_Bytes(B : B_Block128) return Bytes is
    begin
       return Bytes(B);
    end To_Bytes;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function To_Bytes(B : B_Block192) return Bytes is
-      
+
    begin
       return Bytes(B);
    end To_Bytes;
-   
+
     ---------------------------------------------------------------------------
-   
+
    function To_Bytes(B : B_Block256) return Bytes is
    begin
       return Bytes(B);
    end To_Bytes;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function To_Bytes(W : W_Block160) return Bytes is
    begin
       return To_Bytes(Words(W));
    end To_Bytes;
-   
+
    ---------------------------------------------------------------------------
-   
+
     function To_Bytes(W : W_Block256) return Bytes is
    begin
       return To_Bytes(Words(W));
    end To_Bytes;
-   
+
    ---------------------------------------------------------------------------
-      
+
     function To_Bytes(W : W_Block512) return Bytes is
    begin
       return To_Bytes(Words(W));
    end To_Bytes;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function To_Bytes(D : DW_Block256) return Bytes is
    begin
       return To_Bytes(DWords(D));
    end To_Bytes;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function To_Bytes(D : DW_Block384) return Bytes is
    begin
       return To_Bytes(DWords(D));
    end To_Bytes;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function To_Bytes(D : DW_Block512) return Bytes is
    begin
       return To_Bytes(DWords(D));
    end To_Bytes;
-   
-   ---------------------------------------------------------------------------  
-   
+
+   ---------------------------------------------------------------------------
+
+   function To_Bytes(D : DW_Block1024) return Bytes is
+   begin
+      return To_Bytes(DWords(D));
+   end To_Bytes;
+
+   ---------------------------------------------------------------------------
+
    function To_B_Block64(B : Bytes) return B_Block64 is
    begin
       return B_Block64(B);
    end To_B_Block64;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function To_B_Block128(B : Bytes) return B_Block128 is
    begin
       return B_Block128(B);
    end To_B_Block128;
-      
+
    ---------------------------------------------------------------------------
-      
+
    function To_B_Block192(B : Bytes) return B_Block192 is
    begin
       return B_Block192(B);
    end To_B_Block192;
-   
+
       ---------------------------------------------------------------------------
-      
+
    function To_B_Block256(B : Bytes) return B_Block256 is
    begin
       return B_Block256(B);
    end To_B_Block256;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function To_W_Block160(B : Bytes) return W_Block160 is
    begin
      return W_Block160(To_Words(B));
    end To_W_Block160;
-   
+
     ---------------------------------------------------------------------------
-   
+
    function To_W_Block256(B : Bytes) return W_Block256 is
    begin
      return W_Block256(To_Words(B));
    end To_W_Block256;
-   
+
     ---------------------------------------------------------------------------
-   
+
    function To_W_Block512(B : Bytes) return W_Block512 is
    begin
      return W_Block512(To_Words(B));
    end To_W_Block512;
-   
+
    ---------------------------------------------------------------------------
-      
+
    function To_DW_Block256(B : Bytes) return DW_Block256 is
    begin
      return DW_Block256(To_DWords(B));
    end To_DW_Block256;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function To_DW_Block384(B : Bytes) return DW_Block384 is
    begin
      return DW_Block384(To_DWords(B));
    end To_DW_Block384;
-   
+
    ---------------------------------------------------------------------------
-     
+
    function To_DW_Block512(B : Bytes) return DW_Block512 is
    begin
      return DW_Block512(To_DWords(B));
    end To_DW_Block512;
-      
+
    ---------------------------------------------------------------------------
-     
+
    function To_DW_Block1024(B : Bytes) return DW_Block1024 is
    begin
      return DW_Block1024(To_DWords(B));
    end To_DW_Block1024;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function "xor"(Left, Right : W_Block160) return  W_Block160 is
    begin
       return W_Block160(Words(Left) xor Words(Right));
    end "xor";
    ---------------------------------------------------------------------------
-   
+
    function "xor"(Left, Right : W_Block256) return  W_Block256 is
    begin
       return W_Block256(Words(Left) xor Words(Right));
    end "xor";
    ---------------------------------------------------------------------------
-   
+
    function "xor"(Left, Right : W_Block512) return  W_Block512 is
    begin
       return W_Block512(Words(Left) xor Words(Right));
    end "xor";
-   
+
    ---------------------------------------------------------------------------
 
    function "xor"(Left, Right : DW_Block512) return  DW_Block512 is
    begin
       return DW_Block512(DWords(Left) xor DWords(Right));
    end "xor";
-   
+
    ---------------------------------------------------------------------------
-     
+
    function "xor"(Left, Right : DW_Block1024) return  DW_Block1024 is
    begin
       return DW_Block1024(DWords(Left) xor DWords(Right));
-   end "xor"; 
-   
+   end "xor";
+
    ---------------------------------------------------------------------------
-   
+
    function "xor"(Left, Right : B_Block128) return  B_Block128 is
    begin
       return B_Block128(Bytes(Left) xor Bytes(Right));
-   end "xor"; 
-     
+   end "xor";
+
    ---------------------------------------------------------------------------
-   
+
    function "xor"(Left, Right : B_Block64) return  B_Block64 is
    begin
       return B_Block64(Bytes(Left) xor Bytes(Right));
-   end "xor"; 
-   
+   end "xor";
+
    ---------------------------------------------------------------------------
-   
+
    function "+"(Left : B_Block128; Right : Byte) return B_Block128 is
    begin
       return B_Block128(Bytes(Left) + Right);
    end "+";
-   
+
    ---------------------------------------------------------------------------
-   
+
    function Shift_Left(Value : Bytes; Amount : Natural) return Bytes is
    begin
       return Aux_Byte.Shift_Left(Value,Amount);
    end Shift_Left;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function Shift_Left(Value : B_Block128; Amount :Natural) return B_Block128 is
    begin
       return  B_Block128(Aux_Byte.Shift_Left(Bytes(Value),Amount));
    end Shift_Left;
-   
+
    ----------------------------------------------------------------------------
-   
+
    function Shift_Right(Value : Bytes; Amount : Natural) return Bytes is
    begin
       return Aux_Byte.Shift_Right(Value,Amount);
    end Shift_Right;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function Shift_Right(Value : B_Block128; Amount :Natural)return B_Block128 is
    begin
       return  B_Block128(Aux_Byte.Shift_Right(Bytes(Value),Amount));
    end Shift_Right;
-   
- 
-   
-   
+
+
+
+
   end Crypto.Types;
