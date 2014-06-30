@@ -25,26 +25,33 @@
 with Crypto.Symmetric.Algorithm.Sha_Utils;
 
 package Crypto.Symmetric.Algorithm.SHA256 is
-   
+
+   package SHA_Utils renames Crypto.Symmetric.Algorithm.Sha_Utils;
+
    type Generic_Interface is Interface;
    type SHA256_Context is new Generic_Interface with
       record
-         Utils_Context : Crypto.Symmetric.Algorithm.Sha_Utils.Sha_Utils_Context;
          Hash_Value : W_Block256;
          Current_Message_Length : Message_Length64;
       end record;
-   
+
+   type SHA256_Buffered_Context is new Generic_Interface with
+      record
+         Context      : SHA256_Context;
+         Block_Buffer : SHA_Utils.SHA_Message_Block_Buffer;
+      end record;
+
    -- low level API
    procedure Init(Hash_Value : out W_Block256);
-   
+
    procedure Round(Message_Block : in W_Block512;
                    Hash_Value    : in out W_Block256);
-   
+
    function Final_Round(Last_Message_Block  : W_Block512;
                         Last_Message_Length : Message_Block_Length512;
                         Hash_Value          : W_Block256)
                         return W_Block256;
-   
+
    -- low level API with object
    procedure Init(This 		: in out SHA256_Context);
 
@@ -56,11 +63,20 @@ package Crypto.Symmetric.Algorithm.SHA256 is
                         Last_Message_Length : Message_Block_Length512)
                         return W_Block256;
 
+   -- low level API with buffered message block in object
+   procedure Init(This : in out SHA256_Buffered_Context);
+
+   procedure Round(This    : in out SHA256_Buffered_Context;
+                   Message : in     Bytes);
+
+   function Final_Round(This : in out SHA256_Buffered_Context)
+                        return W_Block256;
+
    -- high level API
    procedure Hash(Message : in Bytes;  Hash_Value :  out W_Block256);
-   
+
    procedure Hash(Message : in String; Hash_Value :  out W_Block256);
-   
+
    procedure F_Hash(Filename : in String; Hash_Value :  out W_Block256);
 
 

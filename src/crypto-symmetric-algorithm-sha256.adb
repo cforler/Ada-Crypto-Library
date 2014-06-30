@@ -207,7 +207,7 @@ package body Crypto.Symmetric.Algorithm.SHA256 is
 
    begin
       Init(Hash_Value);
-      
+
       for I in 1..K loop
          Round(W_Block512(To_Words(Message(LM..LM+63))),Hash_Value);
 	 LM := LM+64;
@@ -229,7 +229,7 @@ package body Crypto.Symmetric.Algorithm.SHA256 is
    procedure Hash(Message : in String; Hash_Value : out W_Block256) is
    begin
       Hash(To_Bytes(Message), Hash_Value);
-   end; 
+   end;
 
 
    ---------------------------------------------------------------------------
@@ -284,7 +284,7 @@ package body Crypto.Symmetric.Algorithm.SHA256 is
    end F_Hash;
 
    ---------------------------------------------------------------------------
-   
+
    procedure Init(This 		: in out SHA256_Context) is
    begin
       This.Current_Message_Length:=0;
@@ -297,7 +297,7 @@ package body Crypto.Symmetric.Algorithm.SHA256 is
       This.Hash_Value(6) := 16#1f83d9ab#;
       This.Hash_Value(7) := 16#5be0cd19#;
    end Init;
-      
+
 
    procedure Round(This 	: in out 	SHA256_Context;
                    Message_Block: in 		W_Block512) is
@@ -383,6 +383,54 @@ package body Crypto.Symmetric.Algorithm.SHA256 is
       return H;
    end Final_Round;
 
+   ---------------------------------------------------------------------------
 
+   procedure Init(This : in out SHA256_Buffered_Context) is
+   begin
+      Init(This.Context);
+      This.Block_Buffer.Length := 0;
+      This.Block_Buffer.Data := (others => 0);
+   end Init;
+
+   ---------------------------------------------------------------------------
+
+   procedure Round(This    : in out SHA256_Buffered_Context;
+                   Message : in     Bytes) is
+      N     : Natural;
+      L     : Integer := Message'Length;
+      Index : Integer := Message'First;
+   begin
+      while L > 0 loop
+         N := SHA_Utils.Min(L, Message_Block_Length512'Last - This.Block_Buffer.Length);
+         This.Block_Buffer.Data(This.Block_Buffer.Length + 1 .. This.Block_Buffer.Length + N)
+           := Message(Index .. Index + N - 1);
+
+--           This.Block_Buffer.Data(This.Block_Buffer.Data'First + This.Block_Buffer.Length .. This.Block_Buffer.Data'First + This.Block_Buffer.Length + N - 1)
+--             := Message(Index .. Index + N - 1);
+
+         Index := Index + N;
+
+         This.Block_Buffer.Length := This.Block_Buffer.Length + Message_Block_Length512(N);
+         L := L - N;
+
+         if This.Block_Buffer.Length = Message_Block_Length512'Last then
+            Round(This.Context, To_W_Block512(This.Block_Buffer.Data));
+            This.Block_Buffer.Length := 0;
+         end if;
+
+      end loop;
+   end Round;
+
+   ---------------------------------------------------------------------------
+
+   function Final_Round(This : in out SHA256_Buffered_Context)
+                        return W_Block256 is
+   begin
+      if This.Block_Buffer.Length < Message_Block_Length512'Last then
+         This.Block_Buffer.Data(This.Block_Buffer.Data'First + This.Block_Buffer.Length .. This.Block_Buffer.Data'Last) := (others => 0);
+      end if;
+
+      return Final_Round(This.Context, To_W_Block512(This.Block_Buffer.Data), This.Block_Buffer.Length);
+   end Final_Round;
 
 end Crypto.Symmetric.Algorithm.SHA256;

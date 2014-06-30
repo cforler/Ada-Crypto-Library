@@ -27,7 +27,7 @@
 with Crypto.Symmetric.Algorithm.SHA_Utils;
 use Crypto.Symmetric.Algorithm.SHA_Utils;
 with GNAT.OS_Lib; use GNAT.OS_Lib;
-  
+
 package body Crypto.Symmetric.Algorithm.SHA1 is
 
    Current_Message_Length : Message_Length64;
@@ -239,7 +239,7 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
    procedure Hash(Message : in String; Hash_Value : out W_Block160) is
    begin
       Hash(To_Bytes(Message), Hash_Value);
-   end; 
+   end;
    ---------------------------------------------------------------------------
 
    procedure F_Hash(Filename : String; Hash_Value : out W_Block160) is
@@ -290,7 +290,7 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
    end F_Hash;
 
    ---------------------------------------------------------------------------
-   
+
    procedure Init(This : in out SHA1_Context) is
    begin
       This.Current_Message_Length:=0;
@@ -302,8 +302,8 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
    end Init;
    ---------------------------------------------------------------------------
 
-   -- FIPS 180-2 page 17-18 + loop unrolling   
-   
+   -- FIPS 180-2 page 17-18 + loop unrolling
+
    procedure Round(This 	: in out 	SHA1_Context;
                    Message_Block: in 		W_Block512) is
       SHA1_Constant1 : constant Word := 16#5a827999#;
@@ -413,7 +413,7 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
    end Round;
 
    -----------------------------------------------------------------------
-   
+
    function Final_Round(This 		    : in out SHA1_Context;
                         Last_Message_Block  : W_Block512;
                         Last_Message_Length : Message_Block_Length512)
@@ -441,5 +441,51 @@ package body Crypto.Symmetric.Algorithm.SHA1 is
       return This.Hash_Value;
 
    end Final_Round;
-   
+
+   -----------------------------------------------------------------------
+
+   procedure Init(This : in out SHA1_Buffered_Context) is
+   begin
+      Init(This.Context);
+      This.Block_Buffer.Length := 0;
+      This.Block_Buffer.Data := (others => 0);
+   end Init;
+
+   -----------------------------------------------------------------------
+
+   procedure Round(This    : in out SHA1_Buffered_Context;
+                   Message : in     Bytes) is
+      N     : Natural;
+      L     : Integer := Message'Length;
+      Index : Integer := Message'First;
+   begin
+      while L > 0 loop
+         N := SHA_Utils.Min(L, Message_Block_Length512'Last - This.Block_Buffer.Length);
+         This.Block_Buffer.Data(This.Block_Buffer.Length + 1 .. This.Block_Buffer.Length + N)
+           := Message(Index .. Index + N - 1);
+
+         Index := Index + N;
+
+         This.Block_Buffer.Length := This.Block_Buffer.Length + Message_Block_Length512(N);
+         L := L - N;
+
+         if This.Block_Buffer.Length = Message_Block_Length512'Last then
+            Round(This.Context, To_W_Block512(This.Block_Buffer.Data));
+            This.Block_Buffer.Length := 0;
+         end if;
+      end loop;
+   end Round;
+
+   -----------------------------------------------------------------------
+
+   function Final_Round(This : in out SHA1_Buffered_Context)
+                        return W_Block160 is
+   begin
+      if This.Block_Buffer.Length < Message_Block_Length512'Last then
+         This.Block_Buffer.Data(This.Block_Buffer.Data'First + This.Block_Buffer.Length .. This.Block_Buffer.Data'Last) := (others => 0);
+      end if;
+
+      return Final_Round(This.Context, To_W_Block512(This.Block_Buffer.Data), This.Block_Buffer.Length);
+   end Final_Round;
+
 end Crypto.Symmetric.Algorithm.SHA1;

@@ -63,7 +63,7 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
    end Final_Round;
 
    ---------------------------------------------------------------------------
-   
+
    procedure Init(This : in out Sha512_Context) is
    begin
       This.Utils_Context.Init_SHA2;
@@ -77,17 +77,17 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
       This.Hash_Value(7) := 16#5be0cd19137e2179#;
 
    end Init;
-   
+
    ---------------------------------------------------------------------------
-   
+
    procedure Round(This 	: in out 	Sha512_Context;
                    Message_Block: in 		DW_Block1024) is
    begin
       This.Utils_Context.Round_SHA2(Message_Block, This.Hash_Value);
    end Round;
-   
+
    ---------------------------------------------------------------------------
-   
+
    function Final_Round(This 		    : in out Sha512_Context;
                         Last_Message_Block  : DW_Block1024;
                         Last_Message_Length : Message_Block_Length1024)
@@ -98,7 +98,53 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
                                                    Hash_Value           => This.Hash_Value);
 
    end Final_Round;
-   
+
+   ---------------------------------------------------------------------------
+
+   procedure Init(This : in out SHA512_Buffered_Context) is
+   begin
+      Init(This.Context);
+      This.Block_Buffer.Length := 0;
+      This.Block_Buffer.Data := (others => 0);
+   end Init;
+
+   ---------------------------------------------------------------------------
+
+   procedure Round(This    : in out SHA512_Buffered_Context;
+                   Message : in     Bytes) is
+      N     : Natural;
+      L     : Integer := Message'Length;
+      Index : Integer := Message'First;
+   begin
+      while L > 0 loop
+         N := SHA_Utils.Min(L, Message_Block_Length1024'Last - This.Block_Buffer.Length);
+         This.Block_Buffer.Data(This.Block_Buffer.Length + 1 .. This.Block_Buffer.Length + N)
+           := Message(Index .. Index + N - 1);
+
+         Index := Index + N;
+
+         This.Block_Buffer.Length := This.Block_Buffer.Length + Message_Block_Length1024(N);
+         L := L - N;
+
+         if This.Block_Buffer.Length = Message_Block_Length1024'Last then
+            Round(This.Context, To_DW_Block1024(This.Block_Buffer.Data));
+            This.Block_Buffer.Length := 0;
+         end if;
+      end loop;
+   end Round;
+
+   ---------------------------------------------------------------------------
+
+   function Final_Round(This : in out SHA512_Buffered_Context)
+                        return DW_Block512 is
+   begin
+      if This.Block_Buffer.Length < Message_Block_Length1024'Last then
+         This.Block_Buffer.Data(This.Block_Buffer.Data'First + This.Block_Buffer.Length .. This.Block_Buffer.Data'Last) := (others => 0);
+      end if;
+
+      return Final_Round(This.Context, To_DW_Block1024(This.Block_Buffer.Data), This.Block_Buffer.Length);
+   end Final_Round;
+
    ---------------------------------------------------------------------------
 
    procedure Hash(Message : in Bytes; Hash_Value : out DW_Block512) is
@@ -115,7 +161,7 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
          begin
             Round(DW_Block1024(T), Hash_Value);
          end;
-         LM := LM+128;	 
+         LM := LM+128;
       end loop;
 
       if L /=  0 then
@@ -134,7 +180,7 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
    procedure Hash(Message : in String; Hash_Value : out DW_Block512) is
    begin
       Hash(To_Bytes(Message), Hash_Value);
-   end Hash; 
+   end Hash;
 
 
    ---------------------------------------------------------------------------
@@ -161,7 +207,7 @@ package body Crypto.Symmetric.Algorithm.SHA512 is
          Size := Read(Fd, Buf'Address , Buf'Last);
 
          if Size = Buf'Last then
-            declare 
+            declare
                T : constant  DWords := To_DWords(Buf(0..127));
             begin
                Round_SHA2( DW_Block1024(T),Hash_Value);

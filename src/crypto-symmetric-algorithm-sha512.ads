@@ -34,6 +34,11 @@ package Crypto.Symmetric.Algorithm.SHA512 is
          Hash_Value : DW_Block512;
       end record;
 
+   type SHA512_Buffered_Context is new Generic_Context with
+      record
+         Context      : SHA512_Context;
+         Block_Buffer : SHA_Utils.SHA2_Message_Block_Buffer;
+      end record;
 
    -- low level API
 
@@ -56,6 +61,15 @@ package Crypto.Symmetric.Algorithm.SHA512 is
    function Final_Round(This 		    : in out Sha512_Context;
                         Last_Message_Block  : DW_Block1024;
                         Last_Message_Length : Message_Block_Length1024)
+                        return DW_Block512;
+
+   -- low level API with buffered message block in object
+   procedure Init(This : in out SHA512_Buffered_Context);
+
+   procedure Round(This    : in out SHA512_Buffered_Context;
+                   Message : in     Bytes);
+
+   function Final_Round(This : in out SHA512_Buffered_Context)
                         return DW_Block512;
 
    -- high level API

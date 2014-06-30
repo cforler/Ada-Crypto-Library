@@ -73,7 +73,7 @@ package body  Crypto.Symmetric.Algorithm.SHA384 is
       Init(H);
 
       for I in 1..K loop
-	 declare 
+	 declare
 	    T : constant DWords := To_DWords(Message(LM .. LM+127));
 	    begin
 	       Round_SHA2(DW_Block1024(T),H);
@@ -124,7 +124,7 @@ package body  Crypto.Symmetric.Algorithm.SHA384 is
          Size := Read(Fd, Buf'Address , Buf'Last);
 
          if Size = Buf'Last then
-	    declare 
+	    declare
 	       T : constant Dwords := To_DWords(Buf(0..127));
 	    begin
 	       Round_SHA2(DW_Block1024(T),H);
@@ -153,7 +153,7 @@ package body  Crypto.Symmetric.Algorithm.SHA384 is
       Hash_Value := Final_Round(M, Message_Block_Length1024(Size), H);
 
    end F_Hash;
-   
+
    procedure Init(This 		: in out SHA384_Context) is
    begin
       This.Utils_Context.Init_SHA2;
@@ -170,20 +170,70 @@ package body  Crypto.Symmetric.Algorithm.SHA384 is
    procedure Round(This 	: in out 	SHA384_Context;
                    Message_Block: in 		DW_Block1024) is
    begin
-      Round_SHA2(Message_Block, This.Hash_Value);
+      This.Utils_Context.Round_SHA2(Message_Block, This.Hash_Value);
    end Round;
 
    function Final_Round (This 		    : in out SHA384_Context;
                         Last_Message_Block  : DW_Block1024;
                         Last_Message_Length : Message_Block_Length1024)
                          return DW_Block384 is
-      H : constant DWords(DW_Block384'Range) := DWords(Final_Round_SHA2(Last_Message_Block,
-									Last_Message_Length,
-									This.Hash_Value))(0..5);
+      H : constant DWords(DW_Block384'Range) := DWords(
+                                                       Final_Round_SHA2(
+                                                         This.Utils_Context,
+                                                         Last_Message_Block,
+                                                         Last_Message_Length,
+                                                         This.Hash_Value)
+                                                      )(0..5);
+
    begin
       return DW_Block384(H);
-   end Final_Round;   
+   end Final_Round;
 
+   ---------------------------------------------------------------------------
+
+   procedure Init(This : in out SHA384_Buffered_Context) is
+   begin
+      Init(This.Context);
+      This.Block_Buffer.Length := 0;
+      This.Block_Buffer.Data := (others => 0);
+   end Init;
+
+   ---------------------------------------------------------------------------
+
+   procedure Round(This    : in out SHA384_Buffered_Context;
+                   Message : in     Bytes) is
+      N     : Natural;
+      L     : Integer := Message'Length;
+      Index : Integer := Message'First;
+   begin
+      while L > 0 loop
+         N := SHA_Utils.Min(L, Message_Block_Length1024'Last - This.Block_Buffer.Length);
+         This.Block_Buffer.Data(This.Block_Buffer.Length + 1 .. This.Block_Buffer.Length + N)
+           := Message(Index .. Index + N - 1);
+
+         Index := Index + N;
+
+         This.Block_Buffer.Length := This.Block_Buffer.Length + Message_Block_Length1024(N);
+         L := L - N;
+
+         if This.Block_Buffer.Length = Message_Block_Length1024'Last then
+            Round(This.Context, To_DW_Block1024(This.Block_Buffer.Data));
+            This.Block_Buffer.Length := 0;
+         end if;
+      end loop;
+   end Round;
+
+   ---------------------------------------------------------------------------
+
+   function Final_Round(This : in out SHA384_Buffered_Context)
+                        return DW_Block384 is
+   begin
+      if This.Block_Buffer.Length < Message_Block_Length1024'Last then
+         This.Block_Buffer.Data(This.Block_Buffer.Data'First + This.Block_Buffer.Length .. This.Block_Buffer.Data'Last) := (others => 0);
+      end if;
+
+      return Final_Round(This.Context, To_DW_Block1024(This.Block_Buffer.Data), This.Block_Buffer.Length);
+   end Final_Round;
 
 end  Crypto.Symmetric.Algorithm.SHA384;
 
