@@ -141,7 +141,6 @@ package Crypto.Asymmetric.RSA is
    ---------------------------------------------------------------------------
 
 private
-
    type Public_Key_RSA is record
       N : Big_Unsigned;
       E : Big_Unsigned;

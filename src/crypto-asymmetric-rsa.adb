@@ -75,7 +75,8 @@ package body Crypto.Asymmetric.RSA is
    procedure Gen_Key(Public_Key  : out Public_Key_RSA;
                      Private_Key : out Private_Key_RSA;
 		     Small_Default_Exponent_E : in Boolean := True) is
-      Small_Primes : constant Words :=  (65537, 65539,  65543, 65557, 65609, 65617 );
+      Small_Primes : constant Words := 
+	(65537, 65539,  65543, 65557, 65609, 65617 );
    begin
       Private_Key.P := Get_N_Bit_Prime(Size/2);
       loop
@@ -85,7 +86,6 @@ package body Crypto.Asymmetric.RSA is
 
 	 Private_Key.N :=  Private_Key.P * Private_Key.Q;
 	 Private_Key.Phi := (Private_Key.P-1) * (Private_Key.Q-1);
-
 
 	 Public_Key.E := Big_Unsigned_Zero;
 	 if Small_Default_Exponent_E then
@@ -168,9 +168,11 @@ package body Crypto.Asymmetric.RSA is
                             Public_Key  : Public_Key_RSA) return Boolean is
    begin
       if
-	Check_Private_Key(Private_Key) = False or  Check_Public_Key(Public_Key) = False
+	Check_Private_Key(Private_Key) = False or 
+	Check_Public_Key(Public_Key) = False
 	or Public_Key.N /= Private_Key.N
-	or Mult(Public_Key.E, Private_Key.D, Private_Key.Phi)  /= Big_Unsigned_One then
+	or Mult(Public_Key.E, Private_Key.D, Private_Key.Phi)  /= Big_Unsigned_One
+      then
 	 return False;
       else
 	 return True;
@@ -190,7 +192,7 @@ package body Crypto.Asymmetric.RSA is
         := To_Bytes(Public_Key.E);
    end Get_Public_Key;
 
-      ---------------------------------------------------------------------------
+   ---------------------------------------------------------------------------
 
    procedure Get_Private_Key(Private_Key : in Private_Key_RSA;
                              N   : out RSA_Number;
@@ -304,6 +306,7 @@ package body Crypto.Asymmetric.RSA is
       PS_Length : constant Positive := K - Plaintext'Length - 3;
       PS : Bytes(1 .. PS_Length) := (others => 0);
       EM : Bytes(1 .. K) := (others => 0);
+      C : Big_Unsigned;   
    begin
       -- 1
       if Plaintext'Length > K - 11 then
@@ -321,7 +324,6 @@ package body Crypto.Asymmetric.RSA is
       declare
          -- 3a
          M : constant Big_Unsigned := To_Big_Unsigned(EM);
-         C : Big_Unsigned;
       begin
          -- 3b
          Encrypt(Public_Key, M, C);
@@ -334,18 +336,14 @@ package body Crypto.Asymmetric.RSA is
             return Ciphertext;
          end;
       end;
-
    end V1_5_Encrypt;
 
    ---------------------------------------------------------------------------
 
    function V1_5_Decrypt(Private_Key : in  Private_Key_RSA;
                          Ciphertext  : in  RSA_Number) return Bytes is
-
       K : constant Natural := Size/8;
-
       M : RSA_Number;
-
    begin
       -- 1
       if K < 11 then
@@ -368,24 +366,12 @@ package body Crypto.Asymmetric.RSA is
             end if;
          end loop;
 
-         if M(M'First) /= 0 then
-            Decoding_Failed := True;
-         end if;
-
-         if M(M'First + 1) /= 2 then
-            Decoding_Failed := True;
-         end if;
-
-         if (Separator - (M'First + 2)) < 8 then
-            Decoding_Failed := True;
-         end if;
-
-         if Decoding_Failed then
+         if M(M'First) /= 0 or M(M'First + 1) /= 2 or 
+	   (Separator - (M'First + 2)) < 8  or Decoding_Failed = False then
             raise Decrypt_Error;
          end if;
 
          return M(Separator + 1 .. M'Last);
-
       end;
 
    end V1_5_Decrypt;
