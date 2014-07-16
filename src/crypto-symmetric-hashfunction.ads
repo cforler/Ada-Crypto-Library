@@ -32,7 +32,7 @@ generic
 
 
    with function Generic_To_Bytes(DWord_Array : Hash_Type) return Bytes is <>;
-
+   with function To_Message_Type(Item : Bytes) return Message_Type is <>;
 
 
    with procedure Init(This : in out Internal_Context) is <>;
@@ -56,10 +56,12 @@ generic
 
 package Crypto.Symmetric.Hashfunction is
 
+   type Block_Buffer is private;
    type Generic_Context is Interface;
    type Hash_Context is new Generic_Context with
       record
          HS : Internal_Context;
+         B : Block_Buffer;
       end record;
 
    function Hash  (Message  : Bytes)  return Hash_Type;
@@ -74,10 +76,18 @@ package Crypto.Symmetric.Hashfunction is
    function Final_Round(This : in out Hash_Context;
                         Last_Message_Block  : Message_Type;
                         Last_Message_Length : Message_Block_Length_Type)
+                        return Hash_Type;
+
+   procedure Update(This    : in out Hash_Context;
+                    Message : in Bytes);
+   function Final_Round(This : in out Hash_Context)
                        return Hash_Type;
 
-
 private
+   type Block_Buffer is record
+      Data   : Bytes(1 .. Integer(Message_Block_Length_Type'Last));
+      Length : Integer;
+   end record;
    --     pragma Inline(Init, Round, Final_Round, Hash, F_Hash);
    pragma Inline(Initialize);
    pragma Optimize (Time);

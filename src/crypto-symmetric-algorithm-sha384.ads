@@ -35,12 +35,6 @@ package Crypto.Symmetric.Algorithm.SHA384 is
          Hash_Value : DW_Block512;
       end record;
 
-   type SHA384_Buffered_Context is new Generic_Interface with
-      record
-         Context      : SHA384_Context;
-         Block_Buffer : SHA_Utils.SHA2_Message_Block_Buffer;
-      end record;
-
    -- low level API
 
    procedure Init(Hash_Value : out DW_Block512);
@@ -63,15 +57,6 @@ package Crypto.Symmetric.Algorithm.SHA384 is
    function Final_Round(This 		    : in out SHA384_Context;
                         Last_Message_Block  : DW_Block1024;
                         Last_Message_Length : Message_Block_Length1024)
-                        return DW_Block384;
-
-   -- low level API with buffered message block in object
-   procedure Init(This : in out SHA384_Buffered_Context);
-
-   procedure Round(This    : in out SHA384_Buffered_Context;
-                   Message : in     Bytes);
-
-   function Final_Round(This : in out SHA384_Buffered_Context)
                         return DW_Block384;
 
    -- high level API

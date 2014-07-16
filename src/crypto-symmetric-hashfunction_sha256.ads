@@ -35,4 +35,5 @@ package Crypto.Symmetric.Hashfunction_SHA256 is
      Message_Type              => W_Block512,
      Message_Block_Length_Type => Crypto.Types.Message_Block_Length512,
      Internal_Context          => SHA256_Context,
-     Generic_To_Bytes	        => To_Bytes);
+     Generic_To_Bytes	       => To_Bytes,
+     To_Message_Type           => To_W_Block512);

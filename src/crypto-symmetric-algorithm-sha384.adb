@@ -191,49 +191,5 @@ package body  Crypto.Symmetric.Algorithm.SHA384 is
 
    ---------------------------------------------------------------------------
 
-   procedure Init(This : in out SHA384_Buffered_Context) is
-   begin
-      Init(This.Context);
-      This.Block_Buffer.Length := 0;
-      This.Block_Buffer.Data := (others => 0);
-   end Init;
-
-   ---------------------------------------------------------------------------
-
-   procedure Round(This    : in out SHA384_Buffered_Context;
-                   Message : in     Bytes) is
-      N     : Natural;
-      L     : Integer := Message'Length;
-      Index : Integer := Message'First;
-   begin
-      while L > 0 loop
-         N := SHA_Utils.Min(L, Message_Block_Length1024'Last - This.Block_Buffer.Length);
-         This.Block_Buffer.Data(This.Block_Buffer.Length + 1 .. This.Block_Buffer.Length + N)
-           := Message(Index .. Index + N - 1);
-
-         Index := Index + N;
-
-         This.Block_Buffer.Length := This.Block_Buffer.Length + Message_Block_Length1024(N);
-         L := L - N;
-
-         if This.Block_Buffer.Length = Message_Block_Length1024'Last then
-            Round(This.Context, To_DW_Block1024(This.Block_Buffer.Data));
-            This.Block_Buffer.Length := 0;
-         end if;
-      end loop;
-   end Round;
-
-   ---------------------------------------------------------------------------
-
-   function Final_Round(This : in out SHA384_Buffered_Context)
-                        return DW_Block384 is
-   begin
-      if This.Block_Buffer.Length < Message_Block_Length1024'Last then
-         This.Block_Buffer.Data(This.Block_Buffer.Data'First + This.Block_Buffer.Length .. This.Block_Buffer.Data'Last) := (others => 0);
-      end if;
-
-      return Final_Round(This.Context, To_DW_Block1024(This.Block_Buffer.Data), This.Block_Buffer.Length);
-   end Final_Round;
-
 end  Crypto.Symmetric.Algorithm.SHA384;
 

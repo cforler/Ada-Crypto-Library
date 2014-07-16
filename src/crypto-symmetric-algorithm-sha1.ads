@@ -35,12 +35,6 @@ package Crypto.Symmetric.Algorithm.SHA1 is
          Current_Message_Length : Message_Length64;
       end record;
 
-   type SHA1_Buffered_Context is new Generic_Interface with
-      record
-         Context      : SHA1_Context;
-         Block_Buffer : SHA_Utils.SHA_Message_Block_Buffer;
-      end record;
-
    ---------------------------------------------------------------------------
 
    -- low level API with object
@@ -69,17 +63,6 @@ package Crypto.Symmetric.Algorithm.SHA1 is
                         Last_Message_Length : Message_Block_Length512;
                         Hash_Value          : W_Block160)
                        return W_Block160;
-
-   ---------------------------------------------------------------------------
-
-   -- low level API with buffered message block in object
-   procedure Init(This : in out SHA1_Buffered_Context);
-
-   procedure Round(This    : in out SHA1_Buffered_Context;
-                   Message : in     Bytes);
-
-   function Final_Round(This : in out SHA1_Buffered_Context)
-                        return W_Block160;
 
    ---------------------------------------------------------------------------
 

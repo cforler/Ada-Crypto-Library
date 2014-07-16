@@ -359,11 +359,4 @@ package body Crypto.Symmetric.Algorithm.Sha_Utils is
       This.Current_Message_Length := Current_Message_Length;
    end;
 
-   ---------------------------------------------------------------------------
-
-   function Min(X, Y : in Natural) return Natural is
-   begin
-      return (if X <= Y then X else Y);
-   end Min;
-
 end  Crypto.Symmetric.Algorithm.SHA_Utils;

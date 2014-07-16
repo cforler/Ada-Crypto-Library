@@ -35,4 +35,5 @@ package Crypto.Symmetric.Hashfunction_SHA512 is
      Message_Type              	=> DW_Block1024,
      Message_Block_Length_Type 	=> Crypto.Types.Message_Block_Length1024,
      Internal_Context           => Sha512_Context,
-     Generic_To_Bytes	     	=> To_Bytes);
+     Generic_To_Bytes	     	=> To_Bytes,
+     To_Message_Type            => To_DW_Block1024);

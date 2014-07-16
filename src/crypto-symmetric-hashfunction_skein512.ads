@@ -33,6 +33,8 @@ package Crypto.Symmetric.Hashfunction_Skein512 is
   new Crypto.Symmetric.Hashfunction
     (Hash_Type                 	=> W_Block512,
      Message_Type              	=> W_Block512,
-     Message_Block_Length_Type 	=> Natural,
+     Message_Block_Length_Type 	=> Message_Block_Length512,
      Internal_Context           => Skein_512_Context,
-     Generic_To_Bytes	     	=> To_Bytes);
+     Generic_To_Bytes	     	=> To_Bytes,
+     To_Message_Type            => To_W_Block512
+    );

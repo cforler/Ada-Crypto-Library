@@ -30,6 +30,8 @@ package body  Crypto.Symmetric.Hashfunction is
    procedure Initialize(This : in out Hash_Context) is
    begin
       Init(This.HS);
+      This.B.Length := 0;
+      This.B.Data := (others => 0);
    end Initialize;
 
    ---------------------------------------------------------------------------
@@ -51,6 +53,47 @@ package body  Crypto.Symmetric.Hashfunction is
       return Final_Round(This.HS, Last_Message_Block, Last_Message_Length);
    end Final_Round;
 
+   ---------------------------------------------------------------------------
+
+   procedure Update(This    : in out Hash_Context;
+                    Message : in Bytes) is
+      N     : Natural;
+      L     : Integer := Message'Length;
+      Index : Integer := Message'First;
+   begin
+      while L > 0 loop
+         if L <= Integer(Message_Block_Length_Type'Last) - This.B.Length then
+            N := L;
+         else
+            N := Integer(Message_Block_Length_Type'Last) - This.B.Length;
+         end if;
+
+         This.B.Data(This.B.Length + 1 .. This.B.Length + N) := Message(Index .. Index + N - 1);
+
+         Index := Index + N;
+
+         This.B.Length := This.B.Length + N;
+         L := L - N;
+
+         if This.B.Length = Integer(Message_Block_Length_Type'Last) then
+            Round(This.HS, To_Message_Type(This.B.Data));
+            This.B.Length := 0;
+         end if;
+
+      end loop;
+   end Update;
+
+   ---------------------------------------------------------------------------
+
+   function Final_Round(This : in out Hash_Context)
+                        return Hash_Type is
+   begin
+      if This.B.Length < Integer(Message_Block_Length_Type'Last) then
+         This.B.Data(This.B.Data'First + This.B.Length .. This.B.Data'Last) := (others => 0);
+      end if;
+
+      return Final_Round(This.HS, To_Message_Type(This.B.Data), Message_Block_Length_Type(This.B.Length));
+   end Final_Round;
 
    ---------------------------------------------------------------------------
 

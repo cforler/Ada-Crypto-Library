@@ -34,4 +34,5 @@ package Crypto.Symmetric.Hashfunction_SHA1 is
      Message_Type              	=> Crypto.Types.W_Block512,
      Message_Block_Length_Type 	=> Crypto.Types.Message_Block_Length512,
      Internal_Context           => SHA1_Context,
-     Generic_To_Bytes	     	=> Crypto.Types.To_Bytes);
+     Generic_To_Bytes	     	=> Crypto.Types.To_Bytes,
+     To_Message_Type            => Crypto.Types.To_W_Block512);

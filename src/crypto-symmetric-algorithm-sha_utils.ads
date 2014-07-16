@@ -30,16 +30,6 @@ package  Crypto.Symmetric.algorithm.Sha_Utils is
          Current_Message_Length : Message_Length128;
       end record;
 
-   type SHA_Message_Block_Buffer is record
-      Data   : Bytes(1 .. Message_Block_Length512'Last);
-      Length : Message_Block_Length512;
-   end record;
-
-   type SHA2_Message_Block_Buffer is record
-      Data   : Bytes(1 .. Message_Block_Length1024'Last);
-      Length : Message_Block_Length1024;
-   end record;
-
    -- padding a 512-bit message block.
    -- Input: M := 512-bit Messageblock filled with "0"
    --        L := Length oft the Message in the Messageblock < 512
@@ -97,10 +87,6 @@ package  Crypto.Symmetric.algorithm.Sha_Utils is
                              return DW_Block512;
 
    procedure Init_SHA2(This : in out Sha_Utils_Context);
-
-   function Min(X, Y: in Natural) return Natural;
-
-
 
    ---------------------------------------------------------------------------
    -------------------------------EXCEPTIONS----------------------------------

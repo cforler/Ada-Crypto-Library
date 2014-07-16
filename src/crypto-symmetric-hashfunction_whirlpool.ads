@@ -31,11 +31,12 @@ pragma Elaborate_All (Crypto.Symmetric.Hashfunction);
 
 package Crypto.Symmetric.Hashfunction_Whirlpool is
   new Crypto.Symmetric.Hashfunction
-    (Hash_Type    		=> DW_Block512,
-     Message_Type 		=> DW_Block512,
-     Message_Block_Length_Type 	=>Crypto.Types.Message_Block_Length512,
-     Generic_To_Bytes 		=> To_Bytes,
-     Internal_Context           => Whirlpool_Context
+    (Hash_Type    		       => DW_Block512,
+     Message_Type 		       => DW_Block512,
+     Message_Block_Length_Type => Crypto.Types.Message_Block_Length512,
+     Generic_To_Bytes 		   => To_Bytes,
+     Internal_Context          => Whirlpool_Context,
+     To_Message_Type           => To_DW_Block512
     );
 
 

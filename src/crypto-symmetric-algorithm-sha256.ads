@@ -35,12 +35,6 @@ package Crypto.Symmetric.Algorithm.SHA256 is
          Current_Message_Length : Message_Length64;
       end record;
 
-   type SHA256_Buffered_Context is new Generic_Interface with
-      record
-         Context      : SHA256_Context;
-         Block_Buffer : SHA_Utils.SHA_Message_Block_Buffer;
-      end record;
-
    -- low level API
    procedure Init(Hash_Value : out W_Block256);
 
@@ -61,15 +55,6 @@ package Crypto.Symmetric.Algorithm.SHA256 is
    function Final_Round(This 		    : in out SHA256_Context;
                         Last_Message_Block  : W_Block512;
                         Last_Message_Length : Message_Block_Length512)
-                        return W_Block256;
-
-   -- low level API with buffered message block in object
-   procedure Init(This : in out SHA256_Buffered_Context);
-
-   procedure Round(This    : in out SHA256_Buffered_Context;
-                   Message : in     Bytes);
-
-   function Final_Round(This : in out SHA256_Buffered_Context)
                         return W_Block256;
 
    -- high level API
