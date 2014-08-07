@@ -39,31 +39,31 @@ package body Crypto.Symmetric.Mac is
    begin
       DWord_Array := (others => 16#36_36_36_36_36_36_36_36#);
    end Fill36;
-   
+
    ---------------------------------------------------------------------------
-   
+
    procedure Fill36 (W : out  W_Block512) is
    begin
       W := (others => 16#36_36_36_36#);
    end Fill36;
-   
+
    ---------------------------------------------------------------------------
-   
+
    procedure Fill36 (D : out  DW_Block512) is
    begin
       D := (others => 16#36_36_36_36_36_36_36_36#);
    end Fill36;
-   
-   
+
+
    ---------------------------------------------------------------------------
-   
+
    procedure Fill36 (D : out  DW_Block1024) is
    begin
       D := (others => 16#36_36_36_36_36_36_36_36#);
    end Fill36;
-   
+
    ---------------------------------------------------------------------------
-   
+
    procedure Fill5C (Word_Array  : out  Words) is
    begin
       Word_Array := (others => 16#5C_5C_5C_5C#);
@@ -77,14 +77,14 @@ package body Crypto.Symmetric.Mac is
    end Fill5C;
 
    ---------------------------------------------------------------------------
-   
+
    procedure Fill5C (W : out W_Block512) is
    begin
       W := (others => 16#5C_5C_5C_5C#);
    end Fill5C;
-   
+
    ---------------------------------------------------------------------------
-      
+
     procedure Fill5C (W : out W_Block256) is
    begin
       W := (others => 16#5C_5C_5C_5C#);
@@ -95,16 +95,16 @@ package body Crypto.Symmetric.Mac is
    begin
       D := (others => 16#5C_5C_5C_5C_5C_5C_5C_5C# );
    end Fill5C;
-      
+
    ---------------------------------------------------------------------------
-   
+
    procedure Fill5C (D : out  DW_Block1024) is
    begin
       D := (others => 16#5C_5C_5C_5C_5C_5C_5C_5C# );
    end Fill5C;
-   
+
    ---------------------------------------------------------------------------
-  
+
    procedure Copy(Source : in Words; Dest : out Words) is
    begin
       if Dest'Length > Source'Length  then
@@ -128,33 +128,40 @@ package body Crypto.Symmetric.Mac is
    end Copy;
 
    ---------------------------------------------------------------------------
-   
+
    procedure Copy(Source : in W_Block160; Dest : out W_Block512) is
    begin
       Copy( Words(Source), Words(Dest));
    end Copy;
-   
+
     ---------------------------------------------------------------------------
-   
+
    procedure Copy(Source : in W_Block256; Dest : out W_Block512) is
    begin
       Copy( Words(Source), Words(Dest));
    end Copy;
-   
+
    ---------------------------------------------------------------------------
-   
+
    procedure Copy(Source : in DW_Block512; Dest : out DW_Block512) is
    begin
       Dest := Source;
    end Copy;
-   
+
    ---------------------------------------------------------------------------
-   
+
+   procedure Copy(Source : in DW_Block384; Dest : out DW_Block1024) is
+   begin
+      Copy(DWords(Source), DWords(Dest));
+   end Copy;
+
+   ---------------------------------------------------------------------------
+
     procedure Copy(Source : in DW_Block512; Dest : out DW_Block1024) is
    begin
       Copy(DWords(Source), DWords(Dest));
    end Copy;
-  
+
 end Crypto.Symmetric.Mac;
 
 
