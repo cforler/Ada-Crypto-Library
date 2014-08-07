@@ -158,7 +158,7 @@ package body Crypto.Symmetric.Algorithm.AES is
 
 
       -- AES with table lookup ("The Rijndael Block Cipher",
-      -- AES Proposal, Document vwersion 2, Date:03/09/99,  page 18)
+      -- AES Proposal, Document version 2, Date:03/09/99,  page 18)
       for R in 1..Rounds-1 loop
          A0 := (T1(Byte0(X0))  xor T2(Byte1(X1)) xor T3(Byte2(X2)) xor
                 T4(Byte3(X3))) xor Encrypt_Key(Index);
