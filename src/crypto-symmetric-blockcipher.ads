@@ -42,7 +42,6 @@ generic
    with function Block_To_Bytes(B : Block) return Crypto.Types.Bytes is <>;
 
 package Crypto.Symmetric.Blockcipher is
-
    procedure Prepare_Key(Key    : in Key_Type);
 
    procedure Encrypt(Plaintext  : in Block; Ciphertext : out Block);

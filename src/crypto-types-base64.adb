@@ -81,8 +81,9 @@ package body Crypto.Types.Base64 is
       elsif S(S'Last) = Base64_Character'Last then
          return Result(Result'First..Result'Last-1);
       else
-         return Result;
+	 return Result;	 
       end if;
       
+
    end Decode_Base64;
 end Crypto.Types.Base64;
