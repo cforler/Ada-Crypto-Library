@@ -24,27 +24,28 @@ with Crypto.Types;
 
 package Crypto.Symmetric.Mac is
    use Crypto.Types;
-   
+
    procedure Fill36 (Word_Array  : out  Words);
    procedure Fill36 (DWord_Array : out  DWords);
    procedure Fill36 (W : out  W_Block512);
    procedure Fill36 (D : out  DW_Block512);
    procedure Fill36 (D : out  DW_Block1024);
-   
-   
+
+
    procedure Fill5C (Word_Array   : out  Words);
    procedure Fill5C (DWord_Array  : out  DWords);
    procedure Fill5C (W : out  W_Block256);
    procedure Fill5C (W : out  W_Block512);
    procedure Fill5C (D : out  DW_Block512);
    procedure Fill5C (D : out  DW_Block1024);
-   
-   
+
+
    procedure Copy(Source : in Words;  Dest : out Words);
    procedure Copy(Source : in DWords; Dest : out DWords);
    procedure Copy(Source : in W_Block160; Dest : out W_Block512);
    procedure Copy(Source : in W_Block256; Dest : out W_Block512);
    procedure Copy(Source : in DW_Block512; Dest : out DW_Block512);
+   procedure Copy(Source : in DW_Block384; Dest : out DW_Block1024);
    procedure Copy(Source : in DW_Block512; Dest : out DW_Block1024);
 
    ---------------------------------------------------------------------------

@@ -75,7 +75,7 @@ package body Crypto.Asymmetric.RSA is
    procedure Gen_Key(Public_Key  : out Public_Key_RSA;
                      Private_Key : out Private_Key_RSA;
 		     Small_Default_Exponent_E : in Boolean := True) is
-      Small_Primes : constant Words := 
+      Small_Primes : constant Words :=
 	(65537, 65539,  65543, 65557, 65609, 65617 );
    begin
       Private_Key.P := Get_N_Bit_Prime(Size/2);
@@ -168,7 +168,7 @@ package body Crypto.Asymmetric.RSA is
                             Public_Key  : Public_Key_RSA) return Boolean is
    begin
       if
-	Check_Private_Key(Private_Key) = False or 
+	Check_Private_Key(Private_Key) = False or
 	Check_Public_Key(Public_Key) = False
 	or Public_Key.N /= Private_Key.N
 	or Mult(Public_Key.E, Private_Key.D, Private_Key.Phi)  /= Big_Unsigned_One
@@ -306,7 +306,7 @@ package body Crypto.Asymmetric.RSA is
       PS_Length : constant Positive := K - Plaintext'Length - 3;
       PS : Bytes(1 .. PS_Length) := (others => 0);
       EM : Bytes(1 .. K) := (others => 0);
-      C : Big_Unsigned;   
+      C : Big_Unsigned;
    begin
       -- 1
       if Plaintext'Length > K - 11 then
@@ -366,8 +366,8 @@ package body Crypto.Asymmetric.RSA is
             end if;
          end loop;
 
-         if M(M'First) /= 0 or M(M'First + 1) /= 2 or 
-	   (Separator - (M'First + 2)) < 8  or Decoding_Failed = False then
+         if M(M'First) /= 0 or M(M'First + 1) /= 2 or
+	   (Separator - (M'First + 2)) < 8  or Decoding_Failed = True then
             raise Decrypt_Error;
          end if;
 
