@@ -367,7 +367,7 @@ package body Crypto.Asymmetric.RSA is
          end loop;
 
          if M(M'First) /= 0 or M(M'First + 1) /= 2 or
-	   (Separator - (M'First + 2)) < 8  or Decoding_Failed = True then
+	   (Separator - (M'First + 2)) < 8  or Decoding_Failed then
             raise Decrypt_Error;
          end if;
 

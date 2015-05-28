@@ -22,7 +22,7 @@
 
 with Crypto.Symmetric.Algorithm.Whirlpool.Tables;
 use Crypto.Symmetric.Algorithm.Whirlpool.Tables;
-with GNAT.OS_Lib; use GNAT.OS_Lib;
+with Ada.Streams.Stream_IO;
 
 -- with Ada.Text_IO; use Ada.Text_IO;
 
@@ -302,55 +302,44 @@ package body Crypto.Symmetric.Algorithm.Whirlpool is
    ---------------------------------------------------------------------------
 
    procedure F_Hash(Filename : in String; Hash_Value : out DW_Block512) is
-      Size     : Integer;
-      Mcounter : Message_Counter_Type:=0;
-      Bcounter : To_DWord_Counter_Type:=0;
-      M        : DW_Block512 := (others => 0); -- Messageblock
-      B        : Byte_DWord:=(others=>0);
-      Buf      : Bytes(0..64);
-      Fd       : File_Descriptor;
-      FilePath : constant string := Filename & ASCII.NUL;
+      use Ada.Streams.Stream_IO;
 
+      Buf      : Bytes(1..64);
+      Fd       : File_Type;
+      Fmode    : constant File_Mode := In_File;
+      Remaining_Bytes : Natural := 0;
    begin
-      Fd :=  Open_Read(FilePath'Address, Binary);
-      if fd = invalid_fd then
+      Open(File => Fd,
+           Mode => Fmode,
+           Name => Filename);
+
+      if not Is_Open(Fd) then
          raise File_Open_Error;
       end if;
 
       Init(Hash_Value);
 
-      loop
-         Size := Read(Fd, Buf'Address , Buf'Last);
-         if Size = Buf'Last then
-	    declare
-	       T : constant DWords := To_DWords(Buf(0..63));
-	    begin
-	       Round(DW_Block512(T),Hash_Value);
-	    end;
-         elsif
-           Size < 0 then raise File_Read_Error;
+      while not End_Of_File(Fd) loop
+         Remaining_Bytes := Natural(Size(Fd) - (Index(Fd)-1));
+         if (Remaining_Bytes > Buf'Last ) then
+           Bytes'Read(Stream(Fd), Buf);
+           Round( DW_Block512(To_DWords(Buf(1..64)) ),Hash_Value);
          else
-            for I in 0..Size-1 loop
-               B(Integer(Bcounter)):= Buf(I);
-               Bcounter:=Bcounter+1;
-               if Bcounter = 0 then
-                  M(Integer(Mcounter)):= To_DWord(B);
-                  B:=(others=>0);
-                  Mcounter:= Mcounter+1;
-               end if;
-            end loop;
-            exit;
+            declare
+               Last_Bytes : Bytes(1..Integer(Remaining_Bytes));
+            begin
+               Bytes'Read(Stream(Fd), Last_Bytes);
+               --last block
+               Buf := (others => 0);
+               Buf(1..Last_Bytes'Last) := Last_Bytes;
+               Hash_Value := Final_Round( DW_Block512(To_DWords(Buf(1..64)) ),
+                                          Message_Block_Length512(Remaining_Bytes),
+                                          Hash_Value);
+            end;
          end if;
       end loop;
 
       Close(Fd);
-
-      if BCounter /= 0 then
-         M(Integer(MCounter)):= To_DWord(B);
-      end if;
-
-      Hash_Value := Final_Round(M, Message_Block_Length512(Size), Hash_Value);
-
    end F_Hash;
 
    ---------------------------------------------------------------------------

@@ -22,7 +22,7 @@
 
 with Crypto.Symmetric.Algorithm.SHA_Utils;
 use  Crypto.Symmetric.Algorithm.SHA_Utils;
-with GNAT.OS_Lib; use GNAT.OS_Lib;
+with  Ada.Streams.Stream_IO;
 
 package body  Crypto.Symmetric.Algorithm.SHA384 is
 
@@ -102,56 +102,45 @@ package body  Crypto.Symmetric.Algorithm.SHA384 is
    ---------------------------------------------------------------------------
 
    procedure F_Hash(Filename : in String; Hash_Value : out DW_Block384) is
-      Size     : Integer;
-      H        : DW_Block512;                -- Hashvalue
-      Mcounter : Message_Counter_Type:=0;
-      Bcounter : To_DWord_Counter_Type:=0;
-      M        : DW_Block1024 := (others=>0);  -- Message_Block
-      B        : Byte_DWord := (others=>0);
-      Buf      : Bytes(0..128);
-      Fd       : File_Descriptor;
-      FilePath : constant string := Filename & ASCII.NUL;
+      use Ada.Streams.Stream_IO;
 
+      H        : DW_Block512;                -- Hashvalue
+      Buf      : Bytes(1..128);
+      Fd       : File_Type;
+      Fmode    : constant File_Mode := In_File;
+      Remaining_Bytes : Natural := 0;
    begin
-      Fd :=  Open_Read (FilePath'Address, Binary);
-      if fd = invalid_fd then
-         raise FILE_OPEN_ERROR;
+      Open(File => Fd,
+           Mode => Fmode,
+           Name => Filename);
+
+      if not Is_Open(Fd) then
+         raise File_Open_Error;
       end if;
 
       Init(H);
 
-      loop
-         Size := Read(Fd, Buf'Address , Buf'Last);
-
-         if Size = Buf'Last then
-	    declare
-	       T : constant Dwords := To_DWords(Buf(0..127));
-	    begin
-	       Round_SHA2(DW_Block1024(T),H);
-	       end;
-         elsif Size < 0 then raise FILE_READ_ERROR;
+      while not End_Of_File(Fd) loop
+         Remaining_Bytes := Natural(Size(Fd) - (Index(Fd)-1));
+         if (Remaining_Bytes > Buf'Last ) then
+           Bytes'Read(Stream(Fd), Buf);
+           Round_SHA2( DW_Block1024(To_DWords(Buf(1..128)) ), H);
          else
-            for I in 0..Size-1 loop
-               B(Integer(Bcounter)):= Buf(I);
-               Bcounter:=Bcounter+1;
-               if Bcounter = 0 then
-                  M(Integer(Mcounter)):= To_DWord(B);
-                  B:=(others=>0);
-                  Mcounter:= Mcounter+1;
-               end if;
-            end loop;
-            exit;
+            declare
+               Last_Bytes : Bytes(1..Integer(Remaining_Bytes));
+            begin
+               Bytes'Read(Stream(Fd), Last_Bytes);
+               --last block
+               Buf := (others => 0);
+               Buf(1..Last_Bytes'Last) := Last_Bytes;
+               Hash_Value := Final_Round( DW_Block1024(To_DWords(Buf(1..128)) ),
+                                          Message_Block_Length1024(Remaining_Bytes),
+                                          H);
+            end;
          end if;
       end loop;
 
       Close(Fd);
-
-      if BCounter /= 0 then
-         M(Integer(MCounter)):= To_DWord(B);
-      end if;
-
-      Hash_Value := Final_Round(M, Message_Block_Length1024(Size), H);
-
    end F_Hash;
 
    procedure Init(This 		: in out SHA384_Context) is
