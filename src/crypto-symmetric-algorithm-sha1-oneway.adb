@@ -58,8 +58,10 @@ package body  Crypto.Symmetric.Algorithm.SHA1.Oneway is
       Cipherkey.Left_Key(2) := H(2);
       Cipherkey.Left_Key(3) := H(3);
       Cipherkey.Left_Key(4) := H(4);
-
+      
+      pragma Warnings(Off,"useless");
       M  := (others => 0);
+      pragma Warnings(On,"useless");
       --H  := (others => 0);
       --T1 := (others => 0);
       --T2 := (others => 0);
