@@ -16,7 +16,7 @@ package Crypto.Types.Nonces is
    function Update(This : in out Nonce) return Block is abstract;
 
 private
-   type Nonce is abstract new Fin.Limited_Controlled with
+   type Nonce is abstract limited new Fin.Limited_Controlled with
       record
          Value : Block;
          Mutex : Crypto.Types.Mutexes.Mutex_Type;
