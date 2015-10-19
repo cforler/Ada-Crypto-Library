@@ -1,6 +1,0 @@
-AUnit README
-
-This is the GNAT GPL release of the Ada unit test framework AUnit, derived
-from the JUnit/CPPUnit frameworks for Java/C++. 
-
-Maintainer: AdaCore (sales@adacore.com)
