@@ -368,18 +368,20 @@ package body Crypto.Symmetric.Algorithm.Twofish is
       end loop;
 
       -- Wipe variables that contained key material.
+      pragma Warnings(Off,"useless");
       b   := 0;
       Bx  := 0;
       bxx := 0;
-
+      pragma Warnings(On,"useless");
+      
       -- And finally, we can compute the key-dependent S-boxes.
 
       fill_keyed_sboxes(K(32..Natural(32+8*Kcycles)), kCycles);
 
     -- Wipe array that contained key material.
-
+    pragma Warnings(Off,"useless");
     K := (others => 0);
-
+    pragma Warnings(On,"useless");
    end Prepare_Key;
 
 
