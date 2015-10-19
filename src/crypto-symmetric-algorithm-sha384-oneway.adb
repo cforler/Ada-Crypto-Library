@@ -46,9 +46,12 @@ package body Crypto.Symmetric.Algorithm.SHA384.Oneway is
       M(12..15)  := Dwords(Key);
       Round(DW_Block1024(M),H);
       Cipherkey.Right_Key := DWords(H(0..4));
-
+      
+      
+      pragma Warnings(Off,"useless");
       M  := (others => 0);
       H  := (others => 0);
+      pragma Warnings(On,"useless");
    end Prepare_Key;
 
    ---------------------------------------------------------------------------
