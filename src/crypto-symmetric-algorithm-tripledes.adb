@@ -59,7 +59,9 @@ package body Crypto.Symmetric.Algorithm.Tripledes is
       Kn := Dough;
 
       -- wipeout key material
+      pragma Warnings(Off, "useless");
       Dough:=( others => 0);
+      pragma Warnings(On, "useless");
 
    end Cookey;
 
