@@ -48,9 +48,9 @@ hash :
 	$(CC) $(CFLAGS) test-$@
 	$(BB) $(BFLAGS) test-$@.ali
 
-kdf :
-	$(CC) $(CFLAGS) test-$@		
-	$(BB) $(BFLAGS) test-$@.ali
+#kdf :
+#	$(CC) $(CFLAGS) test-$@		
+#	$(BB) $(BFLAGS) test-$@.ali
 
 #Compile all symmetric cipher and blockcipher test-cases/-suites
 symmetric : 

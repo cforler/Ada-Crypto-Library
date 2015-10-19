@@ -4,7 +4,7 @@ SRCDIR = src
 DOC= ./doc/
 SUBTDIR = test
 LIBDIR=lib
-MDKIR=mkdir
+MKDIR=mkdir
 
 all: acl 
 clean: clean-acl clean-acltest
