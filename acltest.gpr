@@ -2,14 +2,11 @@ with "libadacrypt.gpr";
 
 project AclTest is
 	
-   for Source_Dirs use ("test/**");
+   for Source_Dirs use ("test/","/usr/share/ada/adainclude/aunit/");
    for Object_Dir use "test";
    for Main use ("test-asymmetric_ciphers.adb","test-big_number.adb", 
-   "test-hash.adb", "test-symmetric_ciphers.adb", 
+   "test-hash.adb", "test-kdf.adb", "test-symmetric_ciphers.adb", 
    "test-tests.adb");
---   for Main use ("test-asymmetric_ciphers.adb","test-big_number.adb", 
---   "test-hash.adb", "test-kdf.adb", "test-symmetric_ciphers.adb", 
---   "test-tests.adb");
 
 
 

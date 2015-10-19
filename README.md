@@ -28,7 +28,7 @@ Implemented Features
    - OEAP-RSA 
    - ECDSA, ECDH
  - Nonce Generator Support: Random, Counter, Mixed
- - AUnit-3.4 based Test suite (over 400 tests, about 90% line coverage)
+ - AUnit-3.7.1 based Test suite (over 400 tests, about 90% line coverage)
 
 
 Getting started
@@ -57,13 +57,21 @@ Getting started
 
 ### To build the PDF documentation (location: doc/):
     make docu
-    
+
+
+AUNIT support
+-----------
+This crypto library assumes that the aunit source PATH is
+"/usr/share/ada/adainclude/aunit/". If needed, you should change this
+path in the project file acltest.gpr. In additon, you can cahnge the PATH in
+test/Makefile.
+
 
 Other stuff
 -----------
 ### Contact
 If you want to report bugs, make suggestions, contribute bugfixes or
-beautiful ideas, feel free to contact me at cforler@gmx.de
+beautiful ideas, feel free to contact me at cforler(at)posteo.de
 
 
 ### Legal Note

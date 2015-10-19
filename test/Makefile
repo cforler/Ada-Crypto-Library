@@ -4,7 +4,7 @@ BB = gnatbind
 LL = gnatlink
 CC = gnatmake	
 GEN_HTML = tools/gen_coverage_page.sh
-AUNIT_DIR = aunit-3.4/src
+AUNIT_DIR = /usr/share/ada/adainclude/aunit/
 
 CFLAGS = -W -Werror -ggdb -g -gnat12 -gnato -I../src -I$(AUNIT_DIR) -O3 -gnatn -gnatwrclp
 BFLAGS = -shared -aO./ -aO/lib/ -I$(AUNIT_DIR) -aO../src -I- -x
@@ -21,10 +21,7 @@ gcov: all
 
 .PHONY : clean
 .SILENT : clean
-clean: test-clean aunit-clean
-
-aunit:
-	$(MAKE) -C $(AUNIT_DIR) all 
+clean: test-clean
 
 
 #Compile all test-cases/-suites:
@@ -48,17 +45,14 @@ hash :
 	$(CC) $(CFLAGS) test-$@
 	$(BB) $(BFLAGS) test-$@.ali
 
-#kdf :
-#	$(CC) $(CFLAGS) test-$@		
-#	$(BB) $(BFLAGS) test-$@.ali
+kdf :
+	$(CC) $(CFLAGS) test-$@		
+	$(BB) $(BFLAGS) test-$@.ali
 
 #Compile all symmetric cipher and blockcipher test-cases/-suites
 symmetric : 
 	$(CC) $(CFLAGS) test-symmetric_ciphers		
 	$(BB) $(BFLAGS) test-symmetric_ciphers.ali
-
-aunit-clean:
-	$(MAKE) -C $(AUNIT_DIR) clean 
 
 test-clean:
 	$(GNATCLEAN) *.o *.ali
