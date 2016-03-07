@@ -1,4 +1,3 @@
-with Interfaces.C_Streams;
 with Ada.Strings.Unbounded;
 
 package Crypto.Types.Random_Source.File is
@@ -6,9 +5,6 @@ package Crypto.Types.Random_Source.File is
 
    type Random_Source_File is new Rnd.Random_Source with private;
    type Random_Source_File_Access is access  Random_Source_File;
-   
-   Overriding
-   procedure Finalize(This : in out  Random_Source_File);
    
    Overriding
    procedure Initialize(This : in out Random_Source_File);
@@ -39,6 +35,5 @@ private
    type Random_Source_File is new Rnd.Random_Source with
       record
 	 Source_Path : Ada.Strings.Unbounded.Unbounded_String;
-	 Source_File : Interfaces.C_Streams.Files;
       end record;
 end Crypto.Types.Random_Source.File;
