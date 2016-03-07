@@ -21,6 +21,7 @@
 -- executable file might be covered by the GNU Public License.
 
 with Crypto.Types.Random;
+with Crypto.Types.Random_Source.File;
 with Crypto.Asymmetric.Prime_Tables;
 --with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Text_IO;
@@ -141,7 +142,12 @@ package body Mod_Utils is
 
    function Get_Random(N : Big_Unsigned) return Big_Unsigned is
       Result : Big_Unsigned;
+      Rand_Source_File : Random_Source.File.Random_Source_File;
    begin
+      if Rand_Source /= "" then
+         Random_Source.File.Initialize( Rand_Source_File, Rand_Source );
+         Random.Set(Rand_Source_File);
+      end if;
       Random.Read(Result.Number);
 
       for I in reverse 0..N.Last_Index loop
