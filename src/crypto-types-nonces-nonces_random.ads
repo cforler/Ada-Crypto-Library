@@ -2,6 +2,7 @@ with Crypto.Types;
 
 generic
    with function To_Block_Type(B: in Crypto.Types.Bytes) return Crypto.Types.Nonces.Block;
+   Rand_Source : String := "";
 
 package Crypto.Types.Nonces.Nonces_Random is
    package N renames Crypto.Types.Nonces;
