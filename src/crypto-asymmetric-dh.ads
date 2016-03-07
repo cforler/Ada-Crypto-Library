@@ -5,10 +5,11 @@ use Crypto.Types;
 
 generic
    Size : Positive;
+   Rand_Source : String := "";
 
 package Crypto.Asymmetric.DH is
 
-   package Big is new Crypto.Types.Big_Numbers(Size);
+   package Big is new Crypto.Types.Big_Numbers(Size, Rand_Source);
    use Big;
 
    subtype DH_Number is Bytes(0 .. Size/8 - 1);
