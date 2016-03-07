@@ -27,10 +27,11 @@ with Crypto.Types.Elliptic_Curves.Zp.Database;
 
 generic
    Size : Positive;
+   Rand_Source : String := "";
 
 package Crypto.Asymmetric.ECDSA is
 
-   package Big is new Crypto.Types.Big_Numbers(Size);
+   package Big is new Crypto.Types.Big_Numbers(Size, Rand_Source);
    use Big;
    package EC  is new Crypto.Types.Elliptic_Curves(Big);
    use EC;

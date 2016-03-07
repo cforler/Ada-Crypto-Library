@@ -23,6 +23,7 @@
 --with Ada.Integer_Text_IO;
 --with Ada.Strings.Unbounded.Text_IO;
 with Crypto.Types.Random;
+with Crypto.Types.Random_Source.File;
 
 SEPARATE(Crypto.Types.Big_Numbers)
 
@@ -296,7 +297,12 @@ package body Utils is
 
    function Get_Random return Big_Unsigned is
       Result : Big_Unsigned;
+      Rand_Source_File : Random_Source.File.Random_Source_File;
    begin
+      if Rand_Source /= "" then
+         Random_Source.File.Initialize( Rand_Source_File, Rand_Source );
+         Random.Set(Rand_Source_File);
+      end if;
       Random.Read(Result.Number);
       return Result;
    end Get_Random; pragma Inline (Get_Random);

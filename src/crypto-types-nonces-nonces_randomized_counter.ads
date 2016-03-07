@@ -7,6 +7,7 @@ generic
    Counter_Size: Positive := Block'Size / 16;
    with function To_Block_Type(Byte_Array: in Crypto.Types.Bytes) return Crypto.Types.Nonces.Block;
    with function To_Bytes(Block: in Crypto.Types.Nonces.Block) return Crypto.Types.Bytes;
+   Rand_Source : String := "";
 
 package Crypto.Types.Nonces.Nonces_Randomized_Counter is
 

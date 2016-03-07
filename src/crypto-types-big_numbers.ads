@@ -35,6 +35,7 @@ use Crypto.Types;
 
 generic
    Size : Positive;
+   Rand_Source : String := "";
 
 package Crypto.Types.Big_Numbers is
 

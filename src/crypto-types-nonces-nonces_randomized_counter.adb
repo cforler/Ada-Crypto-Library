@@ -1,5 +1,6 @@
 with Crypto.Types;
 with Crypto.Types.Random;
+with Crypto.Types.Random_Source.File;
 with Ada.IO_Exceptions;
 
 package body Crypto.Types.Nonces.Nonces_Randomized_Counter is
@@ -28,6 +29,7 @@ package body Crypto.Types.Nonces.Nonces_Randomized_Counter is
       Result_Array  : Crypto.Types.Bytes(0..(Block'Size / 8)-1);
 
       Counter: Block;
+      Rand_Source_File : Crypto.Types.Random_Source.File.Random_Source_File;
    begin
       This.Mutex.Seize;
 
@@ -36,6 +38,13 @@ package body Crypto.Types.Nonces.Nonces_Randomized_Counter is
       Counter_Array := To_Bytes(Counter);
 
       -- get random numbers
+      if Rand_Source /= "" then
+         Crypto.Types.Random_Source.File.Initialize(
+            Rand_Source_File,
+            Rand_Source
+         );
+         Crypto.Types.Random.Set(Rand_Source_File);
+      end if;
       Crypto.Types.Random.Read(Rand_Array);
 
       -- fill result array (half counter, half random)
