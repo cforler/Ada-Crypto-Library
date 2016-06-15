@@ -36,4 +36,4 @@ package Crypto.Symmetric.Hashfunction_Blake2b is
      Message_Block_Length_Type 	=> Crypto.Types.Message_Block_Length512,
      Internal_Context           => Blake2b_Context,
      Generic_To_Bytes	     	=> To_Bytes,
-     To_Message_Type            => Crypto.Types.To_W_Block512);
+     To_Message_Type            => To_DW_Block512);
