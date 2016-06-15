@@ -1,17 +1,25 @@
 project LibAdaCrypt is
-   for Library_Name use "libadacrypt-0.8";
+   for Library_Name use "adacrypt-0.8";
    for Library_Kind use "static";
    for Library_Dir use "lib";
    for Library_Src_Dir use "lib";
    for Object_Dir use "src";
    for Source_Dirs use ("src");
 
+   type Mode_Type is ("debug", "release");
+   Mode : Mode_Type := external ("mode", "release");
+
    package Builder is
       for Default_Switches ("ada") use ("-j4", "-we");
    end Builder;
 
    package Compiler is
-      for Default_Switches ("ada") use ("-gnatwa", "-O3", "-Werror", "-gnatn", "-gnat12");
+      case Mode is
+         when "debug" =>
+            for Default_Switches ("ada") use ("-gnatwa", "-g", "-Werror", "-gnatn", "-gnat12");
+         when "release" =>
+            for Default_Switches ("ada") use ("-gnatwa", "-O3", "-Werror", "-gnatn", "-gnat12");
+      end case;
    end Compiler;
 
 end LibAdaCrypt;

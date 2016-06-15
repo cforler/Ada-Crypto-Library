@@ -17,6 +17,10 @@ acl:
 	$(MKDIR) -p $(LIBDIR)
 	$(ADACC) -P libadacrypt.gpr
 
+acl-debug:
+	$(MKDIR) -p $(LIBDIR)
+	$(ADACC) -P libadacrypt.gpr -Xmode=debug
+
 clean-acl:
 	$(ADACLEAN) -P libadacrypt.gpr
 

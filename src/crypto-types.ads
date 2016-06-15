@@ -103,12 +103,14 @@ package Crypto.Types is
    subtype DW_Block384_Range  is Natural range 0..5;
    subtype DW_Block512_Range  is Natural range 0..7;
    subtype DW_Block1024_Range is Natural range 0..15;
+   subtype DW_Block8192_Range is Natural range 0..127;
 
    type DW_Block128   is array(DW_Block128_Range) of DWord;
    type DW_Block256   is array(DW_Block256_Range)  of DWord;
    type DW_Block384   is array(DW_Block384_Range)  of DWord;
    type DW_Block512   is array(DW_Block512_Range)  of DWord;
    type DW_Block1024  is array(DW_Block1024_Range) of DWord;
+   type DW_Block8192  is array(DW_Block8192_Range) of DWord;
 
 
    subtype Hex_Byte_Range   is Natural range 1..2;
@@ -236,7 +238,10 @@ package Crypto.Types is
    -- To_Hex
    function To_Hex(B : Byte)  return Hex_Byte;
    function To_Hex(W : Word)  return Hex_Word;
-   function To_Hex(D : DWord) return Hex_DWord;
+   function To_Hex(D : DWord) return Hex_DWord;   
+
+   -- To_Bytes
+   function Hex_To_Bytes(Hex : String) return Bytes;
 
    -- Is_Zero
    -- returns only true if the "input array"  X = (others => 0)
@@ -258,6 +263,7 @@ package Crypto.Types is
    function To_Bytes(D : DW_Block384) return Bytes;
    function To_Bytes(D : DW_Block512) return Bytes;
    function To_Bytes(D : DW_Block1024) return Bytes;
+   function To_Bytes(D : DW_Block8192) return Bytes;
 
 
    -- Bytes To block of Bytes.
@@ -281,6 +287,7 @@ package Crypto.Types is
    function To_DW_Block384(B : Bytes) return DW_Block384;
    function To_DW_Block512(B : Bytes) return DW_Block512;
    function To_DW_Block1024(B : Bytes) return DW_Block1024;
+   function To_DW_Block8192(B : Bytes) return DW_Block8192;
 
    -- Needed for generic packages to convert a specific byte block.
    function "xor"(Left, Right : B_Block64)    return   B_Block64;
@@ -290,6 +297,7 @@ package Crypto.Types is
    function "xor"(Left, Right : W_Block512)   return   W_Block512;
    function "xor"(Left, Right : DW_Block512)  return  DW_Block512;
    function "xor"(Left, Right : DW_Block1024) return  DW_Block1024;
+   function "xor"(Left, Right : DW_Block8192) return  DW_Block8192;
 
    function "+"(Left : B_Block128; Right : Byte) return B_Block128;
 

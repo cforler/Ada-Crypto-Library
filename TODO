@@ -1,3 +1,5 @@
+-- rename Hashfunction to two words Hash_Function (plus similar problems)
+
 -- secure storage pool. !IMPORTANT!
 A secure storage pool overrides every allocated byte and the complete stack.
 

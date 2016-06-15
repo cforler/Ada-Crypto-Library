@@ -1,116 +1,144 @@
 package body Crypto.Types.Random_Source.File is
-   use Interfaces.C_Streams;
    use Ada.Strings.Unbounded;
-   use type Interfaces.C_Streams.Size_T;
+   use Ada.Streams.Stream_IO;
 
    ---------------------------------------------------------------------------
    ------------------------ Initialization -----------------------------------
    ---------------------------------------------------------------------------
-   
-   
+
+
    procedure Initialize(This : in out Random_Source_File) is
-      Cpath : constant String := "/dev/random" & ASCII.NUL;
-      Mode  : constant String := "r";   
+      Path : constant String := "/dev/random";
+      Mode  : constant File_Mode := In_File;
    begin
-      This.Source_File := Fopen(Cpath'address, Mode'address);
-      This.Source_Path := To_Unbounded_String("/dev/random");
+      if This.Source_File = null then
+         This.Source_File := new Ada.Streams.Stream_IO.File_Type;
+      end if;
+      if not Is_Open(This.Source_File.all) then
+         Open(This.Source_File.all, Mode, Path, "shared=yes");
+         This.Source_Path := To_Unbounded_String(Path);
+      end if;
    end Initialize;
-   
+
    ---------------------------------------------------------------------------
-   
+
    procedure Initialize(This : in out Random_Source_File;
-			File_Path : in String) is
-      Cpath : constant String := File_Path & ASCII.NUL;
-      Mode  : constant String := "r";   
+		File_Path : in String) is
+      Mode  : constant File_Mode := In_File;
    begin
-      This.Source_File := Fopen(Cpath'address, Mode'address);
-      This.Source_Path := To_Unbounded_String(File_Path);
-   end Initialize;
-   
+      if Is_Open(This.Source_File.all) then
+         Close(This.Source_File.all);
+      end if;
+      if not Is_Open(This.Source_File.all) then
+         Open(This.Source_File.all, Mode, File_Path, "shared=yes");
+         This.Source_Path := To_Unbounded_String(File_Path);
+      end if;
+    end Initialize;
+
    ---------------------------------------------------------------------------
    ------------------------------- Read Byte ---------------------------------
    ---------------------------------------------------------------------------
-   
-   
-   procedure Read(This : in out Random_Source_File; B : out Byte) is 
-      I : Int;
+
+
+   procedure Read(This : in out Random_Source_File; B : out Byte) is
+
    begin
-      I := fgetc(This.Source_File);
-      if  I < 0 then
+      if not Path_Starts_With(This, "/dev/") and then End_Of_File(This.Source_File.all) then
          raise  RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path);
+      else
+         Byte'Read(Stream(This.Source_File.all), B);
       end if;
-      B := Byte(I);
    end Read;
-   
+
    ---------------------------------------------------------------------------
-      
+
    procedure Read(This : in out Random_Source_File; Byte_Array : out Bytes) is
-   begin  
-      if  Fread(Buffer => Byte_Array'address, Size => 1, Count => Byte_Array'Length, Stream => This.Source_File) /= Byte_Array'Length then
-         raise  RANDOM_SOURCE_READ_ERROR with  To_String(This.Source_Path);
+   begin
+      if not Path_Starts_With(This, "/dev/") and then End_Of_File(This.Source_File.all) then
+         raise  RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path);
+      else
+         Bytes'Read(Stream(This.Source_File.all), Byte_Array);
       end if;
    end Read;
-   
+
    ---------------------------------------------------------------------------
 
    procedure Read(This : in out Random_Source_File; B : out B_Block128) is
-   begin   
-      Crypto.Types.Random_Source.File.Read(This,Bytes(B));
-   end Read;  
-   
+   begin
+      if not Path_Starts_With(This, "/dev/") and then End_Of_File(This.Source_File.all) then
+         raise  RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path);
+      else
+         B_Block128'Read(Stream(This.Source_File.all), B);
+      end if;
+   end Read;
+
    ---------------------------------------------------------------------------
    ------------------------------- Read Word ---------------------------------
    ---------------------------------------------------------------------------
-   
-   procedure Read(This : in out Random_Source_File; W : out Word) is 
-   begin  
-      if Fread( Buffer => W'Address, Size => W'Size/8, Count => 1, 
-		Stream => This.Source_File ) /= 1 then
-	 raise  RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path);
+
+   procedure Read(This : in out Random_Source_File; W : out Word) is
+   begin
+      if not Path_Starts_With(This, "/dev/") and then End_Of_File(This.Source_File.all) then
+         raise RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path);
+      else
+         Word'Read(Stream(This.Source_File.all), W);
       end if;
    end Read;
-   
+
    ---------------------------------------------------------------------------
-   
-   procedure Read(This : in out Random_Source_File; Word_Array : out Words) is 
-   begin  
-      if Fread(Buffer => Word_Array'Address, Size => Word'Size/8, Count => Word_Array'Length, Stream => This.Source_File) /=  Word_Array'Length  then
-	 raise  RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path);
+
+   procedure Read(This : in out Random_Source_File; Word_Array : out Words) is
+   begin
+      if not Path_Starts_With(This, "/dev/") and then End_Of_File(This.Source_File.all) then
+         raise RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path);
+      else
+         Words'Read(Stream(This.Source_File.all), Word_Array);
       end if;
    end Read;
-   
+
    ---------------------------------------------------------------------------
    ------------------------------- Read DWord --------------------------------
    ---------------------------------------------------------------------------
-   
 
-   procedure Read(This : in out Random_Source_File; D : out DWord) is 
-   begin  
-      if  Fread( Buffer => D'Address, Size => D'Size/8, Count => 1, Stream => This.Source_File) /= 1 then
+
+   procedure Read(This : in out Random_Source_File; D : out DWord) is
+   begin
+      if not Path_Starts_With(This, "/dev/") and then End_Of_File(This.Source_File.all) then
          raise  RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path);
+      else
+         DWord'Read(Stream(This.Source_File.all), D);
       end if;
    end Read;
-   
+
    procedure Read(This : in out Random_Source_File; DWord_Array : out DWords) is
-   begin  
-      if  Fread(Buffer => DWord_Array'Address, Size => DWord'Size/8,
-		Count => DWord_Array'Length, Stream => This.Source_File) /=  DWord_Array'Length then
+   begin
+      if not Path_Starts_With(This, "/dev/") and then End_Of_File(This.Source_File.all) then
          raise  RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path);
-      end if;      
+      else
+         DWords'Read(Stream(This.Source_File.all), DWord_Array);
+      end if;
    end Read;
-   
-   
+
+
    ---------------------------------------------------------------------------
    ------------------------------- Finalize ----------------------------------
    ---------------------------------------------------------------------------
-   
+
    procedure Finalize(This : in out  Random_Source_File) is
    begin
-      if Fileno(This.Source_File) >= 0 then      	
-	 if  Fclose(This.Source_File) /= 0 then
-	    raise  RANDOM_SOURCE_READ_ERROR with To_String(This.Source_Path)
-	      &": can not close file.";
-	 end if;
+      if Is_Open(This.Source_File.all) then
+         Close(This.Source_File.all);
       end if;
-     end Finalize;
+   end Finalize;
+
+   ---------------------------------------------------------------------------
+   --------------------------- Path_Starts_With ------------------------------
+   ---------------------------------------------------------------------------
+
+   function Path_Starts_With(This : Random_Source_File; S : String) return Boolean is
+      Path : constant String := To_String(This.Source_Path);
+   begin
+      return Path(Path'First..S'Last) = S;
+   end;
+
 end Crypto.Types.Random_Source.File;

@@ -34,6 +34,7 @@ package Crypto.Symmetric.Algorithm.SHA512 is
          Hash_Value : DW_Block512;
       end record;
 
+
    -- low level API
 
    procedure Init(Hash_Value : out DW_Block512);

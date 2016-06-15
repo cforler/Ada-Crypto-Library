@@ -213,6 +213,61 @@ package body Crypto.Symmetric.Algorithm.AES is
       return Ciphertext;
    end Encrypt;
 
+   function Encrypt_4rounds(Encrypt_Key : in Words; Plaintext : in B_Block128)
+                   return  B_Block128 is
+      X0, X1, X2, X3  : Word;
+      A0, A1, A2, A3  : Word;
+      Index : Natural := Nb; -- current Encrypt_Key index
+      Ciphertext      : B_Block128;
+      Rounds          : constant  Positive:= 4;
+   begin
+
+      X0 := To_Word(Plaintext(0), Plaintext(1), Plaintext(2),
+                          Plaintext(3)) xor Encrypt_Key(0);
+      X1 := To_Word(Plaintext(4), Plaintext(5), Plaintext(6),
+                          Plaintext(7)) xor Encrypt_Key(1);
+      X2 := To_Word(Plaintext(8), Plaintext(9), Plaintext(10),
+                          Plaintext(11)) xor Encrypt_Key(2);
+      X3 := To_Word(Plaintext(12), Plaintext(13), Plaintext(14),
+                          Plaintext(15)) xor Encrypt_Key(3);
+
+
+
+      -- AES with table lookup ("The Rijndael Block Cipher",
+      -- AES Proposal, Document vwersion 2, Date:03/09/99,  page 18)
+      for R in 1..Rounds loop
+         A0 := (T1(Byte0(X0))  xor T2(Byte1(X1)) xor T3(Byte2(X2)) xor
+                T4(Byte3(X3))) xor Encrypt_Key(Index);
+         Index := Index+1;
+         A1 := (T1(Byte0(X1))  xor T2(Byte1(X2)) xor T3(Byte2(X3)) xor
+                T4(Byte3(X0))) xor Encrypt_Key(Index);
+         Index := Index+1;
+         A2 := (T1(Byte0(X2))  xor T2(Byte1(X3)) xor T3(Byte2(X0)) xor
+                T4(Byte3(X1))) xor Encrypt_Key(Index);
+         Index := Index+1;
+         A3 := (T1(Byte0(X3))  xor T2(Byte1(X0)) xor T3(Byte2(X1)) xor
+                T4(Byte3(X2))) xor Encrypt_Key(Index);
+
+         Index := Index+1; -- Index := (R+1)*Nb;
+
+         X0 := A0;
+         X1 := A1;
+         X2 := A2;
+         X3 := A3;
+
+      end loop;
+
+      -- Index = Rounds*Nb
+
+        -- last round is ommitted
+      Ciphertext(0..3):=Byte0(A0)&Byte1(A0)&Byte2(A0)&Byte3(A0);
+      Ciphertext(4..7):=Byte0(A1)&Byte1(A1)&Byte2(A1)&Byte3(A1);
+      Ciphertext(8..11):=Byte0(A2)&Byte1(A2)&Byte2(A2)&Byte3(A2);
+      Ciphertext(12..15):=Byte0(A3)&Byte1(A3)&Byte2(A3)&Byte3(A3);
+
+      return Ciphertext;
+   end Encrypt_4rounds;
+
    -------------------------------------------------------------------------
    -------------------------------------------------------------------------
 
@@ -222,6 +277,15 @@ package body Crypto.Symmetric.Algorithm.AES is
    begin
       Ciphertext := Encrypt(Words(Cipherkey.Encrypt_Key), Plaintext);
    end Encrypt128;
+
+   -------------------------------------------------------------------------
+
+   procedure Encrypt128_4rounds(Cipherkey  : in  Cipherkey_AES128;
+                        Plaintext  : in  B_Block128;
+                        Ciphertext : out B_Block128) is
+   begin
+      Ciphertext := Encrypt_4rounds(Words(Cipherkey.Encrypt_Key), Plaintext);
+   end Encrypt128_4rounds;
 
    -------------------------------------------------------------------------
 
