@@ -4,12 +4,12 @@ BB = gnatbind
 LL = gnatlink
 CC = gnatmake	
 GEN_HTML = tools/gen_coverage_page.sh
-AUNIT_DIR = /usr/share/ada/adainclude/aunit/
+AUNIT_DIR = aunit-3.4/src
 
-CFLAGS = -W -Werror -ggdb -g -gnat12 -gnato -I../src -I$(AUNIT_DIR) -O3 -gnatn -gnatwrclp
-BFLAGS = -shared -aO./ -aO/lib/ -I$(AUNIT_DIR) -aO../src -I- -x
-LFLAGS = -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src -lacl
-LFLAGS = -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src
+CFLAGS = -W -Werror -ggdb -g -gnat12 -gnato -I../src -I$(AUNIT_DIR) -O3 -gnatn -gnatwrclp 
+BFLAGS = -shared -aO./ -aO/lib/ -I$(AUNIT_DIR) -aO../src -I- -x 
+LFLAGS = -j 0 -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src -lacl
+LFLAGS = -j 0 -s -z combreloc -dy  -x -X -O3 -I../src -aO./ -aO../src 
 
 
 all : aunit big_number test asymmetric hash symmetric kdf
@@ -21,7 +21,10 @@ gcov: all
 
 .PHONY : clean
 .SILENT : clean
-clean: test-clean
+clean: test-clean aunit-clean
+
+aunit:
+	$(MAKE) -C $(AUNIT_DIR) all 
 
 
 #Compile all test-cases/-suites:
@@ -45,6 +48,7 @@ hash :
 	$(CC) $(CFLAGS) test-$@
 	$(BB) $(BFLAGS) test-$@.ali
 
+#Compile all hash test-cases/-suites and MAC's
 kdf :
 	$(CC) $(CFLAGS) test-$@		
 	$(BB) $(BFLAGS) test-$@.ali
@@ -53,6 +57,9 @@ kdf :
 symmetric : 
 	$(CC) $(CFLAGS) test-symmetric_ciphers		
 	$(BB) $(BFLAGS) test-symmetric_ciphers.ali
+
+aunit-clean:
+	$(MAKE) -C $(AUNIT_DIR) clean 
 
 test-clean:
 	$(GNATCLEAN) *.o *.ali
