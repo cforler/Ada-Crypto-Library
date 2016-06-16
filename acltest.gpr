@@ -1,15 +1,18 @@
 with "libadacrypt.gpr";
 
 project AclTest is
-
-   type Mode_Type is
-      ("debug", "release");
-   for Source_Dirs use ("test/**");
+   
+   for Source_Dirs use ("test/","/usr/share/ada/adainclude/aunit/");
    for Object_Dir use "test";
-   Mode : Mode_Type := external ("mode");
+   for Main use ("test-asymmetric_ciphers.adb","test-big_number.adb", 
+   "test-hash.adb", "test-kdf.adb", "test-symmetric_ciphers.adb", 
+   "test-tests.adb");
+
+
 
    package Compiler is
-      for Default_Switches ("ada") use ("-O3", "-W", "-Werror", "-gnato", "-gnatn", "-gnatwrclp", "-gnat12");
+      for Default_Switches ("ada") use ("-O3", "-W", "-Werror", "-gnato",
+       "-gnatn",  "-gnatwrclp", "-gnat12");
    end Compiler;
 
    package Builder is
@@ -19,21 +22,4 @@ project AclTest is
    package Linker is
    end Linker;
 
-   case Mode is
-
-      when "debug" =>
-         for Main use ("test-asymmetric_ciphers.adb", "test-big_number.adb", "test-hash.adb", "test-symmetric_ciphers.adb", "test-tests.adb");
-         --   for Main use ("test-asymmetric_ciphers.adb","test-big_number.adb", 
-         --   "test-hash.adb", "test-kdf.adb", "test-symmetric_ciphers.adb", 
-         --   "test-tests.adb");
-
-      when "release" =>
-         for Main use ("test-asymmetric_ciphers.adb", "test-big_number.adb", "test-hash.adb", "test-kdf.adb", "test-symmetric_ciphers.adb", "test-tests.adb");
-         --   for Main use ("test-asymmetric_ciphers.adb","test-big_number.adb", 
-         --   "test-hash.adb", "test-kdf.adb", "test-symmetric_ciphers.adb", 
-         --   "test-tests.adb");
-
-   end case;
-
 end AclTest;
-
