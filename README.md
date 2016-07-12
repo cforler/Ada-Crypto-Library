@@ -80,28 +80,28 @@ limited or forbidden by law. Before using this library, make sure you
 are legally entitled to do so.
 
 ### License 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE
-as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+GNAT Modified General Public License
+--------------------------------------
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of the
+License, or (at your option) any later version.
 
-This library is distributed in the hope that it will be useful,
+This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+02111-1307, USA.
 
-For the specifics of this license, see file 'COPYING', included in
-this distribution.
+As a special exception, if other files instantiate generics from
+this unit, or you link this unit with other files to produce an
+executable, this unit does not by itself cause the resulting
+executable to be covered by the GNU General Public License. This
+exception does not however invalidate any other reasons why the
+executable file might be covered by the GNU Public License.
 
-
-### NO WARRANTY
-This program is WITHOUT ANY WARRANTY; without even the implied warranty 
-of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-See the  GNU General Public License for more details.
-
-
-
+Read more about this license at http://en.wikipedia.org/wiki/GNAT_Modified_General_Public_License 
