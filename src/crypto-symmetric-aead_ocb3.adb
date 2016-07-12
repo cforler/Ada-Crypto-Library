@@ -197,6 +197,7 @@ package body Crypto.Symmetric.AEAD_OCB3 is
                      Dec        : out    Boolean) is
       Overlap: constant Integer := Bytes_Read - This.Taglen;
    begin
+      Bytelen := 0;
       Dec := False;
       if Two_Blocks then
 

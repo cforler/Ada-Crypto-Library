@@ -46,6 +46,10 @@ package Crypto.Symmetric.Algorithm.AES is
                         Plaintext  : in B_Block128;
                         Ciphertext : out B_Block128);
 
+   procedure Encrypt128_4rounds(Cipherkey  : in Cipherkey_AES128;
+                        Plaintext  : in B_Block128;
+                        Ciphertext : out B_Block128);
+
    procedure Encrypt192(Cipherkey  : in Cipherkey_AES192;
                         Plaintext  : in B_Block128;
                         Ciphertext : out B_Block128);
@@ -125,6 +129,8 @@ private
    procedure Build_Decrypt_Key(Encrypt_Key : in Words;
                                Decrypt_Key : out Words);
    function Encrypt(Encrypt_Key : in Words; Plaintext : in B_Block128)
+                   return  B_Block128;
+   function Encrypt_4rounds(Encrypt_Key : in Words; Plaintext : in B_Block128)
                    return  B_Block128;
 
    function Decrypt(Decrypt_Key : in Words; Ciphertext : B_Block128)

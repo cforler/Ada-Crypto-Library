@@ -51,4 +51,3 @@ unistall-docu:
 
 clean-docu:
 	$(MAKE) -C $(DOC) clean
-
