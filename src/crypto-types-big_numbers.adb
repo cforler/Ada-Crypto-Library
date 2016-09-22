@@ -365,7 +365,7 @@ package body Crypto.Types.Big_Numbers is
    begin
       if L <= Word'Size then
          Result.Number(0) := Left.Number(0) * Right.Number(0);
-      elsif L > 2800 and L < 3600 then
+      elsif L > 2800 and L <= 3600 then
          Result := Karatsuba_P(Left, Right);
       elsif L > 3600 then
          Result := Toom_Cook_P(Left, Right);
