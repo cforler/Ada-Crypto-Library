@@ -77,7 +77,7 @@ package Crypto.Asymmetric.RSA is
 
    ---------------------------------------------------------------------------
 
-   -- N = (P-1) * (Q-1); N = PQ;  ED = 1 (mod Phi)
+   -- Phi = (P-1) * (Q-1); N = PQ;  ED = 1 (mod Phi)
 
    procedure Get_Public_Key(Public_Key : in Public_Key_RSA;
                             N : out RSA_Number;
