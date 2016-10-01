@@ -72,39 +72,65 @@ package body Crypto.Asymmetric.RSA is
 
    ---------------------------------------------------------------------------
 
-   procedure Gen_Key(Public_Key  : out Public_Key_RSA;
-                     Private_Key : out Private_Key_RSA;
-		     Small_Default_Exponent_E : in Boolean := True) is
-      Small_Primes : constant Words :=
-	(65537, 65539,  65543, 65557, 65609, 65617 );
-   begin
-      Private_Key.P := Get_N_Bit_Prime(Size/2);
-      loop
-         Private_Key.Q := Get_N_Bit_Prime(Size/2);
-	 exit when Private_Key.P /= Private_Key.Q;
-      end loop;
+   procedure Gen_Key (Public_Key               :    out Public_Key_RSA;
+                      Private_Key              :    out Private_Key_RSA;
+		      Small_Default_Exponent_E : in     Boolean := True)
+   is
+      P, Q, N, Phi, E, D : Big_Unsigned;
 
-	 Private_Key.N :=  Private_Key.P * Private_Key.Q;
-	 Private_Key.Phi := (Private_Key.P-1) * (Private_Key.Q-1);
+      --  Phi must be set before Find_E can be called.
+      function Find_E return Big_Unsigned
+      is
+	 Small_Primes : constant Words :=
+	   (65537, 65539,  65543, 65557, 65609, 65617 );
 
-	 Public_Key.E := Big_Unsigned_Zero;
+	 Possible_E : Big_Unsigned;
+      begin
 	 if Small_Default_Exponent_E then
 	    for I in Small_Primes'Range loop
-	       Public_Key.E :=  To_Big_Unsigned(Small_Primes(I));
-	       exit when Gcd(Public_Key.E, Private_Key.Phi) = Big_Unsigned_One;
-	       Public_Key.E := Big_Unsigned_Zero;
+	       Possible_E :=  To_Big_Unsigned (Small_Primes (I));
+
+	       if Gcd (Possible_E, Phi) = Big_Unsigned_One then
+		  return Possible_E;
+	       end if;
 	    end loop;
 	 end if;
 
-	 if Public_Key.E = Big_Unsigned_Zero then
-	    loop
-	       Public_key.E := Get_Random(Private_Key.Phi);
-	       exit when Gcd(Public_Key.E, Private_Key.Phi) =
-		 Big_Unsigned_One and Public_Key.E > 65536;
-	    end loop;
-	 end if;
-	 Private_Key.D := Inverse(Public_Key.E, Private_Key.Phi);
-	 Public_Key.N :=  Private_Key.N;
+	 loop
+	    Possible_E := Get_Random (Phi);
+
+	    if Gcd (Possible_E, Phi) = Big_Unsigned_One and Possible_E > 65536 then
+	       return Possible_E;
+	    end if;
+	 end loop;
+      end Find_E;
+
+   begin
+      P := Get_N_Bit_Prime (Size / 2);
+      loop
+         Q := Get_N_Bit_Prime (Size / 2);
+         exit when P /= Q;
+      end loop;
+
+      -- For generation of the Chinese Remainder Theorem (CRT) forms of the
+      -- private exponent, we reqiure P > Q.  We already know P /= Q, so...
+      if Q > P then
+	 Swap (P, Q);
+      end if;
+
+      N   := P * Q;
+      Phi := (P - 1) * (Q - 1);
+      E   := Find_E;
+      D   := Inverse (E, Phi);
+
+      Public_Key := Public_Key_RSA'(N => N,
+                                    E => E);
+
+      Private_Key := Private_Key_RSA'(N   => N,
+				      D   => D,
+				      P   => P,
+				      Q   => Q,
+				      Phi => Phi);
    end Gen_Key;
 
    ---------------------------------------------------------------------------

@@ -46,9 +46,9 @@ package Crypto.Asymmetric.RSA is
    --------------------------HIGH LEVEL API-----------------------------------
    ---------------------------------------------------------------------------
 
-   procedure Gen_Key(Public_Key  : out Public_Key_RSA;
-                     Private_Key : out Private_Key_RSA;
-		     Small_Default_Exponent_E : in Boolean := True);
+   procedure Gen_Key (Public_Key               :    out Public_Key_RSA;
+                      Private_Key              :    out Private_Key_RSA;
+                      Small_Default_Exponent_E : in     Boolean := True);
 
    ---------------------------------------------------------------------------
 
