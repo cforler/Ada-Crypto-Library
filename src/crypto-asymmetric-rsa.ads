@@ -79,16 +79,19 @@ package Crypto.Asymmetric.RSA is
 
    -- Phi = (P-1) * (Q-1); N = PQ;  ED = 1 (mod Phi)
 
-   procedure Get_Public_Key(Public_Key : in Public_Key_RSA;
-                            N : out RSA_Number;
-                            E : out RSA_Number);
+   procedure Get_Public_Key (Public_Key : in     Public_Key_RSA;
+                             N          :    out RSA_Number;
+                             E          :    out RSA_Number);
 
-   procedure Get_Private_Key(Private_Key : in Private_Key_RSA;
-                             N   : out RSA_Number;
-                             D   : out RSA_Number;
-                             P   : out RSA_Number;
-                             Q   : out RSA_Number;
-                             Phi : out RSA_Number);
+   procedure Get_Private_Key (Private_Key : in     Private_Key_RSA;
+                              N           :    out RSA_Number;
+                              D           :    out RSA_Number;
+                              P           :    out RSA_Number;
+                              Q           :    out RSA_Number;
+                              Phi         :    out RSA_Number;
+                              DP          :    out RSA_Number;
+                              DQ          :    out RSA_Number;
+                              QInv        :    out RSA_Number);
 
 
    ---------------------------------------------------------------------------
@@ -102,13 +105,20 @@ package Crypto.Asymmetric.RSA is
                             Public_Key : out Public_Key_RSA);
 
 
-   procedure Set_Private_Key(N   : in RSA_Number;
-                             D   : in RSA_Number;
-			     P   : in RSA_Number;
-			     Q   : in RSA_Number;
-                             Phi : in RSA_Number;
-                             Private_Key : out Private_Key_RSA);
+   --  Set Private_Key with CRT components DP, DQ and QInv
+   --  computed from P, Q, and D.
+   --
+   --  If N, D, P, Q and Phi do not form a valid key, then
+   --  Constraint_Error is raised.
+   procedure Set_Private_Key
+     (N           : in     RSA_Number;
+      D           : in     RSA_Number;
+      P           : in     RSA_Number;
+      Q           : in     RSA_Number;
+      Phi         : in     RSA_Number;
+      Private_Key :    out Private_Key_RSA);
 
+   --  As above, overloaded for Big_Unsigned parameters
    procedure Set_Private_Key(N   : in Big_Unsigned;
                              D   : in Big_Unsigned;
 			     P   : in Big_Unsigned;
@@ -142,16 +152,22 @@ package Crypto.Asymmetric.RSA is
 
 private
    type Public_Key_RSA is record
-      N : Big_Unsigned;
-      E : Big_Unsigned;
+      N : Big_Unsigned; -- Modulus
+      E : Big_Unsigned; -- Public exponent
    end record;
 
    type Private_Key_RSA is record
-      N : Big_Unsigned;
-      D : Big_Unsigned;
-      P : Big_Unsigned;
-      Q : Big_Unsigned;
-      Phi : Big_Unsigned; --= p-1*q-1
+      N    : Big_Unsigned; -- Modulus = p * q
+      D    : Big_Unsigned; -- private exponent = (e ^ -1) mod Phi
+      P    : Big_Unsigned; -- prime p
+      Q    : Big_Unsigned; -- prime q
+      Phi  : Big_Unsigned; -- = (p - 1) * (q - 1)
+
+      --  Chinese Remainder Theory (CRT) forms of the
+      --  private exponent
+      DP   : Big_Unsigned; -- = d mod (p - 1)
+      DQ   : Big_Unsigned; -- = d mod (q - 1)
+      QInv : Big_Unsigned; -- = (q ^ -1) mod p
    end record;
 
    pragma Optimize (Time);

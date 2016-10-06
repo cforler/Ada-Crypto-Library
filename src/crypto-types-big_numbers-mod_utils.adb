@@ -428,26 +428,29 @@ package body Mod_Utils is
          raise Constraint_Error;
       end if;
 
-
       loop
          -- Make sure that Result is an odd
-         Set_Least_Significant_Bit(Result);
+         Set_Least_Significant_Bit (Result);
 
          -- Make sure that Result is a N-Bit-Number;
-         Result.Number(Index) :=  Result.Number(Index) or
-           Shift_Left(Word(1), Amount);
-         if Amount = 0 then Result.Last_Index := Index;
+         Result.Number (Index) := Result.Number (Index) or
+           Shift_Left (Word (1), Amount);
+
+         if Amount = 0 then
+	    Result.Last_Index := Index;
          end if;
 
-         if Is_Prime(Result) then return Result;
+         if Is_Prime(Result) then
+	    return Result;
          else
             Result:=Result-2;
-            if Is_Prime(Result) then return Result;
+            if Is_Prime(Result) then 
+	       return Result;
             end if;
          end if;
 
-         J  := Get_Random(Shift_Left(Big_Unsigned_One,N-2));
-         Result := Shift_Left(J,1);
+         J := Get_Random (Shift_Left (Big_Unsigned_One, N - 2));
+         Result := Shift_Left (J, 1);
       end loop;
 
    end Get_N_Bit_Prime;
