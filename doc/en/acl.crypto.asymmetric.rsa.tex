@@ -33,17 +33,25 @@ byte and the last element ($'Last$) corresponds the least significant
 byte of the array.\\
 \begin{lstlisting}{}
   type Public_Key_RSA is record
-    N : Big_Unsigned;
-    E : Big_Unsigned;
+    N : Big_Unsigned; -- Modulus
+    E : Big_Unsigned; -- Public exponent
   end record;
   type Private_Key_RSA is record
-    N : Big_Unsigned;
-    D : Big_Unsigned;
-    Phi : Big_Unsigned;
+    N    : Big_Unsigned; -- Modulus = p * q
+    D    : Big_Unsigned; -- private exponent = (e ^ -1) mod Phi
+    P    : Big_Unsigned; -- prime p
+    Q    : Big_Unsigned; -- prime q
+    Phi  : Big_Unsigned; -- = (p - 1) * (q - 1)
+
+    --  Chinese Remainder Theory (CRT) forms of the
+    --  private exponent
+    DP   : Big_Unsigned; -- = d mod (p - 1)
+    DQ   : Big_Unsigned; -- = d mod (q - 1)
+    QInv : Big_Unsigned; -- = (q ^ -1) mod p
   end record;
 \end{lstlisting}
 The term \texttt{Public\_Key\_RSA} has two components, and
-\texttt{Private\_Key\_RSA} has three components. They are used in
+\texttt{Private\_Key\_RSA} has eight components. They are used in
 internal functions to generate key pairs.\\
 \subsubsection*{High-Level-API}
 \begin{lstlisting}{}
@@ -129,17 +137,24 @@ The public key can be reconstructed later with those two components.
 
 \hhline
 \begin{lstlisting}{}
-  procedure Get_Private_Key(Private_Key : in Private_Key_RSA;
-                            N           : out RSA_Number;
-                            D           : out RSA_Number;
-                            Phi         : out RSA_Number);
+  procedure Get_Private_Key (Private_Key : in Private_Key_RSA;
+                             N           : out RSA_Number;
+                             D           : out RSA_Number;
+                             P           : out RSA_Number;
+                             Q           : out RSA_Number;
+                             Phi         : out RSA_Number;
+                             DP          : out RSA_Number;
+                             DQ          : out RSA_Number;
+                             QInv        : out RSA_Number;
 \end{lstlisting}
 The procedure decomposes a private key (\texttt{Private\_Key}) into
 the following components:
 \begin{itemize}
 \item One size-bit RSA modulus $N$ where $N=PQ$, $P,Q$ are prime numbers
 \item One private RSA exponent $D$
+\item Primes $P$ and $Q$
 \item $\phi(N)=(P-1)(Q-1)$
+\item Chinese Remainder Theory (CRT) forms of the private exponent $DP$, $DQ$, and $QInv$
 \end{itemize}
 The private key can be reconstructed later with those components.
 
@@ -165,28 +180,37 @@ smaller than 3 :\quad \texttt{Constraint\_Error}.
 \begin{lstlisting}{}
   procedure Set_Private_Key(N           : in RSA_Number;
                             D           : in RSA_Number;
+                            P           : in RSA_Number;
+                            Q           : in RSA_Number;
                             Phi         : in RSA_Number;
                             Private_Key : out Private_Key_RSA);
   procedure Set_Private_Key(N           : in Big_Unsigned;
                             D           : in Big_Unsigned;
+                            P           : in Big_Unsigned;
+                            Q           : in Big_Unsigned;
                             Phi         : in Big_Unsigned;
                             Private_Key : out Private_Key_RSA);
 \end{lstlisting}
 The two procedures can both be used to (re-)construct a private
 key. The following values are required as parameters:
 \begin{itemize}
-\item One size-bit RSA modulus $N$ where $N=PQ$, $P,Q$ prime numbers
+\item One size-bit RSA modulus $N$ where $N=PQ$,
+\item Prime numbers $P$ and $Q$
 \item One private RSA exponent $D$
 \item $\phi(N)=(P-1)(Q-1)$
 \end{itemize}
-\textbf{Exception:}\\ If one of the following conditions about the
+The CRT forms of the private exponent are computed from $P$, $Q$, and $D$.
+
+\noindent\textbf{Exception:}\\ If one of the following conditions about the
 private key is met, then a \texttt{Constraint\_Error} is raised:
 \begin{itemize}
 \item the length of $N$ is not equal the \texttt{Size}\,,
+\item $P$ less than or equal to $Q$
 \item the term $D$ is even, or its bit value is smaller than or equal 2\,,
 \item the term $\phi(N)$ is odd, or its length is smaller than
   \texttt{Size}-2\,,
 \item the greatest common divisor of $D$ and $\phi(N)$ is not 1\,.
+\item RCC notes this GCD rule does not match the code.  Bug?
 \end{itemize}
 
 \subsubsection*{Low-Level-API}

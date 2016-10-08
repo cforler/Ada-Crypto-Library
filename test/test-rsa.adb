@@ -75,6 +75,41 @@ package body Test.RSA is
   
    Phi: constant Big_Unsigned := (P-1) * (Q-1);
 
+
+   --  References values for DP, DQ and QInv generated from P and Q
+   --  using the tools at:
+   --  http://www.mobilefish.com/services/rsa_key_generation/rsa_key_generation.php
+   DP   : constant Big_Unsigned := To_Big_Unsigned
+     ("16#0e_12_bf_17_18_e9_ce_f5" &
+         "59_9b_a1_c3_88_2f_e8_04" &
+	 "6a_90_87_4e_ef_ce_8f_2c" &
+	 "cc_20_e4_f2_74_1f_b0_a3" &
+	 "3a_38_48_ae_c9_c9_30_5f" &
+	 "be_cb_d2_d7_68_19_96_7d" &
+	 "46_71_ac_c6_43_1e_40_37" &
+	 "96_8d_b3_78_78_e6_95_c1#");
+
+   DQ   : constant Big_Unsigned := To_Big_Unsigned
+     ("16#95_29_7b_0f_95_a2_fa_67" &
+         "d0_07_07_d6_09_df_d4_fc" & 
+	 "05_c8_9d_af_c2_ef_6d_6e" &
+	 "a5_5b_ec_77_1e_a3_33_73" &
+	 "4d_92_51_e7_90_82_ec_da" &
+	 "86_6e_fe_f1_3c_45_9e_1a" &
+	 "63_13_86_b7_e3_54_c8_99" &
+	 "f5_f1_12_ca_85_d7_15_83#");
+
+
+   QInv : constant Big_Unsigned := To_Big_Unsigned
+     ("16#4f_45_6c_50_24_93_bd_c0" &
+ 	 "ed_2a_b7_56_a3_a6_ed_4d" & 
+	 "67_35_2a_69_7d_42_16_e9" &
+	 "32_12_b1_27_a6_3d_54_11" &
+	 "ce_6f_a9_8d_5d_be_fd_73" &
+	 "26_3e_37_28_14_27_43_81" &
+	 "81_66_ed_7d_d6_36_87_dd" &
+	 "2a_8c_a1_d2_f4_fb_d8_e1#");
+
    Mess: constant RSA_Number :=
      (16#43#, 16#79#, 16#cf#, 16#00#, 16#3c#, 16#3b#, 16#74#, 16#0d#,
       16#d6#, 16#34#, 16#00#, 16#0c#, 16#4d#, 16#03#, 16#43#, 16#98#,
@@ -224,14 +259,21 @@ package body Test.RSA is
 
    procedure Test_Get_Private_Key(T : in out Test_Cases.Test_Case'Class) is
       NComp, DComp, PhiComp, PComp, QComp : RSA_Number;
+      DPComp, DQComp, QInvComp : RSA_Number;
       Sk  : Private_Key_RSA;
    begin
       Set_Private_Key(N, D, P, Q, Phi, Sk);
-      RSA.Get_Private_Key(Sk, NComp, DComp, PComp, QComp, PhiComp);
+      RSA.Get_Private_Key(Sk, NComp, DComp, PComp, QComp, PhiComp,
+			 DPComp, DQComp, QInvComp);
 
-      Assert(N = To_Big_Unsigned(NComp)   and D = To_Big_Unsigned(DComp) and  
-	       P = To_Big_Unsigned(PComp) and Q = To_Big_Unsigned(QComp) and
-	       Phi = To_Big_Unsigned(PhiComp), 
+      Assert(N    = To_Big_Unsigned(NComp) and
+	     D    = To_Big_Unsigned(DComp) and  
+	     P    = To_Big_Unsigned(PComp) and
+	     Q    = To_Big_Unsigned(QComp) and
+	     Phi  = To_Big_Unsigned(PhiComp) and
+	     DP   = To_Big_Unsigned(DPComp) and
+	     DQ   = To_Big_Unsigned(DQComp) and
+	     QInv = To_Big_Unsigned(QInvComp),
 	     "RSA_new Get Public/Private Key failed.");
    end Test_Get_Private_Key;
    

@@ -59,52 +59,105 @@ package body Crypto.Asymmetric.RSA is
 
    ---------------------------------------------------------------------------
 
-   function Check_Private_Key(X : Private_Key_RSA) return Boolean is
+   function Check_Private_Key(X : Private_Key_RSA) return Boolean
+   is
+      P1 : constant Big_Unsigned := X.P - 1;
+      Q1 : constant Big_Unsigned := X.Q - 1;
    begin
-      if Bit_Length(X.N) < Size-1 or Is_Even(X.D) or (Bit_Length(X.Phi) < Size-2)
-        or X.P*X.Q /= X.N or (X.P-1)*(X.Q-1) /= X.Phi or Gcd(X.D, X.P) /= 1
-	or Gcd(X.D, X.Q) /= Big_Unsigned_One then
-	 return False;
-      else
-	 return True;
-      end if;
+      return
+	Bit_Length (X.N) >= (Size - 1) and
+	(Bit_Length (X.Phi) >= (Size - 2)) and
+
+	Is_Odd (X.D) and
+
+	X.P    > X.Q and
+
+        X.N    = X.P * X.Q and
+	X.Phi  = P1 * Q1 and
+	X.DP   = X.D mod P1 and
+	X.DQ   = X.D mod Q1 and
+	X.QInv = Inverse (X.Q, X.P) and
+
+	Gcd (X.D, X.P) = 1 and
+	Gcd (X.D, X.Q) = Big_Unsigned_One;
    end Check_Private_Key; pragma Inline(Check_Private_Key);
 
    ---------------------------------------------------------------------------
 
-   procedure Gen_Key(Public_Key  : out Public_Key_RSA;
-                     Private_Key : out Private_Key_RSA;
-		     Small_Default_Exponent_E : in Boolean := True) is
-      Small_Primes : constant Words :=
-	(65537, 65539,  65543, 65557, 65609, 65617 );
-   begin
-      Private_Key.P := Get_N_Bit_Prime(Size/2);
-      loop
-         Private_Key.Q := Get_N_Bit_Prime(Size/2);
-	 exit when Private_Key.P /= Private_Key.Q;
-      end loop;
+   procedure Gen_Key (Public_Key               :    out Public_Key_RSA;
+                      Private_Key              :    out Private_Key_RSA;
+		      Small_Default_Exponent_E : in     Boolean := True)
+   is
+      P, Q, N, Phi, E, D, DP, DQ, QInv : Big_Unsigned;
 
-	 Private_Key.N :=  Private_Key.P * Private_Key.Q;
-	 Private_Key.Phi := (Private_Key.P-1) * (Private_Key.Q-1);
+      P1, Q1 : Big_Unsigned;
 
-	 Public_Key.E := Big_Unsigned_Zero;
+      --  Phi must be set before Find_E can be called.
+      function Find_E return Big_Unsigned
+      is
+	 Small_Primes : constant Words :=
+	   (65537, 65539,  65543, 65557, 65609, 65617 );
+
+	 Possible_E : Big_Unsigned;
+      begin
 	 if Small_Default_Exponent_E then
 	    for I in Small_Primes'Range loop
-	       Public_Key.E :=  To_Big_Unsigned(Small_Primes(I));
-	       exit when Gcd(Public_Key.E, Private_Key.Phi) = Big_Unsigned_One;
-	       Public_Key.E := Big_Unsigned_Zero;
+	       Possible_E :=  To_Big_Unsigned (Small_Primes (I));
+
+	       if Gcd (Possible_E, Phi) = Big_Unsigned_One then
+		  return Possible_E;
+	       end if;
 	    end loop;
 	 end if;
 
-	 if Public_Key.E = Big_Unsigned_Zero then
-	    loop
-	       Public_key.E := Get_Random(Private_Key.Phi);
-	       exit when Gcd(Public_Key.E, Private_Key.Phi) =
-		 Big_Unsigned_One and Public_Key.E > 65536;
-	    end loop;
-	 end if;
-	 Private_Key.D := Inverse(Public_Key.E, Private_Key.Phi);
-	 Public_Key.N :=  Private_Key.N;
+	 loop
+	    Possible_E := Get_Random (Phi);
+
+	    if Gcd (Possible_E, Phi) = Big_Unsigned_One and
+	      Possible_E > 65536 then
+	       return Possible_E;
+	    end if;
+	 end loop;
+      end Find_E;
+
+   begin
+      P := Get_N_Bit_Prime (Size / 2);
+      loop
+         Q := Get_N_Bit_Prime (Size / 2);
+         exit when P /= Q;
+      end loop;
+
+      -- For generation of the Chinese Remainder Theorem (CRT) forms of the
+      -- private exponent, we reqiure P > Q.  We already know P /= Q, so...
+      if Q > P then
+	 Swap (P, Q);
+      end if;
+
+
+      P1 := P - 1;
+      Q1 := Q - 1;
+
+      N   := P * Q;
+      Phi := P1 * Q1;
+      E   := Find_E;
+      D   := Inverse (E, Phi);
+
+      DP := D mod P1;
+      DQ := D mod Q1;
+      QInv := Inverse (Q, P);
+
+      Public_Key := Public_Key_RSA'(N => N,
+                                    E => E);
+
+      -- Named association here to avoid order dependent defect
+      Private_Key := Private_Key_RSA'(N    => N,
+				      D    => D,
+				      P    => P,
+				      Q    => Q,
+				      Phi  => Phi,
+				      DP   => DP,
+				      DQ   => DQ,
+				      QInv => QInv);
    end Gen_Key;
 
    ---------------------------------------------------------------------------
@@ -194,24 +247,50 @@ package body Crypto.Asymmetric.RSA is
 
    ---------------------------------------------------------------------------
 
-   procedure Get_Private_Key(Private_Key : in Private_Key_RSA;
-                             N   : out RSA_Number;
-                             D   : out RSA_Number;
-                             P   : out RSA_Number;
-                             Q   : out RSA_Number;
-                             Phi : out RSA_Number) is
+   procedure Get_Private_Key (Private_Key : in     Private_Key_RSA;
+                              N           :    out RSA_Number;
+                              D           :    out RSA_Number;
+                              P           :    out RSA_Number;
+                              Q           :    out RSA_Number;
+                              Phi         :    out RSA_Number;
+                              DP          :    out RSA_Number;
+                              DQ          :    out RSA_Number;
+                              QInv        :    out RSA_Number)
+   is
+      DPByteL : constant Natural := Length_In_Bytes (Private_Key.DP);
+      DPBytes : constant Bytes   := To_Bytes (Private_Key.DP);
+
+      DQByteL : constant Natural := Length_In_Bytes (Private_Key.DQ);
+      DQBytes : constant Bytes   := To_Bytes (Private_Key.DQ);
+
+      QInvByteL : constant Natural := Length_In_Bytes (Private_Key.QInv);
+      QInvBytes : constant Bytes   := To_Bytes (Private_Key.QInv);
    begin
       N := To_Bytes(Private_Key.N);
+      
       D := (others => 0);
       D(D'Last - (Length_In_Bytes(Private_Key.D) - 1)..D'Last)
         := To_Bytes(Private_Key.D);
+      
       P := (others => 0);
       P(P'Last - (Length_In_Bytes(Private_Key.P) - 1)..P'Last)
         := To_Bytes(Private_Key.P);
+      
       Q := (others => 0);
       Q(Q'Last - (Length_In_Bytes(Private_Key.Q) - 1)..Q'Last)
         := To_Bytes(Private_Key.Q);
+      
       Phi := To_Bytes(Private_Key.Phi);
+
+      DP := (others => 0);
+      DP (DP'Last - (DPByteL - 1) .. DP'Last) := DPBytes;
+
+      DQ := (others => 0);
+      DQ (DQ'Last - (DQByteL - 1) .. DQ'Last) := DQBytes;
+
+      QInv := (others => 0);
+      QInv (QInv'Last - (QInvByteL - 1) .. QInv'Last) := QInvBytes;
+
    end Get_Private_Key;
 
    ---------------------------------------------------------------------------
@@ -239,20 +318,35 @@ package body Crypto.Asymmetric.RSA is
    ---------------------------------------------------------------------------
 
 
-   procedure Set_Private_Key(N   : in RSA_Number;
-                             D   : in RSA_Number;
-                             P   : in RSA_Number;
-                             Q   : in RSA_Number;
-                             Phi : in RSA_Number;
-                             Private_Key : out Private_Key_RSA) is
+   procedure Set_Private_Key
+     (N           : in     RSA_Number;
+      D           : in     RSA_Number;
+      P           : in     RSA_Number;
+      Q           : in     RSA_Number;
+      Phi         : in     RSA_Number;
+      Private_Key :    out Private_Key_RSA)
+   is
+      DL, PL, P1, QL, Q1 : Big_Unsigned;
    begin
-      Private_Key.N := To_Big_Unsigned(N);
-      Private_Key.D := To_Big_Unsigned(D);
-      Private_Key.P := To_Big_Unsigned(P);
-      Private_Key.Q := To_Big_Unsigned(Q);
-      Private_Key.Phi := To_Big_Unsigned(Phi);
+      PL := To_Big_Unsigned (P);
+      P1 := PL - 1;
 
-      if not(Check_Private_Key(Private_Key)) then
+      QL := To_Big_Unsigned (Q);
+      Q1 := QL - 1;
+
+      DL := To_Big_Unsigned (D);
+
+      Private_Key := Private_Key_RSA'
+	(N    => To_Big_Unsigned(N),
+         D    => DL,
+         P    => PL,
+         Q    => QL,
+         Phi  => To_Big_Unsigned(Phi),
+         DP   => DL mod P1,
+         DQ   => DL mod Q1,
+         QInv => Inverse (QL, PL));
+	
+      if not (Check_Private_Key (Private_Key)) then
          raise  Constraint_Error;
       end if;
    end Set_Private_Key;
@@ -265,15 +359,24 @@ package body Crypto.Asymmetric.RSA is
                              P   : in Big_Unsigned;
                              Q   : in Big_Unsigned;
                              Phi : in Big_Unsigned;
-                             Private_Key : out Private_Key_RSA) is
+                             Private_Key : out Private_Key_RSA)
+   is
+      P1, Q1 : Big_Unsigned;
    begin
-      Private_Key.N := N;
-      Private_Key.D := D;
-      Private_Key.P := P;
-      Private_Key.Q := Q;
-      Private_Key.Phi := Phi;
+      P1 := P - 1;
+      Q1 := Q - 1;
 
-      if not(Check_Private_Key(Private_Key)) then
+      Private_Key := Private_Key_RSA'
+	(N    => N,
+         D    => D,
+         P    => P,
+         Q    => Q,
+         Phi  => Phi,
+         DP   => D mod P1,
+         DQ   => D mod Q1,
+         QInv => Inverse (Q, P));
+	
+      if not (Check_Private_Key (Private_Key)) then
 	raise  Constraint_Error;
       end if;
    end Set_Private_Key;

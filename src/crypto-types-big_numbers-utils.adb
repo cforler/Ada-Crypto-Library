@@ -551,17 +551,19 @@ package body Utils is
    ---------------------------------------------------------------------------
 
    function To_String(Item : Big_Unsigned;
-                                   Base : Number_Base := 10) return String is
+                      Base : Number_Base := 10) return String is
       S  : Unbounded_String  := Null_Unbounded_String;
       Remainder : Word:=0;
       Temp_Item : Big_Unsigned := Item;
       Trans : constant array(Word range 0..15) of Character :=
         ('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
+      Base_Img : constant String := Base'Img;
    begin
       if Item = Big_Unsigned_Zero then
          if Base = 10 then  return "0";
          else
-            S := Base'Img & "#0#" & S;
+	    S := "#0#" & S;
+            S := Base_Img & S;
             return Slice(S,2,Length(S));
          end if;
       else
@@ -574,7 +576,7 @@ package body Utils is
          end loop;
          if Base /= 10 then
             S := "#" & S;
-            S := Base'Img & S;
+            S := Base_Img & S;
             return Slice(S,2,Length(S));
          end if;
       end if;
