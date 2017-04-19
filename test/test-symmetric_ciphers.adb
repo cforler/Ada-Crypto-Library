@@ -1,4 +1,4 @@
-with Crypto.Types.Random_Source.File;
+with Crypto.Types.Random_Source.Provider;
 with Test.Suite_Oneway_Blockciphers;
 with Test.Suite_Blockciphers;
 with Crypto.Types.Random;
@@ -19,8 +19,8 @@ procedure Test.Symmetric_Ciphers is
    
    Reporter : AUnit.Reporter.Text.Text_Reporter;
 
-   use Crypto.Types.Random_Source.File;
-   Dev_U_Rand : Random_Source_File;
+   use Crypto.Types.Random_Source.Provider;
+   Dev_U_Rand : Random_Source_Provider;
 begin
    Dev_U_Rand.Initialize("/dev/urandom");
    Crypto.Types.Random.Set(Dev_U_Rand);
