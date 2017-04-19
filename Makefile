@@ -30,7 +30,6 @@ acltest:
 
 clean-acltest:
 	$(ADACLEAN) -P acltest.gpr
-	$(MAKE) -C $(SUBTDIR) clean
 
 gcov:
 	$(MAKE) -C $(SRCDIR) gcov
