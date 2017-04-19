@@ -22,10 +22,10 @@
 --with Ada.Numerics.Discrete_Random;
 
 with Crypto;
-with Crypto.Types.Random_Source.File;
+with Crypto.Types.Random_Source.Provider;
 
 package body Crypto.Types.Random is
-   Dev_Random :  Crypto.Types.Random_Source.File.Random_Source_File; 
+   Dev_Random :  Crypto.Types.Random_Source.Provider.Random_Source_Provider; 
    
     Rnd_Src : aliased Crypto.Types.Random_Source.Random_Source'Class
       :=  Crypto.Types.Random_Source.Random_Source'Class(Dev_Random);   

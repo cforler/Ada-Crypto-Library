@@ -1,9 +1,9 @@
-with Crypto.Types.Random_Source.File;
+with Crypto.Types.Random_Source.Provider;
 
 package body Crypto.Types.Random_Source.Hashfunction is
    
    procedure Initialize(This : in out Random_Source_Hashfunction) is
-      Rand : Crypto.Types.Random_Source.File.Random_Source_File;
+      Rand : Crypto.Types.Random_Source.Provider.Random_Source_Provider;
       Seed : B_Hash;
    begin
       Rand.Read(Seed);
