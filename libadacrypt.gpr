@@ -4,7 +4,11 @@ project LibAdaCrypt is
    for Library_Dir use "lib";
    for Library_Src_Dir use "lib";
    for Object_Dir use "src";
-   for Source_Dirs use ("src");
+
+   type System_Type is ("unix", "windows");
+   System : System_Type := external ("system", "unix");
+
+   for Source_Dirs use ("src", "src/" & System);
 
    type Mode_Type is ("debug", "release");
    Mode : Mode_Type := external ("mode", "release");
