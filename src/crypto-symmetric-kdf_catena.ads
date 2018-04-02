@@ -23,7 +23,6 @@
 with Crypto.Symmetric.KDF;
 with Crypto.Types; use Crypto.Types;
 
-with Crypto.Symmetric.Compress_CFAES; use Crypto.Symmetric.Compress_CFAES;
 with Crypto.Symmetric.Compress; use Crypto.Symmetric.Compress;
 
 pragma Elaborate_All (Crypto.Symmetric.KDF);

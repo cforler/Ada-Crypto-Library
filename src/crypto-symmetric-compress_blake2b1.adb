@@ -20,8 +20,6 @@
 -- exception does not however invalidate any other reasons why the
 -- executable file might be covered by the GNU Public License.
 
-with Crypto.Symmetric.Algorithm.Blake2b1; use Crypto.Symmetric.Algorithm.Blake2b1;
-
   package body Crypto.Symmetric.Compress_Blake2b1 is
   
     function Process(This     : in out Blake2b1_Scheme;
@@ -36,7 +34,7 @@ with Crypto.Symmetric.Algorithm.Blake2b1; use Crypto.Symmetric.Algorithm.Blake2b
     
     function Get_Length(This     : in out Blake2b1_Scheme) return Integer is
     begin
-      return 64;
+      return This.Length;
     end Get_Length;
 
     procedure Reset(This     : in out Blake2b1_Scheme) is

@@ -36,7 +36,7 @@ with Crypto.Symmetric.Algorithm.ArgonCF; use Crypto.Symmetric.Algorithm.ArgonCF;
     
     function Get_Length(This     : in out ArgonCF_Scheme) return Integer is
     begin
-      return 1024;
+      return This.Length;
     end Get_Length;
 
     procedure Reset(This     : in out ArgonCF_Scheme) is

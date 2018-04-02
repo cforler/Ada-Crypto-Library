@@ -24,25 +24,17 @@
 
 
 with Crypto.Symmetric.Hashfunction_SHA512;
-with GNAT.SHA512;
 
 package body Crypto.Symmetric.Algorithm.SHA512Comp is
 
--- procedure resetState is
--- begin
--- 	null;
--- end resetState;
-
-
-procedure Compress( Number : in Integer;
-					i1    : in DW_Block512;
-                    i2    : in DW_Block512;
-                    Output: out DW_Block512) is
+   
+   procedure Compress(Number : in Integer;
+                      i1    : in DW_Block512;
+                      i2    : in DW_Block512;
+                      Output: out DW_Block512) is
    begin
       output := Crypto.Symmetric.Hashfunction_SHA512.Hash(To_Bytes(i1)&To_Bytes(i2));
-      -- output := To_DW_Block512(To_Bytes(GNAT.SHA512.Digest(to_string(To_Bytes(i1) & To_Bytes(i1))))(1..64));
    end Compress;
-
 end  Crypto.Symmetric.Algorithm.SHA512Comp;
 
 

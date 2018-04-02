@@ -26,14 +26,9 @@
 package Crypto.Symmetric.Algorithm.SHA512Comp is
 
 procedure Compress( Number : in Integer;
-					i1    : in DW_Block512;
+                    i1    : in DW_Block512;
                     i2    : in DW_Block512;
                     Output: out DW_Block512);
-
--- procedure resetState;
-
 private
-
    pragma Optimize (Time);
-
 end Crypto.Symmetric.Algorithm.SHA512Comp;

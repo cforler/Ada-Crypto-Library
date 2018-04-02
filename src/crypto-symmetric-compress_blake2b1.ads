@@ -41,5 +41,8 @@ with Crypto.Symmetric.Algorithm.Blake2b1; use Crypto.Symmetric.Algorithm.Blake2b
 	
 	overriding
   	procedure Reset(This     : in out Blake2b1_Scheme);
-
+        
+  private
+     Length : constant Positive := 64;
+        
    end Crypto.Symmetric.Compress_Blake2b1;

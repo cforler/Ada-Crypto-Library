@@ -36,7 +36,7 @@ with Crypto.Symmetric.Algorithm.SHA512Comp; use Crypto.Symmetric.Algorithm.SHA51
     
     function Get_Length(This     : in out SHA512_Scheme) return Integer is
     begin
-      return 64;
+      return This.Length;
     end Get_Length;
 
     procedure Reset(This     : in out SHA512_Scheme) is

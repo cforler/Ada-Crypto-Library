@@ -1,8 +1,8 @@
 with AUnit.Assertions; use AUnit.Assertions;
 with Crypto.Types;
-with Crypto.Symmetric.KDF_Catena.Testing; 
-with Crypto.Symmetric.KDF_Catena; use Crypto.Symmetric.KDF_Catena; 
 with Crypto.Symmetric.KDF_Catena.Testing; use Crypto.Symmetric.KDF_Catena.Testing; 
+with Crypto.Symmetric.KDF_Catena; use Crypto.Symmetric.KDF_Catena; 
+
 with Crypto.Symmetric.Hashfunction_SHA512;
 with Ada.Unchecked_Conversion;
 with Ada.Text_IO; use Ada.Text_IO;
@@ -27,7 +27,7 @@ with Crypto.Symmetric.Compress_ArgonCFBla; use Crypto.Symmetric.Compress_ArgonCF
 with Crypto.Symmetric.Compress_PCompressG; use Crypto.Symmetric.Compress_PCompressG;
 with Crypto.Symmetric.Compress_PCompressBla; use Crypto.Symmetric.Compress_PCompressBla;
 with Crypto.Symmetric.Compress_Blake2b; use Crypto.Symmetric.Compress_Blake2b;
-
+  
 with System; use System;
 
 package body Test.Catena is
@@ -58,17 +58,6 @@ package body Test.Catena is
       Register_Routine(T, Catena_Test_XORShift'Access,"XS Function for Catena");
       Register_Routine(T, Catena_Test_Keyed'Access,"Keyed Hashing Test");
 
-      -- Register_Routine(T, Catena_Test_Debugging'Access,"Debugging Test");
-
-
-      --deprecatedy
-      -- Register_Routine(T, Catena_Test_Catena_BRG'Access,"Main Function for Catena-BRG");
-      -- Register_Routine(T, Catena_Test_Flap_BRG'Access,"Flap Function for Catena-BRG");
-      -- Register_Routine(T, Catena_Test_Catena_DBG'Access,"Main Function for Catena-DBG");
-      -- Register_Routine(T, Catena_Test_Flap_DBG'Access,"Flap Function for Catena-DBG");
-      -- Register_Routine(T, Catena_Test_HashFast'Access,"HF Function for Catena");
-      -- Register_Routine(T, Catena_Test_InitMem'Access,"InitMem InFunction for Catena");
-      -- Register_Routine(T, Catena_Test_Gamma'Access,"gamma Function for Catena");
    end Register_Tests;
    
 
@@ -118,8 +107,6 @@ package body Test.Catena is
    procedure Catena_Test_Keyed(T: in out Test_Cases.Test_Case'Class) is
       input : Bytes(0..63) := (others=>0);
       counter : Byte := 0;
-      output: DW_Block512;
-
       password : String := "Password1";
       data    : Bytes(0..12) := To_Bytes("I'm a header1");
       salt     : Bytes(0..15) := (16#00#, 16#11#,16#22#, 16#33#, 16#44#, 16#55#,16#66#, 16#77#, 16#88#, 16#99#,16#AA#, 16#BB#, 16#CC#, 16#DD#,16#EE#, 16#FF#);
@@ -169,8 +156,6 @@ package body Test.Catena is
    procedure Catena_Test_CFAES(T: in out Test_Cases.Test_Case'Class) is
       input : Bytes(0..63) := (others=>0);
       counter : Byte := 0;
-      output: DW_Block512;
-
       password : String := "password";
       data    : Bytes(0..3) := To_Bytes("data");
       salt     : Bytes(0..0) := (others=>0);
@@ -247,7 +232,6 @@ package body Test.Catena is
    procedure Catena_Test_Interface(T: in out Test_Cases.Test_Case'Class) is
       input : Bytes(0..63) := (others=>0);
       counter : Byte := 0;
-      output: DW_Block512;
 
       password : String := "password";
       data    : Bytes(0..3) := To_Bytes("data");
@@ -261,7 +245,6 @@ package body Test.Catena is
       UID    : Bytes(0..4) := To_Bytes("12345");
 
       hash     : Bytes(0..hashlen-1);
-      hash_low: Bytes(0..hashlen_low-1);
       tweak_id : Natural := 0;
 
       target_dragonfly   : Bytes(1..16):=(16#6F#,16#63#,16#8F#,16#F9#,16#0B#,16#DE#,16#B8#,16#2F#,16#CB#,16#99#,16#26#,16#DA#,16#A9#,16#51#,16#E2#,16#60#);
@@ -287,7 +270,6 @@ package body Test.Catena is
    procedure Catena_Test_SHA512(T: in out Test_Cases.Test_Case'Class) is
       input : Bytes(0..63) := (others=>0);
       counter : Byte := 0;
-      output: DW_Block512;
 
       password : String := "password";
       data    : Bytes(0..3) := To_Bytes("data");
@@ -364,7 +346,6 @@ package body Test.Catena is
    procedure Catena_Test_B2b1(T: in out Test_Cases.Test_Case'Class) is
       input : Bytes(0..63) := (others=>0);
       counter : Byte := 0;
-      output: DW_Block512;
 
       password : String := "password";
       data    : Bytes(0..3) := To_Bytes("data");
@@ -439,7 +420,6 @@ package body Test.Catena is
    procedure Catena_Test_B2b1Bla(T: in out Test_Cases.Test_Case'Class) is
       input : Bytes(0..63) := (others=>0);
       counter : Byte := 0;
-      output: DW_Block512;
 
       password : String := "password";
       data    : Bytes(0..3) := To_Bytes("data");
@@ -509,7 +489,6 @@ package body Test.Catena is
    procedure Catena_Test_GR(T: in out Test_Cases.Test_Case'Class) is
       input : Bytes(0..63) := (others=>0);
       counter : Byte := 0;
-      output: DW_Block512;
 
       password : String := "password";
       data    : Bytes(0..3) := To_Bytes("data");
@@ -633,7 +612,6 @@ package body Test.Catena is
    procedure Catena_Test_Pcompress(T: in out Test_Cases.Test_Case'Class) is
       input : Bytes(0..63) := (others=>0);
       counter : Byte := 0;
-      output: DW_Block512;
 
       password : String := "password";
       data    : Bytes(0..3) := To_Bytes("data");
@@ -764,7 +742,6 @@ package body Test.Catena is
    procedure Catena_Test_ArgonCF(T: in out Test_Cases.Test_Case'Class) is
       input : Bytes(0..63) := (others=>0);
       counter : Byte := 0;
-      output: DW_Block512;
 
       password : String := "password";
       data    : Bytes(0..3) := To_Bytes("data");
@@ -892,229 +869,5 @@ package body Test.Catena is
 
    end Catena_Test_ArgonCF;
 
-
-   -- procedure Catena_Test_Catena_DBG(T: in out Test_Cases.Test_Case'Class) is
-   --    input : Bytes(0..63) := (others=>0);
-   --    counter : Byte := 0;
-   --    output: DW_Block512;
-
-   --    password : String := "password";
-   --    data    : Bytes(0..3) := To_Bytes("data");
-   --    salt     : Bytes(0..0) := (others=>0);
-   --    glow     : Natural := 3;
-   --    ghigh    : Natural := 5;
-   --    lambda   : Natural := 2;
-   --    hashlen  : Natural := 16;
-   --    hash     : Bytes(0..hashlen-1);
-   --    tweak_id : Natural := 0;
-
-   --    target   : Bytes(1..3):=(16#17#,16#F2#,16#71#);
-
-   -- begin
-   --    for i in Integer range 0..63 loop
-   --       input(i) := counter;
-   --       counter := counter+1;
-   --    end loop;
-      
-   --    CatenaPackage.catena(password=>password,
-   --            data=>data,
-   --            tweak_id=>tweak_id,
-   --            salt=>salt,
-   --            glow=>glow,
-   --            ghigh=>ghigh,
-   --            hashlen=>hashlen,
-   --            hash=>hash, 
-   --            mode=>"Butterfly",
-   --            structure=>"rgg", 
-   --            Phi=>"Dummy");
-      
-   --    -- Put_Line("Result DBG: ");
-   --    -- for i in 0..hashlen-1 loop
-   --    --    Put(To_Hex(hash(i)));
-   --    -- end loop;
-   --    -- New_Line;
-
-   --    Assert(hash(0..2)=target(1..3), "Catena-DBG failed");
-
-   -- end Catena_Test_Catena_DBG;
-
-   -- procedure Catena_Test_HashFast(T: in out Test_Cases.Test_Case'Class) is
-   -- x     : DW_Block512 := (others => 0);
-   -- outi   : DW_Block512 := (others => 0);
-   -- many_b: Bytes(0..127):= (others => 0);
-   -- package SHA renames Crypto.Symmetric.Hashfunction_SHA512;
-   -- ctx : SHA.Hash_Context;
-   -- begin
-   --    -- New_Line;
-   --    -- Put_Line("Hash Test:");
-   --    -- x := HashFast_testing(x, x);
-   --    -- for i in 0..7 loop
-   --    --    Put(To_Hex(x(i)));
-   --    -- end loop;
-   --    -- Put_Line(" ");
-
-   --    SHA.Initialize(ctx);
-   --    many_b(0..63):=To_Bytes(x);
-   --    outi:= SHA.Final_Round(ctx, To_DW_Block1024(many_b), 64);
-   --    -- for i in 0..7 loop
-   --    --    Put(To_Hex(outi(i)));
-   --    -- end loop;
-
-   --    Assert(1 = 1, "Range Exception failed");
-
-   -- end Catena_Test_HashFast;
-
---    procedure Catena_Test_Flap_BRG(T: in out Test_Cases.Test_Case'Class) is
---       input : Bytes(0..63) := (others=>0);
---       counter : Byte := 0;
---       salt : Bytes(0..63) := (others=>0);
---       output: DW_Block512;
---       target: Bytes(0..15):=(16#e4#,16#6f#,16#e3#,16#a3#,16#09#,16#88#,16#f6#,16#23#,16#51#,16#8b#,16#33#,16#99#,16#75#,16#09#,16#ad#,16#be#);
---       compare: Bytes(0..63);
---    begin
---       Flap_testing(x=>input, g=>10, salt=>salt, hash=>output, structure=>"rgggggggggg", mode=>"Dragonfly", Phi=>"Dummy");
---       compare := To_Bytes(output);
---       Assert(compare(0..15)=target, "Flap failed");
-
---    end Catena_Test_Flap_BRG;
-
---       procedure Catena_Test_Flap_DBG(T: in out Test_Cases.Test_Case'Class) is
---       input : Bytes(0..63) := (others=>0);
---       counter : Byte := 0;
---       salt : Bytes(0..63) := (others=>0);
---       output: DW_Block512;
---       target: Bytes(0..15):=(16#cc#,16#31#,16#7e#,16#48#,16#db#,16#f5#,16#be#,16#00#,16#88#,16#90#,16#14#,16#1a#,16#57#,16#0c#,16#be#,16#64#);
---       compare: Bytes(0..63);
---    begin
---       Flap_testing(x=>input, g=>10, salt=>salt, hash=>output, structure=>"rgggggggggg", mode=>"Butterfly", Phi=>"Dummy");
---       compare := To_Bytes(output);
---       Assert(compare(0..15)=target, "Flap failed");
-
---    end Catena_Test_Flap_DBG;
-
--- procedure Catena_Test_Catena_BRG(T: in out Test_Cases.Test_Case'Class) is
---       input : Bytes(0..63) := (others=>0);
---       counter : Byte := 0;
---       output: DW_Block512;
-
---       password : String := "password";
---       data    : Bytes(0..63) := (others=>0);
---       salt     : Bytes(0..63) := (others=>0);
---       glow     : Natural := 3;
---       ghigh    : Natural := 5;
---       lambda   : Natural := 4;
---       hashlen  : Natural := 16;
---       hash     : Bytes(0..hashlen-1);
---       tweak_id : Natural := 0;
-
---       target   : Bytes(1..16):=(16#25#,16#F3#,16#75#,16#C7#,16#93#,16#9A#,16#44#,16#34#,16#32#,16#6B#,16#95#,16#CE#,16#D4#,16#D1#,16#3E#,16#EE#);
-
---    begin
---       for i in Integer range 0..63 loop
---          input(i) := counter;
---          counter := counter+1;
---       end loop;
-      
---       CatenaPackage.catena(password=>password,
---               data=>data,
---               tweak_id=>tweak_id,
---               salt=>salt,
---               glow=>glow,
---               ghigh=>ghigh,
---               hashlen=>hashlen,
---               hash=>hash, 
---               mode=>"Dragonfly",
---               structure=>"rgg", 
---               Phi=>"Dummy");
-      
---       -- Put_Line("Result: ");
---       -- for i in 0..hashlen-1 loop
---       --    Put(To_Hex(hash(i)));
---       -- end loop;
---       -- New_Line;
-
---       Assert(hash=target, "Catena-BRG failed");
-
---    end Catena_Test_Catena_BRG;
-
-
---    procedure Catena_Test_Debugging(T: in out Test_Cases.Test_Case'Class) is
---       input : Bytes(0..63) := (others=>0);
---       counter : Byte := 0;
---       output: DW_Block512;
-
---       password : String := "Password1";
---       data    : Bytes(0..12) := To_Bytes("I'm a header1");
---       salt     : Bytes(0..15) := (16#00#, 16#11#,16#22#, 16#33#, 16#44#, 16#55#,16#66#, 16#77#, 16#88#, 16#99#,16#AA#, 16#BB#, 16#CC#, 16#DD#,16#EE#, 16#FF#);
---       glow     : Natural := 17;
---       ghigh    : Natural := 17;
---       hashlen  : Natural := 16;
---       hash     : Bytes(0..hashlen-1);
---       tweak_id : Natural := 0;
-
---       target_butterfly   : Bytes(1..16):=(16#FD#,16#EB#,16#9F#,16#FE#,16#C9#,16#43#,16#D3#,16#76#,16#A8#,16#34#,16#E6#,16#59#,16#47#,16#8B#,16#5C#,16#C2#);
---       target_dragonfly   : Bytes(1..16):=(16#06#,16#61#,16#4c#,16#37#,16#78#,16#64#,16#03#,16#c9#,16#a2#,16#ae#,16#38#,16#ac#,16#ee#,16#5e#,16#40#,16#b9#);
-      
---       Start_Time : Time;
---       Finis_Time : Time;
-
---       function Cast is new Ada.Unchecked_Conversion (DWord, Integer);
-      
---       state : Blake2bState;
---       b2btest : Bytes(0..511) := (others=>1);
---       b2btest2 : Bytes(0..511) := (others=>16#FF#);
-
---       b2btest3 : Bytes(0..63) := (others=>2);
---       b2btestmini : Bytes(0..7) := (others=>16#EE#);
---       B2Bhash : Bytes(0..63);
-      
---       number : Integer := 7;
-
---       reverseTest : Dword := 16#0011223344556677#;
-
---       Scheme : Catena_KDF;
-      
---       Key : Bytes(0..15) := (others=>0);
---       uuid : Dword := 0;
-
---       Iteration : Integer := 8;
-
---    begin
-
--- if System.Default_Bit_Order = System.Low_Order_First then 
---       Put_Line("Low_Order_First");
---       Put_Line("(swap the bytes)");
---       else 
---       Put_Line("High_Order_First");
---       Put_Line("(don't swap the bytes)");
---       end if; 
-
---       Scheme.Initialize(hashlen, 
---                         tweak_id, 
---                         glow, 
---                         ghigh, 
---                         "rgg", 
---                         Dragonfly, 
---                         Dummy, 
---                         Gamma, 
---                         new Blake2b1_Scheme, 
---                         Blake2b);
-      
---       Start_Time := Clock;
---       for i in 0..Iteration-1 loop
---       Scheme.Derive(password, data, salt, hash);
---       end loop;
---       -- Scheme.Derive_Keyed(password, data, salt, key, to_Bytes(uuid), hash);
---       Finis_Time := Clock;
---       Put_Line(Duration'Image((Finis_Time-Start_Time)/Iteration));
-
-
---       Put_Line("Result: ");
---       for i in 0..hashlen-1 loop
---          Put(To_Hex(hash(i)));
---       end loop;
---       New_Line;
-
---    end Catena_Test_Debugging;
 
 end Test.Catena;

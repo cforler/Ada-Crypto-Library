@@ -36,7 +36,7 @@ with Crypto.Symmetric.Algorithm.Blake2b; use Crypto.Symmetric.Algorithm.Blake2b;
     
     function Get_Length(This     : in out Blake2b_Scheme) return Integer is
     begin
-      return 64;
+       return This.Length;
     end Get_Length;
 
     procedure Reset(This     : in out Blake2b_Scheme) is

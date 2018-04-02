@@ -21,8 +21,6 @@
 -- eXecutable file might be covered by the GNU Public License.
 
 
--- with Crypto.Symmetric.Hashfunction_SHA512;
-
 with Ada.Text_IO;                       use Ada.Text_IO;
 with Crypto.Types.XORShiftSTAR;
 with Ada.Unchecked_Conversion;
@@ -246,7 +244,7 @@ end;
                   Salt  : in Bytes;
                   Hash  : out Bytes) is
 
-    l : Natural := This.Hash_Fast_Handle.get_Length;
+    l : constant Natural := This.Hash_Fast_Handle.get_Length;
 
     VM_1   : Bytes(0..l -1);
     VM_2   : Bytes(0..l -1);
@@ -369,7 +367,7 @@ end;
 
     procedure Init_State(This : in out Catena_KDF;
                        size : in Integer) is
-    my_bytes : Bytes(0..This.Hash_Fast_Handle.get_Length -1) := (others=>0);
+    my_bytes : constant Bytes(0..This.Hash_Fast_Handle.get_Length -1) := (others=>0);
   begin
     This.State_Handle := new State_Array_X(0..size-1);
     
@@ -378,18 +376,6 @@ end;
     end loop;
     
     This.State_Handle(0)(0..This.Hash_Fast_Handle.get_Length -1) := My_Bytes;
-
-  --   case This.Used_Compression is
-  --   when ArgonCF =>     This.State_Array_Handle_8k := new State_Array_8k(0..size-1);
-  --   when ArgonCFBla =>  This.State_Array_Handle_8k := new State_Array_8k(0..size-1);
-  --   when CFAES =>       This.State_Array_Handle_8k := new State_Array_8k(0..size-1);
-  --   when SHA512 =>      This.State_Array_Handle_512 := new State_Array_512(0..size-1);
-  --   when Blake2b =>     This.State_Array_Handle_512 := new State_Array_512(0..size-1);
-  --   when Blake2b1 =>    This.State_Array_Handle_512 := new State_Array_512(0..size-1);
-  --   when Blake2b1Bla => This.State_Array_Handle_512 := new State_Array_512(0..size-1);
-  --   when PCompressG =>  This.State_Array_Handle_512 := new State_Array_512(0..size-1);
-  --   when PCompressBla =>This.State_Array_Handle_512 := new State_Array_512(0..size-1);
-  -- end case;
   end Init_State;
 
   function Hash_1 (This  : in out Catena_KDF;
@@ -722,7 +708,7 @@ end Hash_4;
     package XS_Blake2b is new Crypto.Types.XORShiftSTAR(Hashfunction_Blake2b);
     package XS_SHA512 is new Crypto.Types.XORShiftSTAR(Hashfunction_SHA512);
     
-    l : Natural := Context.Hash_Fast_Handle.get_Length;
+    l : constant Natural := Context.Hash_Fast_Handle.get_Length;
 
   begin
 
@@ -764,7 +750,7 @@ end Hash_4;
                      Garlic   : in Integer;
                      Hash     : out Bytes) is
     -- new
-    l : Natural := Context.Hash_Fast_Handle.get_Length;
+    l : constant Natural := Context.Hash_Fast_Handle.get_Length;
     begin
       Hash := Context.State_Handle(This.internal_graph.Index( 2**Garlic -1, Garlic))(0..l-1);
 
@@ -779,7 +765,7 @@ end Hash_4;
                      Context  : in out Catena_KDF;
                      Garlic   : in Integer;
                      Hash     : out Bytes) is
-    l : Natural := Context.Hash_Fast_Handle.get_Length;
+    l :constant  Natural := Context.Hash_Fast_Handle.get_Length;
     c : constant Integer := 2**Garlic;
     lastIndex : constant Integer := This.internal_graph.Index(c-1, Garlic);
     Current_Index : Integer := This.internal_graph.Index(Random(Context,Context.State_Handle(lastIndex)(0..l-1), Garlic),Garlic);
@@ -843,7 +829,7 @@ end Hash_4;
                      Context  : in out Catena_KDF;
                      Garlic   : in Integer;
                      Hash     : out Bytes) is
-    l : Natural := Context.Hash_Fast_Handle.get_Length;
+    l : constant Natural := Context.Hash_Fast_Handle.get_Length;
     package XS_Blake2b is new Crypto.Types.XORShiftSTAR(Hashfunction_Blake2b);
     package XS_SHA512 is new Crypto.Types.XORShiftSTAR(Hashfunction_SHA512);
 

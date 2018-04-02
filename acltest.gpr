@@ -11,8 +11,8 @@ project AclTest is
 
 
    package Compiler is
-      for Default_Switches ("ada") use ("-O3", "-W", "-Werror", "-gnato",
-       "-gnatn",  "-gnatwrclp", "-gnat12");
+      for Default_Switches ("ada") use ("-O3", "-W", "-gnato",
+          "-fno-strict-aliasing", "-gnatn",  "-gnatwrclp", "-gnat12");
    end Compiler;
 
    package Builder is

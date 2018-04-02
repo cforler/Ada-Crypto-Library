@@ -37,5 +37,9 @@ with Crypto.Types; use Crypto.Types;
 	
 	overriding
   	procedure Reset(This     : in out SHA512_Scheme);
-
+        
+  private
+     Length : constant Positive := 64;
+        
+        
    end Crypto.Symmetric.Compress_SHA512;
