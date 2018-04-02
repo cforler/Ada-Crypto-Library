@@ -1,8 +1,17 @@
 Welcome to the Ada Crypto Library (ACL) aka libadacrypt
 =======================================================
 This library is an ongoing project that provides the Ada community to
-strong cryptography primitives and schemes, focused to ensure
-data confidentiality and data integrity. 
+strong cryptography primitives and schemes, focused to ensure data
+confidentiality and data integrity.
+
+
+Disclaimer
+-----------
+Note that the ACL is an ongoing academic projects. Several parts of
+the code is written by students as part of a semester project or a
+(bachelor/master) thesis. Usually, those students are neither ADA
+professionals nor cryptographic experts. Thus, use this project with
+caution.
 
 
 Implemented Features
